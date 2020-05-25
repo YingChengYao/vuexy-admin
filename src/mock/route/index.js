@@ -1,29 +1,30 @@
 export default {
-  getMenu: () => ({
+  getRoutes: () => ({
     data: {
       router: [
         {
-          name:"ss",
           path: "",
           //component: () => import("@/layouts/main/Main.vue"),
-          component: "@/layouts/main/Main",
+          componentPath: "/main/Main",
           children: [
             {
               path: "/permission",
               name: "permission",
               //component: () => import("@/views/Permission/Permission.vue"),
-              component: "@/views/Permission/Permission",
+              componentPath: "/Permission/Permission",
               meta: {
-                title: 'Permission',
+                title: "Permission",
+                authRequired: true
               }
             },
             {
               path: "/assign",
               name: "assign",
               // component: () => import("@/views/Permission/Assign.vue"),
-              component: "@/views/Permission/Assign",
+              componentPath: "/Permission/Assign",
               meta: {
-                title: 'Assign',
+                title: "Assign",
+                authRequired: true
               }
             }
           ]

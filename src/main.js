@@ -42,6 +42,7 @@ import '@/assets/css/main.css'
 
 // Vue Router
 import router from '@/router/router'
+import './permission.js'
 
 
 // Vuex Store

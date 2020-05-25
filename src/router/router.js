@@ -10,7 +10,7 @@
 import Vue from "vue";
 import Router from "vue-router";
 
-import auth from "@/auth/authService";
+// import auth from "@/auth/authService";
 
 Vue.use(Router);
 
@@ -34,47 +34,21 @@ const router = new Router({
         {
           path: "/",
           name: "home",
-          component: () => import("@/views/Home.vue")
+          component: () => import("@/views/Home.vue"),
+          meta:{
+            authRequired:true
+          }
         },
         {
           path: "/page2",
           name: "page-2",
-          component: () => import("@/views/Page2.vue")
+          component: () => import("@/views/Page2.vue"),
+          meta:{
+            authRequired:true
+          }
         },
-        // {
-        //   path: "/permission",
-        //   name: "permission",
-        //   component: () => import("@/views/Permission/Permission.vue")
-        // },
-        // {
-        //   path: "/assign",
-        //   name: "assign",
-        //   component: () => import("@/views/Permission/Assign.vue")
-        // }
       ]
     },
-    // {
-    //   // =============================================================================
-    //   // MAIN LAYOUT ROUTES
-    //   // =============================================================================
-    //   path: "",
-    //   component: () => import("@/layouts/main/Main.vue"),
-    //   children: [
-    //     // =============================================================================
-    //     // Theme Routes
-    //     // =============================================================================
-    //     {
-    //       path: "/permission",
-    //       name: "permission",
-    //       component: () => import("@/views/Permission/Permission.vue")
-    //     },
-    //     {
-    //       path: "/assign",
-    //       name: "assign",
-    //       component: () => import("@/views/Permission/Assign.vue")
-    //     }
-    //   ]
-    // },
     // =============================================================================
     // FULL PAGE LAYOUTS
     // =============================================================================
@@ -101,7 +75,8 @@ const router = new Router({
     {
       path: "*",
       redirect: "/pages/error-404"
-    }
+    },
+ 
   ]
 });
 
@@ -113,16 +88,16 @@ router.afterEach(() => {
   }
 });
 
-router.beforeEach((to, from, next) => {
-  debugger;
+// router.beforeEach((to, from, next) => {
+//   debugger;
 
-  if (to.meta.authRequired) {
-    if (!auth.isAuthenticated()) {
-      router.push({ path: "/pages/login", query: { to: to.path } });
-    }
-  }
+//   if (to.meta.authRequired) {
+//     if (!auth.isAuthenticated()) {
+//       router.push({ path: "/pages/login", query: { to: to.path } });
+//     }
+//   }
 
-  return next();
-});
+//   return next();
+// });
 
 export default router;
