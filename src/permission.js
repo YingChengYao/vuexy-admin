@@ -3,13 +3,37 @@ import store from "@/store/store.js";
 import NProgress from "nprogress"; // progress bar
 import "nprogress/nprogress.css"; // progress bar style
 // import { getToken } from "@/common/utils/auth"; // get token from cookie
-import { getObjArr,saveObjArr } from "@/common/utils/localStorage.js";
+import { getObjArr, saveObjArr } from "@/common/utils/localStorage.js";
 import { filterAsyncRoutes } from "@/store/modules/permission.js";
 
 NProgress.configure({ showSpinner: false }); // NProgress Configuration
 
 const whiteList = ["/pages/login", "/auth-redirect"]; // no redirect whitelist
-var getRouter //用来获取后台拿到的路由
+var getRouter; //用来获取后台拿到的路由
+debugger;
+if (!getRouter) {
+  //不加这个判断，刷新后会获取不到路由
+  debugger;
+  if (getObjArr("router")) {
+    getRouter = getObjArr("router"); //拿到路由
+    let accessedRoutes = filterAsyncRoutes(getRouter);
+    router.addRoutes(accessedRoutes);
+    store.commit("permission/SET_ROUTES", accessedRoutes);
+  }
+  // if (!getObjArr("router")) {
+  //   //本地没有，则从数据库获取
+  //   const accessRoutes = store.dispatch("permission/generateRoutes");
+
+  //   router.addRoutes(accessRoutes);
+
+  //   saveObjArr("router", accessRoutes); //存储路由到localStorage
+  // } else {
+  //   getRouter = getObjArr("router"); //拿到路由
+  //   let accessedRoutes = filterAsyncRoutes(getRouter);
+  //   router.addRoutes(accessedRoutes);
+  //   store.commit("permission/SET_ROUTES", accessedRoutes);
+  // }
+}
 
 /*vue是单页应用，刷新时，重新创建实例，需要重新加载的动态路由，不然匹配不到路由，出现页面空白的情况*/
 router.beforeEach(async (to, from, next) => {
@@ -42,27 +66,27 @@ router.beforeEach(async (to, from, next) => {
       } else {
         try {
           // if (!getRouter) {
-            const getRouter=getObjArr("router")
-            //不加这个判断，路由会陷入死循环
-            if (!getRouter) {
-              const accessRoutes = await store.dispatch(
-                "permission/generateRoutes"
-              );
+         getRouter = getObjArr("router");
+          
+          if (!getRouter) {
+            const accessRoutes = await store.dispatch(
+              "permission/generateRoutes"
+            );
 
-              router.addRoutes(accessRoutes);
+            router.addRoutes(accessRoutes);
 
-              saveObjArr("router", accessRoutes); //存储路由到localStorage
-              next({ ...to, replace: true });
-              NProgress.done();
-            } else {
-              //从localStorage拿到了路由
-              //getRouter = getObjArr("router"); //拿到路由
-              let accessedRoutes = filterAsyncRoutes(getRouter);
-              router.addRoutes(accessedRoutes);
-              store.commit('permission/SET_ROUTES', accessedRoutes)
-              next({ ...to, replace: true });
-              NProgress.done();
-            }
+            saveObjArr("router", accessRoutes); //存储路由到localStorage
+            next({ ...to, replace: true });
+            NProgress.done();
+          } else {
+            //从localStorage拿到了路由
+            //getRouter = getObjArr("router"); //拿到路由
+            let accessedRoutes = filterAsyncRoutes(getRouter);
+            router.addRoutes(accessedRoutes);
+            store.commit("permission/SET_ROUTES", accessedRoutes);
+            next({ ...to, replace: true });
+            NProgress.done();
+          }
           // } else {
           //   next();
           // }
