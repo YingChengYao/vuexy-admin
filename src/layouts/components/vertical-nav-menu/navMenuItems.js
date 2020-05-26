@@ -7,40 +7,69 @@
   Author URL: http://www.themeforest.net/user/pixinvent
 ==========================================================================================*/
 
+import store from "@/store/store.js";
+
+export function filterAsyncRrouter(routes) {
+  debugger;
+  const res = [];
+  routes.forEach(route => {
+    // if (route.path === "") {
+    //   route.component = () => import(`@/layouts${route.componentPath}.vue`);
+    // } else {
+    //   route.component = () => import(`@/views${route.componentPath}.vue`);
+    // }
+    const tmp = [];
+    tmp.url = route.url;
+    tmp.name = route.name;
+    tmp.slug = route.path;
+    tmp.icon = route.icon;
+    if (route.children) {
+      tmp.submenu = filterAsyncRrouter(route.children);
+    }
+    res.push(tmp);
+  });
+
+  return res;
+}
+
+const router=filterAsyncRrouter(store.getters.routes);
+console.log("菜单router:", router);
 //slug填路由path
-export default [
-  {
-    url: "/",
-    name: "首页",
-    slug: "home",
-    icon: "HomeIcon",
-    i18n: "Home"
-  },
-  {
-    url: "/page2",
-    name: "页面2",
-    slug: "page2",
-    icon: "FileIcon",
-    i18n: "page2"
-  },
-  {
-    url: null,
-    name: "菜单权限管理",
-    icon: "FileIcon",
-    // i18n: 'eCommerce',
-    submenu: [
-      {
-        url: "/permission",
-        name: "菜单管理",
-        slug: "permission",
-        // i18n: 'Shop'
-      },
-      {
-        url: "/assign",
-        name: "权限管理",
-        slug: "assign"
-        // i18n: 'ItemDetails'
-      }
-    ]
-  }
-];
+// const router = [
+//   // {
+//   //   url: "/",
+//   //   name: "首页",
+//   //   slug: "home",
+//   //   icon: "HomeIcon",
+//   //   i18n: "Home"
+//   // },
+//   // {
+//   //   url: "/page2",
+//   //   name: "页面2",
+//   //   slug: "page2",
+//   //   icon: "FileIcon",
+//   //   i18n: "page2"
+//   // },
+//   {
+//     url: null,
+//     name: "菜单权限管理",
+//     icon: "FileIcon",
+//     // i18n: 'eCommerce',
+//     submenu: [
+//       {
+//         url: "/permission",
+//         name: "菜单管理",
+//         slug: "permission"
+//         // i18n: 'Shop'
+//       },
+//       {
+//         url: "/assign",
+//         name: "权限管理",
+//         slug: "assign"
+//         // i18n: 'ItemDetails'
+//       }
+//     ]
+//   }
+// ];
+
+export default router;

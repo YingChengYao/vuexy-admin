@@ -10,15 +10,16 @@ NProgress.configure({ showSpinner: false }); // NProgress Configuration
 
 const whiteList = ["/pages/login", "/auth-redirect"]; // no redirect whitelist
 var getRouter; //用来获取后台拿到的路由
-debugger;
+
 if (!getRouter) {
   //不加这个判断，刷新后会获取不到路由
-  debugger;
+  
   if (getObjArr("router")) {
+    debugger
     getRouter = getObjArr("router"); //拿到路由
+    store.commit("permission/SET_ROUTES", getRouter);
     let accessedRoutes = filterAsyncRoutes(getRouter);
     router.addRoutes(accessedRoutes);
-    store.commit("permission/SET_ROUTES", accessedRoutes);
   }
   // if (!getObjArr("router")) {
   //   //本地没有，则从数据库获取
@@ -42,7 +43,7 @@ router.beforeEach(async (to, from, next) => {
 
   // set page title
   document.title = to.meta.title;
-  debugger;
+ 
   if (!to.meta.authRequired) {
     return next();
   }
@@ -51,20 +52,21 @@ router.beforeEach(async (to, from, next) => {
   // let hasToken = getToken();
   const hasToken = true;
   //var getRouter;
-  debugger;
+  
   if (hasToken) {
     if (to.path === "/pages/login") {
       // if is logged in, redirect to the home page
       next({ path: "/" });
       NProgress.done(); // hack: https://github.com/PanJiaChen/vue-element-admin/pull/2939
     } else {
-      debugger;
+      
       const hasRoutes = store.getters.routes && store.getters.routes.length > 0;
 
       if (hasRoutes) {
         next();
       } else {
         try {
+          debugger;
           // if (!getRouter) {
          getRouter = getObjArr("router");
           
@@ -72,8 +74,8 @@ router.beforeEach(async (to, from, next) => {
             const accessRoutes = await store.dispatch(
               "permission/generateRoutes"
             );
-
-            router.addRoutes(accessRoutes);
+            let accessedRoutes = filterAsyncRoutes(accessRoutes);
+            router.addRoutes(accessedRoutes);
 
             saveObjArr("router", accessRoutes); //存储路由到localStorage
             next({ ...to, replace: true });
@@ -83,7 +85,7 @@ router.beforeEach(async (to, from, next) => {
             //getRouter = getObjArr("router"); //拿到路由
             let accessedRoutes = filterAsyncRoutes(getRouter);
             router.addRoutes(accessedRoutes);
-            store.commit("permission/SET_ROUTES", accessedRoutes);
+            store.commit("permission/SET_ROUTES", getRouter);
             next({ ...to, replace: true });
             NProgress.done();
           }

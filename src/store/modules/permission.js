@@ -33,14 +33,14 @@ const actions = {
   generateRoutes({ commit }) {
     return new Promise((resolve, reject) => {
       //const token = state.token;
+      debugger
       getRoutes()
         .then(res => {
           const { data } = res;
           debugger;
           console.log("routers:", data.data.router);
-          let accessedRoutes = filterAsyncRoutes(data.data.router);
-          commit("SET_ROUTES", accessedRoutes);
-          resolve(accessedRoutes);
+          commit("SET_ROUTES", data.data.router);
+          resolve(data.data.router);
         })
         .catch(error => {
           reject(error);

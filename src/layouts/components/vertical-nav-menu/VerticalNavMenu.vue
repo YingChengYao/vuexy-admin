@@ -168,6 +168,7 @@ export default {
       }
     },
     menuItemsUpdated() {
+      debugger
       let clone = this.navMenuItems.slice()
 
       for(let [index, item] of this.navMenuItems.entries()) {
