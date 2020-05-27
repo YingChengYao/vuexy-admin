@@ -1,23 +1,6 @@
 //import { constantRoutes } from "@/router";
 import { getRoutes } from "@/http/api.js";
-
-export function filterAsyncRoutes(routes) {
-  const res = [];
-  routes.forEach(route => {
-    if (route.path === "") {
-      route.component = () => import(`@/layouts${route.componentPath}.vue`);
-    } else {
-      route.component = () => import(`@/views${route.componentPath}.vue`);
-    }
-    const tmp = { ...route };
-    if (tmp.children) {
-      tmp.children = filterAsyncRoutes(tmp.children);
-    }
-    res.push(tmp);
-  });
-
-  return res;
-}
+import { filterAsyncRoutes } from "@/common/router/asyncRouter.js";
 
 const state = {
   routes: []
@@ -33,14 +16,29 @@ const actions = {
   generateRoutes({ commit }) {
     return new Promise((resolve, reject) => {
       //const token = state.token;
-      debugger
+      debugger;
       getRoutes()
         .then(res => {
           const { data } = res;
-          debugger;
+          const asyncRouter = data.data.router;
           console.log("routers:", data.data.router);
+
+          const baseRouter = [
+            {
+              path: "",
+              name: "layout",
+              component: "layouts/main/Main.vue",
+              meta: {
+                title: "底层layout"
+              },
+              children: []
+            }
+          ];
+
+          const routes = filterAsyncRoutes(asyncRouter);
+          baseRouter[0].children = routes;
           commit("SET_ROUTES", data.data.router);
-          resolve(data.data.router);
+          resolve(routes);
         })
         .catch(error => {
           reject(error);

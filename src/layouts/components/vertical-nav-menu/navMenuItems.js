@@ -18,10 +18,18 @@ export function filterAsyncRrouter(routes) {
     // } else {
     //   route.component = () => import(`@/views${route.componentPath}.vue`);
     // }
+    //const tmp = { ...route };
     const tmp = [];
-    tmp.url = route.url;
+
+    tmp.url = route.path === "-" ? null : ;
+    if(route.path === "-"){
+      tmp.url=null
+    }
+    else{
+      tmp.url=route.path;
+      tmp.slug=route.path.substring(0,1);
+    }
     tmp.name = route.name;
-    tmp.slug = route.path;
     tmp.icon = route.icon;
     if (route.children) {
       tmp.submenu = filterAsyncRrouter(route.children);
@@ -31,8 +39,8 @@ export function filterAsyncRrouter(routes) {
 
   return res;
 }
-
-const router=filterAsyncRrouter(store.getters.routes);
+debugger;
+const router = filterAsyncRrouter(store.getters.routes);
 console.log("菜单router:", router);
 //slug填路由path
 // const router = [

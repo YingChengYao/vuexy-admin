@@ -3,46 +3,62 @@ export default {
     data: {
       router: [
         {
-          path: "",
+          path: "-",
+          name: "管理",
+          icon: "FileIcon",
+          children: [
+            {
+              path: "/",
+              name: "home",
+              componentPath: "/Home",
+              meta: {
+                authRequired: true
+              }
+            }
+          ]
+        },
+        {
+          path: "-",
+          icon: "FileIcon",
+          name: "用户角色管理",
+          children: [
+            {
+              path: "/users",
+              url: "/users",
+              name: "用户管理",
+              slug: "users",
+              componentPath: "/User/Users",
+              meta: {
+                title: "用户管理",
+                authRequired: true
+              }
+            },
+            {
+              path: "/roles",
+              url: "/roles",
+              name: "角色管理",
+              slug: "roles",
+              // component: () => import("@/views/Permission/Assign.vue"),
+              componentPath: "/User/Roles",
+              meta: {
+                title: "角色管理",
+                authRequired: true
+              }
+            }
+          ]
+        },
+        {
+          path: "-",
           //component: () => import("@/layouts/main/Main.vue"),
           componentPath: "/main/Main",
           icon: "FileIcon",
           name: "菜单权限管理",
           children: [
             {
-              path: "",
-              componentPath: "/main/Main",
-              icon: "FileIcon",
-              name: "菜单权限管理",
-              children: [
-                {
-                  path: "/",
-                  url: "/",
-                  name: "home",
-                  //component: () => import("@/views/Permission/Permission.vue"),
-                  componentPath: "/Home",
-                  meta: {
-                    title: "Home",
-                    authRequired: true
-                  }
-                },
-                {
-                  path: "/page2",
-                  url: "/page2",
-                  name: "page2",
-                  // component: () => import("@/views/Permission/Assign.vue"),
-                  componentPath: "/Page2",
-                  meta: {
-                    title: "Page2",
-                    authRequired: true
-                  }
-                }
-              ]
-            },
-            {
               path: "/permission",
               url: "/permission",
-              name: "permission",
+              slug: "permission",
+              name: "权限管理",
               //component: () => import("@/views/Permission/Permission.vue"),
               componentPath: "/Permission/Permission",
               meta: {
@@ -53,7 +69,8 @@ export default {
             {
               path: "/assign",
               url: "/assign",
-              name: "assign",
+              slug: "assign",
+              name: "菜单管理",
               // component: () => import("@/views/Permission/Assign.vue"),
               componentPath: "/Permission/Assign",
               meta: {

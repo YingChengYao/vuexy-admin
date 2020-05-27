@@ -21,34 +21,34 @@ const router = new Router({
     return { x: 0, y: 0 };
   },
   routes: [
-    {
-      // =============================================================================
-      // MAIN LAYOUT ROUTES
-      // =============================================================================
-      path: "",
-      component: () => import("@/layouts/main/Main.vue"),
-      children: [
-        // =============================================================================
-        // Theme Routes
-        // =============================================================================
-        {
-          path: "/",
-          name: "home",
-          component: () => import("@/views/Home.vue"),
-          meta:{
-            authRequired:true
-          }
-        },
-        {
-          path: "/page2",
-          name: "page-2",
-          component: () => import("@/views/Page2.vue"),
-          meta:{
-            authRequired:true
-          }
-        },
-      ]
-    },
+    // {
+    //   // =============================================================================
+    //   // MAIN LAYOUT ROUTES
+    //   // =============================================================================
+    //   path: "",
+    //   component: () => import("@/layouts/main/Main.vue"),
+    //   children: [
+    //     // =============================================================================
+    //     // Theme Routes
+    //     // =============================================================================
+    //     {
+    //       path: "/",
+    //       name: "home",
+    //       component: () => import("@/views/Home.vue"),
+    //       meta:{
+    //         authRequired:true
+    //       }
+    //     },
+    //     {
+    //       path: "/page2",
+    //       name: "page-2",
+    //       component: () => import("@/views/Page2.vue"),
+    //       meta:{
+    //         authRequired:true
+    //       }
+    //     },
+    //   ]
+    // },
     // =============================================================================
     // FULL PAGE LAYOUTS
     // =============================================================================
@@ -71,7 +71,7 @@ const router = new Router({
         }
       ]
     },
-    // Redirect to 404 page, if no match found
+    //Redirect to 404 page, if no match found
     {
       path: "*",
       redirect: "/pages/error-404"
@@ -88,16 +88,6 @@ router.afterEach(() => {
   }
 });
 
-// router.beforeEach((to, from, next) => {
-//   debugger;
 
-//   if (to.meta.authRequired) {
-//     if (!auth.isAuthenticated()) {
-//       router.push({ path: "/pages/login", query: { to: to.path } });
-//     }
-//   }
-
-//   return next();
-// });
 
 export default router;
