@@ -12,22 +12,14 @@ import store from "@/store/store.js";
 export function filterAsyncRrouter(routes) {
   debugger;
   const res = [];
-  routes.forEach(route => {
-    // if (route.path === "") {
-    //   route.component = () => import(`@/layouts${route.componentPath}.vue`);
-    // } else {
-    //   route.component = () => import(`@/views${route.componentPath}.vue`);
-    // }
-    //const tmp = { ...route };
+  routes.map(route => {
     const tmp = [];
-
-    tmp.url = route.path === "-" ? null : ;
-    if(route.path === "-"){
-      tmp.url=null
-    }
-    else{
-      tmp.url=route.path;
-      tmp.slug=route.path.substring(0,1);
+    const path = route.path;
+    if (path === "-") {
+      tmp.url = null;
+    } else {
+      tmp.url = path;
+      tmp.slug = route.slug;
     }
     tmp.name = route.name;
     tmp.icon = route.icon;

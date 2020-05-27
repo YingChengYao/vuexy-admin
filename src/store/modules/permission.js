@@ -26,11 +26,7 @@ const actions = {
           const baseRouter = [
             {
               path: "",
-              name: "layout",
-              component: "layouts/main/Main.vue",
-              meta: {
-                title: "底层layout"
-              },
+              component: () => import("@/layouts/main/Main.vue"),
               children: []
             }
           ];
@@ -38,7 +34,7 @@ const actions = {
           const routes = filterAsyncRoutes(asyncRouter);
           baseRouter[0].children = routes;
           commit("SET_ROUTES", data.data.router);
-          resolve(routes);
+          resolve(baseRouter);
         })
         .catch(error => {
           reject(error);

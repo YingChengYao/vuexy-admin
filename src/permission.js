@@ -36,6 +36,7 @@ let asyncRouterFlag = 0;
 //   // }
 // }
 
+
 /*vue是单页应用，刷新时，重新创建实例，需要重新加载的动态路由，不然匹配不到路由，出现页面空白的情况*/
 router.beforeEach(async (to, from, next) => {
   // start progress bar

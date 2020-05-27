@@ -3,19 +3,13 @@ export default {
     data: {
       router: [
         {
-          path: "-",
-          name: "管理",
-          icon: "FileIcon",
-          children: [
-            {
-              path: "/",
-              name: "home",
-              componentPath: "/Home",
-              meta: {
-                authRequired: true
-              }
-            }
-          ]
+          path: "/",
+          name: "home",
+          componentPath: "/Home",
+          slug:"home",
+          meta: {
+            authRequired: true
+          }
         },
         {
           path: "-",
