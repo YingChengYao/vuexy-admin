@@ -10,10 +10,9 @@
 import store from "@/store/store.js";
 
 export function filterAsyncRrouter(routes) {
-  debugger;
   const res = [];
   routes.map(route => {
-    const tmp = [];
+    const tmp = {};
     const path = route.path;
     if (path === "-") {
       tmp.url = null;
@@ -31,9 +30,8 @@ export function filterAsyncRrouter(routes) {
 
   return res;
 }
-debugger;
+
 const router = filterAsyncRrouter(store.getters.routes);
-console.log("菜单router:", router);
 //slug填路由path
 // const router = [
 //   // {

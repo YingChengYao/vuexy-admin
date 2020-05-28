@@ -41,7 +41,7 @@ let asyncRouterFlag = 0;
 router.beforeEach(async (to, from, next) => {
   // start progress bar
   NProgress.start();
-  debugger;
+debugger
   // set page title
   document.title = to.meta.title;
 
@@ -104,7 +104,7 @@ router.beforeEach(async (to, from, next) => {
         asyncRouterFlag++;
         const asyncRouters = await store.dispatch("permission/generateRoutes");
         //const asyncRouters = store.getters["ermission/SET_ROUTES"];
-        debugger;
+        debugger
         router.addRoutes(asyncRouters);
         next({ ...to, replace: true });
       } else {

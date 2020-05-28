@@ -16,12 +16,11 @@ const actions = {
   generateRoutes({ commit }) {
     return new Promise((resolve, reject) => {
       //const token = state.token;
-      debugger;
+
       getRoutes()
         .then(res => {
           const { data } = res;
           const asyncRouter = data.data.router;
-          console.log("routers:", data.data.router);
 
           const baseRouter = [
             {
@@ -30,9 +29,25 @@ const actions = {
               children: []
             }
           ];
+          const router = filterAsyncRoutes(asyncRouter);
+          baseRouter[0].children = router;
+          //动态加载解决刷新后404问题
+          baseRouter.push({
+            path: "*",
+            redirect: "/pages/error-404"
+          });
+          baseRouter.push({
+            path: "",
+            component: () => import("@/layouts/full-page/FullPage.vue"),
+            children: [
+              {
+                path: "/pages/error-404",
+                name: "page-error-404",
+                component: () => import("@/views/pages/Error404.vue")
+              }
+            ]
+          });
 
-          const routes = filterAsyncRoutes(asyncRouter);
-          baseRouter[0].children = routes;
           commit("SET_ROUTES", data.data.router);
           resolve(baseRouter);
         })

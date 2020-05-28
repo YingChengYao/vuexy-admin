@@ -178,7 +178,6 @@ export default {
   computed: {
     isGroupActive() {
       return item => {
-        console.log("item:", item);
         const path = this.$route.fullPath;
         const routeParent = this.$route.meta
           ? this.$route.meta.parent
@@ -214,7 +213,6 @@ export default {
           }
         }
       }
-      console.log("clone:", clone);
       return clone;
     },
     isVerticalNavMenuActive: {

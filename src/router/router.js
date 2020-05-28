@@ -31,14 +31,15 @@ const router = new Router({
         // // =============================================================================
         // // Theme Routes
         // // =============================================================================
-        // {
-        //   path: "/",
-        //   name: "home",
-        //   component: () => import("@/views/Home.vue"),
-        //   meta:{
-        //     authRequired:true
-        //   }
-        // },
+        {
+          path: "/",
+          name: "home",
+          component: () => import("@/views/Home.vue"),
+          meta:{
+            authRequired:true,
+            title: "首页"
+          }
+        },
         // {
         //   path: "/page2",
         //   name: "page-2",
@@ -64,18 +65,18 @@ const router = new Router({
           name: "page-login",
           component: () => import("@/views/pages/Login.vue")
         },
-        {
-          path: "/pages/error-404",
-          name: "page-error-404",
-          component: () => import("@/views/pages/Error404.vue")
-        }
+        // {
+        //   path: "/pages/error-404",
+        //   name: "page-error-404",
+        //   component: () => import("@/views/pages/Error404.vue")
+        // }
       ]
     },
     //Redirect to 404 page, if no match found
-    {
-      path: "*",
-      redirect: "/pages/error-404"
-    },
+    // {
+    //   path: "*",
+    //   redirect: "/pages/error-404"
+    // },
  
   ]
 });
