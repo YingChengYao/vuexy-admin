@@ -1,11 +1,4 @@
-import { request } from "./request";
-
-export function getName() {
-  return request({
-    url: "/decision/getName",
-    method: "get"
-  });
-}
+import request from "./request";
 
 export function getRoutes() {
   return request({

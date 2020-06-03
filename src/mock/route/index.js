@@ -27,6 +27,33 @@ export default {
         {
           path: "-",
           icon: "FileIcon",
+          name: "会员管理",
+          children: [
+            {
+              path: "/integral",
+              url: "/integral",
+              name: "积分管理",
+              slug: "users",
+              component: "views/Member/Integral",
+              meta: {
+                title: "积分管理",
+              }
+            },
+            // {
+            //   path: "/roles",
+            //   url: "/roles",
+            //   name: "钱包管理",
+            //   slug: "roles",
+            //   component: "views/User/Roles",
+            //   meta: {
+            //     title: "钱包管理",
+            //   }
+            // }
+          ]
+        },
+        {
+          path: "-",
+          icon: "FileIcon",
           name: "用户角色管理",
           children: [
             {
@@ -66,7 +93,6 @@ export default {
               component: "views/BasicSettings/Permission",
               meta: {
                 title: "Permission",
-                authRequired: true
               }
             },
             {
@@ -77,7 +103,6 @@ export default {
               component: "views/BasicSettings/Menu",
               meta: {
                 title: "menu",
-                authRequired: true
               }
             }
           ]

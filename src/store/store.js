@@ -18,6 +18,7 @@ import actions from "./actions"
 Vue.use(Vuex);
 
 import permission from './modules/permission.js'
+import auth from './modules/auth.js'
 
 export default new Vuex.Store({
   getters,
@@ -26,6 +27,7 @@ export default new Vuex.Store({
   actions,
   modules: {
     permission: permission,
+    auth:auth,
   },
   strict: process.env.NODE_ENV !== "production"
 });

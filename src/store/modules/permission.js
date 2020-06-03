@@ -1,4 +1,3 @@
-//import { constantRoutes } from "@/router";
 import { getRoutes } from "@/http/api.js";
 import { filterAsyncRoutes } from "@/common/router/asyncRouter.js";
 
@@ -20,7 +19,7 @@ const actions = {
       getRoutes()
         .then(res => {
           const { data } = res;
-          const asyncRouter = data.data.router;
+          const asyncRouter = data.router;
 
           const baseRouter = [
             {
@@ -48,7 +47,7 @@ const actions = {
             ]
           });
 
-          commit("SET_ROUTES", data.data.router);
+          commit("SET_ROUTES", data.router);
           resolve(baseRouter);
         })
         .catch(error => {

@@ -1,10 +1,8 @@
-import { request } from "./request";
+import request from "./request";
 
 export function getMenus() {
   return request({
     url: "/permission/getMenus",
-    method: "get"
+    method: "get",
   });
 }
-
-

@@ -2,58 +2,24 @@ import router from "@/router/router";
 import store from "@/store/store.js";
 import NProgress from "nprogress"; // progress bar
 import "nprogress/nprogress.css"; // progress bar style
-// import { getToken } from "@/common/utils/auth"; // get token from cookie
+import { isAuthenticated } from "@/common/utils/auth/token";
 //import { getObjArr, saveObjArr } from "@/common/utils/localStorage.js";
 //import { filterAsyncRoutes } from "@/store/modules/permission.js";
 
 NProgress.configure({ showSpinner: false }); // NProgress Configuration
 let asyncRouterFlag = 0;
 //const whiteList = ["/pages/login", "/auth-redirect"]; // no redirect whitelist
-// var getRouter; //用来获取后台拿到的路由
 
-// if (!getRouter) {
-//   //不加这个判断，刷新后会获取不到路由
-
-//   if (getObjArr("router")) {
-//     debugger;
-//     getRouter = getObjArr("router"); //拿到路由
-//     store.commit("permission/SET_ROUTES", getRouter);
-//     let accessedRoutes = filterAsyncRoutes(getRouter);
-//     router.addRoutes(accessedRoutes);
-//   }
-//   // if (!getObjArr("router")) {
-//   //   //本地没有，则从数据库获取
-//   //   const accessRoutes = store.dispatch("permission/generateRoutes");
-
-//   //   router.addRoutes(accessRoutes);
-
-//   //   saveObjArr("router", accessRoutes); //存储路由到localStorage
-//   // } else {
-//   //   getRouter = getObjArr("router"); //拿到路由
-//   //   let accessedRoutes = filterAsyncRoutes(getRouter);
-//   //   router.addRoutes(accessedRoutes);
-//   //   store.commit("permission/SET_ROUTES", accessedRoutes);
-//   // }
-// }
-
-
-/*vue是单页应用，刷新时，重新创建实例，需要重新加载的动态路由，不然匹配不到路由，出现页面空白的情况*/
 router.beforeEach(async (to, from, next) => {
-  // start progress bar
   NProgress.start();
-debugger
-  // set page title
+  debugger;
   document.title = to.meta.title;
 
   // if (!to.meta.authRequired) {
   //   return next();
   // }
 
-  // determine whether the user has logged in
-  // let hasToken = getToken();
-  const hasToken = true;
-  //var getRouter;
-  if (hasToken) {
+  if (isAuthenticated()) {
     if (to.path === "/pages/login") {
       // 已登录且要跳转的页面是登录页
       next({ path: "/" }); // 跳转到home页
@@ -104,7 +70,7 @@ debugger
         asyncRouterFlag++;
         const asyncRouters = await store.dispatch("permission/generateRoutes");
         //const asyncRouters = store.getters["ermission/SET_ROUTES"];
-        debugger
+        debugger;
         router.addRoutes(asyncRouters);
         next({ ...to, replace: true });
       } else {
