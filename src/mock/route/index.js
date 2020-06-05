@@ -33,7 +33,7 @@ export default {
               path: "/integral",
               url: "/integral",
               name: "积分管理",
-              slug: "users",
+              slug: "integral",
               component: "views/Member/Integral",
               meta: {
                 title: "积分管理",
@@ -57,17 +57,6 @@ export default {
           name: "用户角色管理",
           children: [
             {
-              path: "/users",
-              url: "/users",
-              name: "用户管理",
-              slug: "users",
-              component: "views/User/Users",
-              meta: {
-                title: "用户管理",
-                authRequired: true
-              }
-            },
-            {
               path: "/roles",
               url: "/roles",
               name: "角色管理",
@@ -89,6 +78,16 @@ export default {
               path: "/permission",
               url: "/permission",
               slug: "permission",
+              name: "个人中心",
+              component: "views/BasicSettings/Permission",
+              meta: {
+                title: "Permission",
+              }
+            },
+            {
+              path: "/permission",
+              url: "/permission",
+              slug: "permission",
               name: "权限管理",
               component: "views/BasicSettings/Permission",
               meta: {
@@ -105,6 +104,33 @@ export default {
                 title: "menu",
               }
             }
+          ]
+        },
+        {
+          path: "-",
+          icon: "FileIcon",
+          name: "系统设置",
+          children: [
+            {
+              path: "/my",
+              url: "/my",
+              slug: "my",
+              name: "个人中心",
+              component: "views/SystemSettings/My",
+              meta: {
+                title: "个人中心",
+              }
+            },
+            {
+              path: "/user-settings",
+              url: "/user-settings",
+              slug: "user-settings",
+              name: "用户设置",
+              component: "views/SystemSettings/UserSettings/UserSettings",
+              meta: {
+                title: "用户设置",
+              }
+            },
           ]
         }
       ]

@@ -16,7 +16,7 @@
         @closeSearchbar="showFullSearch = false">
 
         <template v-slot:group="{ group_name }">
-          <p class="font-semibold text-primary">{{ group_name | title }}</p>
+          <p class="font-semibold text-primary">{{ group_name }}</p>
         </template>
 
         <!-- Pages Suggestion -->
@@ -28,7 +28,7 @@
         </template>
 
         <!-- No Items Slot -->
-        <template v-slot:noResult="{ group_name }">
+        <template v-slot:noResult="{ }">
           <div class="flex items-center">
             <feather-icon icon="InfoIcon" svgClasses="h-5 w-5" class="mr-4" />
             <span>No results found.</span>

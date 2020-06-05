@@ -1,7 +1,7 @@
 export default {
   requestLogin: () => ({
     userData: {
-      name: "ycy",
+      username: "ycy",
       photoURL:null,
     },
     accessToken: "guid",

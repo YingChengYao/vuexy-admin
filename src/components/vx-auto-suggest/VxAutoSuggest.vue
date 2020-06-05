@@ -201,7 +201,6 @@ export default{
       }
     },
     increaseIndex(val = true) {
-
       // If there's no matching items
       if (!Object.values(this.filteredData).some(grp_items => grp_items.length)) return
 
