@@ -11,9 +11,10 @@ import Vue from "vue";
 import App from "./App.vue";
 
 // Vuesax Component Framework
-import Vuesax from "vuesax";
+//import Vuesax from "vuesax";
+import Vuesax from "@/lib/vuesax/vuesax.common.js";
 import "material-icons/iconfont/material-icons.css"; //Material Icons
-import "vuesax/dist/vuesax.css"; // Vuesax
+import "@/lib/vuesax/vuesax.css"; // Vuesax
 Vue.use(Vuesax);
 
 // axios

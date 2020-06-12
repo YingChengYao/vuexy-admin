@@ -63,7 +63,10 @@ const router = new Router({
         {
           path: "/pages/login",
           name: "page-login",
-          component: () => import("@/views/pages/Login.vue")
+          component: () => import("@/views/pages/Login.vue"),
+          meta:{
+            title: "后台管理"
+          }
         },
         // {
         //   path: "/pages/error-404",

@@ -3,6 +3,7 @@ import store from "@/store/store.js";
 import NProgress from "nprogress"; // progress bar
 import "nprogress/nprogress.css"; // progress bar style
 import { isAuthenticated } from "@/common/utils/auth/token";
+import { clone } from "@/common/utils/data/clone";
 //import { getObjArr, saveObjArr } from "@/common/utils/localStorage.js";
 //import { filterAsyncRoutes } from "@/store/modules/permission.js";
 
@@ -12,7 +13,6 @@ let asyncRouterFlag = 0;
 
 router.beforeEach(async (to, from, next) => {
   NProgress.start();
-  debugger;
   document.title = to.meta.title;
 
   // if (!to.meta.authRequired) {
@@ -67,11 +67,11 @@ router.beforeEach(async (to, from, next) => {
       // }
 
       if (!asyncRouterFlag) {
+        debugger;
         asyncRouterFlag++;
         const asyncRouters = await store.dispatch("permission/generateRoutes");
         //const asyncRouters = store.getters["ermission/SET_ROUTES"];
-        debugger;
-        router.addRoutes(asyncRouters);
+        router.addRoutes(clone(asyncRouters));
         next({ ...to, replace: true });
       } else {
         next();

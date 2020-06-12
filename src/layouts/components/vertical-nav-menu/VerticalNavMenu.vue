@@ -101,6 +101,7 @@
                 :target="item.target"
                 :isDisabled="item.isDisabled"
                 :slug="item.slug"
+                :isHide="item.isHide"
               >
                 <span v-show="!verticalNavMenuItemsMin" class="truncate">{{ item.name }}</span>
                 <vs-chip
@@ -118,6 +119,7 @@
                   :group="item"
                   :groupIndex="index"
                   :open="isGroupActive(item)"
+                  :isGroupHide="item.isHide"
                 />
               </template>
               <!-- /Nav-Group -->

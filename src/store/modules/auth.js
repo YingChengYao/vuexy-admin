@@ -13,10 +13,8 @@ const mutations = {};
 const actions = {
   login({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      debugger;
       requestLogin(payload.userDetails.username, payload.userDetails.password)
         .then((response) => {
-          debugger;
           // If there's user data in response
           if (response.userData) {
             // Set accessToken

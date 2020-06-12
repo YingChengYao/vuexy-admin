@@ -22,6 +22,7 @@ export function filterAsyncRrouter(routes) {
     }
     tmp.name = route.name;
     tmp.icon = route.icon;
+    tmp.isHide = route.isHide;
     if (route.children) {
       tmp.submenu = filterAsyncRrouter(route.children);
     }

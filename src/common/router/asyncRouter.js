@@ -1,7 +1,6 @@
 const _import = require("./_import"); //获取组件的方法
 const res = [];
 export const filterAsyncRoutes = routes => {
-  console.log("filterroute",routes)
   routes = routes.map(route => {
    
     if (route.children) {

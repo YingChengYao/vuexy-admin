@@ -3,7 +3,8 @@ import router from "@/router/router";
 import { getToken } from "@/common/utils/auth/token";
 
 const request = axios.create({
-  baseURL: "http://123.207.32.32:8000",
+  baseURL: "http://manage.qrtj.cn",
+  //baseURL: "http://localhost:8081",
   timeout: 20000
 });
 
@@ -33,6 +34,10 @@ request.interceptors.request.use(
       config.headers.Authorization = "Bearer " + token;
     }
 
+    // config.data = JSON.stringify(config.data);
+    // config.headers = {
+    //     'Content-Type': 'application/json',
+    // }
     return config;
   },
   error => {
@@ -51,8 +56,19 @@ request.interceptors.request.use(
 //http response 拦截器
 request.interceptors.response.use(
   response => {
+    debugger
     //this.$vs.loading.close();
-    return response.data;
+    const data= response.data;
+    let message="";
+    if(!data.resultType && data.resultType!=0){
+      return data
+    }
+    if(data.resultType!=0){
+      return null;
+    }
+    
+    message=JSON.parse(data.message)
+    return message
     //TODO 401处理
     // if (response.data.code == 0 || response.headers.success === "true") {
     //   return response.data;

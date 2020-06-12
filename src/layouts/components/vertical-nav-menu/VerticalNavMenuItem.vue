@@ -14,7 +14,8 @@
     :class="[
       {'vs-sidebar-item-active'            : activeLink},
       {'disabled-item pointer-events-none' : isDisabled}
-    ]" >
+    ]"
+    v-show="!isHide" >
 
       <router-link
         tabindex="-1"
@@ -50,6 +51,7 @@ export default {
     featherIcon : { type: Boolean,                default: true             },
     target      : { type: String,                 default: '_self'          },
     isDisabled  : { type: Boolean,                default: false            },
+    isHide      : { type: Boolean,                default: false            },
   },
   computed: {
     activeLink() {

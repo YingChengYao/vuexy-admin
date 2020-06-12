@@ -1,3 +1,5 @@
+import { is } from "core-js/fn/object";
+
 export default {
   getRoutes: () => ({
     data: {
@@ -16,7 +18,7 @@ export default {
         // {
         //   path: "/Page2",
         //   name: "Page2",
-        //   component: "/Page2",
+        //   component: "views/Page2",
         //   icon: "HomeIcon",
         //   slug: "Page2",
         //   meta: {
@@ -34,21 +36,33 @@ export default {
               url: "/integral",
               name: "积分管理",
               slug: "integral",
-              component: "views/Member/Integral",
+              component: "views/Member/Integral/Integral",
               meta: {
-                title: "积分管理",
+                title: "积分管理"
               }
             },
-            // {
-            //   path: "/roles",
-            //   url: "/roles",
-            //   name: "钱包管理",
-            //   slug: "roles",
-            //   component: "views/User/Roles",
-            //   meta: {
-            //     title: "钱包管理",
-            //   }
-            // }
+            {
+              path: "/member-user",
+              url: "/member-user",
+              name: "用户管理",
+              slug: "member-user",
+              component: "views/Member/User/User",
+              meta: {
+                title: "用户管理"
+              }
+            },
+            {
+              path: "/member-user-edit/:userId",
+              url: "/member-user-edit",
+              name: "用户信息修改",
+              slug: "member-user",
+              component: "views/Member/User/UserEdit",
+              isHide: true,
+              meta: {
+                title: "用户信息修改",
+                isHide: true
+              }
+            }
           ]
         },
         {
@@ -81,7 +95,7 @@ export default {
               name: "个人中心",
               component: "views/BasicSettings/Permission",
               meta: {
-                title: "Permission",
+                title: "Permission"
               }
             },
             {
@@ -91,7 +105,7 @@ export default {
               name: "权限管理",
               component: "views/BasicSettings/Permission",
               meta: {
-                title: "Permission",
+                title: "Permission"
               }
             },
             {
@@ -101,7 +115,7 @@ export default {
               name: "菜单管理",
               component: "views/BasicSettings/Menu",
               meta: {
-                title: "menu",
+                title: "menu"
               }
             }
           ]
@@ -112,25 +126,15 @@ export default {
           name: "系统设置",
           children: [
             {
-              path: "/my",
-              url: "/my",
-              slug: "my",
-              name: "个人中心",
-              component: "views/SystemSettings/My",
-              meta: {
-                title: "个人中心",
-              }
-            },
-            {
               path: "/user-settings",
               url: "/user-settings",
               slug: "user-settings",
               name: "用户设置",
               component: "views/SystemSettings/UserSettings/UserSettings",
               meta: {
-                title: "用户设置",
+                title: "用户设置"
               }
-            },
+            }
           ]
         }
       ]

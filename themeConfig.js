@@ -37,7 +37,8 @@ const themeConfig = {
 }
 
 import Vue from 'vue'
-import Vuesax from 'vuesax'
+//import Vuesax from 'vuesax'
+import Vuesax from "@/lib/vuesax/vuesax.common.js";
 Vue.use(Vuesax, { theme:{ colors }, rtl: themeConfig.rtl })
 
 export default themeConfig
