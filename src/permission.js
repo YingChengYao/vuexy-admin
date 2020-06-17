@@ -3,7 +3,6 @@ import store from "@/store/store.js";
 import NProgress from "nprogress"; // progress bar
 import "nprogress/nprogress.css"; // progress bar style
 import { isAuthenticated } from "@/common/utils/auth/token";
-import { clone } from "@/common/utils/data/clone";
 //import { getObjArr, saveObjArr } from "@/common/utils/localStorage.js";
 //import { filterAsyncRoutes } from "@/store/modules/permission.js";
 
@@ -71,7 +70,7 @@ router.beforeEach(async (to, from, next) => {
         asyncRouterFlag++;
         const asyncRouters = await store.dispatch("permission/generateRoutes");
         //const asyncRouters = store.getters["ermission/SET_ROUTES"];
-        router.addRoutes(clone(asyncRouters));
+        router.addRoutes(asyncRouters);
         next({ ...to, replace: true });
       } else {
         next();

@@ -13,13 +13,11 @@ import App from "./App.vue";
 // Vuesax Component Framework
 //import Vuesax from "vuesax";
 import Vuesax from "@/lib/vuesax/vuesax.common.js";
-import "material-icons/iconfont/material-icons.css"; //Material Icons
 import "@/lib/vuesax/vuesax.css"; // Vuesax
 Vue.use(Vuesax);
 
-// axios
-import axios from "./axios.js";
-Vue.prototype.$http = axios;
+import "material-icons/iconfont/material-icons.css"; //Material Icons
+
 
 import "./mock/index.js";
 
@@ -57,14 +55,19 @@ require("./assets/css/iconfont.css");
 // Note: In latest version you have to add it separately
 // import 'vue-select/dist/vue-select.css'
 
-
-import validate, { config }  from  '@/lib/vee-validate/zh'; //中文提示
-Vue.use(validate,config);
+import validate, { config } from "@/lib/vee-validate/zh"; //中文提示
+Vue.use(validate, config);
 
 Vue.config.productionTip = false;
 
-new Vue({
+import * as filters from "@/common/plugins/filters.js";
+Object.keys(filters).forEach(key => {
+  Vue.filter(key, filters[key]); //插入过滤器名和对应方法
+});
+
+var vue = new Vue({
   router,
   store,
-  render: (h) => h(App),
+  render: h => h(App)
 }).$mount("#app");
+export default vue;

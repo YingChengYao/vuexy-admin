@@ -1,10 +1,10 @@
 <template>
   <div id="data-list-list-view" class="data-list-container">
-    <!-- <data-view-sidebar
+    <data-view-sidebar
       :isSidebarActive="addNewDataSidebar"
       @closeSidebar="toggleDataSidebar"
       :data="sidebarData"
-    />-->
+    />
 
     <vx-card ref="filterCard" title class="user-list-filters mb-8">
       <div class="vx-row">
@@ -23,125 +23,126 @@
       </div>
     </vx-card>
 
-    <vs-table ref="table" multiple v-model="selected" :data="users">
-      <div slot="header" class="flex flex-wrap-reverse items-center flex-grow justify-between">
-        <div class="flex flex-wrap-reverse items-center data-list-btn-container">
-          <vs-dropdown vs-trigger-click class="dd-actions cursor-pointer mr-4 mb-4">
+    <div class="vx-card p-6">
+      <vs-table ref="table" multiple v-model="selected" :data="users">
+        <div slot="header" class="flex flex-wrap-reverse items-center flex-grow justify-between">
+          <div class="flex flex-wrap-reverse items-center data-list-btn-container">
+            <vs-dropdown vs-trigger-click class="dd-actions cursor-pointer mr-4 mb-4">
+              <div
+                class="p-4 shadow-drop rounded-lg d-theme-dark-bg cursor-pointer flex items-center justify-center text-lg font-medium w-32 w-full"
+              >
+                <span class="mr-2">Actions</span>
+                <feather-icon icon="ChevronDownIcon" svgClasses="h-4 w-4" />
+              </div>
+
+              <vs-dropdown-menu>
+                <vs-dropdown-item>
+                  <span class="flex items-center">
+                    <feather-icon icon="TrashIcon" svgClasses="h-4 w-4" class="mr-2" />
+                    <span>Delete</span>
+                  </span>
+                </vs-dropdown-item>
+
+                <vs-dropdown-item>
+                  <span class="flex items-center">
+                    <feather-icon icon="ArchiveIcon" svgClasses="h-4 w-4" class="mr-2" />
+                    <span>Archive</span>
+                  </span>
+                </vs-dropdown-item>
+
+                <vs-dropdown-item>
+                  <span class="flex items-center">
+                    <feather-icon icon="FileIcon" svgClasses="h-4 w-4" class="mr-2" />
+                    <span>Print</span>
+                  </span>
+                </vs-dropdown-item>
+
+                <vs-dropdown-item>
+                  <span class="flex items-center">
+                    <feather-icon icon="SaveIcon" svgClasses="h-4 w-4" class="mr-2" />
+                    <span>Another Action</span>
+                  </span>
+                </vs-dropdown-item>
+              </vs-dropdown-menu>
+            </vs-dropdown>
+
             <div
-              class="p-4 shadow-drop rounded-lg d-theme-dark-bg cursor-pointer flex items-center justify-center text-lg font-medium w-32 w-full"
+              class="btn-add-new p-3 mb-4 mr-4 rounded-lg cursor-pointer flex items-center justify-center text-lg font-medium text-base text-primary border border-solid border-primary"
+              @click="addNewData"
             >
-              <span class="mr-2">Actions</span>
-              <feather-icon icon="ChevronDownIcon" svgClasses="h-4 w-4" />
+              <feather-icon icon="PlusIcon" svgClasses="h-4 w-4" />
+              <span class="ml-2 text-base text-primary">添加</span>
             </div>
-
-            <vs-dropdown-menu>
-              <vs-dropdown-item>
-                <span class="flex items-center">
-                  <feather-icon icon="TrashIcon" svgClasses="h-4 w-4" class="mr-2" />
-                  <span>Delete</span>
-                </span>
-              </vs-dropdown-item>
-
-              <vs-dropdown-item>
-                <span class="flex items-center">
-                  <feather-icon icon="ArchiveIcon" svgClasses="h-4 w-4" class="mr-2" />
-                  <span>Archive</span>
-                </span>
-              </vs-dropdown-item>
-
-              <vs-dropdown-item>
-                <span class="flex items-center">
-                  <feather-icon icon="FileIcon" svgClasses="h-4 w-4" class="mr-2" />
-                  <span>Print</span>
-                </span>
-              </vs-dropdown-item>
-
-              <vs-dropdown-item>
-                <span class="flex items-center">
-                  <feather-icon icon="SaveIcon" svgClasses="h-4 w-4" class="mr-2" />
-                  <span>Another Action</span>
-                </span>
-              </vs-dropdown-item>
-            </vs-dropdown-menu>
-          </vs-dropdown>
-
-          <div
-            class="btn-add-new p-3 mb-4 mr-4 rounded-lg cursor-pointer flex items-center justify-center text-lg font-medium text-base text-primary border border-solid border-primary"
-            @click="addNewData"
-          >
-            <feather-icon icon="PlusIcon" svgClasses="h-4 w-4" />
-            <span class="ml-2 text-base text-primary">添加</span>
           </div>
         </div>
-      </div>
 
-      <template slot="thead">
-        <vs-th sort-key="id" v-show="false">ID</vs-th>
-        <vs-th sort-key="user_name">用户名</vs-th>
-        <vs-th sort-key="id_number">身份证</vs-th>
-        <vs-th sort-key="mobile">手机号</vs-th>
-        <vs-th sort-key="integral">积分</vs-th>
-        <vs-th sort-key="money">金额</vs-th>
-        <vs-th sort-key="create_time">创建时间</vs-th>
-        <vs-th>操作</vs-th>
-      </template>
+        <template slot="thead">
+          <vs-th sort-key="id">ID</vs-th>
+          <vs-th sort-key="user_name">用户名</vs-th>
+          <vs-th sort-key="id_number">身份证</vs-th>
+          <vs-th sort-key="mobile">手机号</vs-th>
+          <vs-th sort-key="integral">积分</vs-th>
+          <vs-th sort-key="money">金额</vs-th>
+          <vs-th sort-key="create_time">创建时间</vs-th>
+          <vs-th>操作</vs-th>
+        </template>
 
-      <template slot-scope="{data}">
-        <tbody>
-          <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data">
-            <vs-td v-show="false">
-              <p class="product-name font-medium truncate">{{ tr.ID }}</p>
-            </vs-td>
-            <vs-td>
-              <p class="product-name font-medium truncate">{{ tr.UserName }}</p>
-            </vs-td>
-            <vs-td>
-              <p>{{ tr.IdNumber }}</p>
-            </vs-td>
-            <vs-td>
-              <p>{{ tr.Mobile }}</p>
-            </vs-td>
-            <vs-td>
-              <p class="product-category">{{ tr.Integral}}</p>
-            </vs-td>
-            <vs-td>
-              <p>{{ tr.Money }}</p>
-            </vs-td>
-            <vs-td>
-              <p>{{ tr.CreateTime | formatDate }}</p>
-            </vs-td>
-            <vs-td class="whitespace-no-wrap">
-              <feather-icon
-                icon="EditIcon"
-                svgClasses="w-5 h-5 hover:text-primary stroke-current"
-                @click.stop="editData(tr.ID)"
-              />
-            </vs-td>
-          </vs-tr>
-        </tbody>
-      </template>
-    </vs-table>
+        <template slot-scope="{data}">
+          <tbody>
+            <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data">
+              <vs-td>
+                <p class="product-name font-medium truncate">{{ tr.ID }}</p>
+              </vs-td>
+              <vs-td>
+                <p class="product-name font-medium truncate">{{ tr.UserName }}</p>
+              </vs-td>
+              <vs-td>
+                <p>{{ tr.IdNumber }}</p>
+              </vs-td>
+              <vs-td>
+                <p>{{ tr.Mobile }}</p>
+              </vs-td>
+              <vs-td>
+                <p class="product-category">{{ tr.Integral}}</p>
+              </vs-td>
+              <vs-td>
+                <p>{{ tr.Money }}</p>
+              </vs-td>
+              <vs-td>
+                <p>{{ tr.CreateTime | formatDate }}</p>
+              </vs-td>
+              <vs-td class="whitespace-no-wrap">
+                <feather-icon
+                  icon="EditIcon"
+                  svgClasses="w-5 h-5 hover:text-primary stroke-current"
+                  @click.stop="editData(tr.ID)"
+                />
+              </vs-td>
+            </vs-tr>
+          </tbody>
+        </template>
+      </vs-table>
 
-    <vs-pagination
-      :total="totalPage"
-      v-model="currentPage"
-      :pagedown="true"
-      :totalItems="totalItems"
-      @changePageMaxItems="changePageMaxItems"
-      :pagedownItems="descriptionItems"
-      :size="itemsPerPage"
-    ></vs-pagination>
+      <vs-pagination
+        :total="totalPage"
+        v-model="currentPage"
+        :pagedown="true"
+        :totalItems="totalItems"
+        @changePageMaxItems="changePageMaxItems"
+        :pagedownItems="descriptionItems"
+        :size="itemsPerPage"
+      ></vs-pagination>
+    </div>
   </div>
 </template>
 
 <script>
-//import DataViewSidebar from "./DataViewSidebar.vue";
+import DataViewSidebar from "./DataViewSidebar.vue";
 import { getUsers } from "@/http/member.js";
-import { formatTimeToStr } from "@/common/utils/data/date";
 import UserEdit from "./UserEdit.vue";
 export default {
   components: {
-    //DataViewSidebar
+    DataViewSidebar,
     UserEdit
   },
   data() {
@@ -159,20 +160,10 @@ export default {
 
       // Data Sidebar
       addNewDataSidebar: false,
-      //sidebarData: {},
+      sidebarData: {},
 
       nameInput: ""
     };
-  },
-  filters: {
-    formatDate: function(time) {
-      if (time != null && time != "") {
-        var date = new Date(time);
-        return formatTimeToStr(date, "yyyy-MM-dd hh:mm:ss");
-      } else {
-        return "";
-      }
-    }
   },
   computed: {},
   methods: {
@@ -183,9 +174,13 @@ export default {
       };
 
       getUsers(para).then(res => {
-        this.users = res.Items;
-        this.totalPage = res.TotalPages;
-        this.totalItems = res.TotalItems;
+        debugger;
+        if (res.resultType == 0) {
+          const data = JSON.parse(res.message);
+          this.users = data.Items;
+          this.totalPage = data.TotalPages;
+          this.totalItems = data.TotalItems;
+        }
       });
     },
     addNewData() {
@@ -197,19 +192,6 @@ export default {
       //this.sidebarData = data;
       //this.toggleDataSidebar(true);
       this.$router.push(`/member-user-edit/${data}`).catch(() => {});
-    },
-    getOrderStatusColor(status) {
-      if (status === "on_hold") return "warning";
-      if (status === "delivered") return "success";
-      if (status === "canceled") return "danger";
-      return "primary";
-    },
-    getPopularityColor(num) {
-      if (num > 90) return "success";
-      if (num > 70) return "primary";
-      if (num >= 50) return "warning";
-      if (num < 50) return "danger";
-      return "primary";
     },
     toggleDataSidebar(val = false) {
       this.addNewDataSidebar = val;
@@ -226,9 +208,6 @@ export default {
   },
   watch: {
     currentPage() {
-      this.loadData();
-    },
-    itemsPerPage() {
       this.loadData();
     }
   }

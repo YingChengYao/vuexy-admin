@@ -93,7 +93,7 @@
               <p>{{ tr.Remark }}</p>
             </vs-td>
             <vs-td>
-              <p>{{ tr.ModifyTime }}</p>
+              <p>{{ tr.ModifyTime | formatDate }}</p>
             </vs-td>
             <vs-td class="whitespace-no-wrap">
               <feather-icon

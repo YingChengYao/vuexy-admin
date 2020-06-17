@@ -1,6 +1,7 @@
 import axios from "axios";
 import router from "@/router/router";
 import { getToken } from "@/common/utils/auth/token";
+import vue from "@/main.js";
 
 const request = axios.create({
   baseURL: "http://manage.qrtj.cn",
@@ -26,7 +27,7 @@ request.interceptors.request.use(
     } else if (token && curTime > accesstime && curTime > refreshtime) {
       //跳转到登录页 TODO this无$router
       router.push({
-        path: "/pages/login",
+        path: "/pages/login"
         //query: { redirect: router.currentRoute.fullPath }
       });
     } else if (token && curTime < accesstime && curTime < refreshtime) {
@@ -34,10 +35,19 @@ request.interceptors.request.use(
       config.headers.Authorization = "Bearer " + token;
     }
 
-    // config.data = JSON.stringify(config.data);
-    // config.headers = {
-    //     'Content-Type': 'application/json',
+    // if (config.method === "get") {
+    //   var querystring = require("querystring");
+
+    //   config.data = querystring.encode(config.data);
     // }
+
+    // if (config.method === "post") {
+    //   config.data = JSON.stringify(config.data);
+    // }
+    config.data = JSON.stringify(config.data);
+    config.headers = {
+      "Content-Type": "application/json"
+    };
     return config;
   },
   error => {
@@ -56,43 +66,33 @@ request.interceptors.request.use(
 //http response 拦截器
 request.interceptors.response.use(
   response => {
-    debugger
-    //this.$vs.loading.close();
-    const data= response.data;
-    let message="";
-    if(!data.resultType && data.resultType!=0){
-      return data
+    debugger;
+    const data = response.data;
+    if(!data.resultType && data.resultType != 0){
+      return data;//TODO 路由MOCK使用，后期拿掉
     }
-    if(data.resultType!=0){
-      return null;
+    if (data.resultType != 0) {
+      vue.$vs.notify({
+        title: "Error",
+        text: data.message,
+        iconPack: "feather",
+        icon: "icon-alert-circle",
+        color: "danger"
+      });
     }
-    
-    message=JSON.parse(data.message)
-    return message
+
+    return data;
     //TODO 401处理
-    // if (response.data.code == 0 || response.headers.success === "true") {
-    //   return response.data;
-    // } else {
-    //   Message({
-    //     showClose: true,
-    //     message: response.data.msg || decodeURI(response.headers.msg),
-    //     type: "error",
-    //   });
-    //   if (response.data.data && response.data.data.reload) {
-    //     store.commit("user/LoginOut");
-    //   }
-    //   return Promise.reject(response.data.msg);
-    // }
   },
   error => {
     // this.$vs.loading.close();
-    // this.$vs.notify({
-    //   title: "Error",
-    //   text: error.message,
-    //   iconPack: "feather",
-    //   icon: "icon-alert-circle",
-    //   color: "danger",
-    // });
+    vue.$vs.notify({
+      title: "Error",
+      text: data.message,
+      iconPack: "feather",
+      icon: "icon-alert-circle",
+      color: "danger"
+    });
     //TODO 401处理
     return Promise.reject(error);
   }

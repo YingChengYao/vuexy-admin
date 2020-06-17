@@ -1,5 +1,6 @@
 import { getRoutes } from "@/http/api.js";
 import { filterAsyncRoutes } from "@/common/router/asyncRouter.js";
+import { clone } from "@/common/utils/data/clone";
 
 const state = {
   routes: []
@@ -7,7 +8,7 @@ const state = {
 
 const mutations = {
   SET_ROUTES: (state, routes) => {
-    state.routes = routes;
+    state.routes = clone(routes);
   }
 };
 
