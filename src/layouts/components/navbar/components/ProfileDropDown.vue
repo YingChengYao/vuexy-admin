@@ -1,7 +1,7 @@
 <template>
-  <div class="the-navbar__user-meta flex items-center" v-if="activeUserInfo.name">
+  <div class="the-navbar__user-meta flex items-center" v-if="activeUserInfo.username">
     <div class="text-right leading-tight hidden sm:block">
-      <p class="font-semibold">{{ activeUserInfo.name }}</p>
+      <p class="font-semibold">{{ activeUserInfo.username }}</p>
       <small>Available</small>
     </div>
 
@@ -40,10 +40,10 @@
             <span class="ml-2">Chat</span>
           </li> -->
 
-          <li class="flex py-2 px-4 cursor-pointer hover:bg-primary hover:text-white">
+          <!-- <li class="flex py-2 px-4 cursor-pointer hover:bg-primary hover:text-white">
             <feather-icon icon="HeartIcon" svgClasses="w-4 h-4" />
             <span class="ml-2">设置</span>
-          </li>
+          </li> -->
 
           <vs-divider class="m-1" />
 
@@ -77,6 +77,6 @@ export default {
       localStorage.removeItem('userInfo')
       this.$router.push("/pages/login").catch(() => {});
     }
-  }
+  },
 };
 </script>

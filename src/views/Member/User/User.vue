@@ -1,5 +1,5 @@
 <template>
-  <div id="data-list-list-view" class="data-list-container">
+  <div id="" class="data-list-container">
     <data-view-sidebar
       :isSidebarActive="addNewDataSidebar"
       @closeSidebar="toggleDataSidebar"
@@ -27,48 +27,10 @@
       <vs-table ref="table" multiple v-model="selected" :data="users">
         <div slot="header" class="flex flex-wrap-reverse items-center flex-grow justify-between">
           <div class="flex flex-wrap-reverse items-center data-list-btn-container">
-            <vs-dropdown vs-trigger-click class="dd-actions cursor-pointer mr-4 mb-4">
-              <div
-                class="p-4 shadow-drop rounded-lg d-theme-dark-bg cursor-pointer flex items-center justify-center text-lg font-medium w-32 w-full"
-              >
-                <span class="mr-2">Actions</span>
-                <feather-icon icon="ChevronDownIcon" svgClasses="h-4 w-4" />
-              </div>
-
-              <vs-dropdown-menu>
-                <vs-dropdown-item>
-                  <span class="flex items-center">
-                    <feather-icon icon="TrashIcon" svgClasses="h-4 w-4" class="mr-2" />
-                    <span>Delete</span>
-                  </span>
-                </vs-dropdown-item>
-
-                <vs-dropdown-item>
-                  <span class="flex items-center">
-                    <feather-icon icon="ArchiveIcon" svgClasses="h-4 w-4" class="mr-2" />
-                    <span>Archive</span>
-                  </span>
-                </vs-dropdown-item>
-
-                <vs-dropdown-item>
-                  <span class="flex items-center">
-                    <feather-icon icon="FileIcon" svgClasses="h-4 w-4" class="mr-2" />
-                    <span>Print</span>
-                  </span>
-                </vs-dropdown-item>
-
-                <vs-dropdown-item>
-                  <span class="flex items-center">
-                    <feather-icon icon="SaveIcon" svgClasses="h-4 w-4" class="mr-2" />
-                    <span>Another Action</span>
-                  </span>
-                </vs-dropdown-item>
-              </vs-dropdown-menu>
-            </vs-dropdown>
-
             <div
               class="btn-add-new p-3 mb-4 mr-4 rounded-lg cursor-pointer flex items-center justify-center text-lg font-medium text-base text-primary border border-solid border-primary"
               @click="addNewData"
+              v-if="!hasPerm('system:post:add')"
             >
               <feather-icon icon="PlusIcon" svgClasses="h-4 w-4" />
               <span class="ml-2 text-base text-primary">添加</span>
@@ -122,17 +84,18 @@
           </tbody>
         </template>
       </vs-table>
-
-      <vs-pagination
-        :total="totalPage"
-        v-model="currentPage"
-        :pagedown="true"
-        :totalItems="totalItems"
-        @changePageMaxItems="changePageMaxItems"
-        :pagedownItems="descriptionItems"
-        :size="itemsPerPage"
-      ></vs-pagination>
     </div>
+    <div class="con-pagination-table vs-table--pagination">
+        <vs-pagination
+          :total="totalPage"
+          v-model="currentPage"
+          :pagedown="true"
+          :totalItems="totalItems"
+          @changePageMaxItems="changePageMaxItems"
+          :pagedownItems="descriptionItems"
+          :size="itemsPerPage"
+        ></vs-pagination>
+      </div>
   </div>
 </template>
 
@@ -201,7 +164,10 @@ export default {
       this.loadData();
     }
   },
-  created() {},
+  created() {
+    console.log("路由：", this.$router);
+    console.log("路由1：", this.$store.state.permission.routes);
+  },
   mounted() {
     this.isMounted = true;
     this.loadData();

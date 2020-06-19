@@ -31,15 +31,15 @@ const router = new Router({
         // // =============================================================================
         // // Theme Routes
         // // =============================================================================
-        {
-          path: "/",
-          name: "home",
-          component: () => import("@/views/Home.vue"),
-          meta:{
-            authRequired:true,
-            title: "首页"
-          }
-        },
+        // {
+        //   path: "/",
+        //   name: "home",
+        //   component: () => import("@/views/Home.vue"),
+        //   meta:{
+        //     authRequired:true,
+        //     title: "首页"
+        //   }
+        // },
         // {
         //   path: "/page2",
         //   name: "page-2",
@@ -48,6 +48,10 @@ const router = new Router({
         //     authRequired:true
         //   }
         // },
+        {
+          path: '/',
+          redirect: '/member-user'
+        },
       ]
     },
     // =============================================================================
@@ -92,6 +96,22 @@ router.afterEach(() => {
   }
 });
 
+router.$addRoutes = (params) => {
+  var f = (item) => {
+    if (item["children"]) {
+      item["children"] = item["children"].filter(f);
+      return true;
+    } else if (item["isButton"]) {
+      return item["isButton"] === false;
+    } else {
+      return true;
+    }
+  };
+
+  var params = params.filter(f);
+
+  router.addRoutes(params);
+};
 
 
 export default router;

@@ -3,13 +3,13 @@ import { filterAsyncRoutes } from "@/common/router/asyncRouter.js";
 import { clone } from "@/common/utils/data/clone";
 
 const state = {
-  routes: []
+  routes: [],
 };
 
 const mutations = {
   SET_ROUTES: (state, routes) => {
     state.routes = clone(routes);
-  }
+  },
 };
 
 const actions = {

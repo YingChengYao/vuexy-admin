@@ -25,6 +25,7 @@ export default {
   },
   watch: {
     '$store.state.theme'(val) {
+      debugger
       this.toggleClassInBody(val)
     },
     '$vs.rtl'(val) {

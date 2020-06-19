@@ -14,6 +14,9 @@ export function filterAsyncRrouter(routes) {
   routes.map(route => {
     const tmp = {};
     const path = route.path;
+    if (!path) {
+      return false;
+    }
     if (path === "-") {
       tmp.url = null;
     } else {
@@ -24,7 +27,10 @@ export function filterAsyncRrouter(routes) {
     tmp.icon = route.icon;
     tmp.isHide = route.isHide;
     if (route.children) {
-      tmp.submenu = filterAsyncRrouter(route.children);
+      let children = filterAsyncRrouter(route.children);
+      if (children.length!=0) {
+        tmp.submenu = children;
+      }
     }
     res.push(tmp);
   });

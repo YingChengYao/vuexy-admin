@@ -37,6 +37,9 @@ import "@/assets/css/main.css";
 import router from "@/router/router";
 import "./permission.js";
 
+//按钮权限
+import { hasBtnPermission } from '@/common/utils/auth/permission.js' 
+
 // Vuex Store
 import store from "./store/store";
 
@@ -59,6 +62,7 @@ import validate, { config } from "@/lib/vee-validate/zh"; //中文提示
 Vue.use(validate, config);
 
 Vue.config.productionTip = false;
+Vue.prototype.hasPerm = hasBtnPermission
 
 import * as filters from "@/common/plugins/filters.js";
 Object.keys(filters).forEach(key => {

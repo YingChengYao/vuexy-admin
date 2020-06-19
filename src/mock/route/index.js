@@ -1,29 +1,15 @@
-import { is } from "core-js/fn/object";
-
 export default {
   getRoutes: () => ({
     data: {
       router: [
-        {
-          path: "/",
-          name: "首页",
-          component: "views/Home",
-          icon: "HomeIcon",
-          slug: "home",
-          meta: {
-            authRequired: true,
-            title: "首页"
-          }
-        },
         // {
-        //   path: "/Page2",
-        //   name: "Page2",
-        //   component: "views/Page2",
+        //   path: "/",
+        //   name: "首页",
+        //   component: "views/Home",
         //   icon: "HomeIcon",
-        //   slug: "Page2",
+        //   slug: "home",
         //   meta: {
-        //     authRequired: true,
-        //     title: "Page2"
+        //     title: "首页"
         //   }
         // },
         {
@@ -32,16 +18,6 @@ export default {
           name: "会员管理",
           children: [
             {
-              path: "/integral",
-              url: "/integral",
-              name: "积分管理",
-              slug: "integral",
-              component: "views/Member/Integral/Integral",
-              meta: {
-                title: "积分管理"
-              }
-            },
-            {
               path: "/member-user",
               url: "/member-user",
               name: "用户管理",
@@ -49,7 +25,7 @@ export default {
               component: "views/Member/User/User",
               meta: {
                 title: "用户管理"
-              }
+              },
             },
             {
               path: "/member-user-edit/:userId",
@@ -63,6 +39,53 @@ export default {
                 isHide: true
               }
             }
+          ]
+        },
+        {
+          path: "-",
+          icon: "FileIcon",
+          name: "套餐管理",
+          children: [
+            {
+              path: "/package-packages",
+              url: "/package-packages",
+              name: "套餐配置",
+              slug: "package-items",
+              component: "views/package/Packages",
+              meta: {
+                title: "套餐配置"
+              },
+            },
+            {
+              path: "/package-packagetype",
+              url: "/package-packagetype",
+              name: "套餐类型管理",
+              slug: "package-itemtype",
+              component: "views/package/PackageType",
+              meta: {
+                title: "套餐类型管理"
+              },
+            },
+            {
+              path: "/package-items",
+              url: "/package-items",
+              name: "项目配置",
+              slug: "package-items",
+              component: "views/package/Items",
+              meta: {
+                title: "项目配置"
+              },
+            },
+            {
+              path: "/package-itemtype",
+              url: "/package-itemtype",
+              name: "项目类型管理",
+              slug: "package-itemtype",
+              component: "views/package/ItemType",
+              meta: {
+                title: "项目类型管理"
+              },
+            },
           ]
         },
         {

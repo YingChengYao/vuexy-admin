@@ -108,7 +108,7 @@
           </div>
         </div>
       </div>
-      <the-footer />
+      <!-- <the-footer /> -->
     </div>
   </div>
 </template>

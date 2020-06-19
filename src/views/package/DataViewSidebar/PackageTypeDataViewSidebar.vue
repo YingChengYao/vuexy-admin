@@ -10,7 +10,6 @@
     v-model="isSidebarActiveLocal"
   >
     <div class="mt-6 flex items-center justify-between px-6">
-      <!-- <h4>{{ Object.entries(this.data).length === 0 ? "ADD NEW" : "UPDATE" }} ITEM</h4> -->
       <h4>{{ this.data.title }}</h4>
       <feather-icon icon="XIcon" @click.stop="isSidebarActiveLocal = false" class="cursor-pointer"></feather-icon>
     </div>
@@ -23,19 +22,40 @@
       :key="$vs.rtl"
     >
       <div class="p-6">
-        <!-- 积分 -->
+        <!-- 套餐类型名称 -->
         <vs-input
-          label="积分"
-          v-model="dataIntegral"
+          label="套餐类型名称"
+          v-model="dataTypeName"
           class="mt-5 w-full"
-          name="积分"
-          v-validate="{ required: true, regex: /\d+(\.\d+)?$/ }"
+          name="套餐类型名称"
+          v-validate="'required'"
         />
-        <span class="text-danger text-sm" v-show="errors.has('积分')">{{ errors.first('积分') }}</span>
+        <span class="text-danger text-sm" v-show="errors.has('套餐类型名称')">{{ errors.first('套餐类型名称') }}</span>
 
-        <!-- 备注 -->
-        <vs-input label="备注" v-model="dataRemark" class="mt-5 w-full" name="备注" />
-        <span class="text-danger text-sm" v-show="errors.has('备注')">{{ errors.first('备注') }}</span>
+        <!-- 描述 -->
+        <vs-input
+          label="描述"
+          v-model="dataRemark"
+          class="mt-5 w-full"
+          name="描述"
+          v-validate="'required'"
+        />
+        <span class="text-danger text-sm" v-show="errors.has('描述')">{{ errors.first('描述') }}</span>
+
+        <!-- 排序 -->
+        <vs-input
+          label="排序"
+          v-model="dataSort"
+          class="mt-5 w-full"
+          name="排序"
+          v-validate="'numeric'"
+        />
+        <span class="text-danger text-sm" v-show="errors.has('排序')">{{ errors.first('排序') }}</span>
+
+        <div class="mt-4" v-show="data.ID">
+          <label class="vs-input--label">是否锁定</label>
+          <vs-switch v-model="data.IsLocked" />
+        </div>
       </div>
     </component>
 
@@ -49,7 +69,7 @@
 <script>
 import VuePerfectScrollbar from "vue-perfect-scrollbar";
 
-import { addIntegra, spendIntegra } from "@/http/member.js";
+import { addPackageType, editPackageType } from "@/http/package.js";
 
 export default {
   props: {
@@ -67,8 +87,9 @@ export default {
   },
   data() {
     return {
-      dataIntegral: null,
+      dataTypeName: null,
       dataRemark: null,
+      dataSort: null,
 
       settings: {
         // perfectscrollbar settings
@@ -80,10 +101,12 @@ export default {
   watch: {
     isSidebarActive(val) {
       if (!val) return;
-      if (Object.entries(this.data).length === 0) {
-        this.initValues();
-        this.$validator.reset();
+      if (this.data.ID) {
+        this.dataTypeName = this.data.TypeName;
+        this.dataRemark = this.data.Remark;
+        this.dataSort = this.data.Sort;
       } else {
+        this.$validator.reset();
         this.initValues();
       }
     }
@@ -96,13 +119,13 @@ export default {
       set(val) {
         if (!val) {
           this.$emit("closeSidebar");
-          // this.$validator.reset()
+          this.$validator.reset();
           this.initValues();
         }
       }
     },
     isFormValid() {
-      return !this.errors.any() && this.dataIntegral;
+      return !this.errors.any() && this.dataTypeName;
     },
     scrollbarTag() {
       return this.$store.getters.scrollbarTag;
@@ -110,22 +133,22 @@ export default {
   },
   methods: {
     initValues() {
-      if (this.data.id) return;
-      this.dataIntegral = null;
+      this.dataTypeName = null;
       this.dataRemark = null;
+      this.dataSort = null;
     },
     submitData() {
       this.$validator.validateAll().then(result => {
         if (result) {
-          debugger;
-          const para = {
-            userId: this.data.userId,
-            integral: this.dataIntegral,
-            remark: this.dataRemark
-          };
-
+          let userInfo = JSON.parse(localStorage.getItem("userInfo"));
           if (this.data.mark == "add") {
-            addIntegra(para).then(res => {
+            let para = {
+              typeName: this.dataTypeName,
+              remark: this.dataRemark,
+              sort: this.dataSort,
+              mecid: userInfo.mecID
+            };
+            addPackageType(para).then(res => {
               if (res.resultType == 0) {
                 this.$vs.notify({
                   title: "Success",
@@ -137,8 +160,17 @@ export default {
                 this.initValues();
               }
             });
-          } else if (this.data.mark == "spend") {
-            spendIntegra(para).then(res => {
+          } else if (this.data.mark == "edit") {
+            let para = {
+              ID: this.data.ID,
+              typeName: this.dataTypeName,
+              remark: this.dataRemark,
+              sort: this.dataSort,
+              mecid: userInfo.mecID,
+              isLocked: this.data.IsLocked
+            };
+            console.log("para:", para);
+            editPackageType(para).then(res => {
               if (res.resultType == 0) {
                 this.$vs.notify({
                   title: "Success",
@@ -154,6 +186,9 @@ export default {
         }
       });
     }
+  },
+  created() {
+    console.log("数据：", this.data_local);
   }
 };
 </script>

@@ -30,6 +30,7 @@ const getters = {
   },
 
   routes: state => state.permission.routes,
+  btnPermission: state => state.auth.btnPermission,
 }
 
 export default getters

@@ -23,54 +23,14 @@ router.beforeEach(async (to, from, next) => {
       // 已登录且要跳转的页面是登录页
       next({ path: "/" }); // 跳转到home页
     } else {
-      // const hasRoutes = store.getters.routes && store.getters.routes.length > 0;
-
-      // if (hasRoutes) {
-      //   next();
-      // } else {
-      //   try {
-      //     // if (!getRouter) {
-      //     getRouter = getObjArr("router");
-
-      //     if (!getRouter) {
-      //       const accessRoutes = await store.dispatch(
-      //         "permission/generateRoutes"
-      //       );
-      //       let accessedRoutes = filterAsyncRoutes(accessRoutes);
-      //       router.addRoutes(accessedRoutes);
-
-      //       saveObjArr("router", accessRoutes); //存储路由到localStorage
-      //       next({ ...to, replace: true });
-      //       NProgress.done();
-      //     } else {
-      //       //从localStorage拿到了路由
-      //       //getRouter = getObjArr("router"); //拿到路由
-      //       let accessedRoutes = filterAsyncRoutes(getRouter);
-      //       router.addRoutes(accessedRoutes);
-      //       store.commit("permission/SET_ROUTES", getRouter);
-      //       next({ ...to, replace: true });
-      //       NProgress.done();
-      //     }
-      //     // } else {
-      //     //   next();
-      //     // }
-      //   } catch (error) {
-      //     console.log(error);
-      //     // remove token and go to login page to re-login
-      //     await store.dispatch("user/resetToken");
-      //     // Message.error(error || 'Has Error')
-      //     //添加错误信息通知TODO
-      //     next(`/pages/login?redirect=${to.path}`);
-      //     NProgress.done();
-      //   }
-      // }
 
       if (!asyncRouterFlag) {
         debugger;
         asyncRouterFlag++;
         const asyncRouters = await store.dispatch("permission/generateRoutes");
+        debugger
         //const asyncRouters = store.getters["ermission/SET_ROUTES"];
-        router.addRoutes(asyncRouters);
+        router.$addRoutes(asyncRouters);
         next({ ...to, replace: true });
       } else {
         next();
@@ -87,6 +47,8 @@ router.beforeEach(async (to, from, next) => {
     }
   }
 });
+
+
 
 router.afterEach(() => {
   // finish progress bar

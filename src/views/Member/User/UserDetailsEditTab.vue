@@ -20,6 +20,8 @@
         />
         <span class="text-danger text-sm" v-show="errors.has('身份证')">{{ errors.first('身份证') }}</span>
 
+        <vs-input label-placeholder="Label-placeholder" v-model="data_local.UserName"/>
+
         <vs-input
           class="w-full mt-4"
           label="手机号"
