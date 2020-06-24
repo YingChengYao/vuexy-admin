@@ -151,9 +151,6 @@ export default {
       this.toggleDataSidebar(true);
     },
     editData(data) {
-      // this.sidebarData = JSON.parse(JSON.stringify(this.blankData))
-      //this.sidebarData = data;
-      //this.toggleDataSidebar(true);
       this.$router.push(`/member-user-edit/${data}`).catch(() => {});
     },
     toggleDataSidebar(val = false) {

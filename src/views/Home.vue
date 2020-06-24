@@ -11,7 +11,7 @@
         <td>
           <span v-bind:style="'margin-left:'+ (item.Levels)*20 +'px'">
             <span @@click="toggle(item)" v-if="item.HasChildren" style="width:18px">
-              <img src="@/assets/icon/left.png" alt="" style="width:18px">
+              <!-- <img src="@/assets/icon/left.png" alt="" style="width:18px"> -->
               <i v-bind:class="item.childopen?'fa fa-minus-square':'fa fa-plus-square'" style="width:18px"></i>
               <!-- <i v-bind:class="item.childopen?'keyboard_arrow_down':'keyboard_arrow_down'"></i> -->
             </span>

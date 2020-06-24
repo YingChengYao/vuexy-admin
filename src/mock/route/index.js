@@ -47,13 +47,35 @@ export default {
           name: "套餐管理",
           children: [
             {
-              path: "/package-packages",
-              url: "/package-packages",
-              name: "套餐配置",
-              slug: "package-items",
-              component: "views/package/Packages",
+              path: "/package",
+              url: "/package",
+              name: "套餐列表",
+              slug: "package",
+              component: "views/medical/package/List",
               meta: {
-                title: "套餐配置"
+                title: "套餐列表"
+              },
+            },
+            {
+              path: "/package_edit/:id",
+              url: "/package_edit",
+              name: "套餐管理",
+              slug: "package_edit",
+              component: "views/medical/package/Edit",
+              isHide: true,
+              meta: {
+                title: "套餐管理"
+              },
+            },
+            {
+              path: "/deploy_project/:id",
+              url: "/deploy_project",
+              name: "套餐项目配置",
+              slug: "deploy_project",
+              component: "views/medical/package/DeployProject",
+              isHide: true,
+              meta: {
+                title: "套餐项目配置"
               },
             },
             {
@@ -61,17 +83,17 @@ export default {
               url: "/package-packagetype",
               name: "套餐类型管理",
               slug: "package-itemtype",
-              component: "views/package/PackageType",
+              component: "views/medical/package_type/List",
               meta: {
                 title: "套餐类型管理"
               },
             },
             {
-              path: "/package-items",
-              url: "/package-items",
+              path: "/projects",
+              url: "/projects",
               name: "项目配置",
-              slug: "package-items",
-              component: "views/package/Items",
+              slug: "projects",
+              component: "views/medical/project/List",
               meta: {
                 title: "项目配置"
               },
@@ -81,7 +103,7 @@ export default {
               url: "/package-itemtype",
               name: "项目类型管理",
               slug: "package-itemtype",
-              component: "views/package/ItemType",
+              component: "views/medical/ItemType",
               meta: {
                 title: "项目类型管理"
               },

@@ -52,6 +52,7 @@ import UserDetailsEditTab from "./UserDetailsEditTab.vue";
 //import moduleUserManagement from '@/store/user-management/moduleUserManagement.js'
 
 export default {
+  
   components: {
     UserDetailsEditTab,
     WalletRecordTab,

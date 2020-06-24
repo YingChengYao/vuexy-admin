@@ -1,6 +1,5 @@
 import request from "./request";
 
-
 //#region 体检项目
 //获取体检项目
 export const getItems = params => {
@@ -59,7 +58,7 @@ export const editItemType = params => {
 };
 //#endregion
 
-//#region 条件套餐类型
+//#region 体检套餐类型
 
 //获取体检套餐类型列表
 export const getPackageTypes = params => {
@@ -83,6 +82,44 @@ export const addPackageType = params => {
 export const editPackageType = params => {
   return request({
     url: "/api/package/type/update",
+    method: "post",
+    params: params
+  });
+};
+//#endregion
+
+//#region 体检套餐
+//获取体检套餐
+export const getPackages = params => {
+  return request({
+    url: "/api/package/list",
+    method: "get",
+    params: params
+  });
+};
+
+//添加体检项目
+export const addPackage = params => {
+  return request({
+    url: "/api/package/insert",
+    method: "post",
+    params: params
+  });
+};
+
+//修改体检项目
+export const editPackage = params => {
+  return request({
+    url: "/api/package/update",
+    method: "post",
+    params: params
+  });
+};
+
+//配置套餐项目
+export const deployProjectForPackage = params => {
+  return request({
+    url: "/api/package/item/update",
     method: "post",
     params: params
   });

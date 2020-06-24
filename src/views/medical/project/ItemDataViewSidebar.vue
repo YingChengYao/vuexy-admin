@@ -25,9 +25,9 @@
         <!-- 项目分类 -->
         <vs-select v-model="dataItemType" label="项目分类" class="mt-5 w-full" name="项目分类">
           <vs-select-item
-            :key="item.value"
-            :value="item.value"
-            :text="item.text"
+            :key="item.Value"
+            :value="item.Value"
+            :text="item.Name"
             v-for="item in itemTypeStatus"
           />
         </vs-select>
@@ -59,11 +59,11 @@
         </div>
 
         <!-- 婚姻状况 -->
-        <vs-select v-model="dataMarital" label="婚姻状况" class="mt-5 w-full" name="婚姻状况">
+        <vs-select v-model="dataMarriage" label="婚姻状况" class="mt-5 w-full" name="婚姻状况">
           <vs-select-item
-            :key="item.value"
-            :value="item.value"
-            :text="item.text"
+            :key="item.Value"
+            :value="item.Value"
+            :text="item.Name"
             v-for="item in maritalStatus"
           />
         </vs-select>
@@ -72,9 +72,9 @@
         <!-- 性别 -->
         <vs-select v-model="dataGender" label="性别" class="mt-5 w-full" name="性别">
           <vs-select-item
-            :key="item.value"
-            :value="item.value"
-            :text="item.text"
+            :key="item.Value"
+            :value="item.Value"
+            :text="item.Name"
             v-for="item in genders"
           />
         </vs-select>
@@ -107,6 +107,11 @@
 import VuePerfectScrollbar from "vue-perfect-scrollbar";
 
 import { addItem, editItem } from "@/http/package.js";
+import {
+  getProjectTypeDataSource,
+  getMaritalDataSource,
+  getGenderDataSource
+} from "@/http/data_source.js";
 
 export default {
   props: {
@@ -131,27 +136,11 @@ export default {
       dataIsMandatory: false,
 
       dataItemType: null,
-      itemTypeStatus: [
-        { text: "一般检查项目", value: "6471778398541963264" },
-        { text: "常规检验系列", value: "6471939081858441216" },
-        { text: "肿瘤疾病检测系列", value: "6472003557907488768" },
-        { text: "妇科检查系列", value: "6472043303534845952" },
-        { text: "彩超检查系列", value: "6472313946604036096" }
-      ],
-      dataMarital: null,
-      maritalStatus: [
-        { text: "请选择", value: null },
-        { text: "已婚", value: "1" },
-        { text: "未婚", value: "2" },
-        { text: "离异", value: "3" },
-        { text: "丧偶", value: "4" }
-      ],
+      itemTypeStatus: [],
+      dataMarriage: null,
+      maritalStatus: [],
       dataGender: null,
-      genders: [
-        { text: "请选择", value: null },
-        { text: "男", value: "1" },
-        { text: "女", value: "2" }
-      ],
+      genders: [],
 
       settings: {
         // perfectscrollbar settings
@@ -168,7 +157,7 @@ export default {
         this.dataItemName = this.data.ItemName;
         this.dataItemPrice = this.data.ItemPrice;
         this.dataIsMandatory = this.data.IsMandatory;
-        this.dataMarital = this.data.Marital;
+        this.dataMarriage = this.data.Marriage;
         this.dataGender = this.data.Gender;
         this.dataRemark = this.data.Remark;
         this.dataSort = this.data.Sort;
@@ -209,7 +198,7 @@ export default {
       this.dataItemName = null;
       this.dataItemPrice = null;
       this.dataIsMandatory = null;
-      this.dataMarital = null;
+      this.dataMarriage = null;
       this.dataGender = null;
       this.dataRemark = null;
       this.dataSort = null;
@@ -223,7 +212,7 @@ export default {
             itemName: this.dataItemName,
             itemPrice: this.dataItemPrice,
             isMandatory: this.dataIsMandatory,
-            marital: this.dataMarital,
+            marriage: this.dataMarriage,
             gender: this.dataGender,
             remark: this.dataRemark,
             sort: this.dataSort,
@@ -260,7 +249,45 @@ export default {
         }
       });
     },
-    loadItemTypeData() {}
+    loadItemTypeData() {
+      let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+      let para = {
+        mecid: userInfo.mecID
+      };
+      getProjectTypeDataSource(para).then(res => {
+        if (res.resultType == 0) {
+          const data = JSON.parse(res.message);
+          this.itemTypeStatus = data;
+        }
+      });
+    },
+    loadMaritalStatus() {
+      let para = {
+        isSelect: true
+      };
+      getMaritalDataSource(para).then(res => {
+        if (res.resultType == 0) {
+          const data = JSON.parse(res.message);
+          this.maritalStatus = data;
+        }
+      });
+    },
+    loadGender() {
+      let para = {
+        isSelect: true
+      };
+      getGenderDataSource(para).then(res => {
+        if (res.resultType == 0) {
+          const data = JSON.parse(res.message);
+          this.genders = data;
+        }
+      });
+    }
+  },
+  created() {
+    this.loadItemTypeData();
+    this.loadMaritalStatus();
+    this.loadGender();
   }
 };
 </script>
