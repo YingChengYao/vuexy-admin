@@ -22,53 +22,19 @@
       :key="$vs.rtl"
     >
       <div class="p-6">
-        <!-- 项目分类 -->
-        <!-- <vs-select v-model="dataProjectTypeName" label="项目分类" class="mt-5 w-full" name="项目分类">
-          <vs-select-item
-            :key="item.Value"
-            :value="item.Value"
-            :text="item.Name"
-            v-for="item in projectTypeStatus"
-          />
-        </vs-select>
-        <span class="text-danger text-sm" v-show="errors.has('项目分类')">{{ errors.first('项目分类') }}</span>-->
-
-        <div class="mt-4">
-          <label class="vs-input--label">项目分类</label>
-          <v-select
-            v-model="dataProjectType"
-            label="Name"
-            :options="projectTypeStatus"
-            :dir="$vs.rtl ? 'rtl' : 'ltr'"
-            v-validate="'required'"
-          />
-          <span class="text-danger text-sm" v-show="errors.has('项目分类')">{{ errors.first('项目分类') }}</span>
-        </div>
-
-        <!-- 项目名称 -->
+        <!-- 项目单项名称 -->
         <vs-input
-          label="项目名称"
-          v-model="dataProjectTypeName"
+          label="项目单项名称"
+          v-model="dataProjectItemName"
           class="mt-5 w-full"
-          name="项目名称"
+          name="项目单项名称"
           v-validate="'required'"
         />
-        <span class="text-danger text-sm" v-show="errors.has('项目名称')">{{ errors.first('项目名称') }}</span>
+        <span class="text-danger text-sm" v-show="errors.has('项目单项名称')">{{ errors.first('项目单项名称') }}</span>
 
-        <!-- 项目价格 -->
-        <vs-input
-          label="项目价格"
-          v-model="dataProjectPrice"
-          class="mt-5 w-full"
-          name="项目价格"
-          v-validate="'required'"
-        />
-        <span class="text-danger text-sm" v-show="errors.has('项目价格')">{{ errors.first('项目价格') }}</span>
-
-        <div class="mt-4">
-          <label class="vs-input--label">是否必选</label>
-          <vs-switch v-model="dataIsMandatory" />
-        </div>
+        <!-- 项目单项价格 -->
+        <vs-input label="项目单项价格" v-model="dataProjectItemPrice" class="mt-5 w-full" name="项目单项价格" />
+        <span class="text-danger text-sm" v-show="errors.has('项目单项价格')">{{ errors.first('项目单项价格') }}</span>
 
         <!-- 婚姻状况 -->
         <div class="mt-4">
@@ -79,6 +45,7 @@
             :options="maritalStatus"
             :dir="$vs.rtl ? 'rtl' : 'ltr'"
           />
+          <!-- <span class="text-danger text-sm" v-show="errors.has('婚姻状况')">{{ errors.first('婚姻状况') }}</span> -->
         </div>
 
         <!-- 性别 -->
@@ -90,11 +57,12 @@
             :options="genders"
             :dir="$vs.rtl ? 'rtl' : 'ltr'"
           />
+          <!-- <span class="text-danger text-sm" v-show="errors.has('性别')">{{ errors.first('性别') }}</span> -->
         </div>
 
         <!-- 描述 -->
         <vs-input label="描述" v-model="dataRemark" class="mt-5 w-full" name="描述" />
-        <!-- <span class="text-danger text-sm" v-show="errors.has('描述')">{{ errors.first('描述') }}</span> -->
+        <span class="text-danger text-sm" v-show="errors.has('描述')">{{ errors.first('描述') }}</span>
 
         <!-- 排序 -->
         <vs-input
@@ -105,6 +73,11 @@
           v-validate="'numeric'"
         />
         <span class="text-danger text-sm" v-show="errors.has('排序')">{{ errors.first('排序') }}</span>
+
+        <div class="mt-4" v-show="data.ID">
+          <label class="vs-input--label">是否锁定</label>
+          <vs-switch v-model="data.IsLocked" />
+        </div>
       </div>
     </component>
 
@@ -118,9 +91,9 @@
 <script>
 import VuePerfectScrollbar from "vue-perfect-scrollbar";
 import vSelect from "vue-select";
-import { addItem, editItem } from "@/http/package.js";
+
+import { addProjectItem, editProjectItem } from "@/http/package.js";
 import {
-  getProjectTypeDataSource,
   getMaritalDataSource,
   getGenderDataSource
 } from "@/http/data_source.js";
@@ -142,14 +115,11 @@ export default {
   },
   data() {
     return {
-      dataProjectType: null,
-      dataProjectTypeName: null,
-      dataProjectPrice: null,
+      dataProjectItemName: null,
+      dataProjectItemPrice: null,
       dataRemark: null,
       dataSort: null,
-      dataIsMandatory: false,
 
-      projectTypeStatus: [],
       dataMarriage: null,
       maritalStatus: [],
       dataGender: null,
@@ -166,12 +136,7 @@ export default {
     isSidebarActive(val) {
       if (!val) return;
       if (this.data.ID) {
-        this.dataProjectType = this.data.ItemTypeID;
-        this.dataProjectTypeName = this.data.ItemName;
-        this.dataProjectPrice = this.data.ItemPrice;
-        this.dataIsMandatory = this.data.IsMandatory;
-        this.dataMarriage = this.data.Marriage;
-        this.dataGender = this.data.Gender;
+        this.dataProjectItemName = this.data.TypeName;
         this.dataRemark = this.data.Remark;
         this.dataSort = this.data.Sort;
       } else {
@@ -194,12 +159,7 @@ export default {
       }
     },
     isFormValid() {
-      return (
-        !this.errors.any() &&
-        this.dataProjectType &&
-        this.dataProjectTypeName &&
-        this.dataProjectPrice
-      );
+      return !this.errors.any() && this.dataProjectItemName;
     },
     scrollbarTag() {
       return this.$store.getters.scrollbarTag;
@@ -207,12 +167,7 @@ export default {
   },
   methods: {
     initValues() {
-      this.dataProjectType = null;
-      this.dataProjectTypeName = null;
-      this.dataProjectPrice = null;
-      this.dataIsMandatory = null;
-      this.dataMarriage = null;
-      this.dataGender = null;
+      this.dataProjectItemName = null;
       this.dataRemark = null;
       this.dataSort = null;
     },
@@ -220,36 +175,40 @@ export default {
       this.$validator.validateAll().then(result => {
         if (result) {
           let userInfo = JSON.parse(localStorage.getItem("userInfo"));
-          let para = {
-            itemTypeID: this.dataProjectType.Value,
-            itemName: this.dataProjectTypeName,
-            itemPrice: this.dataProjectPrice,
-            isMandatory: this.dataIsMandatory,
-            marriage: this.dataMarriage,
-            gender: this.dataGender,
-            remark: this.dataRemark,
-            sort: this.dataSort,
-            mecid: userInfo.mecID
-          };
-          console.log("项目分类：", para);
-
           if (this.data.mark == "add") {
-            addItem(para).then(res => {
+            let para = {
+              sngleName: this.dataProjectItemName,
+              singlePrice: this.dataProjectItemPrice,
+              marriage: this.dataMarriage,
+              gender: this.dataGender,
+              sort: this.dataSort,
+              remark: this.dataRemark,
+              mecid: userInfo.mecID,
+              isOptional: false
+            };
+            addProjectItem(para).then(res => {
               if (res.resultType == 0) {
                 this.$vs.notify({
                   title: "Success",
                   text: res.message,
                   color: "success"
                 });
-                this.initValues();
-                this.$validator.reset();
                 this.$emit("closeSidebar");
                 this.$emit("loadData");
+                this.initValues();
               }
             });
           } else if (this.data.mark == "edit") {
-            para.ID = this.data.ID;
-            editItem(para).then(res => {
+            let para = {
+              ID: this.data.ID,
+              typeName: this.dataProjectItemName,
+              remark: this.dataRemark,
+              sort: this.dataSort,
+              mecid: userInfo.mecID,
+              isLocked: this.data.IsLocked
+            };
+            console.log("para:", para);
+            editProjectItem(para).then(res => {
               if (res.resultType == 0) {
                 this.$vs.notify({
                   title: "Success",
@@ -259,30 +218,14 @@ export default {
                 this.$emit("loadData");
                 this.$emit("closeSidebar");
                 this.initValues();
-                this.$validator.reset();
               }
             });
           }
         }
       });
     },
-    loadItemTypeData() {
-      let userInfo = JSON.parse(localStorage.getItem("userInfo"));
-      let para = {
-        mecid: userInfo.mecID
-      };
-      getProjectTypeDataSource(para).then(res => {
-        if (res.resultType == 0) {
-          const data = JSON.parse(res.message);
-          this.projectTypeStatus = data;
-        }
-      });
-    },
     loadMaritalStatus() {
-      let para = {
-        isSelect: true
-      };
-      getMaritalDataSource(para).then(res => {
+      getMaritalDataSource().then(res => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.maritalStatus = data;
@@ -290,10 +233,7 @@ export default {
       });
     },
     loadGender() {
-      let para = {
-        isSelect: true
-      };
-      getGenderDataSource(para).then(res => {
+      getGenderDataSource().then(res => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.genders = data;
@@ -302,7 +242,6 @@ export default {
     }
   },
   created() {
-    this.loadItemTypeData();
     this.loadMaritalStatus();
     this.loadGender();
   }

@@ -57,9 +57,9 @@ export default {
               },
             },
             {
-              path: "/package_edit/:id",
+              path: "/package_edit",
               url: "/package_edit",
-              name: "套餐管理",
+              name: "package_edit",
               slug: "package_edit",
               component: "views/medical/package/Edit",
               isHide: true,
@@ -99,13 +99,23 @@ export default {
               },
             },
             {
-              path: "/package-itemtype",
-              url: "/package-itemtype",
+              path: "/project_type",
+              url: "/project_type",
               name: "项目类型管理",
-              slug: "package-itemtype",
-              component: "views/medical/ItemType",
+              slug: "project_type",
+              component: "views/medical/project_type/List",
               meta: {
                 title: "项目类型管理"
+              },
+            },
+            {
+              path: "/project_item",
+              url: "/project_item",
+              name: "项目单项管理",
+              slug: "project_item",
+              component: "views/medical/project_item/List",
+              meta: {
+                title: "项目单项管理"
               },
             },
           ]

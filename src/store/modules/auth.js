@@ -22,12 +22,10 @@ const actions = {
     return new Promise((resolve, reject) => {
       requestLogin(payload.userDetails.username, payload.userDetails.password)
         .then(res => {
-          debugger;
           // If there's user data in response
           if (res) {
             // Set accessToken
             //localStorage.setItem("accessToken", response.data.accessToken);
-            debugger;
             const {
               userData,
               accessToken,

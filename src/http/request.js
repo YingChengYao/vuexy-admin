@@ -4,15 +4,14 @@ import { getToken } from "@/common/utils/auth/token";
 import vue from "@/main.js";
 
 const request = axios.create({
-  baseURL: "http://manage.qrtj.cn",
-  //baseURL: "http://localhost:8081",
+  //baseURL: "http://manage.qrtj.cn",
+  baseURL: "https://localhost:5001/",
   timeout: 20000
 });
 
 //http request 拦截器
 request.interceptors.request.use(
   config => {
-    debugger;
     //this.$vs.loading();
     let curTime = new Date();
     let accessExpiration = window.localStorage.getItem("AccessExpiration");
@@ -66,7 +65,6 @@ request.interceptors.request.use(
 //http response 拦截器
 request.interceptors.response.use(
   response => {
-    debugger;
     const data = response.data;
     if(!data.resultType && data.resultType != 0){
       return data;//TODO 路由MOCK使用，后期拿掉

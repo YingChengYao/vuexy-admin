@@ -89,7 +89,7 @@ export const editPackageType = params => {
 //#endregion
 
 //#region 体检套餐
-//获取体检套餐
+//获取体检套餐列表
 export const getPackages = params => {
   return request({
     url: "/api/package/list",
@@ -98,7 +98,16 @@ export const getPackages = params => {
   });
 };
 
-//添加体检项目
+//获取体检套餐详情
+export const getPackageDetails = params => {
+  return request({
+    url: "/api/package/details",
+    method: "get",
+    params: params
+  });
+};
+
+//添加体检套餐
 export const addPackage = params => {
   return request({
     url: "/api/package/insert",
@@ -107,7 +116,7 @@ export const addPackage = params => {
   });
 };
 
-//修改体检项目
+//修改体检套餐
 export const editPackage = params => {
   return request({
     url: "/api/package/update",
@@ -125,3 +134,35 @@ export const deployProjectForPackage = params => {
   });
 };
 //#endregion
+
+
+//#region 体检项目单项
+//获取项目单项集合
+export const getProjectItems = params => {
+  return request({
+    url: "/api/item/single/list",
+    method: "get",
+    params: params
+  });
+};
+
+//添加体检项目
+export const addProjectItem = params => {
+  return request({
+    url: "/api/item/single/insert",
+    method: "post",
+    params: params
+  });
+};
+
+//修改体检项目
+export const editProjectItem = params => {
+  return request({
+    url: "/api/item/single/update",
+    method: "post",
+    params: params
+  });
+};
+//#endregion
+
+

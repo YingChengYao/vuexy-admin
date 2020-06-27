@@ -9,18 +9,14 @@
 
     <vx-card ref="filterCard" title class="user-list-filters mb-8">
       <vs-row vs-align="center">
-        <label class="vx-col label-name px-2">项目类型名称</label>
-        <div class="vx-col md:w-1/6 sm:w-1/2 w-full">
-          <vs-input placeholder="Placeholder" v-model="typeNameInput" />
-        </div>
-        <vs-button
-          radius
-          color="primary"
-          type="border"
-          icon-pack="feather"
-          icon="icon-search"
-          @click="loadData"
-        ></vs-button>
+        <label class="vx-col label-name px-2">套餐类型名称</label>
+        <vs-input
+          placeholder="Placeholder"
+          v-model="typeNameInput"
+          class="vx-col md:w-1/6 sm:w-1/2 w-full px-2"
+        />
+
+        <vs-button class="vx-col" color="primary" type="border" @click="loadData">查询</vs-button>
       </vs-row>
     </vx-card>
 
@@ -109,7 +105,7 @@
 </template>
 
 <script>
-import PackageTypeDataViewSidebar from "../DataViewSidebar/PackageTypeDataViewSidebar";
+import PackageTypeDataViewSidebar from "./PackageTypeDataViewSidebar";
 import { getPackageTypes } from "@/http/package.js";
 export default {
   components: {
@@ -144,7 +140,7 @@ export default {
         pageIndex: this.currentPage,
         pageSize: this.itemsPerPage,
         mecID: userInfo.mecID,
-        typeName:this.typeNameInput,
+        typeName: this.typeNameInput
       };
 
       getPackageTypes(para).then(res => {

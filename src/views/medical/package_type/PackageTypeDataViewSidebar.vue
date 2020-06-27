@@ -38,7 +38,6 @@
           v-model="dataRemark"
           class="mt-5 w-full"
           name="描述"
-          v-validate="'required'"
         />
         <span class="text-danger text-sm" v-show="errors.has('描述')">{{ errors.first('描述') }}</span>
 

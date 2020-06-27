@@ -1,6 +1,6 @@
 <template>
   <div class="data-list-container">
-    <item-type-data-view-sidebar
+    <data-view-sidebar
       :isSidebarActive="addNewDataSidebar"
       @closeSidebar="toggleDataSidebar"
       @loadData="loadData"
@@ -10,17 +10,13 @@
     <vx-card ref="filterCard" title class="user-list-filters mb-8">
       <vs-row vs-align="center">
         <label class="vx-col label-name px-2">项目类型名称</label>
-        <div class="vx-col md:w-1/6 sm:w-1/2 w-full">
-          <vs-input placeholder="Placeholder" v-model="typeNameInput" />
-        </div>
-        <vs-button
-          radius
-          color="primary"
-          type="border"
-          icon-pack="feather"
-          icon="icon-search"
-          @click="loadData"
-        ></vs-button>
+        <vs-input
+          placeholder="Placeholder"
+          v-model="typeNameInput"
+          class="vx-col md:w-1/6 sm:w-1/2 w-full px-2"
+        />
+
+        <vs-button class="vx-col" color="primary" type="border" @click="loadData">查询</vs-button>
       </vs-row>
     </vx-card>
 
@@ -51,7 +47,7 @@
                 <p>{{ tr.ID }}</p>
               </vs-td>
               <vs-td>
-                <p>{{ indextr }}</p>
+                <p>{{ indextr+1 }}</p>
               </vs-td>
               <vs-td :data="tr.TypeName">
                 <p>{{ tr.TypeName }}</p>
@@ -79,11 +75,7 @@
                 <p>{{ tr.ModifyTime | formatDate }}</p>
               </vs-td>
               <vs-td class="whitespace-no-wrap">
-                <feather-icon
-                  icon="EditIcon"
-                  svgClasses="w-5 h-5 hover:text-primary stroke-current"
-                  @click.stop="editData(tr)"
-                />
+                <span class="text-primary" size="small" type="border" @click.stop="editData(tr)">编辑</span>
               </vs-td>
             </vs-tr>
           </tbody>
@@ -109,11 +101,11 @@
 </template>
 
 <script>
-import ItemTypeDataViewSidebar from "./DataViewSidebar/ItemTypeDataViewSidebar";
-import { getItemTypes } from "@/http/package.js";
+import DataViewSidebar from "./DataViewSidebar";
+import { getProjectItems } from "@/http/package.js";
 export default {
   components: {
-    ItemTypeDataViewSidebar
+    DataViewSidebar
   },
   data() {
     return {
@@ -122,10 +114,10 @@ export default {
       isMounted: false,
 
       //Page
-      itemsPerPage: 4,
+      itemsPerPage: 10,
       currentPage: 1,
       totalPage: 0,
-      descriptionItems: [4, 10, 15, 20],
+      descriptionItems: [10, 20, 50, 100],
       totalItems: 0,
 
       // Data Sidebar
@@ -147,10 +139,10 @@ export default {
         typename: this.typeNameInput
       };
 
-      getItemTypes(para).then(res => {
+      getProjectItems(para).then(res => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
-          console.log("类型：", data);
+          console.log("单项：", data);
           this.types = data.Items;
           this.totalPage = data.TotalPages;
           this.totalItems = data.TotalItems;
@@ -159,14 +151,14 @@ export default {
     },
     addNewData() {
       this.sidebarData = {
-        title: "添加项目分类",
+        title: "添加项目单项",
         mark: "add"
       };
       this.toggleDataSidebar(true);
     },
     editData(data) {
       this.sidebarData = data;
-      this.sidebarData.title = "修改项目分类";
+      this.sidebarData.title = "修改项目单项";
       this.sidebarData.mark = "edit";
       this.toggleDataSidebar(true);
     },

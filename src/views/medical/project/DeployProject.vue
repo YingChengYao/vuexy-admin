@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import ProjectList from "../project/List";
+import ProjectList from "./List";
 import ProjectShow from "./Show";
 
 export default {

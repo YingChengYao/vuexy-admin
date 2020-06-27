@@ -11,14 +11,15 @@ import Vue from "vue";
 import Vuex from "vuex";
 
 import getters from "./getters";
-import state from "./state"
-import mutations from "./mutations"
-import actions from "./actions"
+import state from "./state";
+import mutations from "./mutations";
+import actions from "./actions";
 
 Vue.use(Vuex);
 
-import permission from './modules/permission.js'
-import auth from './modules/auth.js'
+import permission from "./modules/permission.js";
+import auth from "./modules/auth.js";
+import medical from "./modules/medical.js";
 
 export default new Vuex.Store({
   getters,
@@ -27,7 +28,8 @@ export default new Vuex.Store({
   actions,
   modules: {
     permission: permission,
-    auth:auth,
+    auth: auth,
+    medical: medical
   },
   strict: process.env.NODE_ENV !== "production"
 });

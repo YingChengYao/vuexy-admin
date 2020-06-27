@@ -127,7 +127,6 @@ export default {
     submitData() {
       this.$validator.validateAll().then(result => {
         if (result) {
-          debugger;
           const para = {
             userId: this.data.userId,
             money: this.dataMoney,

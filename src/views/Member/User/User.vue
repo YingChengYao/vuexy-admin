@@ -137,7 +137,6 @@ export default {
       };
 
       getUsers(para).then(res => {
-        debugger;
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.users = data.Items;

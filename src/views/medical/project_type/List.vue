@@ -1,11 +1,18 @@
 <template>
-  <div id class="data-list-container">
+  <div class="data-list-container">
+    <data-view-sidebar
+      :isSidebarActive="addNewDataSidebar"
+      @closeSidebar="toggleDataSidebar"
+      @loadData="loadData"
+      :data="sidebarData"
+    />
+
     <vx-card ref="filterCard" title class="user-list-filters mb-8">
       <vs-row vs-align="center">
-        <label class="vx-col label-name px-2">套餐名称</label>
+        <label class="vx-col label-name px-2">项目类型名称</label>
         <vs-input
           placeholder="Placeholder"
-          v-model="packageNameInput"
+          v-model="typeNameInput"
           class="vx-col md:w-1/6 sm:w-1/2 w-full px-2"
         />
 
@@ -14,7 +21,7 @@
     </vx-card>
 
     <div class="vx-card p-6">
-      <vs-table ref="table" multiple v-model="selected" :data="items" stripe>
+      <vs-table ref="table" multiple stripe v-model="selected" :data="types">
         <div slot="header" class="flex flex-wrap-reverse items-center flex-grow justify-between">
           <div class="flex flex-wrap-reverse items-center data-list-btn-container header-left">
             <vs-button color="primary" type="border" class="mb-4 mr-4" @click="addNewData">添加</vs-button>
@@ -22,36 +29,38 @@
         </div>
 
         <template slot="thead">
-          <vs-th>编号</vs-th>
-          <vs-th>套餐名称</vs-th>
-          <vs-th>套餐价格</vs-th>
-          <vs-th>婚姻状态</vs-th>
-          <vs-th>性别</vs-th>
-          <vs-th>排序</vs-th>
-          <vs-th>是否锁定</vs-th>
-          <vs-th>描述</vs-th>
-          <vs-th>修改人</vs-th>
-          <vs-th>修改时间</vs-th>
+          <vs-th sort-key="id" v-show="false">ID</vs-th>
+          <vs-th sort-key="id">编号</vs-th>
+          <vs-th sort-key="item_type_name">项目类型名称</vs-th>
+          <vs-th sort-key="remark">描述</vs-th>
+          <vs-th sort-key="sort">排序</vs-th>
+          <vs-th sort-key="is_locked">是否锁定</vs-th>
+          <vs-th sort-key="modify_name">修改人</vs-th>
+          <vs-th sort-key="modify_time">创建时间</vs-th>
           <vs-th>操作</vs-th>
         </template>
 
         <template slot-scope="{data}">
           <tbody>
             <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data">
+              <vs-td v-show="false">
+                <p>{{ tr.ID }}</p>
+              </vs-td>
               <vs-td>
                 <p>{{ indextr+1 }}</p>
               </vs-td>
-              <vs-td>
-                <p>{{ tr.PackageName }}</p>
+              <vs-td :data="tr.TypeName">
+                <p>{{ tr.TypeName }}</p>
+                <!-- <template slot="edit">
+                  <vs-input v-model="tr.TypeName" class="inputx" placeholder />
+                  <vs-button color="primary" type="border">更改</vs-button>
+                </template>-->
               </vs-td>
-              <vs-td>
-                <p>{{ tr.PackagePrice }}</p>
-              </vs-td>
-              <vs-td>
-                <p>{{ tr.MarriageName}}</p>
-              </vs-td>
-              <vs-td>
-                <p>{{ tr.GenderName }}</p>
+              <vs-td :data="tr.Remark">
+                <p>{{ tr.Remark }}</p>
+                <!-- <template slot="edit">
+                  <vs-input v-model="tr.Remark" class="inputx" />
+                </template>-->
               </vs-td>
               <vs-td>
                 <p>{{ tr.Sort }}</p>
@@ -60,10 +69,7 @@
                 <p>{{ tr.IsLocked?'是':'否' }}</p>
               </vs-td>
               <vs-td>
-                <p>{{ tr.Remark }}</p>
-              </vs-td>
-              <vs-td>
-                <p>{{ tr.ModifyName }}</p>
+                <p class="product-category">{{ tr.ModifyName}}</p>
               </vs-td>
               <vs-td>
                 <p>{{ tr.ModifyTime | formatDate }}</p>
@@ -73,20 +79,15 @@
                   class="text-primary"
                   size="small"
                   type="border"
-                  @click.stop="editData(tr.ID)"
+                  @click.stop="editData(tr)"
                 >编辑</span>
-                <span
-                  class="text-primary px-2"
-                  size="small"
-                  type="border"
-                  @click.stop="deployProject(tr.ID)"
-                >项目配置</span>
               </vs-td>
             </vs-tr>
           </tbody>
         </template>
       </vs-table>
-
+    </div>
+    <div class="con-pagination-table vs-table--pagination">
       <vs-pagination
         :total="totalPage"
         v-model="currentPage"
@@ -95,20 +96,26 @@
         @changePageMaxItems="changePageMaxItems"
         :pagedownItems="descriptionItems"
         :size="itemsPerPage"
-        class="the-footer flex-wrap justify-between"
       ></vs-pagination>
     </div>
+
+    <!-- <div class="vx-card p-6" style="position: fixed;bottom: 0;width: calc(100% - 4.4rem - 260px);z-index: 9919;">
+       
+    </div>-->
   </div>
 </template>
 
 <script>
-import { getPackages, deployProjectForPackage } from "@/http/package.js";
+import DataViewSidebar from "./DataViewSidebar";
+import { getItemTypes } from "@/http/package.js";
 export default {
-  components: {},
+  components: {
+    DataViewSidebar
+  },
   data() {
     return {
       selected: [],
-      items: [],
+      types: [],
       isMounted: false,
 
       //Page
@@ -122,7 +129,7 @@ export default {
       addNewDataSidebar: false,
       sidebarData: {},
 
-      packageNameInput: ""
+      typeNameInput: ""
     };
   },
   computed: {},
@@ -134,42 +141,43 @@ export default {
         pageIndex: this.currentPage,
         pageSize: this.itemsPerPage,
         mecid: userInfo.mecID,
-        packageName: this.packageNameInput
+        typename: this.typeNameInput
       };
 
-      getPackages(para).then(res => {
+      getItemTypes(para).then(res => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
-          console.log("套餐：", data);
-          this.items = data.Items;
+          console.log("类型：", data);
+          this.types = data.Items;
           this.totalPage = data.TotalPages;
           this.totalItems = data.TotalItems;
         }
       });
     },
     addNewData() {
-      this.$router
-        .push({ name: "package_edit", params: { mark: "add" } })
-        .catch(() => {});
+      this.sidebarData = {
+        title: "添加项目分类",
+        mark: "add"
+      };
+      this.toggleDataSidebar(true);
     },
     editData(data) {
-      this.$router
-        .push({ name: "package_edit", params: { id: data, mark: "edit" } })
-        .catch(() => {});
+      this.sidebarData = data;
+      this.sidebarData.title = "修改项目分类";
+      this.sidebarData.mark = "edit";
+      this.toggleDataSidebar(true);
     },
-    deployProject(data) {
-      this.$router.push(`/deploy_project/${data}`).catch(() => {});
+    toggleDataSidebar(val = false) {
+      this.addNewDataSidebar = val;
     },
     changePageMaxItems(index) {
       this.itemsPerPage = this.descriptionItems[index];
+      this.currentPage = 1;
       this.loadData();
     }
   },
-  created() {
-    console.log("路由：", this.$router);
-    console.log("路由1：", this.$store.state.permission.routes);
-  },
   mounted() {
+    this.isMounted = true;
     this.loadData();
   },
   watch: {

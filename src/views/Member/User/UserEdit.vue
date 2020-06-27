@@ -82,7 +82,6 @@ export default {
 
       getIntegralRecords(para).then(res => {
         if (res.resultType == 0) {
-          debugger;
           const data = res.message;
           this.users = data.Items;
           this.totalPage = data.TotalPages;

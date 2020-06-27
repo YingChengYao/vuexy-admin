@@ -140,7 +140,6 @@ export default {
           this.$vs.loading.close();
         })
         .catch(error => {
-          debugger;
           this.$vs.loading.close();
           this.$vs.notify({
             title: "Error",

@@ -25,10 +25,8 @@ router.beforeEach(async (to, from, next) => {
     } else {
 
       if (!asyncRouterFlag) {
-        debugger;
         asyncRouterFlag++;
         const asyncRouters = await store.dispatch("permission/generateRoutes");
-        debugger
         //const asyncRouters = store.getters["ermission/SET_ROUTES"];
         router.$addRoutes(asyncRouters);
         next({ ...to, replace: true });
