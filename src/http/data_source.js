@@ -53,3 +53,13 @@ export const getPackageTypes = params => {
     params: params
   });
 };
+
+//获取项目单项数据源
+export const getProjectItemDataSource = params => {
+  return request({
+    url: "/api/itemsingle/list",
+    method: "get",
+    params: params
+  });
+};
+

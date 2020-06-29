@@ -1,44 +1,47 @@
 <template>
   <div id="user-edit-tab-info">
-    <vx-card title="套餐信息">
+    <vx-card title="项目单项信息">
       <div class="vx-row">
         <div class="vx-col md:w-1/2 w-full">
           <vs-input
             class="w-full mt-4"
-            label="套餐名称"
-            v-model="data_local.PackageName"
+            label="项目单项名称"
+            v-model="data_local.SingleName"
             v-validate="'required'"
-            name="套餐名称"
+            name="项目单项名称"
           />
-          <span class="text-danger text-sm" v-show="errors.has('套餐名称')">{{ errors.first('套餐名称') }}</span>
+          <span
+            class="text-danger text-sm"
+            v-show="errors.has('项目单项名称')"
+          >{{ errors.first('项目单项名称') }}</span>
 
-          <vs-input class="w-full mt-4" label="备注" v-model="data_local.Remark" name="备注" />
-          <span class="text-danger text-sm" v-show="errors.has('备注')">{{ errors.first('备注') }}</span>
+          <!-- 排序 -->
+          <vs-input
+            label="排序"
+            v-model="data_local.Sort"
+            class="mt-4 w-full"
+            name="排序"
+            v-validate="'numeric'"
+          />
+          <span class="text-danger text-sm" v-show="errors.has('排序')">{{ errors.first('排序') }}</span>
 
-          <div class="mt-4">
-            <label class="vs-input--label">标识</label>
-            <v-select
-              multiple
-              :closeOnSelect="false"
-              v-model="data_local.PackageTypes"
-              label="Name"
-              :options="packageTypeOptions"
-              :dir="$vs.rtl ? 'rtl' : 'ltr'"
+          <!-- 项目单项价格 -->
+          <div class="mt-4" v-show="data_local.IsOptional">
+            <vs-input
+              label="项目单项价格"
+              v-model="data_local.SinglePrice"
+              class="w-full"
+              name="项目单项价格"
+              v-validate="'decimal:2'"
             />
-          </div>
-        </div>
-        <div class="vx-col md:w-1/2 w-full">
-          <div class="mt-4">
-            <label class="vs-input--label">婚姻状况</label>
-            <v-select
-              v-model="marital_status"
-              label="Name"
-              :options="marriageOptions"
-              :dir="$vs.rtl ? 'rtl' : 'ltr'"
-            />
+            <span
+              class="text-danger text-sm"
+              v-show="errors.has('项目单项价格')"
+            >{{ errors.first('项目单项价格') }}</span>
           </div>
 
-          <div class="mt-4">
+          <!-- 性别 -->
+          <div class="mt-4" v-show="data_local.IsOptional">
             <label class="vs-input--label">性别</label>
             <v-select
               v-model="gender_local"
@@ -48,9 +51,43 @@
             />
           </div>
 
-          <div class="mt-4">
+          <div class="mt-4" v-if="mark==='edit'">
             <label class="vs-input--label">是否锁定</label>
-            <vs-switch v-model="data_local.IsLocked" />
+            <div class="mt-2">
+              <vs-switch v-model="data_local.IsLocked" />
+            </div>
+          </div>
+        </div>
+        <div class="vx-col md:w-1/2 w-full">
+          <vs-input class="w-full mt-4" label="描述" v-model="data_local.Remark" name="remark" />
+
+          <div class="mt-4">
+            <label class="vs-input--label">是否作为项目使用</label>
+            <div class="mt-2">
+              <vs-switch v-model="data_local.IsOptional" />
+            </div>
+          </div>
+
+          <div class="mt-6" v-show="data_local.IsOptional">
+            <label class="vs-input--label">婚姻状况</label>
+            <v-select
+              v-model="marital_status"
+              label="Name"
+              :options="marriageOptions"
+              :dir="$vs.rtl ? 'rtl' : 'ltr'"
+              @change="MarriageChange"
+            />
+          </div>
+
+          <div class="mt-4" v-show="data_local.IsOptional">
+            <label class="vs-input--label">项目分类</label>
+            <v-select
+              v-model="project_type_local"
+              label="Name"
+              :options="projectTypeStatus"
+              :dir="$vs.rtl ? 'rtl' : 'ltr'"
+            />
+            <span class="text-danger text-sm" v-show="errors.has('项目分类')">{{ errors.first('项目分类') }}</span>
           </div>
         </div>
       </div>
@@ -72,11 +109,15 @@
 import vSelect from "vue-select";
 
 import {
-  getPackageTypes,
+  getProjectTypeDataSource,
   getMaritalDataSource,
   getGenderDataSource
 } from "@/http/data_source.js";
-import { addPackage, editPackage, getPackageDetails } from "@/http/package.js";
+import {
+  addProjectItem,
+  editProjectItem,
+  getProjectItemDetails
+} from "@/http/package.js";
 
 export default {
   name: "",
@@ -85,13 +126,13 @@ export default {
   },
   data() {
     return {
-      packageId: null,
+      id: null,
       mark: null,
 
       data_local: {},
       marriageOptions: [],
       genderOptions: [],
-      packageTypeOptions: []
+      projectTypeStatus: []
     };
   },
   computed: {
@@ -118,63 +159,78 @@ export default {
         this.data_local.Gender = obj.Value;
         this.data_local.GenderName = obj.Name;
       }
+    },
+    project_type_local: {
+      get() {
+        return {
+          Name: this.data_local.ItemTypeName,
+          Value: this.data_local.ItemTypeID
+        };
+      },
+      set(obj) {
+        this.data_local.ItemTypeID = obj.Value;
+        this.data_local.ItemTypeName = obj.Name;
+      }
     }
   },
   created() {
     this.initData();
     this.loadMaritalStatus();
     this.loadGender();
-    this.loadPackageTypes();
+    this.loadItemTypeData();
     this.loadData();
   },
   mounted() {},
   methods: {
+    MarriageChange() {
+      console.log(data_local.Marriage);
+    },
     initData() {
       let params = this.$route.params;
-      this.packageId = params.id;
+      this.id = params.id;
       this.mark = params.mark;
     },
     loadData() {
-      if (!this.packageId) return;
+      if (!this.id) return;
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
       let para = {
         mecid: userInfo.mecID,
-        packageId: this.packageId
+        id: this.id
       };
-      getPackageDetails(para).then(
-        res => {
-          if (res.resultType == 0) {
-            const data = JSON.parse(res.message);
-            this.data_local = data;
-            console.log("套餐详情：", data);
-          }
+      getProjectItemDetails(para).then(res => {
+        if (res.resultType == 0) {
+          const data = JSON.parse(res.message);
+          this.data_local = data;
         }
-      );
+      });
     },
     save_changes() {
       this.$validator.validateAll().then(result => {
         if (result) {
           let userInfo = JSON.parse(localStorage.getItem("userInfo"));
-          let packageTypes = null;
-          if (this.data_local.PackageTypes) {
-            packageTypes = this.data_local.PackageTypes.map(
-              r =>  r.Value 
-            ).join(",");
-          }
 
           let para = {
-            packageName: this.data_local.PackageName,
-            marriage: this.data_local.Marriage,
-            gender: this.data_local.Gender,
-            remark: this.data_local.Remark,
+            singleName: this.data_local.SingleName,
             sort: this.data_local.Sort,
+            remark: this.data_local.Remark,
             mecid: userInfo.mecID,
-            packageType: packageTypes,
-            isLocked: this.data_local.IsLocked
+            isOptional: this.data_local.IsOptional
           };
-          if (this.mark == "add") {
-            addPackage(para).then(res => {
+
+          if (this.data_local.IsOptional) {
+            para.singlePrice = this.data_local.SinglePrice;
+            para.marriage = this.data_local.Marriage;
+            para.gender = this.data_local.Gender;
+            para.itemTypeID =
+              this.data_local.ItemTypeID != null
+                ? this.data_local.ItemTypeID.Value
+                : null;
+          }
+          console.log(this.mark);
+          console.log(this.mark);
+          if (this.mark === "add") {
+            addProjectItem(para).then(res => {
               if (res.resultType == 0) {
                 this.$vs.notify({
                   title: "Success",
@@ -185,8 +241,9 @@ export default {
               }
             });
           } else if (this.mark == "edit") {
-            para.ID = this.packageId;
-            editPackage(para).then(res => {
+            para.ID = this.id;
+            para.isLocked=this.data_local.IsLocked
+            editProjectItem(para).then(res => {
               if (res.resultType == 0) {
                 this.$vs.notify({
                   title: "Success",
@@ -201,7 +258,7 @@ export default {
       });
     },
     cancel() {
-      this.$router.push("/package").catch(() => {});
+      this.$router.push("/project_item").catch(() => {});
     },
     loadMaritalStatus() {
       getMaritalDataSource().then(res => {
@@ -220,16 +277,15 @@ export default {
         }
       });
     },
-    loadPackageTypes() {
+    loadItemTypeData() {
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
-
       let para = {
         mecid: userInfo.mecID
       };
-      getPackageTypes(para).then(res => {
+      getProjectTypeDataSource(para).then(res => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
-          this.packageTypeOptions = data;
+          this.projectTypeStatus = data;
         }
       });
     }

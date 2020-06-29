@@ -4,9 +4,9 @@ import { getToken } from "@/common/utils/auth/token";
 import vue from "@/main.js";
 
 const request = axios.create({
-  //baseURL: "http://manage.qrtj.cn",
-  baseURL: "https://localhost:5001/",
-  timeout: 20000
+  baseURL: "http://manage.qrtj.cn",
+  //baseURL: "http://localhost:5000/",
+  timeout: 5000
 });
 
 //http request 拦截器
@@ -50,14 +50,13 @@ request.interceptors.request.use(
     return config;
   },
   error => {
-    // this.$vs.loading.close();
-    // this.$vs.notify({
-    //   title: "Error",
-    //   text: error.message,
-    //   iconPack: "feather",
-    //   icon: "icon-alert-circle",
-    //   color: "danger",
-    // });
+    vue.$vs.notify({
+      title: "Error",
+      text: error.message,
+      iconPack: "feather",
+      icon: "icon-alert-circle",
+      color: "danger"
+    });
     return Promise.reject(error);
   }
 );
@@ -86,7 +85,7 @@ request.interceptors.response.use(
     // this.$vs.loading.close();
     vue.$vs.notify({
       title: "Error",
-      text: data.message,
+      text: error.message,
       iconPack: "feather",
       icon: "icon-alert-circle",
       color: "danger"

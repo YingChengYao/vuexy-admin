@@ -12,12 +12,12 @@ import App from "./App.vue";
 
 // Vuesax Component Framework
 //import Vuesax from "vuesax";
-import Vuesax from "@/lib/vuesax/vuesax.common.js";
-import "@/lib/vuesax/vuesax.css"; // Vuesax
+//import Vuesax from "@/lib/vuesax/vuesax.common.js";
+import Vuesax from "@/lib/vuesax/dist/vuesax.common.js";
+import "@/lib/vuesax/dist/vuesax.css"; // Vuesax
 Vue.use(Vuesax);
 
 import "material-icons/iconfont/material-icons.css"; //Material Icons
-
 
 import "./mock/index.js";
 
@@ -38,7 +38,7 @@ import router from "@/router/router";
 import "./permission.js";
 
 //按钮权限
-import { hasBtnPermission } from '@/common/utils/auth/permission.js' 
+import { hasBtnPermission } from "@/common/utils/auth/permission.js";
 
 // Vuex Store
 import store from "./store/store";
@@ -55,7 +55,7 @@ import "prismjs/themes/prism-tomorrow.css";
 require("./assets/css/iconfont.css");
 
 //iconfont
-import '@/assets/icon/iconfont.css'
+import "@/assets/icon/iconfont.css";
 
 // Vue select css
 // Note: In latest version you have to add it separately
@@ -65,12 +65,14 @@ import validate, { config } from "@/lib/vee-validate/zh"; //中文提示
 Vue.use(validate, config);
 
 Vue.config.productionTip = false;
-Vue.prototype.hasPerm = hasBtnPermission
+Vue.prototype.hasPerm = hasBtnPermission;
 
 import * as filters from "@/common/plugins/filters.js";
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key]); //插入过滤器名和对应方法
 });
+
+Vue.prototype.$event = new Vue();
 
 var vue = new Vue({
   router,

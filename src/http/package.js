@@ -10,8 +10,17 @@ export const getItems = params => {
   });
 };
 
+//获取体检项目详情
+export const getProjectDetail = params => {
+  return request({
+    url: "/api/item/details",
+    method: "get",
+    params: params
+  });
+};
+
 //添加体检项目
-export const addItem = params => {
+export const addProject = params => {
   return request({
     url: "/api/item/insert",
     method: "post",
@@ -20,7 +29,7 @@ export const addItem = params => {
 };
 
 //修改体检项目
-export const editItem = params => {
+export const editProject = params => {
   return request({
     url: "/api/item/update",
     method: "post",
@@ -133,6 +142,15 @@ export const deployProjectForPackage = params => {
     params: params
   });
 };
+
+//获取套餐勾选项目
+export const getProjectsForPackage = params => {
+  return request({
+    url: "/api/package/item/list",
+    method: "get",
+    params: params
+  });
+};
 //#endregion
 
 
@@ -146,8 +164,18 @@ export const getProjectItems = params => {
   });
 };
 
+//获取项目单项详情
+export const getProjectItemDetails = params => {
+  return request({
+    url: "/api/item/single/details",
+    method: "get",
+    params: params
+  });
+};
+
 //添加体检项目
 export const addProjectItem = params => {
+  console.log(4)
   return request({
     url: "/api/item/single/insert",
     method: "post",

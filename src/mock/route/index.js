@@ -25,7 +25,7 @@ export default {
               component: "views/Member/User/User",
               meta: {
                 title: "用户管理"
-              },
+              }
             },
             {
               path: "/member-user-edit/:userId",
@@ -54,7 +54,7 @@ export default {
               component: "views/medical/package/List",
               meta: {
                 title: "套餐列表"
-              },
+              }
             },
             {
               path: "/package_edit",
@@ -65,18 +65,18 @@ export default {
               isHide: true,
               meta: {
                 title: "套餐管理"
-              },
+              }
             },
             {
               path: "/deploy_project/:id",
               url: "/deploy_project",
               name: "套餐项目配置",
               slug: "deploy_project",
-              component: "views/medical/package/DeployProject",
+              component: "views/medical/project/DeployProject",
               isHide: true,
               meta: {
                 title: "套餐项目配置"
-              },
+              }
             },
             {
               path: "/package-packagetype",
@@ -86,7 +86,7 @@ export default {
               component: "views/medical/package_type/List",
               meta: {
                 title: "套餐类型管理"
-              },
+              }
             },
             {
               path: "/projects",
@@ -96,7 +96,7 @@ export default {
               component: "views/medical/project/List",
               meta: {
                 title: "项目配置"
-              },
+              }
             },
             {
               path: "/project_type",
@@ -106,7 +106,7 @@ export default {
               component: "views/medical/project_type/List",
               meta: {
                 title: "项目类型管理"
-              },
+              }
             },
             {
               path: "/project_item",
@@ -116,8 +116,19 @@ export default {
               component: "views/medical/project_item/List",
               meta: {
                 title: "项目单项管理"
-              },
+              }
             },
+            {
+              path: "/project_item_edit/:id/:mark",
+              url: "/project_item_edit/:id",
+              name: "project_item_edit",
+              slug: "project_item_edit",
+              component: "views/medical/project_item/Edit",
+              isHide: true,
+              meta: {
+                title: "项目单项管理"
+              }
+            }
           ]
         },
         {

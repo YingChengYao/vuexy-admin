@@ -7,7 +7,7 @@ const zh = {
   alpha_spaces: field => ` ${field} 只能包含字母字符，包括空格.`,
   alpha: field => ` ${field} 只能包含字母字符.`,
   before: (field, [target]) => ` ${field} 必须在${target} 之前.`,
-  between: (field, [min, max]) => ` ${field} 必须在${min} ${max}之间.`,
+  betwmineen: (field, [min, max]) => ` ${field} 必须在${min} ${max}之间.`,
   confirmed: (field, [confirmedField]) =>
     ` ${field} 不能和${confirmedField}匹配.`,
   date_between: (field, [min, max]) => ` ${field}必须在${min}和${max}之间.`,
