@@ -2,16 +2,19 @@
   <div>
     <vx-card>
       <div>已选项目</div>
-      <ul class="faq-topics mt-4">
-        <li
-          v-for="project in projectList"
-          :key="project.ItemID"
-          class="p-2 font-medium flex items-center"
-        >
+      <ul class="faq-topics mt-4 mb-5" v-if="projectList.length>0">
+        <li v-for="tr in projectList" :key="tr.ItemID" class="p-2 font-medium flex items-center">
           <div class="h-3 w-3 rounded-full mr-2"></div>
-          <span class="cursor-pointer">{{ project.ItemName }}</span>
+          <span class="cursor-pointer">{{ tr.ItemName }}</span>
+          <span
+            class="text-primary px-4 cursor-pointer"
+            size="small"
+            type="border"
+            @click="delProject(tr.ItemID)"
+          >删除</span>
         </li>
       </ul>
+      <div v-else class="mb-5">No Data</div>
       <vs-row class="mb-6" vs-align="center">
         <vs-col class="sm:w-1/6">
           <span>合计</span>
@@ -19,8 +22,6 @@
         <vs-col class="sm:w-2/3">
           <vs-input disabled class="w-full" v-model="packagePrice" />
         </vs-col>
-        <!-- <vs-input class="w-full" label="合计" v-model="packagePrice" name="合计" />
-        <span class="text-danger text-sm" v-show="errors.has('合计')">{{ errors.first('合计') }}</span>-->
       </vs-row>
       <vs-row class="mb-6" vs-align="center">
         <vs-col class="sm:w-1/6">
@@ -30,64 +31,94 @@
           <vs-input-number
             v-model="discount"
             :step="1"
-            min="1"
+            min="0"
             max="10"
             class="inline-flex"
-            @input="updateDiscount($event)"
-            v-validate="'between:1,10'"
+            @input="changeDiscount($event)"
+            v-validate="'between:0,10|decimal:1'"
             name="折扣"
           />
           <span class="text-danger text-sm" v-show="errors.has('折扣')">{{ errors.first('折扣') }}</span>
-          <!-- <vs-input
-            class="w-full"
-            v-model="discount"
-            v-validate="'required|between:0,1'"
-            name="折扣"
-          />
-          <span class="text-danger text-sm" v-show="errors.has('折扣')">{{ errors.first('折扣') }}</span>-->
         </vs-col>
       </vs-row>
       <vs-row class="mb-6" vs-align="center">
         <vs-col class="sm:w-1/6">
           <span>折扣价</span>
         </vs-col>
-        <vs-col class="sm:w-2/3">
-          <vs-input class="w-full" v-model="discountPrice" v-validate="'required|decimal:2'" />
+        <vs-col class="sm:w-2/3 px-2">
+          <vs-input
+            class="w-full"
+            v-model="discountPrice"
+            v-validate="'required|decimal:2'"
+            name="折扣价"
+            @input="changeDiscountPrice($event)"
+          />
+          <span class="text-danger text-sm" v-show="errors.has('折扣价')">{{ errors.first('折扣价') }}</span>
         </vs-col>
-        <!-- <vs-input class="w-full" label="合计" v-model="packagePrice" name="合计" />
-        <span class="text-danger text-sm" v-show="errors.has('合计')">{{ errors.first('合计') }}</span>-->
       </vs-row>
     </vx-card>
   </div>
 </template>
 <script>
+import { formatMoney } from "@/common/utils/data/money";
+
 export default {
   name: "",
   props: {},
   data() {
     return {
       projectList: [],
-      discount: 1,
-      discountPrice: 0,
-      packagePrice: 0
+      discount: 10,
+      discountPrice: 0
+      //packagePrice: 0
     };
   },
   components: {},
+  computed: {
+    packagePrice() {
+      return this.projectList.reduce((pre, cur) => {
+        return pre + cur.ItemPrice;
+      }, 0);
+    }
+  },
+  watch: {
+    packagePrice() {
+      let price = (this.discount / 10) * this.packagePrice;
+      this.discountPrice = formatMoney(price, 2);
+    },
+    discount() {
+      this.$event.$emit("projectDiscount", this.discount);
+    },
+    discountPrice() {
+      this.$event.$emit("projectDiscountPrice", this.discountPrice);
+    }
+  },
   created() {},
   mounted() {
-    console.log(0);
     this.$event.$on("checkedItems", data => {
       this.$nextTick(() => {
         this.projectList = data.checkedGroup;
-        this.discount = data.discount | 1;
-        this.discountPrice = data.discountPrice | 22;
-        this.packagePrice = data.packagePrice | 22;
+      });
+    });
+    this.$event.$on("initProjectCheckedData", data => {
+      this.$nextTick(() => {
+        this.projectList = data.checkedGroup;
+        this.discount = data.discount;
+        this.discountPrice = data.discountPrice;
       });
     });
   },
   methods: {
-    updateDiscount(event) {
-      console.log(event);
+    changeDiscount(event) {
+      let price = (event / 10) * this.packagePrice;
+      this.discountPrice = formatMoney(price, 2);
+    },
+    changeDiscountPrice(event) {
+      let dis = (event / this.packagePrice) * 10;
+      this.discount = formatMoney(dis, 1);
+    },
+    delProject(id) {
+      this.$event.$emit("delProject", id);
     }
   }
 };

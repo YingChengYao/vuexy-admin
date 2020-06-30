@@ -48,10 +48,18 @@
                 <p>{{ tr.PackagePrice }}</p>
               </vs-td>
               <vs-td>
-                <p>{{ tr.MarriageName}}</p>
+                <vs-chip
+                  transparent
+                  :color="getMarriageColor(tr.Marriage)"
+                  v-if="!tr.Children"
+                >{{ tr.MarriageName}}</vs-chip>
               </vs-td>
               <vs-td>
-                <p>{{ tr.GenderName }}</p>
+                <vs-chip
+                  transparent
+                  :color="getGenderColor(tr.Gender)"
+                  v-if="!tr.Children"
+                >{{ tr.GenderName}}</vs-chip>
               </vs-td>
               <vs-td>
                 <p>{{ tr.Sort }}</p>
@@ -102,7 +110,7 @@
 </template>
 
 <script>
-import { getPackages, deployProjectForPackage } from "@/http/package.js";
+import { getPackages } from "@/http/package.js";
 export default {
   components: {},
   data() {
@@ -140,7 +148,6 @@ export default {
       getPackages(para).then(res => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
-          console.log("套餐：", data);
           this.items = data.Items;
           this.totalPage = data.TotalPages;
           this.totalItems = data.TotalItems;
@@ -157,6 +164,19 @@ export default {
         .push({ name: "package_edit", params: { id: data, mark: "edit" } })
         .catch(() => {});
     },
+    getMarriageColor(status) {
+      if (status === 0) return "primary";
+      if (status === 1) return "success";
+      if (status === 2) return "danger";
+      return "primary";
+    },
+    getGenderColor(status) {
+      console.log("status:", status);
+      if (status === 0) return "primary";
+      if (status === 1) return "success";
+      if (status === 2) return "danger";
+      return "primary";
+    },
     deployProject(data) {
       this.$router.push(`/deploy_project/${data}`).catch(() => {});
     },
@@ -165,10 +185,7 @@ export default {
       this.loadData();
     }
   },
-  created() {
-    console.log("路由：", this.$router);
-    console.log("路由1：", this.$store.state.permission.routes);
-  },
+  created() {},
   mounted() {
     this.loadData();
   },

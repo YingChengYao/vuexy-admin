@@ -28,5 +28,9 @@
 @import "vuexy/rtl";
 
 //vuesax
-// @import "./vuesax/components/vsInput";
-// @import "./vuesax/components/vsSelect";
+@import "./vuesax/components/vsInput";
+@import "./vuesax/components/vsSelect";
+
+//自定义scss
+@import "./common/main";
+

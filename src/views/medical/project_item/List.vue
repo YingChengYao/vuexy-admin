@@ -8,7 +8,6 @@
           v-model="singleNameInput"
           class="vx-col md:w-1/6 sm:w-1/2 w-full px-2"
         />
-
         <vs-button class="vx-col" color="primary" type="border" @click="loadData">查询</vs-button>
       </vs-row>
     </vx-card>
@@ -57,7 +56,12 @@
                 <p>{{ tr.ModifyTime | formatDate }}</p>
               </vs-td>
               <vs-td class="whitespace-no-wrap">
-                <span class="text-primary" size="small" type="border" @click.stop="editData(tr.ID)">编辑</span>
+                <span
+                  class="text-primary"
+                  size="small"
+                  type="border"
+                  @click.stop="editData(tr.ID)"
+                >编辑</span>
               </vs-td>
             </vs-tr>
           </tbody>
@@ -100,7 +104,6 @@ export default {
       totalItems: 0,
 
       // Data Sidebar
-
       singleNameInput: ""
     };
   },

@@ -4,14 +4,6 @@
       <project-edit @closePop="closePop" @loadData="loadData" :projectId="projectId" :key="timer" />
     </vs-popup>
 
-    <!-- <div class="vx-row">
-      <div v-if="true" class="vx-col w-full md:w-2/5 lg:w-1/4 rounded-lg">
-        <vx-card>
-          <project-show :data="peojectList"/>
-        </vx-card>
-    </div>-->
-
-    <!-- <div class="vx-col w-full mt-12 md:mt-0" :class="true?'md:w-3/5 lg:w-3/4':''"> -->
     <vx-card>
       <div slot="no-body" class="tabs-container px-6 pt-6">
         <div class="tab-text">
@@ -41,7 +33,7 @@
                     color="primary"
                     type="border"
                     class="mb-4 mr-4"
-                    v-show="!isPop"
+                    v-if="!isPop"
                   >添加</vs-button>
                 </div>
               </div>
@@ -55,19 +47,16 @@
                     size="small"
                   />
                 </vs-th>
-                <vs-th sort-key="no">编号</vs-th>
-                <vs-th sort-key="item_name">项目名称</vs-th>
-                <!-- <vs-th sort-key="item_type_id">所属类别编号</vs-th> -->
-                <!-- <vs-th sort-key="item_type">所属类别</vs-th> -->
-                <vs-th sort-key="item_price">项目价格</vs-th>
-                <vs-th sort-key="is_mandatory">是否必选</vs-th>
-                <vs-th sort-key="marriage">婚姻状态</vs-th>
-                <vs-th sort-key="gender">性别</vs-th>
-                <vs-th sort-key="sort">排序</vs-th>
-                <vs-th sort-key="is_locked">是否锁定</vs-th>
-                <vs-th sort-key="modify_name">修改人</vs-th>
-                <vs-th sort-key="modify_time">修改时间</vs-th>
-                <vs-th>操作</vs-th>
+                <vs-th>编号</vs-th>
+                <vs-th style="width:10rem;">项目名称</vs-th>
+                <vs-th>项目价格</vs-th>
+                <vs-th>婚姻状态</vs-th>
+                <vs-th>性别</vs-th>
+                <vs-th>排序</vs-th>
+                <vs-th>是否锁定</vs-th>
+                <vs-th>修改人</vs-th>
+                <vs-th>修改时间</vs-th>
+                <vs-th v-if="!isPop">操作</vs-th>
               </template>
 
               <template slot-scope="{data}">
@@ -85,27 +74,35 @@
                     <vs-td>
                       <p>{{ indextr+1 }}</p>
                     </vs-td>
-                    <vs-td>
-                      <span :style="'margin-left:'+ (tr.level)*20 +'px'">
-                        <span @click.stop="toggle(tr)" v-if="tr.Children">
-                          <vs-icon
-                            :icon-pack="tr.isExpand?'iconfont icon-shangxiazuoyouTriangle11':'iconfont icon-shangxiazuoyouTriangle12'"
-                          ></vs-icon>
+                    <vx-tooltip :text="tr.Children?tr.TypeName:tr.ItemName">
+                      <vs-td style="width:10rem;display: block;" class="wrap">
+                        <span :style="'margin-left:'+ (tr.level)*20 +'px'">
+                          <span @click.stop="toggle(tr)" v-if="tr.Children">
+                            <vs-icon
+                              :icon-pack="tr.isExpand?'iconfont icon-shangxiazuoyouTriangle11':'iconfont icon-shangxiazuoyouTriangle12'"
+                            ></vs-icon>
+                          </span>
+                          {{tr.Children?tr.TypeName:tr.ItemName}}
                         </span>
-                        {{tr.Children?tr.TypeName:tr.ItemName}}
-                      </span>
-                    </vs-td>
+                      </vs-td>
+                    </vx-tooltip>
+
                     <vs-td>
                       <p>{{ tr.ItemPrice }}</p>
                     </vs-td>
                     <vs-td>
-                      <p v-if="tr.IsMandatory!=null">{{ tr.IsMandatory?'是':'否' }}</p>
+                      <vs-chip
+                        transparent
+                        :color="getMarriageColor(tr.Marriage)"
+                        v-if="!tr.Children"
+                      >{{ tr.MarriageName}}</vs-chip>
                     </vs-td>
                     <vs-td>
-                      <p>{{ tr.MarriageName}}</p>
-                    </vs-td>
-                    <vs-td>
-                      <p>{{ tr.GenderName }}</p>
+                      <vs-chip
+                        transparent
+                        :color="getGenderColor(tr.Gender)"
+                        v-if="!tr.Children"
+                      >{{ tr.GenderName}}</vs-chip>
                     </vs-td>
                     <vs-td>
                       <p>{{ tr.Sort }}</p>
@@ -119,7 +116,7 @@
                     <vs-td>
                       <p>{{ tr.ModifyTime | formatDate }}</p>
                     </vs-td>
-                    <vs-td class="whitespace-no-wrap">
+                    <vs-td class="whitespace-no-wrap" v-if="!isPop">
                       <span
                         v-if="!tr.Children"
                         class="text-primary"
@@ -130,32 +127,45 @@
                     </vs-td>
                   </vs-tr>
                 </tbody>
-              </template>a
+              </template>
             </vs-table>
 
-            <vs-pagination
-              :total="totalPage"
-              v-model="currentPage"
-              :pagedown="true"
-              :totalItems="totalItems"
-              @changePageMaxItems="changePageMaxItems"
-              :pagedownItems="descriptionItems"
-              :size="itemsPerPage"
-              class="the-footer flex-wrap justify-between"
-            ></vs-pagination>
+            <div class="flex">
+              <span v-if="isPop" class="mt-5">
+                <span>
+                  <vs-button class="vx-col" color="primary" type="border" @click="save">保存</vs-button>
+                </span>
+                <span class="px-2">
+                  <vs-button class="vx-col" color="primary" type="border" @click="cancel">取消</vs-button>
+                </span>
+              </span>
+              <vs-pagination
+                style="flex:1"
+                :total="totalPage"
+                v-model="currentPage"
+                :pagedown="true"
+                :totalItems="totalItems"
+                @changePageMaxItems="changePageMaxItems"
+                :pagedownItems="descriptionItems"
+                :size="itemsPerPage"
+                class="the-footer flex-wrap justify-between"
+              ></vs-pagination>
+            </div>
           </div>
         </div>
       </div>
     </vx-card>
-    <!-- </div>
-    </div>-->
   </div>
 </template>
 
 <script>
 import ProjectShow from "./Show";
 import ProjectEdit from "./Edit";
-import { getItems, getProjectsForPackage } from "@/http/package.js";
+import {
+  getItems,
+  getProjectsForPackage,
+  deployProjectForPackage
+} from "@/http/package.js";
 import { clone } from "@/common/utils/data/clone";
 
 export default {
@@ -167,11 +177,7 @@ export default {
     isSelected: {
       type: Boolean,
       default: false
-    },
-    peojectList: [
-      { id: 9028739748891713536, name: "眼科常规+眼压" },
-      { id: 9029037703657938944, name: "耳鼻喉科" }
-    ]
+    }
   },
   components: {
     ProjectShow,
@@ -213,20 +219,9 @@ export default {
     };
   },
   computed: {
-    // isCheckedAll() {
-    //   let s=this.currentItems.length;
-    //   let s1=this.currentClickedItems.length;
-    //   console.log("s:",s)
-    //   console.log("s1:",s1)
-    //   return s==s1
-    //   //return this.currentItems.count == this.isCheckAllFunc();
-    // },
     currentItems() {
       return this.initItems.filter(f => !f.Children);
     }
-    // currentClickedItems() {
-    //   return this.initItems.filter(f => !f.Children && f.isChecked);
-    // }
   },
   methods: {
     loadData() {
@@ -252,17 +247,22 @@ export default {
             console.log("项目init：", this.initItems);
 
             this.addIsChecked();
-
-            //this.initData(this.items, 1, null);
-            //this.checkedGroup = this.renderCheck(this.items);
-            // if (this.checkedGroup.length == this.dataLength) {
-            //   this.checks = true;
-            // } else {
-            //   this.checks = false;
-            // }
           }
         }
       });
+    },
+    getMarriageColor(status) {
+      if (status === 0) return "primary";
+      if (status === 1) return "success";
+      if (status === 2) return "danger";
+      return "primary";
+    },
+    getGenderColor(status) {
+      console.log("status:", status);
+      if (status === 0) return "primary";
+      if (status === 1) return "success";
+      if (status === 2) return "danger";
+      return "primary";
     },
     addNewData() {
       this.projectId = null;
@@ -280,12 +280,35 @@ export default {
       // this.sidebarData.mark = "edit";
       // this.toggleDataSidebar(true);
     },
+    save() {
+      let projectIds = this.checkedGroup
+        .map(obj => {
+          return obj.ItemID;
+        })
+        .join(",");
+
+      let para = {
+        packageID: this.packageId,
+        itemIDs: projectIds,
+        discount: this.discount / 10,
+        discountPrice: this.discountPrice
+      };
+      deployProjectForPackage(para).then(res => {
+        if (res.resultType == 0) {
+          this.$vs.notify({
+            title: "Success",
+            text: res.message,
+            color: "success"
+          });
+        }
+      });
+    },
     handleLoad() {
       this.timer = new Date().getTime();
     },
-    // toggleDataSidebar(val = false) {
-    //   this.addNewDataSidebar = val;
-    // },
+    cancel() {
+      this.$router.push("/package").catch(() => {});
+    },
     changePageMaxItems(index) {
       this.itemsPerPage = this.descriptionItems[index];
       this.loadData();
@@ -308,9 +331,15 @@ export default {
       if (tr) {
         tr.isChecked = !tr.isChecked;
         if (tr.isChecked) {
-          this.checkedGroup.push(tr);
+          let item = {
+            ItemID: tr.ID,
+            ItemName: tr.ItemName,
+            ItemPrice: tr.ItemPrice
+          };
+          //tr.ItemID=tr.ID
+          this.checkedGroup.push(item);
         } else {
-          this.delItem(tr);
+          this.delProject(tr.ID);
         }
       }
       let checkedCount = this.initItems.filter(f => !f.Children && f.isChecked)
@@ -319,6 +348,23 @@ export default {
 
       this.isCheckedAll = checkedCount == count ? true : false;
     },
+    checkprojectBox(id) {
+      this.initItems.map((tr, index) => {
+        if (tr.ID == id) {
+          tr.isChecked = !tr.isChecked;
+          if (tr.isChecked) {
+            let item = {
+              ItemID: tr.ID,
+              ItemName: tr.ItemName,
+              ItemPrice: tr.ItemPrice
+            };
+            this.checkedGroup.push(item);
+          } else {
+            this.delProject(tr.ID);
+          }
+        }
+      });
+    },
     handleCheckAll() {
       if (!this.initItems.length > 0) return;
       this.isCheckedAll = !this.isCheckedAll;
@@ -326,10 +372,10 @@ export default {
         item.isChecked = this.isCheckedAll;
       });
     },
-    delItem(data) {
+    delProject(id) {
       if (this.checkedGroup.length > 0) {
         this.checkedGroup.map((item, index) => {
-          if (item.ID === data.ID) {
+          if (item.ItemID === id) {
             this.checkedGroup.splice(index, 1);
           }
         });
@@ -344,10 +390,16 @@ export default {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.checkedGroup = data.Item;
-          this.discount = data.Discount;
-          this.discountPrice = data.DiscountPrice;
-          this.packagePrice = data.PackagePrice;
-          console.log("勾选项目：", data);
+          this.checkedGroup.map((item, index) => {
+            if (!item.ItemPrice) item.ItemPrice = 0;
+          });
+          this.discount = data.Discount | 10;
+          this.discountPrice = data.DiscountPrice | 0;
+          this.$event.$emit("initProjectCheckedData", {
+            checkedGroup: this.checkedGroup,
+            discount: this.discount,
+            discountPrice: this.discountPrice
+          });
         }
       });
     },
@@ -361,6 +413,7 @@ export default {
           if (this.checkedGroup.length > 0) {
             this.checkedGroup.map((checkedItem, index) => {
               if (item.ID === checkedItem.ItemID) item.isChecked = true;
+              else item.isChecked = false;
             });
           }
         });
@@ -464,6 +517,21 @@ export default {
   },
   mounted() {
     this.loadData();
+    this.$event.$on("delProject", data => {
+      this.$nextTick(() => {
+        this.checkprojectBox(data);
+      });
+    });
+    this.$event.$on("projectDiscount", data => {
+      this.$nextTick(() => {
+        this.discount = data;
+      });
+    });
+    this.$event.$on("projectDiscountPrice", data => {
+      this.$nextTick(() => {
+        this.discountPrice = data;
+      });
+    });
   },
   watch: {
     currentPage() {
@@ -471,10 +539,7 @@ export default {
     },
     checkedGroup() {
       this.$event.$emit("checkedItems", {
-        checkedGroup: this.checkedGroup,
-        discount: this.discount,
-        discountPrice: this.discountPrice,
-        packagePrice: this.packagePrice
+        checkedGroup: this.checkedGroup
       });
     },
     popupActive() {
@@ -487,13 +552,4 @@ export default {
 </script>
 
 <style lang="scss">
-@import "@/assets/scss/vuexy/extraComponents/tree.scss";
-
-button.btn-async {
-  background: rgba(var(--vs-warning), 0.15);
-}
-
-button.btn-delete {
-  background: rgba(var(--vs-danger), 0.15);
-}
 </style>
