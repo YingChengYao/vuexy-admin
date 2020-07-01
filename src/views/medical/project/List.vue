@@ -187,7 +187,7 @@ export default {
     return {
       isCheckedAll: false,
 
-      //弹窗
+      //Pop
       popupActive: false,
       projectId: null,
       title: null,

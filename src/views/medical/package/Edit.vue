@@ -29,23 +29,27 @@
         </div>
         <div class="vx-col md:w-1/2 w-full">
           <div class="mt-4">
-            <label class="vs-input--label">婚姻状况</label>
-            <v-select
-              v-model="marital_status"
-              label="Name"
-              :options="marriageOptions"
-              :dir="$vs.rtl ? 'rtl' : 'ltr'"
-            />
+            <vs-select label="婚姻状况" v-model="data_local.Marriage" class="w-full select-large">
+              <vs-select-item
+                v-for="(item,index) in marriageOptions"
+                :key="index"
+                :value="item.Value"
+                :text="item.Name"
+                class="w-full"
+              />
+            </vs-select>
           </div>
 
           <div class="mt-4">
-            <label class="vs-input--label">性别</label>
-            <v-select
-              v-model="gender_local"
-              label="Name"
-              :options="genderOptions"
-              :dir="$vs.rtl ? 'rtl' : 'ltr'"
-            />
+            <vs-select label="性别" v-model="data_local.Gender" class="w-full select-large">
+              <vs-select-item
+                v-for="(item,index) in genderOptions"
+                :key="index"
+                :value="item.Value"
+                :text="item.Name"
+                class="w-full"
+              />
+            </vs-select>
           </div>
 
           <div class="mt-4">
@@ -142,15 +146,13 @@ export default {
         mecid: userInfo.mecID,
         packageId: this.packageId
       };
-      getPackageDetails(para).then(
-        res => {
-          if (res.resultType == 0) {
-            const data = JSON.parse(res.message);
-            this.data_local = data;
-            console.log("套餐详情：", data);
-          }
+      getPackageDetails(para).then(res => {
+        if (res.resultType == 0) {
+          const data = JSON.parse(res.message);
+          this.data_local = data;
+          console.log("套餐详情：", data);
         }
-      );
+      });
     },
     save_changes() {
       this.$validator.validateAll().then(result => {
@@ -158,9 +160,9 @@ export default {
           let userInfo = JSON.parse(localStorage.getItem("userInfo"));
           let packageTypes = null;
           if (this.data_local.PackageTypes) {
-            packageTypes = this.data_local.PackageTypes.map(
-              r =>  r.Value 
-            ).join(",");
+            packageTypes = this.data_local.PackageTypes.map(r => r.Value).join(
+              ","
+            );
           }
 
           let para = {

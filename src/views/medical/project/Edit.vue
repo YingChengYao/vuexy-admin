@@ -58,11 +58,9 @@
               class="w-full"
             />
           </vs-select>
-          <!-- <label class="vs-input--label">婚姻状况</label>
-          <v-select v-model="marital_local" label="Name" :options="marriageOptions" />-->
         </div>
         <div class="vx-col md:w-1/2 w-full mt-4">
-          <vs-select label="婚姻状况" v-model="data_local.Gender" class="w-full select-large">
+          <vs-select label="性别" v-model="data_local.Gender" class="w-full select-large">
             <vs-select-item
               v-for="(item,index) in genderOptions"
               :key="index"
@@ -71,13 +69,6 @@
               class="w-full"
             />
           </vs-select>
-          <!-- <label class="vs-input--label">性别</label>
-          <v-select
-            :value="gender_local"
-            label="Name"
-            :options="genderOptions"
-            :dir="$vs.rtl ? 'rtl' : 'ltr'"
-          />-->
         </div>
 
         <div class="vx-col md:w-1/2 w-full mt-4">

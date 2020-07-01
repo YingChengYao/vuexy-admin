@@ -1,99 +1,128 @@
 <template>
   <div id="user-edit-tab-info">
-    <vx-card title="项目单项信息">
+    <vx-card title>
       <div class="vx-row">
-        <div class="vx-col md:w-1/2 w-full">
+        <div class="vx-col md:w-1/2 w-full mt-4">
+          <vs-select label="父级单位" v-model="data_local.ParentID" class="w-full select-large">
+            <vs-select-item
+              v-for="(item,index) in genderOptions"
+              :key="index"
+              :value="item.Value"
+              :text="item.Name"
+              class="w-full"
+            />
+          </vs-select>
+        </div>
+        <div class="vx-col md:w-1/2 w-full mt-4">
+          <!-- 组织机构代码 -->
           <vs-input
-            class="w-full mt-4"
-            label="项目单项名称"
-            v-model="data_local.SingleName"
+            label="组织机构代码"
+            v-model="data_local.CompanyCode"
+            class="w-full"
+            name="组织机构代码"
             v-validate="'required'"
-            name="项目单项名称"
           />
           <span
             class="text-danger text-sm"
-            v-show="errors.has('项目单项名称')"
-          >{{ errors.first('项目单项名称') }}</span>
-
-          <!-- 排序 -->
-          <vs-input
-            label="排序"
-            v-model="data_local.Sort"
-            class="mt-4 w-full"
-            name="排序"
-            v-validate="'numeric'"
-          />
-          <span class="text-danger text-sm" v-show="errors.has('排序')">{{ errors.first('排序') }}</span>
-
-          <!-- 项目单项价格 -->
-          <div class="mt-4" v-show="data_local.IsOptional">
-            <vs-input
-              label="项目单项价格"
-              v-model="data_local.SinglePrice"
-              class="w-full"
-              name="项目单项价格"
-              v-validate="'decimal:2'"
-            />
-            <span
-              class="text-danger text-sm"
-              v-show="errors.has('项目单项价格')"
-            >{{ errors.first('项目单项价格') }}</span>
-          </div>
-
-          <!-- 性别 -->
-          <div class="mt-4" v-show="data_local.IsOptional">
-            <vs-select label="性别" v-model="data_local.Gender" class="w-full select-large">
-              <vs-select-item
-                v-for="(item,index) in genderOptions"
-                :key="index"
-                :value="item.Value"
-                :text="item.Name"
-                class="w-full"
-              />
-            </vs-select>
-          </div>
-
-          <div class="mt-4" v-if="mark==='edit'">
-            <label class="vs-input--label">是否锁定</label>
-            <div class="mt-2">
-              <vs-switch v-model="data_local.IsLocked" />
-            </div>
-          </div>
+            v-show="errors.has('组织机构代码')"
+          >{{ errors.first('组织机构代码') }}</span>
         </div>
-        <div class="vx-col md:w-1/2 w-full">
-          <vs-input class="w-full mt-4" label="描述" v-model="data_local.Remark" name="remark" />
 
-          <div class="mt-4">
-            <label class="vs-input--label">是否作为项目使用</label>
-            <div class="mt-2">
-              <vs-switch v-model="data_local.IsOptional" />
-            </div>
-          </div>
+        <!-- 单位名称 -->
+        <div class="vx-col md:w-1/2 w-full mt-4">
+          <vs-input
+            label="单位名称"
+            v-model="data_local.CompanyName"
+            class="w-full"
+            name="单位名称"
+            v-validate="'required'"
+          />
+          <span class="text-danger text-sm" v-show="errors.has('单位名称')">{{ errors.first('单位名称') }}</span>
+        </div>
+        <!-- 联系人 -->
+        <div class="vx-col md:w-1/2 w-full mt-4">
+          <vs-input label="联系人" v-model="data_local.Contact" class="w-full" />
+        </div>
 
-          <div class="mt-6" v-show="data_local.IsOptional">
-            <vs-select label="婚姻状况" v-model="data_local.Marriage" class="w-full select-large">
-              <vs-select-item
-                v-for="(item,index) in marriageOptions"
-                :key="index"
-                :value="item.Value"
-                :text="item.Name"
-                class="w-full"
-              />
-            </vs-select>
-          </div>
+        <!-- 联系电话 -->
+        <div class="vx-col md:w-1/2 w-full mt-4">
+          <vs-input label="联系电话" v-model="data_local.Tel" class="w-full" />
+        </div>
+        <!-- 手机号 -->
+        <div class="vx-col md:w-1/2 w-full mt-4">
+          <vs-input label="手机号" v-model="data_local.Mobile" class="w-full" />
+        </div>
 
-          <div class="mt-4" v-show="data_local.IsOptional">
-            <vs-select label="项目分类" v-model="data_local.ItemTypeID" class="w-full select-large">
-              <vs-select-item
-                v-for="(item,index) in projectTypeStatus"
-                :key="index"
-                :value="item.Value"
-                :text="item.Name"
-                class="w-full"
-              />
-            </vs-select>
-            <span class="text-danger text-sm" v-show="errors.has('项目分类')">{{ errors.first('项目分类') }}</span>
-          </div>
+        <!-- 排序 -->
+        <div class="vx-col md:w-1/2 w-full mt-4">
+          <vs-input label="排序" v-model="data_local.Sort" class="w-full" />
+        </div>
+        <!-- 备注 -->
+        <div class="vx-col md:w-1/2 w-full mt-4">
+          <vs-input label="备注" v-model="data_local.Remark" class="w-full" />
+        </div>
+
+        <!-- 所属行业 -->
+        <div class="vx-col md:w-1/2 w-full mt-4">
+          <vs-select label="所属行业" v-model="data_local.Industry" class="w-full select-large">
+            <vs-select-item
+              v-for="(item,index) in industryOptions"
+              :key="index"
+              :value="item.Value"
+              :text="item.Name"
+              class="w-full"
+            />
+          </vs-select>
+        </div>
+        <!-- 所在省 -->
+        <div class="vx-col md:w-1/2 w-full mt-4">
+          <vs-select label="所在省" v-model="data_local.Province" class="w-full select-large">
+            <vs-select-item
+              v-for="(item,index) in provinceOptions"
+              :key="index"
+              :value="item.Value"
+              :text="item.Name"
+              class="w-full"
+            />
+          </vs-select>
+        </div>
+
+        <!-- 所在市 -->
+        <div class="vx-col md:w-1/2 w-full mt-4">
+          <vs-select label="所在市" v-model="data_local.City" class="w-full select-large">
+            <vs-select-item
+              v-for="(item,index) in cityOptions"
+              :key="index"
+              :value="item.Value"
+              :text="item.Name"
+              class="w-full"
+            />
+          </vs-select>
+        </div>
+        <!-- 所在区 -->
+        <div class="vx-col md:w-1/2 w-full mt-4">
+          <vs-select label="所在区" v-model="data_local.County" class="w-full select-large">
+            <vs-select-item
+              v-for="(item,index) in countyOptions"
+              :key="index"
+              :value="item.Value"
+              :text="item.Name"
+              class="w-full"
+            />
+          </vs-select>
+        </div>
+
+        <!-- 所在市 -->
+        <div class="vx-col md:w-1/2 w-full mt-4">
+          <vs-select label="所在市" v-model="data_local.Street" class="w-full select-large">
+            <vs-select-item
+              v-for="(item,index) in streetOptions"
+              :key="index"
+              :value="item.Value"
+              :text="item.Name"
+              class="w-full"
+            />
+          </vs-select>
         </div>
       </div>
 
@@ -147,7 +176,11 @@ export default {
       data_local: {},
       marriageOptions: [],
       genderOptions: [],
-      projectTypeStatus: []
+      industryOptions: [],
+      provinceOptions:[],
+      cityOptions:[],
+      countyOptions:[],
+      streetOptions:[],
     };
   },
   computed: {},
@@ -160,11 +193,6 @@ export default {
   },
   mounted() {},
   methods: {
-    // initData() {
-    //   let params = this.$route.params;
-    //   this.id = params.id;
-    //   this.mark = params.mark;
-    // },
     loadData() {
       if (!this.projectItemId) return;
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));

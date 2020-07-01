@@ -134,17 +134,26 @@ export default {
         {
           path: "-",
           icon: "FileIcon",
-          name: "用户角色管理",
+          name: "职工管理",
           children: [
             {
-              path: "/roles",
-              url: "/roles",
-              name: "角色管理",
-              slug: "roles",
-              component: "views/User/Roles",
+              path: "/unit",
+              url: "/unit",
+              name: "职工单位管理",
+              slug: "unit",
+              component: "views/staff/unit/List",
               meta: {
-                title: "角色管理",
-                authRequired: true
+                title: "职工单位管理"
+              }
+            },
+            {
+              path: "/position",
+              url: "/position",
+              name: "职位管理",
+              slug: "position",
+              component: "views/staff/position/List",
+              meta: {
+                title: "职位管理"
               }
             }
           ]

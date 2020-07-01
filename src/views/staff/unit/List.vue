@@ -1,26 +1,14 @@
 <template>
   <div class="data-list-container">
     <vs-popup :title="title" :active.sync="popupActive">
-      <project-item-edit
+      <unit-edit
         @closePop="closePop"
         @loadData="loadData"
-        :projectItemId="projectItemId"
+        :unitId="unitId"
         :key="timer"
         :mark="mark"
       />
     </vs-popup>
-
-    <vx-card ref="filterCard" title class="user-list-filters mb-8">
-      <vs-row vs-align="center">
-        <label class="vx-col label-name px-2">项目类型名称</label>
-        <vs-input
-          placeholder
-          v-model="singleNameInput"
-          class="vx-col md:w-1/6 sm:w-1/2 w-full px-2"
-        />
-        <vs-button class="vx-col" color="primary" type="border" @click="loadData">查询</vs-button>
-      </vs-row>
-    </vx-card>
 
     <div class="vx-card p-6">
       <vs-table ref="table" stripe :data="types">
@@ -97,17 +85,16 @@
 </template>
 
 <script>
-import ProjectItemEdit from "./Edit";
-import { getProjectItems } from "@/http/package.js";
+import UnitEdit from "./Edit";
+import { getEmployeeUnitls } from "@/http/staff.js";
 export default {
   components: {
-    ProjectItemEdit
+    UnitEdit
   },
   data() {
     return {
       //Page
       types: [],
-      singleNameInput: null,
       itemsPerPage: 10,
       currentPage: 1,
       totalPage: 0,
@@ -117,31 +104,28 @@ export default {
       // Pop
       title: null,
       popupActive: false,
-      projectItemId: null,
+      unitId: null,
       timer: "",
-      mark:null,
+      mark: null
     };
   },
   computed: {},
   methods: {
     loadData() {
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+      console.log("12:", userInfo);
 
       let para = {
         pageIndex: this.currentPage,
         pageSize: this.itemsPerPage,
-        mecid: userInfo.mecID,
-        typename: this.typeNameInput
+        id: userInfo.uid
       };
-
-      if (this.singleNameInput) {
-        para.singleName = this.singleNameInput;
-      }
-
-      getProjectItems(para).then(res => {
+      console.log("1:", para);
+      getEmployeeUnitls(para).then(res => {
+          console.log(3)
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
-          console.log("单项：", data);
+          console.log("单位：", data);
           this.types = data.Items;
           this.totalPage = data.TotalPages;
           this.totalItems = data.TotalItems;
@@ -150,13 +134,10 @@ export default {
     },
     //#region 弹窗
     addNewData() {
-      // this.$router
-      //   .push({ name: "project_item_edit", params: { mark: "add" } })
-      //   .catch(() => {});
-      this.projectItemId = null;
+      this.unitId = null;
       this.popupActive = true;
-      this.title = "添加项目单项信息";
-      this.mark='add';
+      this.title = "添加职工单位";
+      this.mark = "add";
       this.handleLoad();
     },
     editData(id) {

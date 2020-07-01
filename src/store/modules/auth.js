@@ -34,6 +34,7 @@ const actions = {
               buttons
             } = res;
             userData.mecID = "6467685114320248832";
+            userData.companyID = "3467685114320248821";
             // const token = res.accessToken;
             // const accessTime = res.accessExpiration;
             // const refreshTime = res.refreshExpiration;

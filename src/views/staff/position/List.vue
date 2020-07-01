@@ -1,10 +1,10 @@
 <template>
   <div class="data-list-container">
     <vs-popup :title="title" :active.sync="popupActive">
-      <project-item-edit
+      <unit-edit
         @closePop="closePop"
         @loadData="loadData"
-        :projectItemId="projectItemId"
+        :positionId="positionId"
         :key="timer"
         :mark="mark"
       />
@@ -12,12 +12,13 @@
 
     <vx-card ref="filterCard" title class="user-list-filters mb-8">
       <vs-row vs-align="center">
-        <label class="vx-col label-name px-2">项目类型名称</label>
+        <label class="vx-col label-name px-2">职位名称</label>
         <vs-input
-          placeholder
-          v-model="singleNameInput"
+          placeholder="Placeholder"
+          v-model="positionNameInput"
           class="vx-col md:w-1/6 sm:w-1/2 w-full px-2"
         />
+
         <vs-button class="vx-col" color="primary" type="border" @click="loadData">查询</vs-button>
       </vs-row>
     </vx-card>
@@ -32,10 +33,9 @@
 
         <template slot="thead">
           <vs-th>编号</vs-th>
-          <vs-th>项目单项名称</vs-th>
-          <vs-th>是否作为项目使用</vs-th>
+          <vs-th>职位名称</vs-th>
           <vs-th>排序</vs-th>
-          <vs-th>是否锁定</vs-th>
+          <vs-th>备注</vs-th>
           <vs-th>修改人</vs-th>
           <vs-th>创建时间</vs-th>
           <vs-th>操作</vs-th>
@@ -47,17 +47,14 @@
               <vs-td>
                 <p>{{ indextr+1 }}</p>
               </vs-td>
-              <vs-td :data="tr.SingleName">
-                <p>{{ tr.SingleName }}</p>
-              </vs-td>
               <vs-td>
-                <p>{{ tr.IsOptional?'是':'否' }}</p>
+                <p>{{ tr.PositionName }}</p>
               </vs-td>
               <vs-td>
                 <p>{{ tr.Sort }}</p>
               </vs-td>
               <vs-td>
-                <p>{{ tr.IsLocked?'是':'否' }}</p>
+                <p>{{ tr.Remark }}</p>
               </vs-td>
               <vs-td>
                 <p class="product-category">{{ tr.ModifyName}}</p>
@@ -89,37 +86,35 @@
         :size="itemsPerPage"
       ></vs-pagination>
     </div>
-
-    <!-- <div class="vx-card p-6" style="position: fixed;bottom: 0;width: calc(100% - 4.4rem - 260px);z-index: 9919;">
-       
-    </div>-->
   </div>
 </template>
 
 <script>
-import ProjectItemEdit from "./Edit";
-import { getProjectItems } from "@/http/package.js";
+import UnitEdit from "./Edit";
+import { getPositions } from "@/http/staff.js";
 export default {
   components: {
-    ProjectItemEdit
+    UnitEdit
   },
   data() {
     return {
       //Page
       types: [],
-      singleNameInput: null,
       itemsPerPage: 10,
       currentPage: 1,
       totalPage: 0,
       descriptionItems: [10, 20, 50, 100],
       totalItems: 0,
 
+      //filter
+      positionNameInput: null,
+
       // Pop
       title: null,
       popupActive: false,
-      projectItemId: null,
+      positionId: null,
       timer: "",
-      mark:null,
+      mark: null
     };
   },
   computed: {},
@@ -130,18 +125,14 @@ export default {
       let para = {
         pageIndex: this.currentPage,
         pageSize: this.itemsPerPage,
-        mecid: userInfo.mecID,
-        typename: this.typeNameInput
+        companyId: userInfo.companyID,
+        positionName: this.positionNameInput
       };
-
-      if (this.singleNameInput) {
-        para.singleName = this.singleNameInput;
-      }
-
-      getProjectItems(para).then(res => {
+      getPositions(para).then(res => {
+        console.log(3);
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
-          console.log("单项：", data);
+          console.log("职位：", data);
           this.types = data.Items;
           this.totalPage = data.TotalPages;
           this.totalItems = data.TotalItems;
@@ -150,19 +141,18 @@ export default {
     },
     //#region 弹窗
     addNewData() {
-      // this.$router
-      //   .push({ name: "project_item_edit", params: { mark: "add" } })
-      //   .catch(() => {});
-      this.projectItemId = null;
+      this.positionId = null;
       this.popupActive = true;
-      this.title = "添加项目单项信息";
-      this.mark='add';
+      this.title = "添加职位信息";
+      this.mark = "add";
       this.handleLoad();
     },
     editData(id) {
-      this.$router
-        .push({ name: "project_item_edit", params: { mark: "edit", id: id } })
-        .catch(() => {});
+      this.positionId = null;
+      this.popupActive = true;
+      this.title = "修改职位信息";
+      this.mark = "edit";
+      this.handleLoad();
     },
     handleLoad() {
       this.timer = new Date().getTime();
