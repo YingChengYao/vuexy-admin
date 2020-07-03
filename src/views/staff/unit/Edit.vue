@@ -74,56 +74,6 @@
             />
           </vs-select>
         </div>
-        <!-- 所在省 -->
-        <div class="vx-col md:w-1/2 w-full mt-4">
-          <vs-select label="所在省" v-model="data_local.Province" class="w-full select-large">
-            <vs-select-item
-              v-for="(item,index) in provinceOptions"
-              :key="index"
-              :value="item.Value"
-              :text="item.Name"
-              class="w-full"
-            />
-          </vs-select>
-        </div>
-
-        <!-- 所在市 -->
-        <div class="vx-col md:w-1/2 w-full mt-4">
-          <vs-select label="所在市" v-model="data_local.City" class="w-full select-large">
-            <vs-select-item
-              v-for="(item,index) in cityOptions"
-              :key="index"
-              :value="item.Value"
-              :text="item.Name"
-              class="w-full"
-            />
-          </vs-select>
-        </div>
-        <!-- 所在区 -->
-        <div class="vx-col md:w-1/2 w-full mt-4">
-          <vs-select label="所在区" v-model="data_local.County" class="w-full select-large">
-            <vs-select-item
-              v-for="(item,index) in countyOptions"
-              :key="index"
-              :value="item.Value"
-              :text="item.Name"
-              class="w-full"
-            />
-          </vs-select>
-        </div>
-
-        <!-- 所在市 -->
-        <div class="vx-col md:w-1/2 w-full mt-4">
-          <vs-select label="所在市" v-model="data_local.Street" class="w-full select-large">
-            <vs-select-item
-              v-for="(item,index) in streetOptions"
-              :key="index"
-              :value="item.Value"
-              :text="item.Name"
-              class="w-full"
-            />
-          </vs-select>
-        </div>
       </div>
 
       <!-- Save & Reset Button -->
@@ -177,15 +127,10 @@ export default {
       marriageOptions: [],
       genderOptions: [],
       industryOptions: [],
-      provinceOptions:[],
-      cityOptions:[],
-      countyOptions:[],
-      streetOptions:[],
     };
   },
   computed: {},
   created() {
-    //this.initData();
     this.loadMaritalStatus();
     this.loadGender();
     this.loadItemTypeData();

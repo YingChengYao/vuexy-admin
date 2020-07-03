@@ -32,9 +32,9 @@ export const addPosition = params => {
 };
 
 //获取职位信息详情
-export const addPosition1 = params => {
+export const editPosition = params => {
   return request({
-    url: "/api/company/position/insert",
+    url: "/api/company/position/update",
     method: "post",
     params: params
   });

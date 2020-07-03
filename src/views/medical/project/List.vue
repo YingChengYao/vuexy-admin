@@ -15,6 +15,20 @@
                 v-model="itemNameInput"
                 class="vx-col md:w-1/6 sm:w-1/2 w-full px-2"
               />
+
+              <label class="vx-col label-name px-2">是否锁定</label>
+              <vs-select
+                v-model="isLockedSelect"
+                class="vx-col md:w-1/6 sm:w-1/2 w-full px-2 select-large"
+              >
+                <vs-select-item
+                  v-for="(item,index) in isLockedSelectOptions"
+                  :key="index"
+                  :value="item.value"
+                  :text="item.name"
+                  class="w-full"
+                />
+              </vs-select>
               <vs-button class="vx-col" color="primary" type="border" @click="loadData">查询</vs-button>
             </vs-row>
           </vx-card>
@@ -88,7 +102,7 @@
                     </vx-tooltip>
 
                     <vs-td>
-                      <p>{{ tr.ItemPrice }}</p>
+                      <p v-if="!tr.Children">{{ tr.ItemPrice }}</p>
                     </vs-td>
                     <vs-td>
                       <vs-chip
@@ -105,16 +119,16 @@
                       >{{ tr.GenderName}}</vs-chip>
                     </vs-td>
                     <vs-td>
-                      <p>{{ tr.Sort }}</p>
+                      <p v-if="!tr.Children">{{tr.Sort }}</p>
                     </vs-td>
                     <vs-td>
-                      <p>{{ tr.IsLocked?'是':'否' }}</p>
+                      <p v-if="!tr.Children">{{ tr.IsLocked?'是':'否' }}</p>
                     </vs-td>
                     <vs-td>
-                      <p>{{ tr.ModifyName }}</p>
+                      <p v-if="!tr.Children">{{ tr.ModifyName }}</p>
                     </vs-td>
                     <vs-td>
-                      <p>{{ tr.ModifyTime | formatDate }}</p>
+                      <p v-if="!tr.Children">{{ tr.ModifyTime | formatDate }}</p>
                     </vs-td>
                     <vs-td class="whitespace-no-wrap" v-if="!isPop">
                       <span
@@ -195,9 +209,24 @@ export default {
 
       items: [],
       initItems: [],
+      isLockedSelectOptions: [
+        {
+          name: "请选择",
+          value: null
+        },
+        {
+          name: "否",
+          value: false
+        },
+        {
+          name: "是",
+          value: true
+        }
+      ],
 
       //filter
       itemNameInput: "",
+      isLockedSelect: false,
 
       //Page
       itemsPerPage: 10,
@@ -231,7 +260,8 @@ export default {
         pageIndex: this.currentPage,
         pageSize: this.itemsPerPage,
         itemName: this.itemNameInput,
-        mecid: userInfo.mecID
+        mecid: userInfo.mecID,
+        isLocked: this.isLockedSelect
       };
 
       getItems(para).then(res => {

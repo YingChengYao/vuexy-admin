@@ -119,7 +119,7 @@ export default {
       popupActive: false,
       projectItemId: null,
       timer: "",
-      mark:null,
+      mark: null
     };
   },
   computed: {},
@@ -150,19 +150,18 @@ export default {
     },
     //#region 弹窗
     addNewData() {
-      // this.$router
-      //   .push({ name: "project_item_edit", params: { mark: "add" } })
-      //   .catch(() => {});
       this.projectItemId = null;
       this.popupActive = true;
       this.title = "添加项目单项信息";
-      this.mark='add';
+      this.mark = "add";
       this.handleLoad();
     },
     editData(id) {
-      this.$router
-        .push({ name: "project_item_edit", params: { mark: "edit", id: id } })
-        .catch(() => {});
+      this.projectItemId = id;
+      this.popupActive = true;
+      this.title = "修改项目单项信息";
+      this.mark = "edit";
+      this.handleLoad();
     },
     handleLoad() {
       this.timer = new Date().getTime();

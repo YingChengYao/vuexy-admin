@@ -1,6 +1,6 @@
 <template>
   <div id="user-edit-tab-info">
-    <vx-card title="项目单项信息">
+    <vx-card title="">
       <div class="vx-row">
         <div class="vx-col md:w-1/2 w-full">
           <vs-input
@@ -160,12 +160,8 @@ export default {
   },
   mounted() {},
   methods: {
-    // initData() {
-    //   let params = this.$route.params;
-    //   this.id = params.id;
-    //   this.mark = params.mark;
-    // },
     loadData() {
+      console.log(this.projectItemId);
       if (!this.projectItemId) return;
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
 

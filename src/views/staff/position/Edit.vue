@@ -1,5 +1,5 @@
 <template>
-  <div id="user-edit-tab-info">
+  <div>
     <vx-card title>
       <div class="vx-row">
         <!-- 职位名称 -->
@@ -15,7 +15,13 @@
         </div>
         <!-- 排序 -->
         <div class="vx-col md:w-1/2 w-full mt-4">
-          <vs-input label="排序" v-model="data_local.Sort" class="w-full" name="排序" v-validate="'numeric'" />
+          <vs-input
+            label="排序"
+            v-model="data_local.Sort"
+            class="w-full"
+            name="排序"
+            v-validate="'numeric'"
+          />
           <span class="text-danger text-sm" v-show="errors.has('排序')">{{ errors.first('排序') }}</span>
         </div>
 
@@ -39,25 +45,12 @@
 </template>
 
 <script>
-import vSelect from "vue-select";
-
-import {
-  getProjectTypeDataSource,
-  getMaritalDataSource,
-  getGenderDataSource
-} from "@/http/data_source.js";
 import { addPosition } from "@/http/staff.js";
 
 export default {
   name: "",
-  components: {
-    vSelect
-  },
+  components: {},
   props: {
-    positionId: {
-      type: String,
-      default: null
-    },
     mark: {
       type: String,
       default: null
@@ -65,44 +58,13 @@ export default {
   },
   data() {
     return {
-      //id: null,
-      //mark: null,
-
-      data_local: {},
-      marriageOptions: [],
-      genderOptions: [],
-      industryOptions: [],
-      provinceOptions: [],
-      cityOptions: [],
-      countyOptions: [],
-      streetOptions: []
+      data_local: {}
     };
   },
   computed: {},
-  created() {
-    //this.initData();
-    this.loadMaritalStatus();
-    this.loadGender();
-    this.loadItemTypeData();
-    this.loadData();
-  },
+  created() {},
   mounted() {},
   methods: {
-    loadData() {
-      if (!this.positionId) return;
-      let userInfo = JSON.parse(localStorage.getItem("userInfo"));
-
-      let para = {
-        companyID: userInfo.companyID,
-        positionName: this.data_local.PositionName
-      };
-      getProjectItemDetails(para).then(res => {
-        if (res.resultType == 0) {
-          const data = JSON.parse(res.message);
-          this.data_local = data;
-        }
-      });
-    },
     save_changes() {
       this.$validator.validateAll().then(result => {
         if (result) {
@@ -110,7 +72,7 @@ export default {
 
           let para = {
             companyID: userInfo.companyID,
-            positionName1: this.data_local.PositionName,
+            positionName: this.data_local.PositionName,
             sort: this.data_local.Sort,
             remark: this.data_local.Remark
           };
@@ -127,56 +89,12 @@ export default {
                 this.cancel();
               }
             });
-          } else if (this.mark == "edit") {
-            para.ID = this.positionId;
-            para.isLocked = this.data_local.IsLocked;
-            editProjectItem(para).then(res => {
-              if (res.resultType == 0) {
-                this.$vs.notify({
-                  title: "Success",
-                  text: res.message,
-                  color: "success"
-                });
-                this.$emit("loadData");
-                this.cancel();
-              }
-            });
           }
         }
       });
     },
     cancel() {
-      //this.$router.push("/project_item").catch(() => {});
       this.$emit("closePop", false);
-    },
-    loadMaritalStatus() {
-      getMaritalDataSource().then(res => {
-        if (res.resultType == 0) {
-          const data = JSON.parse(res.message);
-          this.marriageOptions = data;
-        }
-      });
-    },
-    loadGender() {
-      getGenderDataSource().then(res => {
-        if (res.resultType == 0) {
-          const data = JSON.parse(res.message);
-          this.genderOptions = data;
-          console.log("性别：", data);
-        }
-      });
-    },
-    loadItemTypeData() {
-      let userInfo = JSON.parse(localStorage.getItem("userInfo"));
-      let para = {
-        mecid: userInfo.mecID
-      };
-      getProjectTypeDataSource(para).then(res => {
-        if (res.resultType == 0) {
-          const data = JSON.parse(res.message);
-          this.projectTypeStatus = data;
-        }
-      });
     }
   }
 };

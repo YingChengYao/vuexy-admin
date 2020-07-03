@@ -38,7 +38,6 @@
           <vs-th>备注</vs-th>
           <vs-th>修改人</vs-th>
           <vs-th>创建时间</vs-th>
-          <vs-th>操作</vs-th>
         </template>
 
         <template slot-scope="{data}">
@@ -62,14 +61,37 @@
               <vs-td>
                 <p>{{ tr.ModifyTime | formatDate }}</p>
               </vs-td>
-              <vs-td class="whitespace-no-wrap">
+              <!-- <vs-td class="whitespace-no-wrap">
                 <span
                   class="text-primary"
                   size="small"
                   type="border"
                   @click.stop="editData(tr.ID)"
                 >编辑</span>
-              </vs-td>
+              </vs-td>-->
+
+              <template slot="expand">
+                <div class="w-full">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center justify-start">
+                      <p class="px-2">职位</p>
+                      <vs-input v-model="tr.PositionName" class="inputx" name="'职位名称'" />
+                    </div>
+
+                    <div class="flex items-center justify-start">
+                      <p class="px-2">排序</p>
+                      <vs-input v-model="tr.Sort" class="inputx" placeholder />
+                    </div>
+                    <div class="flex items-center justify-start">
+                      <p class="px-2">备注</p>
+                      <vs-input v-model="tr.Remark" class="inputx" placeholder />
+                    </div>
+                    <div class="flex">
+                      <vs-button type="border" size="small" class="mr-2" @click="save(tr)">保存</vs-button>
+                    </div>
+                  </div>
+                </div>
+              </template>
             </vs-tr>
           </tbody>
         </template>
@@ -91,7 +113,7 @@
 
 <script>
 import UnitEdit from "./Edit";
-import { getPositions } from "@/http/staff.js";
+import { getPositions, editPosition } from "@/http/staff.js";
 export default {
   components: {
     UnitEdit
@@ -161,6 +183,25 @@ export default {
       this.popupActive = false;
     },
     //#endregion
+    save(tr) {
+      let para = {
+        id: tr.ID,
+        positionName: tr.PositionName,
+        sort: tr.Sort,
+        remark: tr.Remark
+      };
+      console.log(para)
+      editPosition(para).then(res => {
+        if (res.resultType == 0) {
+          this.$vs.notify({
+            title: "Success",
+            text: res.message,
+            color: "success"
+          });
+          this.loadData();
+        }
+      });
+    },
 
     changePageMaxItems(index) {
       this.itemsPerPage = this.descriptionItems[index];

@@ -75,7 +75,10 @@
           <vs-input class="w-full" label="备注" v-model="data_local.Remark" name="备注" />
           <span class="text-danger text-sm" v-show="errors.has('备注')">{{ errors.first('备注') }}</span>
         </div>
-        <div class="vx-col md:w-1/2 w-full mt-4"></div>
+        <div class="vx-col md:w-1/2 w-full mt-6">
+          <label class="vs-input--label">是否锁定</label>
+          <vs-switch v-model="data_local.IsLocked" />
+        </div>
 
         <div class="vx-col w-full mt-4">
           <vs-select
@@ -227,7 +230,8 @@ export default {
             gender: this.data_local.Gender,
             remark: this.data_local.Remark,
             sort: this.data_local.Sort,
-            mecid: userInfo.mecID
+            mecid: userInfo.mecID,
+            isLocked: this.data_local.isLocked
           };
 
           if (!this.projectId) {

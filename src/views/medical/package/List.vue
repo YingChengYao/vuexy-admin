@@ -8,13 +8,23 @@
           v-model="packageNameInput"
           class="vx-col md:w-1/6 sm:w-1/2 w-full px-2"
         />
+        <label class="vx-col label-name px-2">是否锁定</label>
+        <vs-select v-model="isLockedSelect" class="vx-col md:w-1/6 sm:w-1/2 w-full px-2 select-large">
+          <vs-select-item
+            v-for="(item,index) in isLockedSelectOptions"
+            :key="index"
+            :value="item.value"
+            :text="item.name"
+            class="w-full"
+          />
+        </vs-select>
 
         <vs-button class="vx-col" color="primary" type="border" @click="loadData">查询</vs-button>
       </vs-row>
     </vx-card>
 
     <div class="vx-card p-6">
-      <vs-table ref="table" multiple v-model="selected" :data="items" stripe>
+      <vs-table ref="table" :data="items" stripe>
         <div slot="header" class="flex flex-wrap-reverse items-center flex-grow justify-between">
           <div class="flex flex-wrap-reverse items-center data-list-btn-container header-left">
             <vs-button color="primary" type="border" class="mb-4 mr-4" @click="addNewData">添加</vs-button>
@@ -29,7 +39,6 @@
           <vs-th>性别</vs-th>
           <vs-th>排序</vs-th>
           <vs-th>是否锁定</vs-th>
-          <vs-th>描述</vs-th>
           <vs-th>修改人</vs-th>
           <vs-th>修改时间</vs-th>
           <vs-th>操作</vs-th>
@@ -66,9 +75,6 @@
               </vs-td>
               <vs-td>
                 <p>{{ tr.IsLocked?'是':'否' }}</p>
-              </vs-td>
-              <vs-td>
-                <p>{{ tr.Remark }}</p>
               </vs-td>
               <vs-td>
                 <p>{{ tr.ModifyName }}</p>
@@ -115,9 +121,25 @@ export default {
   components: {},
   data() {
     return {
-      selected: [],
       items: [],
-      isMounted: false,
+      isLockedSelectOptions: [
+        {
+          name: "请选择",
+          value: null
+        },
+        {
+          name: "否",
+          value: false
+        },
+        {
+          name: "是",
+          value: true
+        }
+      ],
+
+      //filter
+      packageNameInput: "",
+      isLockedSelect: false,
 
       //Page
       itemsPerPage: 10,
@@ -128,9 +150,7 @@ export default {
 
       // Data Sidebar
       addNewDataSidebar: false,
-      sidebarData: {},
-
-      packageNameInput: ""
+      sidebarData: {}
     };
   },
   computed: {},
@@ -142,7 +162,8 @@ export default {
         pageIndex: this.currentPage,
         pageSize: this.itemsPerPage,
         mecid: userInfo.mecID,
-        packageName: this.packageNameInput
+        packageName: this.packageNameInput,
+        isLocked:this.isLockedSelect
       };
 
       getPackages(para).then(res => {

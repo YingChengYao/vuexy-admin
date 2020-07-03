@@ -232,6 +232,7 @@ export default {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.packageTypeOptions = data;
+          console.log("data:",data)
         }
       });
     }

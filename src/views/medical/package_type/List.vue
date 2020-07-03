@@ -16,12 +16,26 @@
           class="vx-col md:w-1/6 sm:w-1/2 w-full px-2"
         />
 
+        <label class="vx-col label-name px-2">是否锁定</label>
+        <vs-select
+          v-model="isLockedSelect"
+          class="vx-col md:w-1/6 sm:w-1/2 w-full px-2 select-large"
+        >
+          <vs-select-item
+            v-for="(item,index) in isLockedSelectOptions"
+            :key="index"
+            :value="item.value"
+            :text="item.name"
+            class="w-full"
+          />
+        </vs-select>
+
         <vs-button class="vx-col" color="primary" type="border" @click="loadData">查询</vs-button>
       </vs-row>
     </vx-card>
 
     <div class="vx-card p-6">
-      <vs-table ref="table" multiple stripe v-model="selected" :data="types">
+      <vs-table ref="table" stripe :data="types">
         <div slot="header" class="flex flex-wrap-reverse items-center flex-grow justify-between">
           <div class="flex flex-wrap-reverse items-center data-list-btn-container header-left">
             <vs-button color="primary" type="border" class="mb-4 mr-4" @click="addNewData">添加</vs-button>
@@ -29,38 +43,23 @@
         </div>
 
         <template slot="thead">
-          <vs-th sort-key="id" v-show="false">ID</vs-th>
-          <vs-th sort-key="id">编号</vs-th>
-          <vs-th sort-key="package_type_name">套餐类型名称</vs-th>
-          <vs-th sort-key="remark">描述</vs-th>
-          <vs-th sort-key="sort">排序</vs-th>
-          <vs-th sort-key="is_locked">是否锁定</vs-th>
-          <vs-th sort-key="modify_name">修改人</vs-th>
-          <vs-th sort-key="modify_time">创建时间</vs-th>
+          <vs-th>编号</vs-th>
+          <vs-th>套餐类型名称</vs-th>
+          <vs-th>排序</vs-th>
+          <vs-th>是否锁定</vs-th>
+          <vs-th>修改人</vs-th>
+          <vs-th>创建时间</vs-th>
           <vs-th>操作</vs-th>
         </template>
 
         <template slot-scope="{data}">
           <tbody>
             <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data">
-              <vs-td v-show="false">
-                <p>{{ tr.ID }}</p>
+              <vs-td>
+                <p>{{ indextr+1 }}</p>
               </vs-td>
               <vs-td>
-                <p>{{ indextr }}</p>
-              </vs-td>
-              <vs-td :data="tr.TypeName">
                 <p>{{ tr.TypeName }}</p>
-                <!-- <template slot="edit">
-                  <vs-input v-model="tr.TypeName" class="inputx" placeholder />
-                  <vs-button color="primary" type="border">更改</vs-button>
-                </template>-->
-              </vs-td>
-              <vs-td :data="tr.Remark">
-                <p>{{ tr.Remark }}</p>
-                <!-- <template slot="edit">
-                  <vs-input v-model="tr.Remark" class="inputx" />
-                </template>-->
               </vs-td>
               <vs-td>
                 <p>{{ tr.Sort }}</p>
@@ -75,11 +74,7 @@
                 <p>{{ tr.ModifyTime | formatDate }}</p>
               </vs-td>
               <vs-td class="whitespace-no-wrap">
-                <feather-icon
-                  icon="EditIcon"
-                  svgClasses="w-5 h-5 hover:text-primary stroke-current"
-                  @click.stop="editData(tr)"
-                />
+                <span class="text-primary" size="small" type="border" @click.stop="editData(tr)">编辑</span>
               </vs-td>
             </vs-tr>
           </tbody>
@@ -113,9 +108,26 @@ export default {
   },
   data() {
     return {
-      selected: [],
       types: [],
-      isMounted: false,
+
+      isLockedSelectOptions: [
+        {
+          name: "请选择",
+          value: null
+        },
+        {
+          name: "否",
+          value: false
+        },
+        {
+          name: "是",
+          value: true
+        }
+      ],
+
+      //filter
+      typeNameInput: "",
+      isLockedSelect: false,
 
       //Page
       itemsPerPage: 4,
@@ -126,9 +138,7 @@ export default {
 
       // Data Sidebar
       addNewDataSidebar: false,
-      sidebarData: {},
-
-      typeNameInput: ""
+      sidebarData: {}
     };
   },
   computed: {},
@@ -140,7 +150,8 @@ export default {
         pageIndex: this.currentPage,
         pageSize: this.itemsPerPage,
         mecID: userInfo.mecID,
-        typeName: this.typeNameInput
+        typeName: this.typeNameInput,
+        isLocked: this.isLockedSelect
       };
 
       getPackageTypes(para).then(res => {
@@ -176,7 +187,6 @@ export default {
     }
   },
   mounted() {
-    this.isMounted = true;
     this.loadData();
   },
   watch: {
