@@ -61,14 +61,6 @@
               <vs-td>
                 <p>{{ tr.ModifyTime | formatDate }}</p>
               </vs-td>
-              <!-- <vs-td class="whitespace-no-wrap">
-                <span
-                  class="text-primary"
-                  size="small"
-                  type="border"
-                  @click.stop="editData(tr.ID)"
-                >编辑</span>
-              </vs-td>-->
 
               <template slot="expand">
                 <div class="w-full">

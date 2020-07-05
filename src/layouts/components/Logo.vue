@@ -1,5 +1,5 @@
 <template>
-  <svg viewBox="0 0 139 95" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <!-- <svg viewBox="0 0 139 95" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
       <defs>
           <linearGradient x1="100%" y1="10.5120544%" x2="50%" y2="89.4879456%" id="linearGradient-1">
               <stop stop-color="#000000" offset="0%"></stop>
@@ -21,5 +21,6 @@
               </g>
           </g>
       </g>
-  </svg>
+  </svg>-->
+  <vs-icon style="width:2.5rem;height:2.5rem;font-size:2rem" icon-pack="iconfont icon-quanrenlogo"></vs-icon>
 </template>

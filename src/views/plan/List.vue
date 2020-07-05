@@ -1,30 +1,43 @@
 <template>
   <div class="data-list-container">
-    <vs-popup :title="title" :active.sync="popupActive">
-      <unit-edit
+    <vs-popup fullscreen :title="title" :active.sync="popupActive">
+      <plan-edit
         @closePop="closePop"
         @loadData="loadData"
-        :unitId="unitId"
+        @changeEmployeePop="changeEmployeePop"
+        @changeStandardPop="changeStandardPop"
+        @delStandard="delStandard"
+        @delEmployee="delEmployee"
+        @bindEmployee="bindEmployee"
+        :planId="planId"
         :key="timer"
         :mark="mark"
+        :workers="workers"
+        :standards="standards"
       />
+
+      <vs-popup title="添加标准" :active.sync="popupActiveStandard">
+        <standard-add :data="standardData" @closePop="closeStandardPop" @addStandard="addStandard" />
+      </vs-popup>
+      <vs-popup fullscreen title="添加职工" :active.sync="popupActiveEmployee">
+        <staff-employee-list
+          :isSelectedPop="true"
+          @closePop="closeEmployeePop"
+          @saveEmployeeSelected="saveEmployeeSelected"
+        />
+      </vs-popup>
     </vs-popup>
 
     <vx-card ref="filterCard" title class="user-list-filters mb-8">
       <vs-row vs-align="center">
-        <label class="vx-col label-name px-2">单位名称</label>
-        <vs-input
-          placeholder="Placeholder"
-          v-model="unitNameInput"
-          class="vx-col md:w-1/6 sm:w-1/2 w-full px-2"
-        />
-
+        <label class="vx-col label-name px-2">项目类型名称</label>
+        <vs-input placeholder v-model="planNameInput" class="vx-col md:w-1/6 sm:w-1/2 w-full px-2" />
         <vs-button class="vx-col" color="primary" type="border" @click="loadData">查询</vs-button>
       </vs-row>
     </vx-card>
 
     <div class="vx-card p-6">
-      <vs-table ref="table" stripe :data="types">
+      <vs-table ref="table" stripe :data="plans">
         <div slot="header" class="flex flex-wrap-reverse items-center flex-grow justify-between">
           <div class="flex flex-wrap-reverse items-center data-list-btn-container header-left">
             <vs-button color="primary" type="border" class="mb-4 mr-4" @click="addNewData">添加</vs-button>
@@ -33,9 +46,9 @@
 
         <template slot="thead">
           <vs-th>编号</vs-th>
-          <vs-th>项目单项名称</vs-th>
-          <vs-th>是否作为项目使用</vs-th>
+          <vs-th>计划名称</vs-th>
           <vs-th>排序</vs-th>
+          <vs-th>状态</vs-th>
           <vs-th>是否锁定</vs-th>
           <vs-th>修改人</vs-th>
           <vs-th>创建时间</vs-th>
@@ -48,14 +61,14 @@
               <vs-td>
                 <p>{{ indextr+1 }}</p>
               </vs-td>
-              <vs-td :data="tr.SingleName">
-                <p>{{ tr.SingleName }}</p>
-              </vs-td>
               <vs-td>
-                <p>{{ tr.IsOptional?'是':'否' }}</p>
+                <p>{{ tr.PlanName }}</p>
               </vs-td>
               <vs-td>
                 <p>{{ tr.Sort }}</p>
+              </vs-td>
+              <vs-td>
+                <p>{{ tr.StatusName }}</p>
               </vs-td>
               <vs-td>
                 <p>{{ tr.IsLocked?'是':'否' }}</p>
@@ -68,11 +81,18 @@
               </vs-td>
               <vs-td class="whitespace-no-wrap">
                 <span
-                  class="text-primary"
+                  class="text-primary px-2"
                   size="small"
                   type="border"
                   @click.stop="editData(tr.ID)"
+                  v-if="tr.Status==1"
                 >编辑</span>
+                <span
+                  class="text-primary"
+                  size="small"
+                  type="border"
+                  @click.stop="submitMePlan(tr.ID)"
+                >提交</span>
               </vs-td>
             </vs-tr>
           </tbody>
@@ -98,31 +118,38 @@
 </template>
 
 <script>
-import UnitEdit from "./Edit";
-import { getEmployeeUnits } from "@/http/staff.js";
+import PlanEdit from "./Edit";
+import StandardAdd from "./standard/Add";
+import StaffEmployeeList from "../staff/employee/List";
+import { getPlans, submitPlan } from "@/http/plan.js";
 export default {
   components: {
-    UnitEdit
+    PlanEdit,
+    StandardAdd,
+    StaffEmployeeList
   },
   data() {
     return {
       //Page
-      types: [],
+      plans: [],
+      planNameInput: null,
       itemsPerPage: 10,
       currentPage: 1,
       totalPage: 0,
       descriptionItems: [10, 20, 50, 100],
       totalItems: 0,
 
-      //filter
-      unitNameInput: null,
-
       // Pop
       title: null,
       popupActive: false,
-      unitId: null,
+      planId: null,
       timer: "",
-      mark: null
+      mark: null,
+      popupActiveStandard: false,
+      standardData: {},
+      popupActiveEmployee: false,
+      workers: [],
+      standards: []
     };
   },
   computed: {},
@@ -133,37 +160,100 @@ export default {
       let para = {
         pageIndex: this.currentPage,
         pageSize: this.itemsPerPage,
-        id: userInfo.uid
+        mecid: userInfo.mecID
       };
-      getEmployeeUnits(para).then(res => {
-        console.log(3);
+
+      if (this.planNameInput) {
+        para.planName = this.planNameInput;
+      }
+
+      getPlans(para).then(res => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
-          console.log("单位：", data);
-          this.types = data.Items;
+          this.plans = data.Items;
           this.totalPage = data.TotalPages;
           this.totalItems = data.TotalItems;
+          console.log("计划列表：", this.plans);
         }
       });
     },
+    submitMePlan(id) {
+      let para = {
+        id: id
+      };
+      submitPlan(para).then(res => {
+        if (res.resultType == 0) {
+          this.$vs.notify({
+            title: "Success",
+            text: res.message,
+            color: "success"
+          });
+        }
+      });
+    },
+
     //#region 弹窗
     addNewData() {
-      this.unitId = null;
+      this.planId = null;
       this.popupActive = true;
-      this.title = "添加职工单位";
+      this.title = "添加体检计划";
       this.mark = "add";
       this.handleLoad();
     },
     editData(id) {
-      this.$router
-        .push({ name: "project_item_edit", params: { mark: "edit", id: id } })
-        .catch(() => {});
+      this.planId = id;
+      this.popupActive = true;
+      this.title = "修改体检计划信息";
+      this.mark = "edit";
+      this.handleLoad();
     },
     handleLoad() {
       this.timer = new Date().getTime();
     },
     closePop() {
       this.popupActive = false;
+    },
+    //职工
+    changeEmployeePop(data) {
+      this.popupActiveEmployee = data;
+    },
+    saveEmployeeSelected(data) {
+      this.workers = data;
+    },
+    closeEmployeePop() {
+      this.popupActiveEmployee = false;
+    },
+    bindEmployee(data) {
+      this.workers = data;
+    },
+    //标准
+    changeStandardPop(data) {
+      this.standardData = {};
+      this.popupActiveStandard = data;
+    },
+    closeStandardPop() {
+      this.popupActiveStandard = false;
+    },
+    addStandard(data) {
+      this.standards.push(data);
+    },
+    delStandard(data) {
+      if (this.standards.length > 0) {
+        this.standards.map((item, index) => {
+          if (item.Standard === data.Standard) {
+            this.standards.splice(index, 1);
+          }
+        });
+      }
+    },
+    delEmployee(data) {
+      if (this.workers.length > 0) {
+        this.workers.map((item, index) => {
+          if (item.ID === data) {
+            this.workers.splice(index, 1);
+          }
+        });
+      }
     },
     //#endregion
 

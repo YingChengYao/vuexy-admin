@@ -155,6 +155,50 @@ export default {
               meta: {
                 title: "职位管理"
               }
+            },
+            {
+              path: "/employee",
+              url: "/employee",
+              name: "员工管理",
+              slug: "employee",
+              component: "views/staff/employee/List",
+              meta: {
+                title: "员工管理"
+              }
+            }
+          ]
+        },
+        {
+          path: "-",
+          icon: "FileIcon",
+          name: "体检计划",
+          children: [
+            {
+              path: "/plan",
+              url: "/plan",
+              name: "体检计划",
+              slug: "unit",
+              component: "views/plan/List",
+              meta: {
+                title: "体检计划"
+              }
+            }
+          ]
+        },
+        {
+          path: "-",
+          icon: "FileIcon",
+          name: "体检计划",
+          children: [
+            {
+              path: "/physical_plan",
+              url: "/physical_plan",
+              name: "体检计划",
+              slug: "unit",
+              component: "views/medical_examination_center/physical_plan/List",
+              meta: {
+                title: "体检计划"
+              }
             }
           ]
         },

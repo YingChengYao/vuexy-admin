@@ -76,7 +76,7 @@
 import vSelect from "vue-select";
 
 import {
-  getPackageTypes,
+  getPackageTypeDataSource,
   getMaritalDataSource,
   getGenderDataSource
 } from "@/http/data_source.js";
@@ -228,11 +228,11 @@ export default {
       let para = {
         mecid: userInfo.mecID
       };
-      getPackageTypes(para).then(res => {
+      getPackageTypeDataSource(para).then(res => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.packageTypeOptions = data;
-          console.log("data:",data)
+          console.log("标识data:",data)
         }
       });
     }

@@ -29,11 +29,11 @@
           <!-- Logo -->
           <router-link tag="div" class="vx-logo cursor-pointer flex items-center" to="/">
             <logo class="w-10 mr-4 fill-current text-primary" />
-            <span
+            <!-- <span
               class="vx-logo-text text-primary"
               v-show="isMouseEnter || !reduce"
               v-if="title"
-            >{{ title }}</span>
+            >{{ title }}</span> -->
           </router-link>
           <!-- /Logo -->
 

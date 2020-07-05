@@ -1,11 +1,8 @@
-/*=========================================================================================
-  File Name: vue.config.js
-  Description: configuration file of vue
-  ----------------------------------------------------------------------------------------
-  Item Name: Vuexy - Vuejs, HTML & Laravel Admin Dashboard Template
-  Author: Pixinvent
-  Author URL: http://www.themeforest.net/user/pixinvent
-==========================================================================================*/
+const path = require("path");
+
+function resolve(dir) {
+  return path.join(__dirname, dir); //path.join(__dirname) 设置绝对路径
+}
 
 module.exports = {
   publicPath: "/",
@@ -16,6 +13,14 @@ module.exports = {
         chunks: "all"
       }
     }
+  },
+  chainWebpack: config => {
+    config.resolve.alias
+      .set("@", resolve("./src"))
+      .set("views", resolve("./src/views"))
+      .set("assets", resolve("./src/assets"));
+    //...可以继续自定义别名
+    //set 第一个参数：设置的别名；第二个参数：原来默认的路径
   },
   outputDir: "dist", //build输出目录
   assetsDir: "assets", //静态资源目录（js, css, img）
@@ -36,5 +41,5 @@ module.exports = {
         }
       }
     }
-  },
+  }
 };

@@ -2,9 +2,36 @@ import request from "./request";
 
 //#region 职工单位
 // 获取职工单位信息列表
-export const getEmployeeUnitls = params => {
+export const getEmployeeUnits = params => {
   return request({
     url: "/api/company/list",
+    method: "get",
+    params: params
+  });
+};
+
+//添加职工单位
+export const addEmployeeUnit = params => {
+  return request({
+    url: "/api/company/insert",
+    method: "post",
+    params: params
+  });
+};
+
+//修改职工单位
+export const editEmployeeUnit = params => {
+  return request({
+    url: "/api/company/update",
+    method: "post",
+    params: params
+  });
+};
+
+//获取职工单位详情
+export const getEmployeeUnitDetail = params => {
+  return request({
+    url: "/api/company/details",
     method: "get",
     params: params
   });
@@ -35,6 +62,36 @@ export const addPosition = params => {
 export const editPosition = params => {
   return request({
     url: "/api/company/position/update",
+    method: "post",
+    params: params
+  });
+};
+
+//#endregion
+
+//#region 职工
+// 获取职工信息列表
+export const getEmployees = params => {
+  return request({
+    url: "/api/employee/list",
+    method: "get",
+    params: params
+  });
+};
+
+//插入职工信息
+export const addEmployee = params => {
+  return request({
+    url: "/api/employee/insert",
+    method: "post",
+    params: params
+  });
+};
+
+//修改职工信息
+export const editEmployee = params => {
+  return request({
+    url: "/api/employee/update",
     method: "post",
     params: params
   });

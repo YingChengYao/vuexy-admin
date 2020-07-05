@@ -12,7 +12,7 @@ export const getProjectTypeDataSource = params => {
 //获取婚姻状况数据源(用户)
 export const getMaritalForUserDataSource = params => {
   return request({
-    url: "/api/marital/list",
+    url: "/api/user/marital/list",
     method: "get",
     params: params
   });
@@ -30,7 +30,7 @@ export const getMaritalDataSource = params => {
 //获取性别数据源(用户)
 export const getGenderForUserDataSource = params => {
   return request({
-    url: "/api/gender/list",
+    url: "/api/user/gender/list",
     method: "get",
     params: params
   });
@@ -46,7 +46,7 @@ export const getGenderDataSource = params => {
 };
 
 //获取套餐分类数据源
-export const getPackageTypes = params => {
+export const getPackageTypeDataSource = params => {
   return request({
     url: "/api/packagetype/list",
     method: "get",

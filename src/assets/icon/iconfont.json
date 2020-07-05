@@ -6,6 +6,13 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "15711337",
+      "name": "全人logo",
+      "font_class": "quanrenlogo",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
       "icon_id": "14929831",
       "name": "上下左右Triangle1 (1)",
       "font_class": "shangxiazuoyouTriangle11",

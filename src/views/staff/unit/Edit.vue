@@ -98,10 +98,10 @@ import {
   getGenderDataSource
 } from "@/http/data_source.js";
 import {
-  addProjectItem,
-  editProjectItem,
-  getProjectItemDetails
-} from "@/http/package.js";
+  addEmployeeUnit,
+  editEmployeeUnit,
+  getEmployeeUnitDetail
+} from "@/http/staff.js";
 
 export default {
   name: "",
@@ -109,7 +109,7 @@ export default {
     vSelect
   },
   props: {
-    projectItemId: {
+    unitId: {
       type: String,
       default: null
     },
@@ -139,19 +139,19 @@ export default {
   mounted() {},
   methods: {
     loadData() {
-      if (!this.projectItemId) return;
+      if (!this.unitId) return;
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
       let para = {
         mecid: userInfo.mecID,
-        id: this.projectItemId
+        id: this.unitId
       };
-      getProjectItemDetails(para).then(res => {
-        if (res.resultType == 0) {
-          const data = JSON.parse(res.message);
-          this.data_local = data;
-        }
-      });
+      // getProjectItemDetails(para).then(res => {
+      //   if (res.resultType == 0) {
+      //     const data = JSON.parse(res.message);
+      //     this.data_local = data;
+      //   }
+      // });
     },
     save_changes() {
       this.$validator.validateAll().then(result => {
@@ -159,24 +159,28 @@ export default {
           let userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
           let para = {
-            singleName: this.data_local.SingleName,
+            parentID: this.data_local.ParentID,
+            companyCode: this.data_local.CompanyCode,
+            companyName: this.data_local.CompanyName,
+            contact: this.data_local.Contact,
+            tel: this.data_local.Tel,
+            mobile: this.data_local.Mobile,
             sort: this.data_local.Sort,
+            industry: this.data_local.Industry,
             remark: this.data_local.Remark,
-            mecid: userInfo.mecID,
-            isOptional: this.data_local.IsOptional
           };
 
-          if (this.data_local.IsOptional) {
-            para.singlePrice = this.data_local.SinglePrice;
-            para.marriage = this.data_local.Marriage;
-            para.gender = this.data_local.Gender;
-            para.itemTypeID =
-              this.data_local.ItemTypeID != null
-                ? this.data_local.ItemTypeID.Value
-                : null;
-          }
+          // if (this.data_local.IsOptional) {
+          //   para.singlePrice = this.data_local.SinglePrice;
+          //   para.marriage = this.data_local.Marriage;
+          //   para.gender = this.data_local.Gender;
+          //   para.itemTypeID =
+          //     this.data_local.ItemTypeID != null
+          //       ? this.data_local.ItemTypeID.Value
+          //       : null;
+          // }
           if (this.mark === "add") {
-            addProjectItem(para).then(res => {
+            addEmployeeUnit(para).then(res => {
               if (res.resultType == 0) {
                 this.$vs.notify({
                   title: "Success",
@@ -188,9 +192,9 @@ export default {
               }
             });
           } else if (this.mark == "edit") {
-            para.ID = this.projectItemId;
+            para.ID = this.unitId;
             para.isLocked = this.data_local.IsLocked;
-            editProjectItem(para).then(res => {
+            editEmployeeUnit(para).then(res => {
               if (res.resultType == 0) {
                 this.$vs.notify({
                   title: "Success",
