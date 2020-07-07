@@ -101,7 +101,8 @@ import vSelect from "vue-select";
 
 import {
   getMaritalForUserDataSource,
-  getGenderForUserDataSource
+  getGenderForUserDataSource,
+  getWorkingStatusDataSource
 } from "@/http/data_source.js";
 import { addEmployee, editEmployee } from "@/http/staff.js";
 
@@ -139,6 +140,7 @@ export default {
   created() {
     this.loadMaritalStatus();
     this.loadGender();
+    this.loadWorkingStatus();
     this.loadData();
   },
   mounted() {},
@@ -217,18 +219,22 @@ export default {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.marriageOptions = data;
-          console.log("婚姻：", data);
         }
       });
     },
     loadGender() {
-      console.log(0);
       getGenderForUserDataSource().then(res => {
-        console.log(1);
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.genderOptions = data;
-          console.log("性别：", data);
+        }
+      });
+    },
+    loadWorkingStatus() {
+      getWorkingStatusDataSource().then(res => {
+        if (res.resultType == 0) {
+          const data = JSON.parse(res.message);
+          this.workingStatusOptions = data;
         }
       });
     }

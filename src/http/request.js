@@ -1,4 +1,5 @@
 import axios from "axios";
+import qs from "qs";
 import router from "@/router/router";
 import { getToken } from "@/common/utils/auth/token";
 import vue from "@/main.js";
@@ -9,7 +10,7 @@ const request = axios.create({
   timeout: 5000
 });
 
-//http request 拦截器
+//#region http request 拦截器
 request.interceptors.request.use(
   config => {
     //this.$vs.loading();
@@ -43,10 +44,11 @@ request.interceptors.request.use(
     // if (config.method === "post") {
     //   config.data = JSON.stringify(config.data);
     // }
-    config.data = JSON.stringify(config.data);
-    config.headers = {
-      "Content-Type": "application/json"
-    };
+    // config.data = JSON.stringify(config.data);
+    // config.headers["Content-Type"] =
+    //   "application/x-www-form-urlencoded; charset=UTF-8";
+    config.headers["Content-Type"] = "application/json; charset=UTF-8";
+    // config.data = qs.stringify(config.data);
     return config;
   },
   error => {
@@ -60,13 +62,14 @@ request.interceptors.request.use(
     return Promise.reject(error);
   }
 );
+//#endregion
 
-//http response 拦截器
+//#region http response 拦截器
 request.interceptors.response.use(
   response => {
     const data = response.data;
-    if(!data.resultType && data.resultType != 0){
-      return data;//TODO 路由MOCK使用，后期拿掉
+    if (!data.resultType && data.resultType != 0) {
+      return data; //TODO 路由MOCK使用，后期拿掉
     }
     if (data.resultType != 0) {
       vue.$vs.notify({
@@ -94,5 +97,5 @@ request.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
+//#endregion
 export default request;

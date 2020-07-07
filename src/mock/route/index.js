@@ -205,6 +205,23 @@ export default {
         {
           path: "-",
           icon: "FileIcon",
+          name: "体检中心管理",
+          children: [
+            {
+              path: "/medical_center",
+              url: "/medical_center",
+              name: "体检中心",
+              slug: "unit",
+              component: "views/medical_center/List",
+              meta: {
+                title: "体检中心"
+              }
+            }
+          ]
+        },
+        {
+          path: "-",
+          icon: "FileIcon",
           name: "基础设置",
           children: [
             {

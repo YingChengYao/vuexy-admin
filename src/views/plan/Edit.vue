@@ -2,7 +2,7 @@
   <div id="user-edit-tab-info">
     <vx-card title="基本信息">
       <div class="vx-row">
-        <div class="vx-col md:w-1/3 w-full">
+        <div class="vx-col md:w-1/4 w-full mt-2">
           <label class="label-name px-2">计划名称</label>
           <vs-input
             class="w-full"
@@ -12,16 +12,27 @@
           />
           <span class="text-danger text-sm" v-show="errors.has('计划名称')">{{ errors.first('计划名称') }}</span>
         </div>
-        <div class="vx-col md:w-1/3 w-full">
+        <div class="vx-col md:w-1/4 w-full mt-2">
           <label class="label-name px-2">开始日期</label>
           <datepicker label="开始日期" format="yyyy-MM-dd" placeholder v-model="data_local.StartTime"></datepicker>
           <!-- <span class="text-danger text-sm" v-show="errors.has('开始日期')">{{ errors.first('开始日期') }}</span> -->
         </div>
-        <div class="vx-col md:w-1/3 w-full">
+        <div class="vx-col md:w-1/4 w-full mt-2">
           <label class="label-name px-2">结束日期</label>
           <datepicker label="结束日期" format="yyyy-MM-dd" placeholder v-model="data_local.EndTime"></datepicker>
 
           <!-- <span class="text-danger text-sm" v-show="errors.has('结束日期')">{{ errors.first('结束日期') }}</span> -->
+        </div>
+        <div class="vx-col md:w-1/4 w-full">
+            <vs-select label="计划类型" v-model="data_local.PlanType" class="w-full select-large">
+              <vs-select-item
+                v-for="(item,index) in planTypeOptions"
+                :key="index"
+                :value="item.Value"
+                :text="item.Name"
+                class="w-full"
+              />
+            </vs-select>
         </div>
         <div class="vx-col w-full">
           <div class="mt-4">
@@ -45,7 +56,6 @@
         </div>
       </div>
 
-
       <div class="vx-row">
         <div class="vx-col w-full">
           <div class="mt-8">
@@ -61,14 +71,14 @@
       </div>
       <vs-row vs-align="center" class="mt-4">
         <label class="vx-col label-name px-2">标准：</label>
-        <div class v-for="(item,index) in standards">
+        <div class v-for="(item,index) in standards" :key="index">
           <vs-chip transparent closable @click="delStandard(item)">{{item.Standard}}</vs-chip>
         </div>
       </vs-row>
 
       <vs-row class="mt-4">
         <label class="label-name px-2">参与职工人员：</label>
-        <div class v-for="(item,index) in workers">
+        <div class v-for="(item,index) in workers" :key="index">
           <vs-chip
             transparent
             closable
@@ -135,14 +145,24 @@ export default {
       data_local: {},
       marriageOptions: [],
       genderOptions: [],
-      physicalExaminationCenterOptions: [
+      planTypeOptions: [
         {
-          Name: "鄞州医院",
-          Value: 1
+          Name: "充值套餐",
+          Value: "1"
         },
         {
+          Name: "充值钱包",
+          Value: "2"
+        }
+      ],
+      physicalExaminationCenterOptions: [
+        {
           Name: "彰基体检中心",
-          Value: 2
+          Value: "6112159455408021504"
+        },
+        {
+          Name: "彰基健康广场",
+          Value: "6467685114320248832"
         }
       ]
     };
@@ -167,11 +187,14 @@ export default {
           const data = JSON.parse(res.message);
           console.log("计划详情：", data);
           this.data_local = data.Model;
-          if (data.PlanPhysical.length > 0) {
-            this.data_local.MecIDs = data.PlanPhysical.map(r => r.ID).join(",");
-          }
+          this.data_local.MecIDs = data.PlanPhysical;
+          // if (data.PlanPhysical.length > 0) {
+          //   this.data_local.MecIDs = data.PlanPhysical.map(r => r.ID).join(",");
+          // }
           this.$emit("bindEmployee", data.PlanEmployee);
-          // PlanEmployee,PlanPhysical,PlanPhysicalPackage
+          // this.$emit("bindPhysical", data.PlanPhysical);
+          this.$emit("bindStandard", data.PlanStandard);
+          // PlanEmployee,PlanPhysical,
         }
       });
     },
@@ -180,28 +203,50 @@ export default {
         if (result) {
           let userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
-          let mecIDs = "";
+          let mecIDs = [];
           if (this.data_local.MecIDs.length > 0) {
-            mecIDs = this.data_local.MecIDs.map(r => r.Value).join(",");
+            // mecIDs = this.data_local.MecIDs.map(r => r.Value).join(",");
+            this.data_local.MecIDs.map((item, index) => {
+              mecIDs.push(item.Value);
+            });
           }
+          console.log("MecIDs", mecIDs);
           let standards = this.standards;
+
           var employees = [];
-          console.log("1:", this.workers);
           if (this.workers.length > 0) {
             this.workers.forEach(function(item) {
               employees.push(item.ID);
             });
           }
-          console.log("employees:", employees);
+
+          console.log("11:", this.standards);
+
+          if (this.standards.length > 0) {
+            this.standards.map((item, index) => {
+              console.log("type:", typeof item.Positions);
+              console.log("Position:", item.Positions);
+              if (
+                item.Positions !== null &&
+                item.Positions !== undefined &&
+                typeof item.Positions !== "string"
+              ) {
+                item.Positions = item.Positions.map(r => r.Value).join(",");
+                // item = Object.assign({}, item, {
+                //   PositionID: item.PositionID.map(r => r.Value).join(",")
+                // });
+              }
+            });
+          }
 
           let para = {
             planName: this.data_local.PlanName,
             startTime: this.data_local.StartTime,
             endTime: this.data_local.EndTime,
             remark: this.data_local.Remark,
-            mecIDs: mecIDs,
-            Employees: employees,
-            standars: this.data_local.Standars
+            mecIDs: JSON.stringify(mecIDs),
+            employees: JSON.stringify(employees),
+            Standars: JSON.stringify(this.standards)
           };
 
           if (this.mark === "add") {
@@ -267,6 +312,18 @@ export default {
       });
     },
     loadItemTypeData() {
+      let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+      let para = {
+        mecid: userInfo.mecID
+      };
+      getProjectTypeDataSource(para).then(res => {
+        if (res.resultType == 0) {
+          const data = JSON.parse(res.message);
+          this.projectTypeStatus = data;
+        }
+      });
+    },
+    loadPlanTypeData() {
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
       let para = {
         mecid: userInfo.mecID

@@ -126,7 +126,7 @@ export default {
       data_local: {},
       marriageOptions: [],
       genderOptions: [],
-      industryOptions: [],
+      industryOptions: []
     };
   },
   computed: {},
@@ -143,15 +143,15 @@ export default {
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
       let para = {
-        mecid: userInfo.mecID,
-        id: this.unitId
+        companyid: this.unitId
       };
-      // getProjectItemDetails(para).then(res => {
-      //   if (res.resultType == 0) {
-      //     const data = JSON.parse(res.message);
-      //     this.data_local = data;
-      //   }
-      // });
+      getEmployeeUnitDetail(para).then(res => {
+        if (res.resultType == 0) {
+          const data = JSON.parse(res.message);
+          this.data_local = data;
+          
+        }
+      });
     },
     save_changes() {
       this.$validator.validateAll().then(result => {
@@ -167,7 +167,7 @@ export default {
             mobile: this.data_local.Mobile,
             sort: this.data_local.Sort,
             industry: this.data_local.Industry,
-            remark: this.data_local.Remark,
+            remark: this.data_local.Remark
           };
 
           // if (this.data_local.IsOptional) {

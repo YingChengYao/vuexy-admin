@@ -170,7 +170,6 @@ export default {
   data() {
     return {
       items: [],
-      initItems: [],
       isLockedSelectOptions: [
         {
           name: "请选择",
@@ -191,7 +190,7 @@ export default {
       isLockedSelect: false,
 
       //Page
-      itemsPerPage: 10,
+      itemsPerPage: 2,
       currentPage: 1,
       totalPage: 0,
       descriptionItems: [10, 20, 50, 100],
@@ -235,6 +234,10 @@ export default {
         }
       });
     },
+    initCheckedGroup() {
+      console.log(111222222)
+      this.checkedGroup = [];
+    },
     initData() {
       this.items.map((item, index) => {
         if (typeof item.isChecked == "undefined") {
@@ -272,20 +275,26 @@ export default {
     handleCheckbox(tr) {
       if (tr) {
         tr.isChecked = !tr.isChecked;
-        console.log("this.checkedGroup:", this.checkedGroup);
+
         if (tr.isChecked) {
           let item = {
             ID: tr.ID,
             EmployeeName: tr.EmployeeName
           };
+
           this.checkedGroup.push(item);
         } else {
           this.delProject(tr.ID);
         }
+        console.log("this.checkedGroup:", this.checkedGroup);
       }
+      this.handleCheckboxAll();
+    },
+    handleCheckboxAll() {
       let checkedCount = this.items.filter(f => f.isChecked).length;
       let count = this.items.length;
-
+      console.log("checkedCount:", checkedCount);
+      console.log("count:", count);
       this.isCheckedAll = checkedCount == count ? true : false;
     },
     handleCheckAll() {
@@ -296,7 +305,6 @@ export default {
       });
     },
     delProject(id) {
-      console.log("id:", id);
       if (this.checkedGroup.length > 0) {
         this.checkedGroup.map((item, index) => {
           if (item.ID === id) {

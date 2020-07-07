@@ -1,7 +1,16 @@
 <template>
   <div class="data-list-container">
-    <vs-popup fullscreen :title="title" :active.sync="popupActive">
+    <!-- <vs-popup fullscreen :title="title" :active.sync="popupActive">
       <exclusive-package-edit
+        @closePop="closePop"
+        @loadData="loadData"
+        :planId="planId"
+        :key="timer"
+        :mark="mark"
+      />
+    </vs-popup>-->
+    <vs-popup fullscreen :title="title" :active.sync="popupActive">
+      <exclusive-package-list
         @closePop="closePop"
         @loadData="loadData"
         :planId="planId"
@@ -10,13 +19,13 @@
       />
     </vs-popup>
 
-    <div class="vx-card p-6">
+    <vx-card title="体检计划列表" class="p-6" refresh-content-action @refresh="refreshData">
       <vs-table ref="table" stripe :data="plans">
         <!-- <div slot="header" class="flex flex-wrap-reverse items-center flex-grow justify-between">
           <div class="flex flex-wrap-reverse items-center data-list-btn-container header-left">
             <vs-button color="primary" type="border" class="mb-4 mr-4" @click="addNewData">添加</vs-button>
           </div>
-        </div> -->
+        </div>-->
 
         <template slot="thead">
           <vs-th>编号</vs-th>
@@ -62,14 +71,20 @@
                   class="text-primary"
                   size="small"
                   type="border"
-                  @click.stop="addPackage(tr.ID)"
+                  @click.stop="addPackage(tr)"
                 >配置套餐</span>
+                <span
+                  class="text-primary"
+                  size="small"
+                  type="border"
+                  @click.stop="addPackage(tr.ID)"
+                >查看套餐</span>
               </vs-td>
             </vs-tr>
           </tbody>
         </template>
       </vs-table>
-    </div>
+    </vx-card>
     <div class="con-pagination-table vs-table--pagination">
       <vs-pagination
         :total="totalPage"
@@ -90,11 +105,13 @@
 
 <script>
 import ExclusivePackageEdit from "views/medical_examination_center/exclusive_package/Edit";
+import ExclusivePackageList from "views/medical_examination_center/exclusive_package/List";
 
 import { getPlansForPhysical } from "@/http/plan.js";
 export default {
   components: {
-    ExclusivePackageEdit
+    ExclusivePackageEdit,
+    ExclusivePackageList
   },
   data() {
     return {
@@ -126,12 +143,12 @@ export default {
       descriptionItems: [4, 10, 15, 20],
       totalItems: 0,
 
-       // Pop
+      // Pop
       title: null,
       popupActive: false,
       planId: null,
       timer: "",
-      mark: null,
+      mark: null
     };
   },
   computed: {},
@@ -141,8 +158,7 @@ export default {
 
       let para = {
         pageIndex: this.currentPage,
-        pageSize: this.itemsPerPage,
-        mecID: "6705580839278485504" //userInfo.mecID,
+        pageSize: this.itemsPerPage
       };
 
       getPlansForPhysical(para).then(res => {
@@ -155,16 +171,12 @@ export default {
         }
       });
     },
-    addNewData() {
-      this.sidebarData = {
-        title: "添加套餐分类",
-        mark: "add"
-      };
-      this.toggleDataSidebar(true);
+    refreshData(card) {
+      this.loadData();
+      card.removeRefreshAnimation(1000);
     },
-    addPackage(id) {
-      // this.$router.push(`/deploy_project/${data}`).catch(() => {});
-      this.planId = id;
+    addPackage(data) {
+      this.planId = data.ID;
       this.popupActive = true;
       this.title = "配置专属套餐";
       this.mark = "addPackage";
@@ -182,11 +194,10 @@ export default {
       this.loadData();
     }
   },
-  created(){
+  created() {
     this.loadData();
   },
-  mounted() {
-  },
+  mounted() {},
   watch: {
     currentPage() {
       this.loadData();

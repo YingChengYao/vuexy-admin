@@ -4,7 +4,7 @@
       <unit-edit
         @closePop="closePop"
         @loadData="loadData"
-        :unitId="unitId"
+        :medicalCenterId="medicalCenterId"
         :key="timer"
         :mark="mark"
       />
@@ -12,10 +12,10 @@
 
     <vx-card ref="filterCard" title class="user-list-filters mb-8">
       <vs-row vs-align="center">
-        <label class="vx-col label-name px-2">单位名称</label>
+        <label class="vx-col label-name px-2">体检中心名称</label>
         <vs-input
           placeholder="Placeholder"
-          v-model="unitNameInput"
+          v-model="MedicalCenterNameInput"
           class="vx-col md:w-1/6 sm:w-1/2 w-full px-2"
         />
 
@@ -24,7 +24,7 @@
     </vx-card>
 
     <div class="vx-card p-6">
-      <vs-table ref="table" stripe :data="types">
+      <vs-table ref="table" stripe :data="medicalCenters">
         <div slot="header" class="flex flex-wrap-reverse items-center flex-grow justify-between">
           <div class="flex flex-wrap-reverse items-center data-list-btn-container header-left">
             <vs-button color="primary" type="border" class="mb-4 mr-4" @click="addNewData">添加</vs-button>
@@ -33,14 +33,15 @@
 
         <template slot="thead">
           <vs-th>编号</vs-th>
-          <vs-th>单位名称</vs-th>
-          <vs-th>单位编码</vs-th>
+          <vs-th>体检中心名称</vs-th>
+          <vs-th>体检中心编号</vs-th>
           <vs-th>联系人</vs-th>
+          <vs-th>手机号</vs-th>
+          <vs-th>电话</vs-th>
           <vs-th>排序</vs-th>
-          <vs-th>是否锁定</vs-th>
+          <vs-th>备注</vs-th>
           <vs-th>修改人</vs-th>
           <vs-th>创建时间</vs-th>
-          <vs-th>操作</vs-th>
         </template>
 
         <template slot-scope="{data}">
@@ -50,33 +51,31 @@
                 <p>{{ indextr+1 }}</p>
               </vs-td>
               <vs-td>
-                <p>{{ tr.CompanyName }}</p>
+                <p>{{ tr.MecName }}</p>
               </vs-td>
-              <vs-td>
-                <p>{{ tr.CompanyCode }}</p>
+               <vs-td>
+                <p>{{ tr.MecCode }}</p>
               </vs-td>
               <vs-td>
                 <p>{{ tr.Contact }}</p>
               </vs-td>
               <vs-td>
+                <p>{{ tr.Mobile }}</p>
+              </vs-td>
+              <vs-td>
+                <p>{{ tr.Tel }}</p>
+              </vs-td>
+              <vs-td>
                 <p>{{ tr.Sort }}</p>
               </vs-td>
               <vs-td>
-                <p>{{ tr.IsLocked?'是':'否' }}</p>
+                <p>{{ tr.Remark }}</p>
               </vs-td>
               <vs-td>
                 <p class="product-category">{{ tr.ModifyName}}</p>
               </vs-td>
               <vs-td>
                 <p>{{ tr.ModifyTime | formatDate }}</p>
-              </vs-td>
-              <vs-td class="whitespace-no-wrap">
-                <span
-                  class="text-primary"
-                  size="small"
-                  type="border"
-                  @click.stop="editData(tr.ID)"
-                >编辑</span>
               </vs-td>
             </vs-tr>
           </tbody>
@@ -94,16 +93,12 @@
         :size="itemsPerPage"
       ></vs-pagination>
     </div>
-
-    <!-- <div class="vx-card p-6" style="position: fixed;bottom: 0;width: calc(100% - 4.4rem - 260px);z-index: 9919;">
-       
-    </div>-->
   </div>
 </template>
 
 <script>
 import UnitEdit from "./Edit";
-import { getEmployeeUnits } from "@/http/staff.js";
+import { getMedicalCenters } from "@/http/medical_center.js";
 export default {
   components: {
     UnitEdit
@@ -111,7 +106,7 @@ export default {
   data() {
     return {
       //Page
-      types: [],
+      medicalCenters: [],
       itemsPerPage: 10,
       currentPage: 1,
       totalPage: 0,
@@ -119,12 +114,12 @@ export default {
       totalItems: 0,
 
       //filter
-      unitNameInput: null,
+      MedicalCenterNameInput: null,
 
       // Pop
       title: null,
       popupActive: false,
-      unitId: null,
+      medicalCenterId: null,
       timer: "",
       mark: null
     };
@@ -137,14 +132,15 @@ export default {
       let para = {
         pageIndex: this.currentPage,
         pageSize: this.itemsPerPage,
-        id: userInfo.uid
+        companyId: userInfo.companyID,
+        mecName: this.MedicalCenterNameInput,
+        mecName: this.MedicalCenterNameInput,
       };
-      getEmployeeUnits(para).then(res => {
-        console.log(3);
+      getMedicalCenters(para).then(res => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
-          console.log("单位：", data);
-          this.types = data.Items;
+          console.log("体检中心：", data);
+          this.medicalCenters = data.Items;
           this.totalPage = data.TotalPages;
           this.totalItems = data.TotalItems;
         }
@@ -152,16 +148,16 @@ export default {
     },
     //#region 弹窗
     addNewData() {
-      this.unitId = null;
+      this.medicalCenterId = null;
       this.popupActive = true;
-      this.title = "添加职工单位";
+      this.title = "添加职位信息";
       this.mark = "add";
       this.handleLoad();
     },
     editData(id) {
-      this.unitId = id;
+      this.medicalCenterId = null;
       this.popupActive = true;
-      this.title = "修改职工单位";
+      this.title = "修改职位信息";
       this.mark = "edit";
       this.handleLoad();
     },
@@ -172,6 +168,25 @@ export default {
       this.popupActive = false;
     },
     //#endregion
+    save(tr) {
+      let para = {
+        id: tr.ID,
+        positionName: tr.PositionName,
+        sort: tr.Sort,
+        remark: tr.Remark
+      };
+      console.log(para);
+      editPosition(para).then(res => {
+        if (res.resultType == 0) {
+          this.$vs.notify({
+            title: "Success",
+            text: res.message,
+            color: "success"
+          });
+          this.loadData();
+        }
+      });
+    },
 
     changePageMaxItems(index) {
       this.itemsPerPage = this.descriptionItems[index];

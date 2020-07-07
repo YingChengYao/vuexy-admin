@@ -14,7 +14,16 @@
           <span class="text-danger text-sm" v-show="errors.has('标准')">{{ errors.first('标准') }}</span>
         </div>
         <div class="vx-col md:w-1/2 w-full mt-4">
-          <vs-select label="限定职位" v-model="data.PositionID" class="w-full select-large">
+          <label class="vs-input--label">限定职位</label>
+          <v-select
+            multiple
+            :closeOnSelect="false"
+            v-model="data.Positions"
+            label="Name"
+            :options="positionOptions"
+            :dir="$vs.rtl ? 'rtl' : 'ltr'"
+          />
+          <!-- <vs-select label="限定职位" v-model="data.PositionID" class="w-full select-large">
             <vs-select-item
               v-for="(item,index) in positionOptions"
               :key="index"
@@ -22,7 +31,7 @@
               :text="item.Name"
               class="w-full"
             />
-          </vs-select>
+          </vs-select>-->
         </div>
       </div>
 
@@ -39,8 +48,13 @@
   </div>
 </template>
 <script>
+import { getPositionDataSource } from "@/http/data_source.js";
+import vSelect from "vue-select";
+
 export default {
-  components: {},
+  components: {
+    vSelect
+  },
   props: {
     data: {
       type: Object,
@@ -49,9 +63,11 @@ export default {
   },
   data() {
     return {
-      //data_local: {},
       positionOptions: []
     };
+  },
+  created() {
+    this.loadPosition();
   },
   methods: {
     save() {
@@ -60,8 +76,20 @@ export default {
     },
     cancel() {
       this.$emit("closePop", false);
+    },
+    loadPosition() {
+      let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+      let para = {
+        companyid: userInfo.companyID
+      };
+      getPositionDataSource(para).then(res => {
+        if (res.resultType == 0) {
+          const data = JSON.parse(res.message);
+          this.positionOptions = data;
+        }
+      });
     }
-  },
+  }
 };
 </script>
 <style scoped>

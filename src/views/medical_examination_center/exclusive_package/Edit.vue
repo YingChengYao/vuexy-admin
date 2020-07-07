@@ -272,6 +272,12 @@ import {
 import { getItems } from "@/http/package.js";
 import { addExclusivePackage } from "@/http/plan.js";
 import { formatMoney } from "@/common/utils/data/money";
+import {
+  accAdd,
+  accSubtr,
+  accMul,
+  accDivCoupon
+} from "@/common/utils/data/calc";
 
 export default {
   name: "",
@@ -280,7 +286,7 @@ export default {
   },
   props: {
     planId: String,
-    default: "primary"
+    default: ""
   },
   data() {
     return {
@@ -507,7 +513,6 @@ export default {
       this.isCheckedAll = !this.isCheckedAll;
       this.initItems.map((item, index) => {
         if (!item.Children) {
-          console.log("item:", item.ID);
           if (this.isCheckedAll) {
             if (!item.isChecked) {
               let checkItem = {
@@ -544,8 +549,15 @@ export default {
     //#endregion
     //#region 套餐价格
     changeDiscount(event) {
-      let price = (event / 10) * this.packagePrice;
+      console.log("event:", event);
+      console.log("packagePrice:", this.packagePrice);
+      console.log("event / 10:", accDivCoupon(event, 10));
+      console.log("price", accDivCoupon(event, 10));
+
+      let price = accMul(this.packagePrice, accDivCoupon(event, 10));
+      console.log("price:", price);
       this.discountPrice = formatMoney(price, 2);
+      console.log("discountPrice:", this.discountPrice);
     },
     changeDiscountPrice(event) {
       let dis = (event / this.packagePrice) * 10;

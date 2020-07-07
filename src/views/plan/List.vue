@@ -9,6 +9,8 @@
         @delStandard="delStandard"
         @delEmployee="delEmployee"
         @bindEmployee="bindEmployee"
+        @bindStandard="bindStandard"
+        @bindPhysical="bindPhysical"
         :planId="planId"
         :key="timer"
         :mark="mark"
@@ -21,6 +23,7 @@
       </vs-popup>
       <vs-popup fullscreen title="添加职工" :active.sync="popupActiveEmployee">
         <staff-employee-list
+          ref="employee"
           :isSelectedPop="true"
           @closePop="closeEmployeePop"
           @saveEmployeeSelected="saveEmployeeSelected"
@@ -84,11 +87,12 @@
                   class="text-primary px-2"
                   size="small"
                   type="border"
+                  style="display:display"
                   @click.stop="editData(tr.ID)"
                   v-if="tr.Status==1"
                 >编辑</span>
                 <span
-                  class="text-primary"
+                  class="text-primary px-2"
                   size="small"
                   type="border"
                   @click.stop="submitMePlan(tr.ID)"
@@ -188,6 +192,7 @@ export default {
             text: res.message,
             color: "success"
           });
+          this.loadData();
         }
       });
     },
@@ -199,6 +204,9 @@ export default {
       this.title = "添加体检计划";
       this.mark = "add";
       this.handleLoad();
+      this.workers = [];
+      this.standards = [];
+      this.$refs.employee.initCheckedGroup();
     },
     editData(id) {
       this.planId = id;
@@ -216,6 +224,7 @@ export default {
     //职工
     changeEmployeePop(data) {
       this.popupActiveEmployee = data;
+      this.$refs.employee.loadData();
     },
     saveEmployeeSelected(data) {
       this.workers = data;
@@ -226,15 +235,22 @@ export default {
     bindEmployee(data) {
       this.workers = data;
     },
+    bindStandard(data) {
+      this.standards = data;
+    },
+    bindPhysical(data) {},
     //标准
     changeStandardPop(data) {
-      this.standardData = {};
+      console.log("this.standardData:", this.standardData);
       this.popupActiveStandard = data;
     },
     closeStandardPop() {
       this.popupActiveStandard = false;
     },
     addStandard(data) {
+      this.standardData = {
+        Positions: null
+      };
       this.standards.push(data);
     },
     delStandard(data) {

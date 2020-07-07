@@ -419,6 +419,7 @@ export default {
       getProjectsForPackage(para).then(res => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
+          console.log('项目：',data);
           this.checkedGroup = data.Item;
           this.checkedGroup.map((item, index) => {
             if (!item.ItemPrice) item.ItemPrice = 0;

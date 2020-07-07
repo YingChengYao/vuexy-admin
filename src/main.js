@@ -67,6 +67,9 @@ Vue.use(validate, config);
 Vue.config.productionTip = false;
 Vue.prototype.hasPerm = hasBtnPermission;
 
+import qs from 'qs'
+Vue.prototype.$qs = qs;
+
 //插入过滤器名和对应方法
 import * as filters from "@/common/plugins/filters.js";
 Object.keys(filters).forEach(key => {
