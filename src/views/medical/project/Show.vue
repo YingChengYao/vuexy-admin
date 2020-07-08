@@ -61,6 +61,12 @@
 </template>
 <script>
 import { formatMoney } from "@/common/utils/data/money";
+import {
+  accAdd,
+  accSubtr,
+  accMul,
+  accDivCoupon
+} from "@/common/utils/data/calc";
 
 export default {
   name: "",
@@ -70,7 +76,6 @@ export default {
       projectList: [],
       discount: 10,
       discountPrice: 0
-      //packagePrice: 0
     };
   },
   components: {},

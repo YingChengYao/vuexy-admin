@@ -13,7 +13,6 @@
 </template>
 
 <script>
-//import ProjectList from "./List";
 import ProjectList from "views/medical/project/List";
 import ProjectShow from "views/medical/project/Show";
 

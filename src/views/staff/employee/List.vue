@@ -219,7 +219,6 @@ export default {
         pageSize: this.itemsPerPage,
         companyId: userInfo.companyID,
         employeeName: this.employeeNameInput
-        //IsLocked: this.isLockedSelect
       };
 
       getEmployees(para).then(res => {
@@ -235,7 +234,6 @@ export default {
       });
     },
     initCheckedGroup() {
-      console.log(111222222)
       this.checkedGroup = [];
     },
     initData() {
@@ -293,8 +291,6 @@ export default {
     handleCheckboxAll() {
       let checkedCount = this.items.filter(f => f.isChecked).length;
       let count = this.items.length;
-      console.log("checkedCount:", checkedCount);
-      console.log("count:", count);
       this.isCheckedAll = checkedCount == count ? true : false;
     },
     handleCheckAll() {
@@ -318,27 +314,17 @@ export default {
     该项的id保存到数组内部去，当切换到第二页的时候，那么再返回到第一页的时候，会获取该id是否与数组的
     id是否相同，如果相同的话，就把该项数据选中*/
     addIsChecked() {
-      console.log("this.items:", this.items);
-      console.log("this.checkedGroup:", this.checkedGroup);
       if (this.items.length > 0) {
         this.items.map((item, index) => {
-          //   if (typeof item.isChecked === "undefined") {
-          //     item = Object.assign({}, item, {
-          //       isChecked: false
-          //     });
-          //   }
           if (this.checkedGroup.length > 0) {
             this.checkedGroup.map((checkedItem, index) => {
               if (item.ID === checkedItem.ID) {
-                console.log("item:", item.ID);
-                console.log("checkedItem:", checkedItem.ID);
                 item.isChecked = true;
-              } else item.isChecked = false;
+              }
             });
           }
         });
-        console.log("checkedGroup:", this.checkedGroup);
-        console.log("items:", this.items);
+        this.handleCheckboxAll();
       }
     },
     //#endregion

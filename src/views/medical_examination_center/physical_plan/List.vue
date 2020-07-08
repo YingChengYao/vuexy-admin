@@ -1,22 +1,24 @@
 <template>
   <div class="data-list-container">
-    <!-- <vs-popup fullscreen :title="title" :active.sync="popupActive">
-      <exclusive-package-edit
-        @closePop="closePop"
-        @loadData="loadData"
-        :planId="planId"
-        :key="timer"
-        :mark="mark"
-      />
-    </vs-popup>-->
     <vs-popup fullscreen :title="title" :active.sync="popupActive">
       <exclusive-package-list
         @closePop="closePop"
         @loadData="loadData"
+        @openPackageEditPop="openPackageEditPop"
         :planId="planId"
         :key="timer"
         :mark="mark"
       />
+      <vs-popup fullscreen :title="titlePackageEdit" :active.sync="popupActivePackageEdit">
+        <exclusive-package-edit
+          ref="packageEdit"
+          @closePackageEditPop="closePackageEditPop"
+          @loadData="loadData"
+          :packageId.sync="packageId"
+          :key="timer"
+          :markPackageEdit="markPackageEdit"
+        />
+      </vs-popup>
     </vs-popup>
 
     <vx-card title="体检计划列表" class="p-6" refresh-content-action @refresh="refreshData">
@@ -68,7 +70,7 @@
               </vs-td>
               <vs-td class="whitespace-no-wrap">
                 <span
-                  class="text-primary"
+                  class="text-primary px-2"
                   size="small"
                   type="border"
                   @click.stop="addPackage(tr)"
@@ -77,7 +79,7 @@
                   class="text-primary"
                   size="small"
                   type="border"
-                  @click.stop="addPackage(tr.ID)"
+                  @click.stop="lookPackage(tr.ID)"
                 >查看套餐</span>
               </vs-td>
             </vs-tr>
@@ -115,32 +117,12 @@ export default {
   },
   data() {
     return {
-      plans: [],
-
-      isLockedSelectOptions: [
-        {
-          name: "请选择",
-          value: null
-        },
-        {
-          name: "否",
-          value: false
-        },
-        {
-          name: "是",
-          value: true
-        }
-      ],
-
-      //filter
-      typeNameInput: "",
-      isLockedSelect: false,
-
       //Page
-      itemsPerPage: 4,
+      plans: [],
+      itemsPerPage: 10,
       currentPage: 1,
       totalPage: 0,
-      descriptionItems: [4, 10, 15, 20],
+      descriptionItems: [10, 20, 50, 100],
       totalItems: 0,
 
       // Pop
@@ -148,7 +130,11 @@ export default {
       popupActive: false,
       planId: null,
       timer: "",
-      mark: null
+      mark: null,
+      popupActivePackageEdit: false,
+      titlePackageEdit: null,
+      markPackageEdit: null,
+      packageId: null
     };
   },
   computed: {},
@@ -175,11 +161,19 @@ export default {
       this.loadData();
       card.removeRefreshAnimation(1000);
     },
+    //#region 弹窗
     addPackage(data) {
       this.planId = data.ID;
       this.popupActive = true;
       this.title = "配置专属套餐";
       this.mark = "addPackage";
+      this.handleLoad();
+    },
+    lookPackage(id) {
+      this.planId = id;
+      this.popupActive = true;
+      this.title = "查看专属套餐";
+      this.mark = "lookPackage";
       this.handleLoad();
     },
     handleLoad() {
@@ -188,6 +182,25 @@ export default {
     closePop() {
       this.popupActive = false;
     },
+
+    //套餐
+    //控制套餐弹窗
+    openPackageEditPop(data, mark) {
+      if (mark == "add") {
+        this.titlePackageEdit = "添加专属套餐信息";
+        this.markPackageEdit = "add";
+      } else if (mark == "edit") {
+        this.packageId = data.ID;
+        this.markPackageEdit = "edit";
+        this.titlePackageEdit = "修改专属套餐信息";
+        this.$refs.packageEdit.loadPackageData(this.packageId);
+      }
+      this.popupActivePackageEdit = true;
+    },
+    closePackageEditPop() {
+      this.popupActivePackageEdit = false;
+    },
+    //#endregion
     changePageMaxItems(index) {
       this.itemsPerPage = this.descriptionItems[index];
       this.currentPage = 1;

@@ -16,6 +16,7 @@ export default {
           path: "-",
           icon: "FileIcon",
           name: "会员管理",
+          isHide: true,
           children: [
             {
               path: "/member-user",

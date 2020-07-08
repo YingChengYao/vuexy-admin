@@ -241,7 +241,6 @@ export default {
     bindPhysical(data) {},
     //标准
     changeStandardPop(data) {
-      console.log("this.standardData:", this.standardData);
       this.popupActiveStandard = data;
     },
     closeStandardPop() {

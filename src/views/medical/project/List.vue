@@ -181,6 +181,12 @@ import {
   deployProjectForPackage
 } from "@/http/package.js";
 import { clone } from "@/common/utils/data/clone";
+import {
+  accAdd,
+  accSubtr,
+  accMul,
+  accDivCoupon
+} from "@/common/utils/data/calc";
 
 export default {
   props: {
@@ -248,9 +254,9 @@ export default {
     };
   },
   computed: {
-    currentItems() {
-      return this.initItems.filter(f => !f.Children);
-    }
+    // currentItems() {
+    //   return this.initItems.filter(f => !f.Children);
+    // }
   },
   methods: {
     loadData() {
@@ -271,11 +277,7 @@ export default {
           this.totalPage = data.TotalPages;
           this.totalItems = data.TotalItems;
           if (this.items) {
-            //this.dataLength = this.Length(this.items);
-
             this.initItemsData(this.items, 0, null);
-            console.log("项目init：", this.initItems);
-
             this.addIsChecked();
           }
         }
@@ -288,7 +290,6 @@ export default {
       return "primary";
     },
     getGenderColor(status) {
-      console.log("status:", status);
       if (status === 0) return "primary";
       if (status === 1) return "success";
       if (status === 2) return "danger";
@@ -366,12 +367,14 @@ export default {
             ItemName: tr.ItemName,
             ItemPrice: tr.ItemPrice
           };
-          //tr.ItemID=tr.ID
           this.checkedGroup.push(item);
         } else {
           this.delProject(tr.ID);
         }
       }
+      this.handleCheckboxAll();
+    },
+    handleCheckboxAll() {
       let checkedCount = this.initItems.filter(f => !f.Children && f.isChecked)
         .length;
       let count = this.initItems.filter(f => !f.Children).length;
@@ -419,17 +422,17 @@ export default {
       getProjectsForPackage(para).then(res => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
-          console.log('项目：',data);
+          console.log("项目：", data);
           this.checkedGroup = data.Item;
           this.checkedGroup.map((item, index) => {
             if (!item.ItemPrice) item.ItemPrice = 0;
           });
-          this.discount = data.Discount | 10;
-          this.discountPrice = data.DiscountPrice | 0;
+          this.discount = accMul(data.Discount, 10);
+          this.discountPrice = data.DiscountPrice;
           this.$event.$emit("initProjectCheckedData", {
             checkedGroup: this.checkedGroup,
             discount: this.discount,
-            discountPrice: this.discountPrice
+            discountPrice: this.discountPrice,
           });
         }
       });
@@ -443,33 +446,24 @@ export default {
         this.initItems.map((item, index) => {
           if (this.checkedGroup.length > 0) {
             this.checkedGroup.map((checkedItem, index) => {
-              if (item.ID === checkedItem.ItemID) item.isChecked = true;
-              else item.isChecked = false;
+              if (item.ID === checkedItem.ItemID) {
+                item.isChecked = true;
+              }
             });
           }
         });
+        this.handleCheckboxAll();
       }
     },
     // 数据处理 增加自定义属性监听
     initData(items, level, parent) {
-      // let spaceHtml = "";
-      // for (var i = 1; i < level; i++) {
-      //   spaceHtml += "<i class='ms-tree-space'></i>";
-      // }
       if (!items) {
         return;
-      }
-      let projects = null;
-      if (this.isSelected) {
-        projects = sessionStorage.getItem("SelectedProjects")
-          ? JSON.parse(sessionStorage.getItem("SelectedProjects"))
-          : [];
       }
       items.map((item, index) => {
         item = Object.assign({}, item, {
           parent: parent,
           level: level
-          //spaceHtml: spaceHtml
         });
         if (item.Children != undefined && item.Children.length > 0) {
           item = Object.assign({}, item, {

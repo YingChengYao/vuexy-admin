@@ -81,3 +81,12 @@ export const getPositionDataSource = params => {
   });
 };
 
+//获取计划的标准数据源
+export const getStandardForPlanDataSource = params => {
+  return request({
+    url: "/api/plan/standard/select",
+    method: "get",
+    params: params
+  });
+};
+

@@ -79,6 +79,15 @@ export const getExclusivePackages = params => {
   });
 };
 
+//获取体检计划专属套餐详情
+export const getExclusivePackageDetail = params => {
+  return request({
+    url: "/api/plan/physical/package/details",
+    method: "get",
+    params: params
+  });
+};
+
 //获取体检计划专属套餐配置项目
 export const getExclusivePackageProject = params => {
   return request({

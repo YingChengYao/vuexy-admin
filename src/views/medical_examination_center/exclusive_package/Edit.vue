@@ -56,6 +56,19 @@
             />
           </div>
         </div>
+        <div class="vx-col md:w-1/2 w-full">
+          <div class="mt-4">
+            <vs-select label="标准" v-model="data_local.Gender" class="w-full select-large">
+              <vs-select-item
+                v-for="(item,index) in standardOptions"
+                :key="index"
+                :value="item.Value"
+                :text="item.Name"
+                class="w-full"
+              />
+            </vs-select>
+          </div>
+        </div>
       </div>
     </vx-card>
 
@@ -267,10 +280,11 @@ import vSelect from "vue-select";
 import {
   getPackageTypeDataSource,
   getMaritalDataSource,
-  getGenderDataSource
+  getGenderDataSource,
+  getStandardForPlanDataSource
 } from "@/http/data_source.js";
 import { getItems } from "@/http/package.js";
-import { addExclusivePackage } from "@/http/plan.js";
+import { addExclusivePackage, getExclusivePackageDetail } from "@/http/plan.js";
 import { formatMoney } from "@/common/utils/data/money";
 import {
   accAdd,
@@ -285,8 +299,10 @@ export default {
     vSelect
   },
   props: {
-    planId: String,
-    default: ""
+    packageId: {
+      type: String,
+      default: null
+    }
   },
   data() {
     return {
@@ -294,12 +310,13 @@ export default {
       marriageOptions: [],
       genderOptions: [],
       packageTypeOptions: [],
+      standardOptions: [],
 
       //filter
       itemNameInput: "",
 
       //ProjectPage
-      itemsPerPage: 2,
+      itemsPerPage: 10,
       currentPage: 1,
       totalPage: 0,
       descriptionItems: [10, 20, 50, 100],
@@ -329,27 +346,35 @@ export default {
   },
   methods: {
     loadData() {
-      let userInfo = JSON.parse(localStorage.getItem("userInfo"));
-
+      console.log("packageid:", this.packageId);
+      if (!this.packageId) return;
       let para = {
-        pageIndex: this.currentPage,
-        pageSize: this.itemsPerPage,
-        itemName: this.itemNameInput,
-        mecid: userInfo.mecID,
-        isLocked: false
+        packageId: this.packageId
       };
-
-      getItems(para).then(res => {
+      getExclusivePackageDetail(para).then(res => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.items = data.Items;
-          this.totalPage = data.TotalPages;
-          this.totalItems = data.TotalItems;
-          if (this.items) {
-            this.initItemsData(this.items, 0, null);
+          console.log("this.items:", data);
+          // this.totalPage = data.TotalPages;
+          // this.totalItems = data.TotalItems;
+          // if (this.items) {
+          //   this.initItemsData(this.items, 0, null);
 
-            this.addIsChecked();
-          }
+          //   this.addIsChecked();
+          // }
+        }
+      });
+    },
+    loadPackageData(id) {
+      let para = {
+        packageId: id
+      };
+      getExclusivePackageDetail(para).then(res => {
+        if (res.resultType == 0) {
+          const data = JSON.parse(res.message);
+          this.items = data.Items;
+          console.log("this.items:", data);
         }
       });
     },
@@ -382,15 +407,25 @@ export default {
         }
       });
     },
+    loadStandard() {
+      let para = {
+        planId: this.planId
+      };
+      getStandardForPlanDataSource(para).then(res => {
+        if (res.resultType == 0) {
+          const data = JSON.parse(res.message);
+          this.standardOptions = data;
+        }
+      });
+    },
     cancel() {
-      this.$emit("closePop", false);
+      this.$emit("closePackageEditPop");
     },
     save() {
       this.$validator.validateAll().then(result => {
         if (result) {
           let userInfo = JSON.parse(localStorage.getItem("userInfo"));
           let itemIDs = "";
-          console.log("checkedGroup:", this.checkedGroup);
           if (this.checkedGroup.length > 0) {
             itemIDs = this.checkedGroup.map(r => r.ItemID).join(",");
           }
@@ -415,7 +450,7 @@ export default {
                 text: res.message,
                 color: "success"
               });
-              this.$emit("loadData");
+
               this.cancel();
             }
           });
