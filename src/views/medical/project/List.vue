@@ -240,12 +240,8 @@ export default {
       totalPage: 0,
       descriptionItems: [10, 20, 50, 100],
       totalItems: 0,
-      //currentItems: 0,
 
-      // Data Sidebar
-      addNewDataSidebar: false,
-      sidebarData: {},
-
+      //pop
       isPop: true,
       checkedGroup: [],
       discount: 0,
@@ -253,11 +249,7 @@ export default {
       packagePrice: 0
     };
   },
-  computed: {
-    // currentItems() {
-    //   return this.initItems.filter(f => !f.Children);
-    // }
-  },
+  computed: {},
   methods: {
     loadData() {
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
@@ -306,10 +298,6 @@ export default {
       this.title = "修改项目信息";
       this.popupActive = true;
       this.handleLoad();
-      // this.sidebarData = data;
-      // this.sidebarData.title = "修改项目";
-      // this.sidebarData.mark = "edit";
-      // this.toggleDataSidebar(true);
     },
     save() {
       let projectIds = this.checkedGroup
@@ -331,6 +319,7 @@ export default {
             text: res.message,
             color: "success"
           });
+          this.cancel();
         }
       });
     },
@@ -427,12 +416,18 @@ export default {
           this.checkedGroup.map((item, index) => {
             if (!item.ItemPrice) item.ItemPrice = 0;
           });
+          data.Discount = data.Discount == null ? 1 : data.Discount;
+
           this.discount = accMul(data.Discount, 10);
-          this.discountPrice = data.DiscountPrice;
+
+          this.discountPrice =
+            data.DiscountPrice == null ? 0 : data.DiscountPrice;
+          console.log("discount:", this.discountPrice);
+
           this.$event.$emit("initProjectCheckedData", {
             checkedGroup: this.checkedGroup,
             discount: this.discount,
-            discountPrice: this.discountPrice,
+            discountPrice: this.discountPrice
           });
         }
       });
@@ -442,6 +437,8 @@ export default {
     该项的id保存到数组内部去，当切换到第二页的时候，那么再返回到第一页的时候，会获取该id是否与数组的
     id是否相同，如果相同的话，就把该项数据选中*/
     addIsChecked() {
+      console.log("checkedGroup:", this.checkedGroup);
+      console.log("initItems:", this.initItems);
       if (this.initItems.length > 0) {
         this.initItems.map((item, index) => {
           if (this.checkedGroup.length > 0) {

@@ -11,6 +11,7 @@ export const formatMoney = (
   decPoint = ".",
   thousandsSep = ","
 ) => {
+  debugger;
   number = (number + "").replace(/[^0-9+-Ee.]/g, "");
   let n = !isFinite(+number) ? 0 : +number;
   let prec = !isFinite(+decimals) ? 0 : Math.abs(decimals);
@@ -19,7 +20,11 @@ export const formatMoney = (
   let s = "";
   let toFixedFix = function(n, prec) {
     let k = Math.pow(10, prec);
-    return "" + Math.ceil(n * k) / k;
+    let ma1 = n * k;
+    let ma = Math.ceil(n * k);
+    let mak = Math.ceil(n * k) / k;
+    let re = "" + Math.ceil(n * k) / k;
+    return re;
   };
   s = (prec ? toFixedFix(n, prec) : "" + Math.round(n)).split(".");
   let re = /(-?\d+)(\d{3})/;

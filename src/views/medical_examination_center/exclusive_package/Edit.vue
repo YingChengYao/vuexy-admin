@@ -285,7 +285,6 @@ import {
 } from "@/http/data_source.js";
 import { getItems } from "@/http/package.js";
 import { addExclusivePackage, getExclusivePackageDetail } from "@/http/plan.js";
-import { formatMoney } from "@/common/utils/data/money";
 import {
   accAdd,
   accSubtr,
@@ -343,10 +342,16 @@ export default {
     this.loadMaritalStatus();
     this.loadGender();
     this.loadPackageTypes();
+    // this.loadStandard();
   },
   methods: {
+    initPackageData() {
+      this.data_local = {};
+      this.items = [];
+      this.initItems = [];
+    },
     loadData() {
-      console.log("packageid:", this.packageId);
+      console.log("packageid2:", this.packageId);
       if (!this.packageId) return;
       let para = {
         packageId: this.packageId
@@ -356,27 +361,23 @@ export default {
           const data = JSON.parse(res.message);
           this.items = data.Items;
           console.log("this.items:", data);
-          // this.totalPage = data.TotalPages;
-          // this.totalItems = data.TotalItems;
-          // if (this.items) {
-          //   this.initItemsData(this.items, 0, null);
-
-          //   this.addIsChecked();
-          // }
         }
       });
     },
     loadPackageData(id) {
+      // this.packageId = id;
       let para = {
         packageId: id
       };
       getExclusivePackageDetail(para).then(res => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
-          this.items = data.Items;
+          this.data_local = data.Entity;
+          this.items = data.PackageItem;
           console.log("this.items:", data);
         }
       });
+      //this.loadStandard();
     },
     loadMaritalStatus() {
       getMaritalDataSource().then(res => {
@@ -407,9 +408,9 @@ export default {
         }
       });
     },
-    loadStandard() {
+    loadStandard(id) {
       let para = {
-        planId: this.planId
+        planId: id
       };
       getStandardForPlanDataSource(para).then(res => {
         if (res.resultType == 0) {
@@ -591,12 +592,12 @@ export default {
 
       let price = accMul(this.packagePrice, accDivCoupon(event, 10));
       console.log("price:", price);
-      this.discountPrice = formatMoney(price, 2);
+      this.discountPrice = price.toFixed(2);
       console.log("discountPrice:", this.discountPrice);
     },
     changeDiscountPrice(event) {
       let dis = (event / this.packagePrice) * 10;
-      this.discount = formatMoney(dis, 1);
+      this.discount = dis.toFixed(1);
     },
     cancelProjectBox(id) {
       this.initItems.map((tr, index) => {
@@ -624,7 +625,7 @@ export default {
     },
     packagePrice() {
       let price = (this.discount / 10) * this.packagePrice;
-      this.discountPrice = formatMoney(price, 2);
+      this.discountPrice = price.toFixed(2);
     }
   }
 };

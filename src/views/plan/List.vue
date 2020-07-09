@@ -33,8 +33,21 @@
 
     <vx-card ref="filterCard" title class="user-list-filters mb-8">
       <vs-row vs-align="center">
-        <label class="vx-col label-name px-2">项目类型名称</label>
+        <label class="vx-col label-name px-2">计划名称名称</label>
         <vs-input placeholder v-model="planNameInput" class="vx-col md:w-1/6 sm:w-1/2 w-full px-2" />
+        <label class="vx-col label-name px-2">是否锁定</label>
+        <vs-select
+          v-model="isLockedSelect"
+          class="vx-col md:w-1/6 sm:w-1/2 w-full px-2 select-large"
+        >
+          <vs-select-item
+            v-for="(item,index) in isLockedSelectOptions"
+            :key="index"
+            :value="item.value"
+            :text="item.name"
+            class="w-full"
+          />
+        </vs-select>
         <vs-button class="vx-col" color="primary" type="border" @click="loadData">查询</vs-button>
       </vs-row>
     </vx-card>
@@ -52,6 +65,7 @@
           <vs-th>计划名称</vs-th>
           <vs-th>排序</vs-th>
           <vs-th>状态</vs-th>
+          <vs-th>类型</vs-th>
           <vs-th>是否锁定</vs-th>
           <vs-th>修改人</vs-th>
           <vs-th>创建时间</vs-th>
@@ -72,6 +86,9 @@
               </vs-td>
               <vs-td>
                 <p>{{ tr.StatusName }}</p>
+              </vs-td>
+              <vs-td>
+                <p>{{ tr.PlanTypeName }}</p>
               </vs-td>
               <vs-td>
                 <p>{{ tr.IsLocked?'是':'否' }}</p>
@@ -136,12 +153,29 @@ export default {
     return {
       //Page
       plans: [],
-      planNameInput: null,
       itemsPerPage: 10,
       currentPage: 1,
       totalPage: 0,
       descriptionItems: [10, 20, 50, 100],
       totalItems: 0,
+
+      //filter
+      planNameInput: null,
+      isLockedSelect: false,
+      isLockedSelectOptions: [
+        {
+          name: "请选择",
+          value: null
+        },
+        {
+          name: "是",
+          value: true
+        },
+        {
+          name: "否",
+          value: false
+        }
+      ],
 
       // Pop
       title: null,
@@ -164,7 +198,8 @@ export default {
       let para = {
         pageIndex: this.currentPage,
         pageSize: this.itemsPerPage,
-        mecid: userInfo.mecID
+        mecid: userInfo.mecID,
+        isLocked: this.isLockedSelect
       };
 
       if (this.planNameInput) {

@@ -212,6 +212,7 @@ export default {
   methods: {
     loadData() {
       if (!this.planId) return;
+      console.log("planId:", this.planId);
       let para = {
         pageIndex: this.currentPage,
         pageSize: this.itemsPerPage,
@@ -223,6 +224,7 @@ export default {
           this.packages = data.Items;
           this.totalPage = data.TotalPages;
           this.totalItems = data.TotalItems;
+          console.log("套餐列表：", data);
         }
       });
     },
@@ -266,14 +268,14 @@ export default {
       this.openPackageEditPop("", "add");
     },
     editPackageData() {
-      if (this.selected.length <= 0) {
+      if (!this.packageId) {
         this.$vs.notify({
           title: "Error",
           text: "请选择专属套餐！",
           color: "danger"
         });
       } else {
-        this.openPackageEditPop(this.selected, "edit");
+        this.openPackageEditPop(this.packageId, "edit");
       }
     },
     //#endregion

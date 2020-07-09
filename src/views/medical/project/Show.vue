@@ -60,7 +60,6 @@
   </div>
 </template>
 <script>
-import { formatMoney } from "@/common/utils/data/money";
 import {
   accAdd,
   accSubtr,
@@ -82,14 +81,14 @@ export default {
   computed: {
     packagePrice() {
       return this.projectList.reduce((pre, cur) => {
-        return pre + cur.ItemPrice;
+        return accAdd(pre, cur.ItemPrice);
       }, 0);
     }
   },
   watch: {
     packagePrice() {
-      let price = (this.discount / 10) * this.packagePrice;
-      this.discountPrice = formatMoney(price, 2);
+      let price = accMul(accDivCoupon(this.discount, 10), this.packagePrice);
+      this.discountPrice = price.toFixed(2);
     },
     discount() {
       this.$event.$emit("projectDiscount", this.discount);
@@ -107,6 +106,7 @@ export default {
     });
     this.$event.$on("initProjectCheckedData", data => {
       this.$nextTick(() => {
+        console.log("initProjectCheckedData:", data);
         this.projectList = data.checkedGroup;
         this.discount = data.discount;
         this.discountPrice = data.discountPrice;
@@ -115,12 +115,12 @@ export default {
   },
   methods: {
     changeDiscount(event) {
-      let price = (event / 10) * this.packagePrice;
-      this.discountPrice = formatMoney(price, 2);
+      let price = accMul(this.packagePrice, accDivCoupon(event, 10));
+      this.discountPrice = price.toFixed(2);
     },
     changeDiscountPrice(event) {
-      let dis = (event / this.packagePrice) * 10;
-      this.discount = formatMoney(dis, 1);
+      let dis = accMul(accDivCoupon(event, this.packagePrice), 10);
+      this.discount = dis.toFixed(1);
     },
     delProject(id) {
       this.$event.$emit("delProject", id);

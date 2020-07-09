@@ -128,6 +128,7 @@ import {
   getProjectItems
 } from "@/http/package.js";
 
+
 export default {
   name: "",
   components: {
@@ -152,34 +153,7 @@ export default {
       projectItemOptions: []
     };
   },
-  computed: {
-    // marital_local: {
-    //   get() {
-    //     console.log("get:", this.data_local);
-    //     return {
-    //       Name: this.data_local.MarriageName,
-    //       Value: this.data_local.Marriage
-    //     };
-    //   },
-    //   set(obj) {
-    //     console.log("set:", obj);
-    //     this.data_local.Marriage = obj.Value;
-    //     this.data_local.MarriageName = obj.Name;
-    //   }
-    // }
-    // gender_local: {
-    //   get() {
-    //     return {
-    //       Name: this.data_local.GenderName,
-    //       Value: this.data_local.Gender
-    //     };
-    //   },
-    //   set(obj) {
-    //     this.data_local.Gender = obj.Value;
-    //     this.data_local.GenderName = obj.Name;
-    //   }
-    // }
-  },
+  computed: {},
   created() {
     this.initValues();
     this.loadData();

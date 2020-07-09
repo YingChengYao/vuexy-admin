@@ -24,15 +24,15 @@
           <!-- <span class="text-danger text-sm" v-show="errors.has('结束日期')">{{ errors.first('结束日期') }}</span> -->
         </div>
         <div class="vx-col md:w-1/4 w-full">
-            <vs-select label="计划类型" v-model="data_local.PlanType" class="w-full select-large">
-              <vs-select-item
-                v-for="(item,index) in planTypeOptions"
-                :key="index"
-                :value="item.Value"
-                :text="item.Name"
-                class="w-full"
-              />
-            </vs-select>
+          <vs-select label="计划类型" v-model="data_local.PlanType" class="w-full select-large">
+            <vs-select-item
+              v-for="(item,index) in planTypeOptions"
+              :key="index"
+              :value="item.Value"
+              :text="item.Name"
+              class="w-full"
+            />
+          </vs-select>
         </div>
         <div class="vx-col w-full">
           <div class="mt-4">
@@ -40,7 +40,7 @@
             <v-select
               multiple
               :closeOnSelect="false"
-              v-model="data_local.MecIDs"
+              v-model="medicalExaminationCenterIDs"
               label="Name"
               :options="physicalExaminationCenterOptions"
               :dir="$vs.rtl ? 'rtl' : 'ltr'"
@@ -143,6 +143,7 @@ export default {
     return {
       colors: ["primary", "success", "danger", "warning", "dark", "#24c1a0"],
       data_local: {},
+      medicalExaminationCenterIDs: [],
       marriageOptions: [],
       genderOptions: [],
       planTypeOptions: [
@@ -156,14 +157,14 @@ export default {
         }
       ],
       physicalExaminationCenterOptions: [
-        {
-          Name: "彰基体检中心",
-          Value: "6112159455408021504"
-        },
-        {
-          Name: "彰基健康广场",
-          Value: "6467685114320248832"
-        }
+        // {
+        //   Value: "6112159455408021504",
+        //   Name: "彰基体检中心",
+        // },
+        // {
+        //   Value: "6467685114320248832",
+        //   Name: "彰基健康广场"
+        // }
       ]
     };
   },
@@ -173,6 +174,16 @@ export default {
     this.loadGender();
     this.loadItemTypeData();
     this.loadData();
+    this.physicalExaminationCenterOptions = [
+      {
+        Value: "6112159455408021504",
+        Name: "彰基体检中心"
+      },
+      {
+        Value: "6467685114320248832",
+        Name: "彰基健康广场"
+      }
+    ];
   },
   mounted() {},
   methods: {
@@ -187,14 +198,15 @@ export default {
           const data = JSON.parse(res.message);
           console.log("计划详情：", data);
           this.data_local = data.Model;
-          this.data_local.MecIDs = data.PlanPhysical;
+          this.medicalExaminationCenterIDs = data.PlanPhysical;
+          console.log("计划详情mec：", data.PlanPhysical);
+          console.log("计划详情mec：", this.medicalExaminationCenterIDs);
+
           // if (data.PlanPhysical.length > 0) {
           //   this.data_local.MecIDs = data.PlanPhysical.map(r => r.ID).join(",");
           // }
           this.$emit("bindEmployee", data.PlanEmployee);
-          // this.$emit("bindPhysical", data.PlanPhysical);
           this.$emit("bindStandard", data.PlanStandard);
-          // PlanEmployee,PlanPhysical,
         }
       });
     },
@@ -204,9 +216,8 @@ export default {
           let userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
           let mecIDs = [];
-          if (this.data_local.MecIDs.length > 0) {
-            // mecIDs = this.data_local.MecIDs.map(r => r.Value).join(",");
-            this.data_local.MecIDs.map((item, index) => {
+          if (this.medicalExaminationCenterIDs.length > 0) {
+            this.medicalExaminationCenterIDs.map((item, index) => {
               mecIDs.push(item.Value);
             });
           }
@@ -246,7 +257,7 @@ export default {
             remark: this.data_local.Remark,
             mecIDs: JSON.stringify(mecIDs),
             employees: JSON.stringify(employees),
-            Standars: JSON.stringify(this.standards)
+            standars: JSON.stringify(this.standards)
           };
 
           if (this.mark === "add") {
@@ -263,7 +274,6 @@ export default {
             });
           } else if (this.mark == "edit") {
             para.ID = this.planId;
-            para.isLocked = this.data_local.IsLocked;
             editPlan(para).then(res => {
               if (res.resultType == 0) {
                 this.$vs.notify({

@@ -13,7 +13,7 @@
     class="h-screen flex w-full bg-img vx-row no-gutter items-center justify-center"
     id="page-login"
   >
-    <!-- <div class="vx-col sm:w-1/2 md:w-1/2 lg:w-3/4 xl:w-1/2 sm:m-0 m-4">
+    <div class="vx-col sm:w-1/2 md:w-1/2 lg:w-3/4 xl:w-1/2 sm:m-0 m-4">
       <vx-card>
         <div slot="no-body" class="full-page-bg-color">
           <div class="vx-row no-gutter justify-center items-center">
@@ -57,7 +57,7 @@
                   />
                   <span class="text-danger text-sm">{{ errors.first('密码') }}</span>
 
-                  <div>
+                  <!-- <div>
                     <vs-input
                       label="验证码"
                       v-validate="'required'"
@@ -76,7 +76,7 @@
                       src="http://180.76.174.156:8888/base/captcha/pwOI4vGNZTP7wgxhD7TJ.png"
                       alt="请输入验证码"
                     />
-                  </div>
+                  </div> -->
 
                   <div class="flex flex-wrap justify-between my-5" style="margin-top:1rem">
                     <vs-button class="float-right" :disabled="!validateForm" @click="handleLogin">登录</vs-button>
@@ -89,7 +89,7 @@
           </div>
         </div>
       </vx-card>
-    </div> -->
+    </div>
   </div>
 </template>
 

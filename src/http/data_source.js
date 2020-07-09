@@ -62,7 +62,27 @@ export const getProjectItemDataSource = params => {
     params: params
   });
 };
+//#region 体检计划
+//获取计划的标准数据源
+//获取计划的标准数据源
+export const getStandardForPlanDataSource = params => {
+  return request({
+    url: "/api/plan/standard/select",
+    method: "get",
+    params: params
+  });
+}; 
+//获取计划的标准数据源
+// export const getStandardForPlanDataSource = params => {
+//   return request({
+//     url: "/api/plan/standard/select",
+//     method: "get",
+//     params: params
+//   });
+// };
+//#endregion
 
+//#region 职工相关
 //获取在职状态数据源
 export const getWorkingStatusDataSource = params => {
   return request({
@@ -81,12 +101,21 @@ export const getPositionDataSource = params => {
   });
 };
 
-//获取计划的标准数据源
-export const getStandardForPlanDataSource = params => {
+//获取单位所属行业数据源
+export const getIndustryDataSource = params => {
   return request({
-    url: "/api/plan/standard/select",
+    url: "/api/company/industry/select",
     method: "get",
     params: params
   });
 };
 
+//获取下属单位数据源
+export const getSubordinateUnitDataSource = params => {
+  return request({
+    url: "/api/company/select",
+    method: "get",
+    params: params
+  });
+};
+//#endregion

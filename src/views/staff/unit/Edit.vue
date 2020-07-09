@@ -5,7 +5,7 @@
         <div class="vx-col md:w-1/2 w-full mt-4">
           <vs-select label="父级单位" v-model="data_local.ParentID" class="w-full select-large">
             <vs-select-item
-              v-for="(item,index) in genderOptions"
+              v-for="(item,index) in unitOptions"
               :key="index"
               :value="item.Value"
               :text="item.Name"
@@ -93,9 +93,8 @@
 import vSelect from "vue-select";
 
 import {
-  getProjectTypeDataSource,
-  getMaritalDataSource,
-  getGenderDataSource
+  getIndustryDataSource,
+  getSubordinateUnitDataSource
 } from "@/http/data_source.js";
 import {
   addEmployeeUnit,
@@ -124,20 +123,39 @@ export default {
       //mark: null,
 
       data_local: {},
-      marriageOptions: [],
-      genderOptions: [],
-      industryOptions: []
+      industryOptions: [],
+      unitOptions: []
     };
   },
   computed: {},
   created() {
-    this.loadMaritalStatus();
-    this.loadGender();
-    this.loadItemTypeData();
+    this.loadIndustryData();
+    this.loadSubordinateUnitData();
     this.loadData();
   },
   mounted() {},
   methods: {
+    loadIndustryData() {
+      getIndustryDataSource().then(res => {
+        if (res.resultType == 0) {
+          const data = JSON.parse(res.message);
+          this.industryOptions = data;
+        }
+      });
+    },
+    loadSubordinateUnitData() {
+      let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+      let para = {
+        companyId: "4628897437935476736" //userInfo.companyID
+      };
+      getSubordinateUnitDataSource(para).then(res => {
+        if (res.resultType == 0) {
+          const data = JSON.parse(res.message);
+          console.log("下属单位：", data);
+          this.unitOptions = data;
+        }
+      });
+    },
     loadData() {
       if (!this.unitId) return;
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
@@ -149,7 +167,6 @@ export default {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.data_local = data;
-          
         }
       });
     },
@@ -210,37 +227,7 @@ export default {
       });
     },
     cancel() {
-      //this.$router.push("/project_item").catch(() => {});
       this.$emit("closePop", false);
-    },
-    loadMaritalStatus() {
-      getMaritalDataSource().then(res => {
-        if (res.resultType == 0) {
-          const data = JSON.parse(res.message);
-          this.marriageOptions = data;
-        }
-      });
-    },
-    loadGender() {
-      getGenderDataSource().then(res => {
-        if (res.resultType == 0) {
-          const data = JSON.parse(res.message);
-          this.genderOptions = data;
-          console.log("性别：", data);
-        }
-      });
-    },
-    loadItemTypeData() {
-      let userInfo = JSON.parse(localStorage.getItem("userInfo"));
-      let para = {
-        mecid: userInfo.mecID
-      };
-      getProjectTypeDataSource(para).then(res => {
-        if (res.resultType == 0) {
-          const data = JSON.parse(res.message);
-          this.projectTypeStatus = data;
-        }
-      });
     }
   }
 };

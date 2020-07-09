@@ -14,7 +14,7 @@
           ref="packageEdit"
           @closePackageEditPop="closePackageEditPop"
           @loadData="loadData"
-          :packageId.sync="packageId"
+          :packageId="packageId"
           :key="timer"
           :markPackageEdit="markPackageEdit"
         />
@@ -168,6 +168,7 @@ export default {
       this.title = "配置专属套餐";
       this.mark = "addPackage";
       this.handleLoad();
+      // this.$refs.packageEdit.loadStandard();
     },
     lookPackage(id) {
       this.planId = id;
@@ -189,11 +190,15 @@ export default {
       if (mark == "add") {
         this.titlePackageEdit = "添加专属套餐信息";
         this.markPackageEdit = "add";
+        this.$refs.packageEdit.initPackageData();
+        this.$refs.packageEdit.loadStandard(this.planId);
       } else if (mark == "edit") {
-        this.packageId = data.ID;
+        this.packageId = data;
         this.markPackageEdit = "edit";
         this.titlePackageEdit = "修改专属套餐信息";
+        this.$refs.packageEdit.initPackageData();
         this.$refs.packageEdit.loadPackageData(this.packageId);
+        this.$refs.packageEdit.loadStandard(this.planId);
       }
       this.popupActivePackageEdit = true;
     },
