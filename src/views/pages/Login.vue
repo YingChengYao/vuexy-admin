@@ -9,10 +9,10 @@
 
 
 <template>
-  <div
-    class="h-screen flex w-full bg-img vx-row no-gutter items-center justify-center"
-    id="page-login"
-  >
+  <!-- <div class="h-screen flex w-full vx-row no-gutter items-center justify-center" id="page-login"> -->
+  <div class="h-screen flex w-full vx-row items-center justify-center" id="page-login">
+    <!-- <div class="bg-img-left left"></div> -->
+    <img class="img-left" src="@/assets/images/pages/vuexy-login-bg-left.png" />
     <!-- <div class="vx-col sm:w-1/2 md:w-1/2 lg:w-3/4 xl:w-1/2 sm:m-0 m-4">
       <vx-card>
         <div slot="no-body" class="full-page-bg-color">
@@ -89,7 +89,72 @@
           </div>
         </div>
       </vx-card>
-    </div> -->
+    </div>-->
+    <div
+      class="vx-col sm:w-1/2 md:w-1/2 lg:w-3/4 xl:w-2/3 sm:m-0 m-4 flex justify-between"
+      style="z-index:99"
+    >
+      <vx-card>
+        <div slot="no-body" class="full-page-bg-color">
+          <div class="vx-row no-gutter flex justify-center items-center d-theme-dark-bg">
+            <div class="vx-col sm:w-full md:w-full lg:w-1/2 d-theme-dark-bg">
+              <!-- <div class="p-8 pt-8 login-tabs-container"> -->
+              <div class="vx-card__title mt-8 flex justify-center">
+                <h4 class="mb-4">登陆账号</h4>
+                <!-- <p>Welcome back, please login to your account.</p> -->
+              </div>
+              <div class="mx-16">
+                <vs-input
+                  label="用户名"
+                  v-validate="'required'"
+                  data-vv-validate-on="blur"
+                  icon-no-border
+                  icon="icon icon-user"
+                  icon-pack="feather"
+                  v-model="username"
+                  class="w-full"
+                  name="用户名"
+                />
+                <span class="text-danger text-sm">{{ errors.first('用户名') }}</span>
+
+                <vs-input
+                  label="密码"
+                  v-validate="'required'"
+                  data-vv-validate-on="blur"
+                  icon-no-border
+                  icon="icon icon-lock"
+                  icon-pack="feather"
+                  v-model="password"
+                  type="password"
+                  name="密码"
+                  class="w-full"
+                  style="margin-top:1rem"
+                />
+                <span class="text-danger text-sm">{{ errors.first('密码') }}</span>
+
+                <div class="flex flex-wrap justify-between my-5" style="margin-top:1rem">
+                  <vs-button class="float-right" :disabled="!validateForm" @click="handleLogin">登录</vs-button>
+                  <router-link to="/pages/forgot-password">Forgot Password?</router-link>
+                </div>
+
+                <div class="social-login-buttons flex flex-wrap items-center mt-4"></div>
+              </div>
+              <!-- </div> -->
+            </div>
+            <div class="vx-col hidden lg:block lg:w-1/2">
+              <img
+                src="@/assets/images/pages/login.png"
+                style="width:450px;height:auto"
+                alt="login"
+                class="mx-auto"
+              />
+            </div>
+          </div>
+        </div>
+      </vx-card>
+    </div>
+    <!-- <div class="bg-img-right right"></div> -->
+    <img class="img-right" src="@/assets/images/pages/vuexy-login-bg-right.png" />
   </div>
 </template>
 

@@ -25,13 +25,64 @@ ol {
   .bg-img {
     background-image: url("../images/pages/vuexy-login-bg1.png");
     background-position: center;
-    background-repeat: no-repeat;
+    // background-repeat: no-repeat;
     background-size: cover;
-    background-attachment: fixed;
+    // background-position: 50%;
+    position: relative;
+    // background-attachment: fixed;
     // width: 300px;
     // height: 300px;
     // background: url("../images/pages/vuexy-login-bg-left.png") left top no-repeat,
     //   url("../images/pages/vuexy-login-bg-right.png") right bottom no-repeat;
+  }
+
+  .bg-img-left {
+    height: 100%;
+    width: aout;
+    background-image: url("../images/pages/vuexy-login-bg-left.png");
+    background-position: center;
+    // background-repeat: no-repeat;
+    background-size: cover;
+    // background-position: 50%;
+    position: relative;
+    left: 0;
+    top: 0;
+    // background-attachment: fixed;
+    // width: 300px;
+    // height: 300px;
+    // background: url("../images/pages/vuexy-login-bg-left.png") left top no-repeat,
+    //   url("../images/pages/vuexy-login-bg-right.png") right bottom no-repeat;
+  }
+  .bg-img-right {
+    background-image: url("../images/pages/vuexy-login-bg-right.png");
+    background-position: center;
+    // background-repeat: no-repeat;
+    background-size: cover;
+    // background-position: 50%;
+    position: relative;
+    // background-attachment: fixed;
+    // width: 300px;
+    // height: 300px;
+    // background: url("../images/pages/vuexy-login-bg-left.png") left top no-repeat,
+    //   url("../images/pages/vuexy-login-bg-right.png") right bottom no-repeat;
+  }
+
+  .img-left {
+    height: 100%;
+    width: auto;
+    // float: left;
+    // position: relative;
+    // left: 0;
+    position: fixed;
+    left: 0;
+  }
+  .img-right {
+    height: 100%;
+    width: auto;
+
+    float: right;
+    position: fixed;
+    right: 0;
   }
 
   .full-page-bg-color {
