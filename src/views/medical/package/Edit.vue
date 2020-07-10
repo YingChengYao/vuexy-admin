@@ -52,7 +52,7 @@
             </vs-select>
           </div>
 
-          <div class="mt-4">
+          <div class="mt-4" v-if="packageId">
             <label class="vs-input--label">是否锁定</label>
             <vs-switch v-model="data_local.IsLocked" />
           </div>

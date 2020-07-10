@@ -1,6 +1,6 @@
 <template>
   <div id class="data-list-container">
-    <vs-popup :title="title" :active.sync="popupActive">
+    <vs-popup fullscreen :title="title" :active.sync="popupActive">
       <project-edit @closePop="closePop" @loadData="loadData" :projectId="projectId" :key="timer" />
     </vs-popup>
 

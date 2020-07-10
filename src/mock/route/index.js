@@ -224,6 +224,7 @@ export default {
           path: "-",
           icon: "FileIcon",
           name: "基础设置",
+          isHide: true,
           children: [
             {
               path: "/permission",
@@ -261,6 +262,7 @@ export default {
           path: "-",
           icon: "FileIcon",
           name: "系统设置",
+          isHide: true,
           children: [
             {
               path: "/user-settings",

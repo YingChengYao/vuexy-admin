@@ -36,7 +36,7 @@
               <vs-th>编号</vs-th>
               <vs-th>套餐名称</vs-th>
               <vs-th>价格</vs-th>
-              <vs-th>是否锁定</vs-th>
+              <vs-th>标准</vs-th>
             </template>
 
             <template slot-scope="{data}">
@@ -52,7 +52,7 @@
                     <p>{{ tr.PackagePrice }}</p>
                   </vs-td>
                   <vs-td>
-                    <p>{{ tr.IsLocked?'是':'否' }}</p>
+                    <p>{{ tr.Standard }}</p>
                   </vs-td>
                 </vs-tr>
               </tbody>

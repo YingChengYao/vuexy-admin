@@ -1,6 +1,6 @@
 <template>
   <div id="user-edit-tab-info">
-    <vx-card title="">
+    <vx-card title>
       <div class="vx-row">
         <div class="vx-col md:w-1/2 w-full">
           <vs-input
@@ -121,7 +121,7 @@ import {
 import {
   addProjectItem,
   editProjectItem,
-  getProjectItemDetails
+  getProjectItemDetails,
 } from "@/http/package.js";
 
 export default {
@@ -141,9 +141,6 @@ export default {
   },
   data() {
     return {
-      //id: null,
-      //mark: null,
-
       data_local: {},
       marriageOptions: [],
       genderOptions: [],

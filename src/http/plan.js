@@ -70,6 +70,15 @@ export const addExclusivePackage = params => {
   });
 };
 
+//修改专属套餐
+export const editExclusivePackage = params => {
+  return request({
+    url: "/api/plan/physical/package/update",
+    method: "post",
+    params: params
+  });
+};
+
 //获取体检计划专属套餐列表
 export const getExclusivePackages = params => {
   return request({

@@ -11,12 +11,13 @@
       />
       <vs-popup fullscreen :title="titlePackageEdit" :active.sync="popupActivePackageEdit">
         <exclusive-package-edit
-          ref="packageEdit"
+          v-if="popupActivePackageEdit"
           @closePackageEditPop="closePackageEditPop"
           @loadData="loadData"
           :packageId="packageId"
+          :planId="planId"
           :key="timer"
-          :markPackageEdit="markPackageEdit"
+          :mark="markPackageEdit"
         />
       </vs-popup>
     </vs-popup>
@@ -168,7 +169,6 @@ export default {
       this.title = "配置专属套餐";
       this.mark = "addPackage";
       this.handleLoad();
-      // this.$refs.packageEdit.loadStandard();
     },
     lookPackage(id) {
       this.planId = id;
@@ -190,15 +190,11 @@ export default {
       if (mark == "add") {
         this.titlePackageEdit = "添加专属套餐信息";
         this.markPackageEdit = "add";
-        this.$refs.packageEdit.initPackageData();
-        this.$refs.packageEdit.loadStandard(this.planId);
       } else if (mark == "edit") {
+        console.log("packdata:", data);
         this.packageId = data;
         this.markPackageEdit = "edit";
         this.titlePackageEdit = "修改专属套餐信息";
-        this.$refs.packageEdit.initPackageData();
-        this.$refs.packageEdit.loadPackageData(this.packageId);
-        this.$refs.packageEdit.loadStandard(this.planId);
       }
       this.popupActivePackageEdit = true;
     },

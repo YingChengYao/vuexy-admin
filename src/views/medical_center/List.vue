@@ -5,6 +5,7 @@
         @closePop="closePop"
         @loadData="loadData"
         :medicalCenterId="medicalCenterId"
+        :medicalCenterData="medicalCenterData"
         :key="timer"
         :mark="mark"
       />
@@ -42,6 +43,7 @@
           <vs-th>备注</vs-th>
           <vs-th>修改人</vs-th>
           <vs-th>创建时间</vs-th>
+          <vs-th>操作</vs-th>
         </template>
 
         <template slot-scope="{data}">
@@ -53,7 +55,7 @@
               <vs-td>
                 <p>{{ tr.MecName }}</p>
               </vs-td>
-               <vs-td>
+              <vs-td>
                 <p>{{ tr.MecCode }}</p>
               </vs-td>
               <vs-td>
@@ -76,6 +78,9 @@
               </vs-td>
               <vs-td>
                 <p>{{ tr.ModifyTime | formatDate }}</p>
+              </vs-td>
+              <vs-td class="whitespace-no-wrap">
+                <span class="text-primary" size="small" type="border" @click.stop="editData(tr)">编辑</span>
               </vs-td>
             </vs-tr>
           </tbody>
@@ -120,6 +125,7 @@ export default {
       title: null,
       popupActive: false,
       medicalCenterId: null,
+      medicalCenterData: null,
       timer: "",
       mark: null
     };
@@ -134,7 +140,7 @@ export default {
         pageSize: this.itemsPerPage,
         companyId: userInfo.companyID,
         mecName: this.MedicalCenterNameInput,
-        mecName: this.MedicalCenterNameInput,
+        mecName: this.MedicalCenterNameInput
       };
       getMedicalCenters(para).then(res => {
         if (res.resultType == 0) {
@@ -154,8 +160,9 @@ export default {
       this.mark = "add";
       this.handleLoad();
     },
-    editData(id) {
-      this.medicalCenterId = null;
+    editData(tr) {
+      this.medicalCenterId = tr.ID;
+      this.medicalCenterData = tr;
       this.popupActive = true;
       this.title = "修改职位信息";
       this.mark = "edit";

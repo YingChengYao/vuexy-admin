@@ -69,22 +69,11 @@
           />
           <span class="text-danger text-sm" v-show="errors.has('联系人')">{{ errors.first('联系人') }}</span>
         </div>
-        <!-- 联系人电话 -->
-        <div class="vx-col md:w-1/2 w-full mt-4">
-          <vs-input
-            label="联系人电话"
-            v-model="data_local.Contact"
-            class="w-full"
-            name="联系人电话"
-            v-validate="'required'"
-          />
-          <span class="text-danger text-sm" v-show="errors.has('联系人电话')">{{ errors.first('联系人电话') }}</span>
-        </div>
         <!-- 联系人手机 -->
         <div class="vx-col md:w-1/2 w-full mt-4">
           <vs-input
             label="联系人手机"
-            v-model="data_local.Contact"
+            v-model="data_local.Mobile"
             class="w-full"
             name="联系人手机"
             v-validate="'required'"
@@ -101,17 +90,6 @@
             v-validate="'required'"
           />
           <span class="text-danger text-sm" v-show="errors.has('电话')">{{ errors.first('电话') }}</span>
-        </div>
-        <!-- 手机号 -->
-        <div class="vx-col md:w-1/2 w-full mt-4">
-          <vs-input
-            label="手机号"
-            v-model="data_local.Mobile"
-            class="w-full"
-            name="手机号"
-            v-validate="'required'"
-          />
-          <span class="text-danger text-sm" v-show="errors.has('手机号')">{{ errors.first('手机号') }}</span>
         </div>
         <!-- 排序 -->
         <div class="vx-col md:w-1/2 w-full mt-4">
@@ -145,13 +123,21 @@
 </template>
 
 <script>
-import { addMedicalCenter, editMedicalCenter } from "@/http/staff.js";
+import { addMedicalCenter, editMedicalCenter } from "@/http/medical_center.js";
 
 export default {
   name: "",
   components: {},
   props: {
     mark: {
+      type: String,
+      default: null
+    },
+    medicalCenterData: {
+      type: Object,
+      default: {}
+    },
+    medicalCenterId: {
       type: String,
       default: null
     }
@@ -162,23 +148,62 @@ export default {
     };
   },
   computed: {},
-  created() {},
+  created() {
+    console.log(this.medicalCenterId);
+    this.medicalCenterId ? this.loadData() : this.initData();
+  },
   mounted() {},
   methods: {
+    initData() {
+      this.data_local = {};
+    },
+    loadData() {
+      if (!this.medicalCenterData) return;
+      this.data_local = this.medicalCenterData;
+      //   let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+
+      //   let para = {
+      //     mecid: userInfo.mecID,
+      //     id: this.projectItemId
+      //   };
+      //   getProjectItemDetails(para).then(res => {
+      //     if (res.resultType == 0) {
+      //       const data = JSON.parse(res.message);
+      //       this.data_local = data;
+      //     }
+      //   });
+    },
     save_changes() {
       this.$validator.validateAll().then(result => {
         if (result) {
           let userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
           let para = {
-            companyID: userInfo.companyID,
-            positionName: this.data_local.PositionName,
+            MecCode: this.data_local.MecCode,
+            MecName: this.data_local.MecName,
+            MecGrade: this.data_local.MecGrade,
+            MecnNature: this.data_local.MecnNature,
+            Contact: this.data_local.Contact,
+            Tel: this.data_local.Tel,
+            Mobile: this.data_local.Mobile,
             sort: this.data_local.Sort,
             remark: this.data_local.Remark
           };
 
           if (this.mark === "add") {
-            addPosition(para).then(res => {
+            addMedicalCenter(para).then(res => {
+              if (res.resultType == 0) {
+                this.$vs.notify({
+                  title: "Success",
+                  text: res.message,
+                  color: "success"
+                });
+                this.$emit("loadData");
+                this.cancel();
+              }
+            });
+          } else if (this.mark === "edit") {
+            editMedicalCenter(para).then(res => {
               if (res.resultType == 0) {
                 this.$vs.notify({
                   title: "Success",

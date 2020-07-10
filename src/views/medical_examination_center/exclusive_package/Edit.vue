@@ -58,7 +58,7 @@
         </div>
         <div class="vx-col md:w-1/2 w-full">
           <div class="mt-4">
-            <vs-select label="标准" v-model="data_local.Gender" class="w-full select-large">
+            <vs-select label="标准" v-model="data_local.Standard" class="w-full select-large">
               <vs-select-item
                 v-for="(item,index) in standardOptions"
                 :key="index"
@@ -284,7 +284,11 @@ import {
   getStandardForPlanDataSource
 } from "@/http/data_source.js";
 import { getItems } from "@/http/package.js";
-import { addExclusivePackage, getExclusivePackageDetail } from "@/http/plan.js";
+import {
+  addExclusivePackage,
+  editExclusivePackage,
+  getExclusivePackageDetail
+} from "@/http/plan.js";
 import {
   accAdd,
   accSubtr,
@@ -299,6 +303,14 @@ export default {
   },
   props: {
     packageId: {
+      type: String,
+      default: null
+    },
+    planId: {
+      type: String,
+      default: null
+    },
+    mark: {
       type: String,
       default: null
     }
@@ -336,48 +348,57 @@ export default {
       }, 0);
     }
   },
-  created() {},
+  created() {
+    if (this.mark == "edit") this.loadData();
+  },
   mounted() {
-    this.loadData();
     this.loadMaritalStatus();
     this.loadGender();
     this.loadPackageTypes();
-    // this.loadStandard();
+    this.loadStandard();
+    this.loadProjectsData();
   },
   methods: {
-    initPackageData() {
-      this.data_local = {};
-      this.items = [];
-      this.initItems = [];
-    },
     loadData() {
-      console.log("packageid2:", this.packageId);
       if (!this.packageId) return;
       let para = {
         packageId: this.packageId
       };
+
       getExclusivePackageDetail(para).then(res => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
-          this.items = data.Items;
+          this.data_local = data;
+          this.discount = data.Discount * 10;
+          this.discountPrice = data.DiscountPrice;
+          this.checkedGroup = data.PackageItem;
           console.log("this.items:", data);
+          this.addIsChecked();
         }
       });
     },
-    loadPackageData(id) {
-      // this.packageId = id;
+    loadProjectsData() {
+      let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+
       let para = {
-        packageId: id
+        pageIndex: this.currentPage,
+        pageSize: this.itemsPerPage,
+        itemName: this.itemNameInput,
+        mecid: userInfo.mecID,
+        isLocked: false
       };
-      getExclusivePackageDetail(para).then(res => {
+      getItems(para).then(res => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
-          this.data_local = data.Entity;
-          this.items = data.PackageItem;
-          console.log("this.items:", data);
+          this.items = data.Items;
+          this.totalPage = data.TotalPages;
+          this.totalItems = data.TotalItems;
+          if (this.items) {
+            this.initItemsData(this.items, 0, null);
+            this.addIsChecked();
+          }
         }
       });
-      //this.loadStandard();
     },
     loadMaritalStatus() {
       getMaritalDataSource().then(res => {
@@ -408,9 +429,9 @@ export default {
         }
       });
     },
-    loadStandard(id) {
+    loadStandard() {
       let para = {
-        planId: id
+        planId: this.planId
       };
       getStandardForPlanDataSource(para).then(res => {
         if (res.resultType == 0) {
@@ -431,6 +452,13 @@ export default {
             itemIDs = this.checkedGroup.map(r => r.ItemID).join(",");
           }
 
+          let packageTypes = null;
+          if (this.data_local.PackageTypes) {
+            packageTypes = this.data_local.PackageTypes.map(r => r.Value).join(
+              ","
+            );
+          }
+
           let para = {
             planID: this.planId,
             packageName: this.data_local.PackageName,
@@ -441,20 +469,37 @@ export default {
             gender: this.data_local.Gender,
             remark: this.data_local.Remark,
             sort: this.data_local.Sort,
-            itemIDs: itemIDs
+            itemIDs: itemIDs,
+            standardID: this.data_local.Standard,
+            packageType: packageTypes
           };
 
-          addExclusivePackage(para).then(res => {
-            if (res.resultType == 0) {
-              this.$vs.notify({
-                title: "Success",
-                text: res.message,
-                color: "success"
-              });
-
-              this.cancel();
-            }
-          });
+          if (this.mark == "add") {
+            addExclusivePackage(para).then(res => {
+              if (res.resultType == 0) {
+                this.$vs.notify({
+                  title: "Success",
+                  text: res.message,
+                  color: "success"
+                });
+                // this.$emit("loadData");
+                this.cancel();
+              }
+            });
+          } else if (this.mark == "edit") {
+            para.PackageID = this.packageId;
+            editExclusivePackage(para).then(res => {
+              if (res.resultType == 0) {
+                this.$vs.notify({
+                  title: "Success",
+                  text: res.message,
+                  color: "success"
+                });
+                // this.$emit("loadData");
+                this.cancel();
+              }
+            });
+          }
         }
       });
     },

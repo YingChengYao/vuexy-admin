@@ -75,12 +75,12 @@
           <vs-input class="w-full" label="备注" v-model="data_local.Remark" name="备注" />
           <span class="text-danger text-sm" v-show="errors.has('备注')">{{ errors.first('备注') }}</span>
         </div>
-        <div class="vx-col md:w-1/2 w-full mt-6">
+        <div class="vx-col md:w-1/2 w-full mt-6" v-if="projectId">
           <label class="vs-input--label">是否锁定</label>
           <vs-switch v-model="data_local.IsLocked" />
         </div>
 
-        <div class="vx-col w-full mt-4">
+        <!-- <div class="vx-col w-full mt-4">
           <vs-select
             label="单项管理"
             v-model="data_local.Singles"
@@ -96,7 +96,7 @@
               class="w-full"
             />
           </vs-select>
-        </div>
+        </div>-->
       </div>
 
       <!-- Save & Reset Button -->
@@ -108,6 +108,43 @@
           </div>
         </div>
       </div>
+    </vx-card>
+
+    <vx-card title="单项管理" class="p-6">
+      <vs-table
+        ref="table"
+        stripe
+        :data="types"
+        multiple
+        v-model="selected"
+        @selected="handleSelected"
+      >
+        <template slot="thead">
+          <vs-th>编号</vs-th>
+          <vs-th>项目单项名称</vs-th>
+          <vs-th>是否作为项目使用</vs-th>
+          <vs-th>排序</vs-th>
+        </template>
+
+        <template slot-scope="{data}">
+          <tbody>
+            <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data">
+              <vs-td>
+                <p>{{ indextr+1 }}</p>
+              </vs-td>
+              <vs-td :data="tr.SingleName">
+                <p>{{ tr.SingleName }}</p>
+              </vs-td>
+              <vs-td>
+                <p>{{ tr.IsOptional?'是':'否' }}</p>
+              </vs-td>
+              <vs-td>
+                <p>{{ tr.Sort }}</p>
+              </vs-td>
+            </vs-tr>
+          </tbody>
+        </template>
+      </vs-table>
     </vx-card>
   </div>
 </template>
@@ -128,7 +165,6 @@ import {
   getProjectItems
 } from "@/http/package.js";
 
-
 export default {
   name: "",
   components: {
@@ -136,11 +172,10 @@ export default {
   },
   props: {
     projectId: String,
-    default: "primary"
+    default: ""
   },
   data() {
     return {
-      packageId: null,
       mark: null,
 
       data_local: {
@@ -150,13 +185,24 @@ export default {
       projectTypeOptions: [],
       marriageOptions: [],
       genderOptions: [],
-      projectItemOptions: []
+      projectItemOptions: [],
+
+      //单项
+      types: [],
+      singleNameInput: null,
+      itemsPerPage: 10,
+      currentPage: 1,
+      totalPage: 0,
+      descriptionItems: [10, 20, 50, 100],
+      totalItems: 0,
+      selected: []
     };
   },
   computed: {},
   created() {
     this.initValues();
     this.loadData();
+    this.loadItemData();
   },
   mounted() {
     this.loadMaritalStatus();
@@ -182,6 +228,27 @@ export default {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.data_local = data;
+        }
+      });
+    },
+    loadItemData() {
+      let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+
+      let para = {
+        pageIndex: this.currentPage,
+        pageSize: this.itemsPerPage,
+        mecid: userInfo.mecID,
+        singleName: this.singleNameInput,
+        isLocked: false
+      };
+
+      getProjectItems(para).then(res => {
+        if (res.resultType == 0) {
+          const data = JSON.parse(res.message);
+          console.log("单项：", data);
+          this.types = data.Items;
+          this.totalPage = data.TotalPages;
+          this.totalItems = data.TotalItems;
         }
       });
     },
@@ -240,6 +307,9 @@ export default {
     },
     cancel() {
       this.$emit("closePop", false);
+    },
+    handleSelected(tr) {
+      console.log("this.selected:", this.selected);
     },
     loadMaritalStatus() {
       getMaritalDataSource().then(res => {

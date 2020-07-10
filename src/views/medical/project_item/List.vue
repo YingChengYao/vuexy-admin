@@ -131,12 +131,8 @@ export default {
         pageIndex: this.currentPage,
         pageSize: this.itemsPerPage,
         mecid: userInfo.mecID,
-        typename: this.typeNameInput
+        singleName: this.singleNameInput
       };
-
-      if (this.singleNameInput) {
-        para.singleName = this.singleNameInput;
-      }
 
       getProjectItems(para).then(res => {
         if (res.resultType == 0) {

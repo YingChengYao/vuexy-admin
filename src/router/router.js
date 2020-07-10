@@ -50,7 +50,7 @@ const router = new Router({
         // },
         {
           path: '/',
-          redirect: '/member-user'
+          redirect: '/package'
         },
       ]
     },

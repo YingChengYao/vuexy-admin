@@ -91,64 +91,83 @@
       </vx-card>
     </div>-->
     <div
-      class="vx-col sm:w-1/2 md:w-1/2 lg:w-3/4 xl:w-2/3 sm:m-0 m-4 flex justify-between"
-      style="z-index:99"
+      class="sm:w-1/2 md:w-1/2 lg:w-3/4 xl:w-2/3 sm:m-0 m-4 flex justify-between"
+      style="z-index:99;"
     >
-      <vx-card>
-        <div slot="no-body" class="full-page-bg-color">
-          <div class="vx-row no-gutter flex justify-center items-center d-theme-dark-bg">
+      <vx-card class="border-radius-size">
+        <div slot="no-body" class="full-page-bg-color border-radius-size" >
+          <div
+            class="vx-row no-gutter flex justify-center items-center d-theme-dark-bg border-radius-size"
+          >
             <div class="vx-col sm:w-full md:w-full lg:w-1/2 d-theme-dark-bg">
               <!-- <div class="p-8 pt-8 login-tabs-container"> -->
-              <div class="vx-card__title mt-8 flex justify-center">
-                <h4 class="mb-4">登陆账号</h4>
-                <!-- <p>Welcome back, please login to your account.</p> -->
-              </div>
+
               <div class="mx-16">
-                <vs-input
-                  label="用户名"
-                  v-validate="'required'"
-                  data-vv-validate-on="blur"
-                  icon-no-border
-                  icon="icon icon-user"
-                  icon-pack="feather"
-                  v-model="username"
-                  class="w-full"
-                  name="用户名"
-                />
-                <span class="text-danger text-sm">{{ errors.first('用户名') }}</span>
-
-                <vs-input
-                  label="密码"
-                  v-validate="'required'"
-                  data-vv-validate-on="blur"
-                  icon-no-border
-                  icon="icon icon-lock"
-                  icon-pack="feather"
-                  v-model="password"
-                  type="password"
-                  name="密码"
-                  class="w-full"
-                  style="margin-top:1rem"
-                />
-                <span class="text-danger text-sm">{{ errors.first('密码') }}</span>
-
-                <div class="flex flex-wrap justify-between my-5" style="margin-top:1rem">
-                  <vs-button class="float-right" :disabled="!validateForm" @click="handleLogin">登录</vs-button>
-                  <router-link to="/pages/forgot-password">Forgot Password?</router-link>
+                <div class="vx-card__title mt-8 flex justify-center" style="flex:0 0 auto">
+                  <h4 class="mb-4 text-success">登陆账号</h4>
                 </div>
+                <div style="flex:1 0 auto">
+                  <vs-input
+                    label="用户名"
+                    v-validate="'required'"
+                    data-vv-validate-on="blur"
+                    icon-no-border
+                    icon="icon icon-user"
+                    icon-pack="feather"
+                    v-model="username"
+                    class="w-full"
+                    name="用户名"
+                  />
+                  <span class="text-danger text-sm">{{ errors.first('用户名') }}</span>
+
+                  <vs-input
+                    label="密码"
+                    v-validate="'required'"
+                    data-vv-validate-on="blur"
+                    icon-no-border
+                    icon="icon icon-lock"
+                    icon-pack="feather"
+                    v-model="password"
+                    type="password"
+                    name="密码"
+                    class="w-full"
+                    style="margin-top:1rem"
+                  />
+                  <span class="text-danger text-sm">{{ errors.first('密码') }}</span>
+                </div>
+
+                <div style="margin-top:1rem;flex:0 0 auto">
+                  <div class="flex flex-wrap justify-center items-center my-5">
+                    <vs-button :disabled="!validateForm" @click="handleLogin">登录</vs-button>
+                    <!-- <router-link to="/pages/forgot-password">Forgot Password?</router-link> -->
+                  </div>
+                  <div class="flex flex-wrap justify-center items-center my-5">
+                    <router-link to="/pages/forgot-password" class="text-black">忘记密码</router-link>
+                  </div>
+                </div>
+                <!-- <div class="flex flex-wrap justify-center items-center my-5">
+                  <router-link to="/pages/forgot-password">Forgot Password?</router-link>
+                </div>-->
+
+                <!-- <div style="margin-top:1rem;position:absolute;bottom:0;right: 0;left: 0;">
+                  <div class="flex flex-wrap justify-between items-center my-5">
+                    <vs-button :disabled="!validateForm" @click="handleLogin">登录</vs-button>
+                    <router-link to="/pages/forgot-password">Forgot Password?</router-link>
+                  </div>
+                </div>-->
 
                 <div class="social-login-buttons flex flex-wrap items-center mt-4"></div>
               </div>
               <!-- </div> -->
             </div>
-            <div class="vx-col hidden lg:block lg:w-1/2">
-              <img
-                src="@/assets/images/pages/login.png"
-                style="width:450px;height:auto"
-                alt="login"
-                class="mx-auto"
-              />
-            </div>
+            <!-- <div class="vx-col hidden lg:block lg:w-1/2"> -->
+            <img
+              src="@/assets/images/pages/login.png"
+              style="width:450px;height:auto"
+              alt="login"
+              class="mx-auto hidden lg:block lg:w-1/2 border-radius-size"
+            />
+            <!-- </div> -->
           </div>
         </div>
       </vx-card>
@@ -234,6 +253,9 @@ export default {
     .bg-github {
       background-color: #333;
     }
+  }
+  .border-radius-size {
+    border-radius: 1.5rem;
   }
 }
 .login-tabs-container {
