@@ -33,7 +33,7 @@
               class="vx-logo-text text-primary"
               v-show="isMouseEnter || !reduce"
               v-if="title"
-            >{{ title }}</span> -->
+            >{{ title }}</span>-->
           </router-link>
           <!-- /Logo -->
 
@@ -68,7 +68,7 @@
 
         <!-- <div v-for="item1 in menuItemsUpdated" :key="item1">
           <span>{{ item1.name }}-{{item1}}-{{index1}}</span>
-        </div> -->
+        </div>-->
 
         <!-- Menu Items -->
         <component
@@ -98,6 +98,7 @@
                 :to="item.slug !== 'external' ? item.url : null"
                 :href="item.slug === 'external' ? item.url : null"
                 :icon="item.icon"
+                :iconPack="item.iconPack"
                 :target="item.target"
                 :isDisabled="item.isDisabled"
                 :slug="item.slug"
@@ -215,6 +216,7 @@ export default {
           }
         }
       }
+      console.log("clone:", clone);
       return clone;
     },
     isVerticalNavMenuActive: {

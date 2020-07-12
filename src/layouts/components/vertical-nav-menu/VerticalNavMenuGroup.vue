@@ -25,8 +25,10 @@
     <div @click="clickGroup" class="group-header w-full">
       <span class="flex items-center w-full">
         <!-- Group Icon -->
+        
+        <vs-icon v-if="group.iconPack" class="pr-4" :icon-pack="group.iconPack" />
         <feather-icon
-          v-if="group.icon  || (this.groupIndex > Math.floor(this.groupIndex))"
+          v-else-if="group.icon  || (this.groupIndex > Math.floor(this.groupIndex))"
           :icon="group.icon  || 'CircleIcon'"
           :svgClasses="{ 'w-3 h-3' : this.groupIndex % 1 != 0 }"
         />
@@ -75,6 +77,7 @@
           :to="groupItem.slug !== 'external' ? groupItem.url : null"
           :href="groupItem.slug === 'external' ? groupItem.url : null"
           :icon="itemIcon(groupIndex + '.' + index)"
+          :iconPack="groupItem.iconPack"
           :slug="groupItem.slug"
           :target="groupItem.target"
           :isHide="groupItem.isHide"

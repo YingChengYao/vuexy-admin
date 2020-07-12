@@ -95,7 +95,7 @@
       style="z-index:99;"
     >
       <vx-card class="border-radius-size">
-        <div slot="no-body" class="full-page-bg-color border-radius-size" >
+        <div slot="no-body" class="full-page-bg-color border-radius-size">
           <div
             class="vx-row no-gutter flex justify-center items-center d-theme-dark-bg border-radius-size"
           >
@@ -103,10 +103,10 @@
               <!-- <div class="p-8 pt-8 login-tabs-container"> -->
 
               <div class="mx-16">
-                <div class="vx-card__title mt-8 flex justify-center" style="flex:0 0 auto">
+                <div class="vx-card__title mt-8 flex justify-center">
                   <h4 class="mb-4 text-success">登陆账号</h4>
                 </div>
-                <div style="flex:1 0 auto">
+                <div>
                   <vs-input
                     label="用户名"
                     v-validate="'required'"
@@ -136,13 +136,28 @@
                   <span class="text-danger text-sm">{{ errors.first('密码') }}</span>
                 </div>
 
-                <div style="margin-top:1rem;flex:0 0 auto">
+                <div class="vx-row my-5">
+                  <div class="vx-col w-2/3">
+                    <vs-input
+                      v-validate="'required'"
+                      data-vv-validate-on="blur"
+                      icon-no-border
+                      icon="icon icon-lock"
+                      icon-pack="feather"
+                      v-model="captcha"
+                      name="验证码"
+                    />
+                    <span class="text-danger text-sm">{{ errors.first('验证码') }}</span>
+                  </div>
+                  <div class="vx-col w-1/3">
+                    <img style="height:38px" src="@/assets/images/logo/logo.png" alt="vuexy-logo" />
+                  </div>
+                </div>
+
+                <div style="margin-top:1rem;">
                   <div class="flex flex-wrap justify-center items-center my-5">
                     <vs-button :disabled="!validateForm" @click="handleLogin">登录</vs-button>
                     <!-- <router-link to="/pages/forgot-password">Forgot Password?</router-link> -->
-                  </div>
-                  <div class="flex flex-wrap justify-center items-center my-5">
-                    <router-link to="/pages/forgot-password" class="text-black">忘记密码</router-link>
                   </div>
                 </div>
                 <!-- <div class="flex flex-wrap justify-center items-center my-5">

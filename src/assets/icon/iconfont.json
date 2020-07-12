@@ -6,6 +6,41 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "3892530",
+      "name": "体检受理",
+      "font_class": "taocan",
+      "unicode": "e65c",
+      "unicode_decimal": 58972
+    },
+    {
+      "icon_id": "1315601",
+      "name": "医院",
+      "font_class": "tijianzhongxin",
+      "unicode": "e607",
+      "unicode_decimal": 58887
+    },
+    {
+      "icon_id": "4237398",
+      "name": "体检信息",
+      "font_class": "tijianjihua",
+      "unicode": "e638",
+      "unicode_decimal": 58936
+    },
+    {
+      "icon_id": "12842809",
+      "name": "w_职员",
+      "font_class": "w_zhiyuan",
+      "unicode": "e67e",
+      "unicode_decimal": 59006
+    },
+    {
+      "icon_id": "13332705",
+      "name": "系统-1",
+      "font_class": "xitong-",
+      "unicode": "e60f",
+      "unicode_decimal": 58895
+    },
+    {
       "icon_id": "15711337",
       "name": "全人logo",
       "font_class": "quanrenlogo",

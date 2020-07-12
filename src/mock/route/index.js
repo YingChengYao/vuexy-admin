@@ -135,6 +135,7 @@ export default {
         {
           path: "-",
           icon: "FileIcon",
+          iconPack: "iconfont icon-w_zhiyuan",
           name: "职工管理",
           children: [
             {
