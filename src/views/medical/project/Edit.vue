@@ -80,7 +80,7 @@
           <vs-switch v-model="data_local.IsLocked" />
         </div>
 
-        <!-- <div class="vx-col w-full mt-4">
+        <div class="vx-col w-full mt-4">
           <vs-select
             label="单项管理"
             v-model="data_local.Singles"
@@ -96,7 +96,7 @@
               class="w-full"
             />
           </vs-select>
-        </div>-->
+        </div>
       </div>
 
       <!-- Save & Reset Button -->
@@ -110,7 +110,7 @@
       </div>
     </vx-card>
 
-    <vx-card title="单项管理" class="p-6">
+    <!-- <vx-card title="单项管理" class="p-6">
       <vs-table
         ref="table"
         stripe
@@ -145,7 +145,7 @@
           </tbody>
         </template>
       </vs-table>
-    </vx-card>
+    </vx-card> -->
   </div>
 </template>
 

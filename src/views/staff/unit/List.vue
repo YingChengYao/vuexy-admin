@@ -24,7 +24,7 @@
     </vx-card>
 
     <div class="vx-card p-6">
-      <vs-table ref="table" stripe :data="types">
+      <vs-table ref="table" stripe :data="units">
         <div slot="header" class="flex flex-wrap-reverse items-center flex-grow justify-between">
           <div class="flex flex-wrap-reverse items-center data-list-btn-container header-left">
             <vs-button color="primary" type="border" class="mb-4 mr-4" @click="addNewData">添加</vs-button>
@@ -111,7 +111,7 @@ export default {
   data() {
     return {
       //Page
-      types: [],
+      units: [],
       itemsPerPage: 10,
       currentPage: 1,
       totalPage: 0,
@@ -144,7 +144,7 @@ export default {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           console.log("单位：", data);
-          this.types = data.Items;
+          this.units = data.Items;
           this.totalPage = data.TotalPages;
           this.totalItems = data.TotalItems;
         }

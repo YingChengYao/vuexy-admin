@@ -9,7 +9,10 @@
           class="vx-col md:w-1/6 sm:w-1/2 w-full px-2"
         />
         <label class="vx-col label-name px-2">是否锁定</label>
-        <vs-select v-model="isLockedSelect" class="vx-col md:w-1/6 sm:w-1/2 w-full px-2 select-large">
+        <vs-select
+          v-model="isLockedSelect"
+          class="vx-col md:w-1/6 sm:w-1/2 w-full px-2 select-large"
+        >
           <vs-select-item
             v-for="(item,index) in isLockedSelectOptions"
             :key="index"
@@ -35,6 +38,8 @@
           <vs-th>编号</vs-th>
           <vs-th>套餐名称</vs-th>
           <vs-th>套餐价格</vs-th>
+          <vs-th>折扣</vs-th>
+          <vs-th>折扣价</vs-th>
           <vs-th>婚姻状态</vs-th>
           <vs-th>性别</vs-th>
           <vs-th>排序</vs-th>
@@ -55,6 +60,12 @@
               </vs-td>
               <vs-td>
                 <p>{{ tr.PackagePrice }}</p>
+              </vs-td>
+              <vs-td>
+                <p>{{ tr.Discount }}</p>
+              </vs-td>
+              <vs-td>
+                <p>{{ tr.DiscountPrice }}</p>
               </vs-td>
               <vs-td>
                 <vs-chip
@@ -163,7 +174,7 @@ export default {
         pageSize: this.itemsPerPage,
         mecid: userInfo.mecID,
         packageName: this.packageNameInput,
-        isLocked:this.isLockedSelect
+        isLocked: this.isLockedSelect
       };
 
       getPackages(para).then(res => {
@@ -172,6 +183,7 @@ export default {
           this.items = data.Items;
           this.totalPage = data.TotalPages;
           this.totalItems = data.TotalItems;
+          console.log("套餐列表：", this.items);
         }
       });
     },
