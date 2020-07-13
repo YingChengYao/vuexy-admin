@@ -146,7 +146,7 @@ export default {
     loadSubordinateUnitData() {
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
       let para = {
-        companyId: "4628897437935476736" //userInfo.companyID
+        companyId: "6750305733891072000" //userInfo.companyID
       };
       getSubordinateUnitDataSource(para).then(res => {
         if (res.resultType == 0) {

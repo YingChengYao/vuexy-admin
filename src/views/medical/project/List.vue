@@ -244,7 +244,7 @@ export default {
       //pop
       isPop: true,
       checkedGroup: [],
-      discount: 0,
+      discount: 10,
       discountPrice: 0,
       packagePrice: 0
     };
@@ -416,13 +416,13 @@ export default {
           this.checkedGroup.map((item, index) => {
             if (!item.ItemPrice) item.ItemPrice = 0;
           });
-          data.Discount = data.Discount == null ? 1 : data.Discount;
+          data.Discount = !data.Discount ? 1 : data.Discount;
 
           this.discount = accMul(data.Discount, 10);
+          console.log("discount:", this.discount);
 
           this.discountPrice =
             data.DiscountPrice == null ? 0 : data.DiscountPrice;
-          console.log("discount:", this.discountPrice);
 
           this.$event.$emit("initProjectCheckedData", {
             checkedGroup: this.checkedGroup,
