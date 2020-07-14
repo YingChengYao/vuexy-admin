@@ -13,7 +13,8 @@ let colors = {
   primary : '#28C76F',
   success : '#28C76F',
   danger  : '#EA5455',
-  warning : '#FF9F43',
+  // warning : '#FF9F43',
+  warning : '#FFB800',
   dark    : '#1E1E1E',
 }
 

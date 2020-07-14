@@ -16,20 +16,6 @@
             v-show="errors.has('体检中心名称')"
           >{{ errors.first('体检中心名称') }}</span>
         </div>
-        <!-- 体检中心编号 -->
-        <div class="vx-col md:w-1/2 w-full mt-4">
-          <vs-input
-            label="体检中心编号"
-            v-model="data_local.MecCode"
-            class="w-full"
-            name="体检中心编号"
-            v-validate="'required'"
-          />
-          <span
-            class="text-danger text-sm"
-            v-show="errors.has('体检中心编号')"
-          >{{ errors.first('体检中心编号') }}</span>
-        </div>
         <!-- 体检中心等级 -->
         <div class="vx-col md:w-1/2 w-full mt-4">
           <vs-input
@@ -48,7 +34,7 @@
         <div class="vx-col md:w-1/2 w-full mt-4">
           <vs-input
             label="体检中心性质"
-            v-model="data_local.MecnNature"
+            v-model="data_local.MecNature"
             class="w-full"
             name="体检中心性质"
             v-validate="'required'"
@@ -76,7 +62,7 @@
             v-model="data_local.Mobile"
             class="w-full"
             name="联系人手机"
-            v-validate="'required'"
+            v-validate="'required|phone'"
           />
           <span class="text-danger text-sm" v-show="errors.has('联系人手机')">{{ errors.first('联系人手机') }}</span>
         </div>
@@ -179,10 +165,9 @@ export default {
           let userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
           let para = {
-            MecCode: this.data_local.MecCode,
             MecName: this.data_local.MecName,
             MecGrade: this.data_local.MecGrade,
-            MecnNature: this.data_local.MecnNature,
+            MecNature: this.data_local.MecNature,
             Contact: this.data_local.Contact,
             Tel: this.data_local.Tel,
             Mobile: this.data_local.Mobile,

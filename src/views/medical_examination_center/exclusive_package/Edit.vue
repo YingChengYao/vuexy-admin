@@ -215,14 +215,14 @@
                           <vs-td>
                             <vs-chip
                               transparent
-                              :color="getMarriageColor(tr.Marriage)"
+                              :color="tr.Marriage | getMarriageColor"
                               v-if="!tr.Children"
                             >{{ tr.MarriageName}}</vs-chip>
                           </vs-td>
                           <vs-td>
                             <vs-chip
                               transparent
-                              :color="getGenderColor(tr.Gender)"
+                              :color="tr.Gender | getGenderColor"
                               v-if="!tr.Children"
                             >{{ tr.GenderName}}</vs-chip>
                           </vs-td>
@@ -544,18 +544,18 @@ export default {
       this.itemsPerPage = this.descriptionItems[index];
       this.loadData();
     },
-    getMarriageColor(status) {
-      if (status === 0) return "primary";
-      if (status === 1) return "success";
-      if (status === 2) return "danger";
-      return "primary";
-    },
-    getGenderColor(status) {
-      if (status === 0) return "primary";
-      if (status === 1) return "success";
-      if (status === 2) return "danger";
-      return "primary";
-    },
+    // getMarriageColor(status) {
+    //   if (status === 0) return "primary";
+    //   if (status === 1) return "success";
+    //   if (status === 2) return "danger";
+    //   return "primary";
+    // },
+    // getGenderColor(status) {
+    //   if (status === 0) return "primary";
+    //   if (status === 1) return "success";
+    //   if (status === 2) return "danger";
+    //   return "primary";
+    // },
     handleCheckbox(tr) {
       if (tr) {
         if (!tr.isChecked) {

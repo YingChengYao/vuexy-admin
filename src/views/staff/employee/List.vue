@@ -96,14 +96,14 @@
               <vs-td>
                 <vs-chip
                   transparent
-                  :color="getMarriageColor(tr.Marital)"
+                  :color="tr.Marital | getMarriageForUserColor"
                   v-if="!tr.Children"
                 >{{ tr.MaritalName}}</vs-chip>
               </vs-td>
               <vs-td>
                 <vs-chip
                   transparent
-                  :color="getGenderColor(tr.Gender)"
+                  :color="tr.Gender | getGenderForUserColor"
                   v-if="!tr.Children"
                 >{{ tr.GenderName}}</vs-chip>
               </vs-td>
@@ -328,18 +328,6 @@ export default {
       }
     },
     //#endregion
-    getMarriageColor(status) {
-      if (status === 1) return "primary";
-      if (status === 2) return "success";
-      if (status === 3) return "danger";
-      if (status === 4) return "warning";
-      return "primary";
-    },
-    getGenderColor(status) {
-      if (status === 0) return "primary";
-      if (status === 1) return "success";
-      return "primary";
-    },
     changePageMaxItems(index) {
       this.itemsPerPage = this.descriptionItems[index];
       this.loadData();

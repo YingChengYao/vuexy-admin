@@ -1,4 +1,10 @@
 import { formatTimeToStr } from "@/common/utils/data/date";
+import {
+  getMarriageColor,
+  getGenderColor,
+  getMarriageForUserColor,
+  getGenderForUserColor
+} from "@/common/utils/data/chip";
 
 /**
  * 时间格式转换
@@ -15,4 +21,10 @@ const formatDate = function(time, formatStr) {
   }
 };
 
-export { formatDate };
+export {
+  formatDate,
+  getMarriageColor,
+  getGenderColor,
+  getMarriageForUserColor,
+  getGenderForUserColor
+};

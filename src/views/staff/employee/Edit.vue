@@ -138,12 +138,13 @@ export default {
   },
   computed: {},
   created() {
+    this.loadData();
+  },
+  mounted() {
     this.loadMaritalStatus();
     this.loadGender();
     this.loadWorkingStatus();
-    this.loadData();
   },
-  mounted() {},
   methods: {
     loadData() {
       if (!this.employeeId) return;

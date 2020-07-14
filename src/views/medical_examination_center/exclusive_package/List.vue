@@ -117,14 +117,14 @@
                         <vs-td>
                           <vs-chip
                             transparent
-                            :color="getMarriageColor(tr.Marriage)"
+                            :color="tr.Marriage | getMarriageColor"
                             v-if="!tr.Children"
                           >{{ tr.MarriageName}}</vs-chip>
                         </vs-td>
                         <vs-td>
                           <vs-chip
                             transparent
-                            :color="getGenderColor(tr.Gender)"
+                            :color="tr.Gender | getGenderColor"
                             v-if="!tr.Children"
                           >{{ tr.GenderName}}</vs-chip>
                         </vs-td>

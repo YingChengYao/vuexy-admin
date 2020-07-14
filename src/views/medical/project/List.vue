@@ -53,14 +53,16 @@
               </div>
 
               <template slot="thead">
-                <vs-th>
-                  <vs-checkbox
-                    :checked="isCheckedAll"
-                    @change="handleCheckAll()"
-                    v-if="isPop"
-                    size="small"
-                  />
-                </vs-th>
+                <th class="td-check">
+                  <span class="con-td-check">
+                    <vs-checkbox
+                      :checked="isCheckedAll"
+                      @change="handleCheckAll()"
+                      v-if="isPop"
+                      size="small"
+                    />
+                  </span>
+                </th>
                 <vs-th>编号</vs-th>
                 <vs-th style="width:10rem;">项目名称</vs-th>
                 <vs-th>项目价格</vs-th>
@@ -107,14 +109,14 @@
                     <vs-td>
                       <vs-chip
                         transparent
-                        :color="getMarriageColor(tr.Marriage)"
+                        :color="tr.Marriage | getMarriageColor"
                         v-if="!tr.Children"
                       >{{ tr.MarriageName}}</vs-chip>
                     </vs-td>
                     <vs-td>
                       <vs-chip
                         transparent
-                        :color="getGenderColor(tr.Gender)"
+                        :color="tr.Gender | getGenderColor"
                         v-if="!tr.Children"
                       >{{ tr.GenderName}}</vs-chip>
                     </vs-td>
@@ -275,18 +277,6 @@ export default {
         }
       });
     },
-    getMarriageColor(status) {
-      if (status === 0) return "primary";
-      if (status === 1) return "success";
-      if (status === 2) return "danger";
-      return "primary";
-    },
-    getGenderColor(status) {
-      if (status === 0) return "primary";
-      if (status === 1) return "success";
-      if (status === 2) return "danger";
-      return "primary";
-    },
     addNewData() {
       this.projectId = null;
       this.popupActive = true;
@@ -347,19 +337,27 @@ export default {
       this.initItems = [];
       this.initData(items, level, parent);
     },
+    checkedGroupChange(tr) {
+      if (tr.isChecked) {
+        let r = this.checkedGroup.filter(function(x) {
+          return x.ItemID === tr.ID;
+        });
+        if (r.length > 0) return;
+
+        let item = {
+          ItemID: tr.ID,
+          ItemName: tr.ItemName,
+          ItemPrice: tr.ItemPrice
+        };
+        this.checkedGroup.push(item);
+      } else {
+        this.delProject(tr.ID);
+      }
+    },
     handleCheckbox(tr) {
       if (tr) {
         tr.isChecked = !tr.isChecked;
-        if (tr.isChecked) {
-          let item = {
-            ItemID: tr.ID,
-            ItemName: tr.ItemName,
-            ItemPrice: tr.ItemPrice
-          };
-          this.checkedGroup.push(item);
-        } else {
-          this.delProject(tr.ID);
-        }
+        this.checkedGroupChange(tr);
       }
       this.handleCheckboxAll();
     },
@@ -391,7 +389,10 @@ export default {
       if (!this.initItems.length > 0) return;
       this.isCheckedAll = !this.isCheckedAll;
       this.initItems.map((item, index) => {
-        item.isChecked = this.isCheckedAll;
+        if (!item.Children) {
+          item.isChecked = this.isCheckedAll;
+          this.checkedGroupChange(item);
+        }
       });
     },
     delProject(id) {

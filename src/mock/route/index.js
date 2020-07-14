@@ -44,7 +44,7 @@ export default {
         },
         {
           path: "-",
-          icon: "FileIcon",
+          iconPack: "iconfont icon-taocan",
           name: "套餐管理",
           children: [
             {
@@ -172,7 +172,7 @@ export default {
         },
         {
           path: "-",
-          icon: "FileIcon",
+          iconPack: "iconfont icon-tijianjihua",
           name: "体检计划",
           children: [
             {
@@ -184,12 +184,22 @@ export default {
               meta: {
                 title: "体检计划"
               }
+            },
+            {
+              path: "/plan_edit",
+              url: "/plan_edit",
+              name: "体检计划",
+              slug: "unit",
+              component: "views/plan/Edit",
+              meta: {
+                title: "体检计划"
+              }
             }
           ]
         },
         {
           path: "-",
-          icon: "FileIcon",
+          iconPack: "iconfont icon-tijianjihua",
           name: "体检计划",
           children: [
             {
@@ -206,7 +216,7 @@ export default {
         },
         {
           path: "-",
-          icon: "FileIcon",
+          iconPack: "iconfont icon-tijianzhongxin",
           name: "体检中心管理",
           children: [
             {

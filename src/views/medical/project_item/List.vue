@@ -89,10 +89,6 @@
         :size="itemsPerPage"
       ></vs-pagination>
     </div>
-
-    <!-- <div class="vx-card p-6" style="position: fixed;bottom: 0;width: calc(100% - 4.4rem - 260px);z-index: 9919;">
-       
-    </div>-->
   </div>
 </template>
 

@@ -26,10 +26,6 @@ export function filterAsyncRrouter(routes) {
     tmp.name = route.name;
     tmp.icon = route.icon;
     tmp.iconPack = route.iconPack;
-    if (route.iconPack) {
-      debugger;
-      console.log("route.iconPack:", route.iconPack);
-    }
     tmp.isHide = route.isHide;
     if (route.children) {
       let children = filterAsyncRrouter(route.children);
