@@ -33,6 +33,15 @@
         </div>
 
         <template slot="thead">
+          <th class="td-check" v-if="checkedMultiple">
+            <span class="con-td-check">
+              <vs-checkbox
+                :checked="isCheckedMultiple"
+                size="small"
+                @change="changeCheckedMultiple"
+              />
+            </span>
+          </th>
           <vs-th>编号</vs-th>
           <vs-th>体检中心名称</vs-th>
           <vs-th>体检中心编号</vs-th>
@@ -49,6 +58,9 @@
         <template slot-scope="{data}">
           <tbody>
             <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data">
+              <td class="td-check">
+                <vs-checkbox :checked="tr.isChecked" size="small" @change="handleCheckbox" />
+              </td>
               <vs-td>
                 <p>{{ indextr+1 }}</p>
               </vs-td>
@@ -108,11 +120,17 @@ export default {
   components: {
     UnitEdit
   },
+  props: {
+    checkedMultiple: {
+      type: Boolean,
+      default: false
+    }
+  },
   data() {
     return {
       //Page
       medicalCenters: [],
-      itemsPerPage: 10,
+      itemsPerPage: 4,
       currentPage: 1,
       totalPage: 0,
       descriptionItems: [10, 20, 50, 100],
@@ -127,7 +145,10 @@ export default {
       medicalCenterId: null,
       medicalCenterData: null,
       timer: "",
-      mark: null
+      mark: null,
+
+      selected: [],
+      isCheckedMultiple: false
     };
   },
   computed: {},
@@ -199,7 +220,29 @@ export default {
       this.itemsPerPage = this.descriptionItems[index];
       this.currentPage = 1;
       this.loadData();
+    },
+    //#region 勾选框
+    handleCheckbox(tr) {
+      if (this.checkedMultiple) {
+        let val = this.selected.slice(0);
+        if (val.includes(tr)) {
+          val.splice(val.indexOf(tr), 1);
+        } else {
+          val.push(tr);
+        }
+      }
+    },
+    changeCheckedMultiple() {
+      let lengthx = this.medicalCenters.length;
+      let lengthSelected = this.selected.length;
+      let selectedx = lengthx - lengthSelected;
+      if (selectedx == 0) {
+        this.isCheckedMultiple = true;
+      } else {
+        this.isCheckedMultiple = false;
+      }
     }
+    //#endregion
   },
   mounted() {
     this.loadData();

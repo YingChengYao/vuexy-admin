@@ -12,6 +12,7 @@
               class="w-full"
             />
           </vs-select>
+          <!-- <span class="text-danger text-sm" v-show="errors.has('项目分类')">{{ errors.first('项目分类') }}</span> -->
         </div>
         <div class="vx-col md:w-1/2 w-full mt-4">
           <!-- 项目名称 -->
@@ -145,7 +146,7 @@
           </tbody>
         </template>
       </vs-table>
-    </vx-card> -->
+    </vx-card>-->
   </div>
 </template>
 

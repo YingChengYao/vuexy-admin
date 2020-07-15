@@ -33,12 +33,7 @@
         <span class="text-danger text-sm" v-show="errors.has('套餐类型名称')">{{ errors.first('套餐类型名称') }}</span>
 
         <!-- 描述 -->
-        <vs-input
-          label="描述"
-          v-model="dataRemark"
-          class="mt-5 w-full"
-          name="描述"
-        />
+        <vs-input label="描述" v-model="dataRemark" class="mt-5 w-full" name="描述" />
         <span class="text-danger text-sm" v-show="errors.has('描述')">{{ errors.first('描述') }}</span>
 
         <!-- 排序 -->
@@ -91,7 +86,6 @@ export default {
       dataSort: null,
 
       settings: {
-        // perfectscrollbar settings
         maxScrollbarLength: 60,
         wheelSpeed: 0.6
       }
@@ -156,6 +150,7 @@ export default {
                 });
                 this.$emit("closeSidebar");
                 this.$emit("loadData");
+                this.$validator.reset();
                 this.initValues();
               }
             });
@@ -168,7 +163,6 @@ export default {
               mecid: userInfo.mecID,
               isLocked: this.data.IsLocked
             };
-            console.log("para:", para);
             editPackageType(para).then(res => {
               if (res.resultType == 0) {
                 this.$vs.notify({
@@ -178,6 +172,7 @@ export default {
                 });
                 this.$emit("loadData");
                 this.$emit("closeSidebar");
+                this.$validator.reset();
                 this.initValues();
               }
             });

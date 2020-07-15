@@ -130,10 +130,10 @@ export default {
       isLockedSelect: false,
 
       //Page
-      itemsPerPage: 4,
+      itemsPerPage: 10,
       currentPage: 1,
       totalPage: 0,
-      descriptionItems: [4, 10, 15, 20],
+      descriptionItems: [10, 20, 50, 100],
       totalItems: 0,
 
       // Data Sidebar

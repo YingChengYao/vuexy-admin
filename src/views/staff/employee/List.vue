@@ -19,20 +19,6 @@
           v-model="employeeNameInput"
           class="vx-col md:w-1/6 sm:w-1/2 w-full px-2"
         />
-        <!-- <label class="vx-col label-name px-2">是否锁定</label>
-        <vs-select
-          v-model="isLockedSelect"
-          class="vx-col md:w-1/6 sm:w-1/2 w-full px-2 select-large"
-        >
-          <vs-select-item
-            v-for="(item,index) in isLockedSelectOptions"
-            :key="index"
-            :value="item.value"
-            :text="item.name"
-            class="w-full"
-          />
-        </vs-select>-->
-
         <vs-button class="vx-col flex" color="primary" type="border" @click="loadData">查询</vs-button>
       </vs-row>
     </vx-card>
@@ -52,14 +38,16 @@
         </div>
 
         <template slot="thead">
-          <vs-th>
-            <vs-checkbox
-              :checked="isCheckedAll"
-              @change="handleCheckAll()"
-              v-if="isSelectedPop"
-              size="small"
-            />
-          </vs-th>
+          <th class="td-check">
+            <span class="con-td-check">
+              <vs-checkbox
+                :checked="isCheckedAll"
+                @change="handleCheckAll()"
+                v-if="isSelectedPop"
+                size="small"
+              />
+            </span>
+          </th>
           <vs-th>编号</vs-th>
           <vs-th>职工名称</vs-th>
           <vs-th>身份证</vs-th>
@@ -70,7 +58,7 @@
           <vs-th>是否锁定</vs-th>
           <vs-th>修改人</vs-th>
           <vs-th>修改时间</vs-th>
-          <vs-th>操作</vs-th>
+          <vs-th v-if="!isSelectedPop">操作</vs-th>
         </template>
 
         <template slot-scope="{data}">
@@ -122,7 +110,7 @@
               <vs-td>
                 <p>{{ tr.ModifyTime | formatDate }}</p>
               </vs-td>
-              <vs-td class="whitespace-no-wrap">
+              <vs-td class="whitespace-no-wrap" v-if="!isSelectedPop">
                 <span class="text-primary" size="small" type="border" @click.stop="editData(tr)">编辑</span>
               </vs-td>
             </vs-tr>
@@ -157,11 +145,13 @@
 
 <script>
 import EmployeeEdit from "./Edit";
+import { AgGridVue } from "ag-grid-vue";
 
 import { getEmployees } from "@/http/staff.js";
 export default {
   components: {
-    EmployeeEdit
+    EmployeeEdit,
+    AgGridVue
   },
   props: {
     isSelectedPop: Boolean,
@@ -169,6 +159,16 @@ export default {
   },
   data() {
     return {
+      columnDefs: [
+        { headerName: "姓名", field: "name" },
+        { headerName: "性别", field: "gender" },
+        { headerName: "年龄", field: "age" }
+      ],
+      rowData: [
+        { name: "李煜", gender: "男", age: 20 },
+        { name: "柳叶", gender: "女", age: 25 },
+        { name: "姜宇", gender: "男", age: 18 }
+      ],
       items: [],
       isLockedSelectOptions: [
         {

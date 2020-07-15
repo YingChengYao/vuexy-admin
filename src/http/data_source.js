@@ -64,7 +64,6 @@ export const getProjectItemDataSource = params => {
 };
 //#region 体检计划
 //获取计划的标准数据源
-//获取计划的标准数据源
 export const getStandardForPlanDataSource = params => {
   return request({
     url: "/api/plan/standard/select",
@@ -72,14 +71,14 @@ export const getStandardForPlanDataSource = params => {
     params: params
   });
 }; 
-//获取计划的标准数据源
-// export const getStandardForPlanDataSource = params => {
-//   return request({
-//     url: "/api/plan/standard/select",
-//     method: "get",
-//     params: params
-//   });
-// };
+//获取计划类型数据源
+export const getPlanTypeDataSource = params => {
+  return request({
+    url: "/api/plan/type/select",
+    method: "get",
+    params: params
+  });
+};
 //#endregion
 
 //#region 职工相关

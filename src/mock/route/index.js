@@ -185,16 +185,6 @@ export default {
                 title: "体检计划"
               }
             },
-            {
-              path: "/plan_edit",
-              url: "/plan_edit",
-              name: "体检计划",
-              slug: "unit",
-              component: "views/plan/Edit",
-              meta: {
-                title: "体检计划"
-              }
-            }
           ]
         },
         {

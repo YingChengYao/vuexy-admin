@@ -6,6 +6,27 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "15901458",
+      "name": "填写信息",
+      "font_class": "tianxiexinxi",
+      "unicode": "e603",
+      "unicode_decimal": 58883
+    },
+    {
+      "icon_id": "15901456",
+      "name": "新增员工",
+      "font_class": "xinzengyuangong1",
+      "unicode": "e602",
+      "unicode_decimal": 58882
+    },
+    {
+      "icon_id": "15900456",
+      "name": "添加标准",
+      "font_class": "tianjiabiaozhun1",
+      "unicode": "e601",
+      "unicode_decimal": 58881
+    },
+    {
       "icon_id": "3892530",
       "name": "体检受理",
       "font_class": "taocan",

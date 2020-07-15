@@ -9,53 +9,66 @@
     >
       <!-- tab 1 content -->
       <tab-content title="Cart" icon="feather icon-shopping-cart" class="mb-5">
-        <div class="vx-row">
-          <div class="vx-col md:w-1/4 w-full mt-2">
-            <label class="label-name px-2">计划名称</label>
-            <vs-input
-              class="w-full"
-              v-model="data_local.PlanName"
-              v-validate="'required'"
-              name="计划名称"
-            />
-            <span class="text-danger text-sm" v-show="errors.has('计划名称')">{{ errors.first('计划名称') }}</span>
-          </div>
-          <div class="vx-col md:w-1/4 w-full mt-2">
-            <label class="label-name px-2">开始日期</label>
-            <datepicker label="开始日期" format="yyyy-MM-dd" placeholder v-model="data_local.StartTime"></datepicker>
-            <!-- <span class="text-danger text-sm" v-show="errors.has('开始日期')">{{ errors.first('开始日期') }}</span> -->
-          </div>
-          <div class="vx-col md:w-1/4 w-full mt-2">
-            <label class="label-name px-2">结束日期</label>
-            <datepicker label="结束日期" format="yyyy-MM-dd" placeholder v-model="data_local.EndTime"></datepicker>
-
-            <!-- <span class="text-danger text-sm" v-show="errors.has('结束日期')">{{ errors.first('结束日期') }}</span> -->
-          </div>
-          <div class="vx-col md:w-1/4 w-full">
-            <vs-select label="计划类型" v-model="data_local.PlanType" class="w-full select-large">
-              <vs-select-item
-                v-for="(item,index) in planTypeOptions"
-                :key="index"
-                :value="item.Value"
-                :text="item.Name"
+        <form data-vv-scope="step-base">
+          <div class="vx-row">
+            <div class="vx-col md:w-1/4 w-full mt-2">
+              <label class="label-name px-2">计划名称</label>
+              <vs-input
                 class="w-full"
+                v-model="data_local.PlanName"
+                v-validate="'required|alpha'"
+                name="计划名称"
               />
-            </vs-select>
-          </div>
-          <div class="vx-col w-full">
-            <div class="mt-4">
-              <label class="vs-input--label">备注</label>
-              <vs-textarea
-                :counter-danger.sync="counterDanger"
-                v-model="data_local.CompanyName"
-                height="100px"
-                counter="20"
-              />
-              <!-- <vs-input label="备注" v-model="data_local.CompanyName" class="w-full" name="备注" /> -->
+              <span
+                class="text-danger text-sm"
+                v-show="errors.has('step-base.计划名称')"
+              >{{ errors.first('step-base.计划名称') }}</span>
+            </div>
+            <div class="vx-col md:w-1/4 w-full mt-2">
+              <label class="label-name px-2">开始日期</label>
+              <datepicker
+                label="开始日期"
+                format="yyyy-MM-dd"
+                placeholder
+                v-model="data_local.StartTime"
+                name="开始日期"
+              ></datepicker>
+              <span
+                class="text-danger text-sm"
+                v-show="errors.has('开始日期')"
+              >{{ errors.first('开始日期') }}</span>
+            </div>
+            <div class="vx-col md:w-1/4 w-full mt-2">
+              <label class="label-name px-2">结束日期</label>
+              <datepicker label="结束日期" format="yyyy-MM-dd" placeholder v-model="data_local.EndTime"></datepicker>
+
+              <!-- <span class="text-danger text-sm" v-show="errors.has('结束日期')">{{ errors.first('结束日期') }}</span> -->
+            </div>
+            <div class="vx-col md:w-1/4 w-full">
+              <vs-select label="计划类型" v-model="data_local.PlanType" class="w-full select-large">
+                <vs-select-item
+                  v-for="(item,index) in planTypeOptions"
+                  :key="index"
+                  :value="item.Value"
+                  :text="item.Name"
+                  class="w-full"
+                />
+              </vs-select>
+            </div>
+            <div class="vx-col w-full">
+              <div class="mt-4">
+                <label class="vs-input--label">备注</label>
+                <vs-textarea
+                  :counter-danger.sync="counterDanger"
+                  v-model="data_local.CompanyName"
+                  height="100px"
+                  counter="20"
+                />
+                <!-- <vs-input label="备注" v-model="data_local.CompanyName" class="w-full" name="备注" /> -->
+              </div>
             </div>
           </div>
-        </div>
-
+        </form>
         <vs-table ref="table" multiple v-model="selected" stripe :data="medicalCenters">
           <div
             slot="header"
@@ -127,10 +140,10 @@
         <div class="flex">
           <span class="mt-5">
             <span>
-              <vs-button class="vx-col ml-auto mt-2" color="primary">保存</vs-button>
+              <vs-button class="vx-col ml-auto mt-2" color="primary" @click="save_base_info">保存</vs-button>
             </span>
             <span class="px-2">
-              <vs-button class="vx-col ml-4 mt-2" type="border" color="warning">取消</vs-button>
+              <vs-button class="vx-col ml-4 mt-2" type="border" color="warning" @click="cancel">取消</vs-button>
             </span>
           </span>
           <vs-pagination
@@ -148,7 +161,12 @@
       </tab-content>
 
       <!-- tab 2 content -->
-      <tab-content title="Address" icon="feather icon-home" class="mb-5"></tab-content>
+      <tab-content title="Address" icon="feather icon-home" class="mb-5">
+        <staff-employee-list
+          ref="employee"
+          :isSelectedPop="true"
+        />
+      </tab-content>
 
       <!-- tab 3 content -->
       <tab-content title="Payment" icon="feather icon-credit-card" class="mb-5"></tab-content>
@@ -160,14 +178,15 @@
 import Datepicker from "vuejs-datepicker";
 import draggable from "vuedraggable";
 import PositionList from "../staff/position/List";
+import StaffEmployeeList from "views/staff/employee/List";
 
 import { FormWizard, TabContent } from "vue-form-wizard";
 import "vue-form-wizard/dist/vue-form-wizard.min.css";
 
 import {
-  getProjectTypeDataSource,
   getMaritalDataSource,
-  getGenderDataSource
+  getGenderDataSource,
+  getPlanTypeDataSource
 } from "@/http/data_source.js";
 import { addPlan, editPlan, getPlanDetail } from "@/http/plan.js";
 import { getMedicalCenters } from "@/http/medical_center.js";
@@ -179,7 +198,8 @@ export default {
     draggable,
     PositionList,
     FormWizard,
-    TabContent
+    TabContent,
+    StaffEmployeeList
   },
   props: {
     planId: {
@@ -217,22 +237,25 @@ export default {
 
       marriageOptions: [],
       genderOptions: [],
-      planTypeOptions: [
-        {
-          Name: "充值套餐",
-          Value: "1"
-        },
-        {
-          Name: "充值钱包",
-          Value: "2"
-        }
-      ]
+      planTypeOptions: [],
+
+      //职工
+      employeeNameInput: null,
+      employees: [],
+      isCheckedAll: false,
+      checkedGroup: [],
+      employeeItemsPerPage: 2,
+      employeeCurrentPage: 1,
+      employeeTotalPage: 0,
+      employeeDescriptionItems: [10, 20, 50, 100],
+      employeeTotalItems: 0
     };
   },
   computed: {},
   created() {
     this.loadMaritalStatus();
     this.loadGender();
+    this.loadPlanTypeData();
     this.loadData();
     this.loadMedicalCenterData();
   },
@@ -243,6 +266,7 @@ export default {
     }
   },
   methods: {
+    //#region 初始化数据
     loadData() {
       if (!this.planId) return;
 
@@ -262,6 +286,47 @@ export default {
         }
       });
     },
+    loadMaritalStatus() {
+      getMaritalDataSource().then(res => {
+        if (res.resultType == 0) {
+          const data = JSON.parse(res.message);
+          this.marriageOptions = data;
+        }
+      });
+    },
+    loadGender() {
+      getGenderDataSource().then(res => {
+        if (res.resultType == 0) {
+          const data = JSON.parse(res.message);
+          this.genderOptions = data;
+          console.log("性别：", data);
+        }
+      });
+    },
+    loadPlanTypeData() {
+      getPlanTypeDataSource().then(res => {
+        if (res.resultType == 0) {
+          const data = JSON.parse(res.message);
+          this.planTypeOptions = data;
+        }
+      });
+    },
+    loadMedicalCenterData() {
+      let para = {
+        pageIndex: this.currentPage,
+        pageSize: this.itemsPerPage,
+        mecName: this.medicalCenterNameInput
+      };
+      getMedicalCenters(para).then(res => {
+        if (res.resultType == 0) {
+          const data = JSON.parse(res.message);
+          this.medicalCenters = data.Items;
+          this.totalPage = data.TotalPages;
+          this.totalItems = data.TotalItems;
+        }
+      });
+    },
+    //#endregion
     save_changes() {
       this.$validator.validateAll().then(result => {
         if (result) {
@@ -344,6 +409,50 @@ export default {
     cancel() {
       this.$emit("closePop", false);
     },
+    //#region 基础信息
+    changePageMaxItems(index) {
+      this.itemsPerPage = this.descriptionItems[index];
+      this.currentPage = 1;
+      this.loadMedicalCenterData();
+    },
+    save_base_info() {
+      return new Promise(() => {
+        this.$validator.validateAll("step-base").then(result => {
+          if (result) {
+            this.$vs.notify({
+              title: "Success",
+              text: "Payment received successfully",
+              color: "success",
+              iconPack: "feather",
+              icon: "icon-check"
+            });
+            this.$refs.checkoutWizard.nextTab();
+          } else {
+            this.$vs.notify({
+              title: "Error",
+              text: "Please enter valid details",
+              color: "warning",
+              iconPack: "feather",
+              icon: "icon-alert-circle"
+            });
+          }
+        });
+      });
+    },
+    //#endregion
+
+    //#region 职工
+    showEmployee() {
+      this.isEmployeeTab = true;
+    },
+    changeEmployeePageMaxItems(index) {
+      this.employeeItemsPerPage = this.employeeDescriptionItems[index];
+      this.employeeCurrentPage = 1;
+      this.loadEmployeeData();
+    },
+    loadEmployeeData() {},
+    //#endregion
+
     changeEmployeePop(data) {
       this.$emit("changeEmployeePop", data);
     },
@@ -355,55 +464,6 @@ export default {
     },
     delEmployee(data) {
       this.$emit("delEmployee", data);
-    },
-    loadMaritalStatus() {
-      getMaritalDataSource().then(res => {
-        if (res.resultType == 0) {
-          const data = JSON.parse(res.message);
-          this.marriageOptions = data;
-        }
-      });
-    },
-    loadGender() {
-      getGenderDataSource().then(res => {
-        if (res.resultType == 0) {
-          const data = JSON.parse(res.message);
-          this.genderOptions = data;
-          console.log("性别：", data);
-        }
-      });
-    },
-    loadPlanTypeData() {
-      let userInfo = JSON.parse(localStorage.getItem("userInfo"));
-      let para = {
-        mecid: userInfo.mecID
-      };
-      getProjectTypeDataSource(para).then(res => {
-        if (res.resultType == 0) {
-          const data = JSON.parse(res.message);
-          this.projectTypeStatus = data;
-        }
-      });
-    },
-    loadMedicalCenterData() {
-      let para = {
-        pageIndex: this.currentPage,
-        pageSize: this.itemsPerPage,
-        mecName: this.medicalCenterNameInput
-      };
-      getMedicalCenters(para).then(res => {
-        if (res.resultType == 0) {
-          const data = JSON.parse(res.message);
-          this.medicalCenters = data.Items;
-          this.totalPage = data.TotalPages;
-          this.totalItems = data.TotalItems;
-        }
-      });
-    },
-    changePageMaxItems(index) {
-      this.itemsPerPage = this.descriptionItems[index];
-      this.currentPage = 1;
-      this.loadMedicalCenterData();
     }
   }
 };
