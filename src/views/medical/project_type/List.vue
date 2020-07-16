@@ -29,7 +29,6 @@
         </div>
 
         <template slot="thead">
-          <vs-th sort-key="id" v-show="false">ID</vs-th>
           <vs-th sort-key="id">编号</vs-th>
           <vs-th sort-key="item_type_name">项目类型名称</vs-th>
           <vs-th sort-key="remark">描述</vs-th>
@@ -43,24 +42,14 @@
         <template slot-scope="{data}">
           <tbody>
             <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data">
-              <vs-td v-show="false">
-                <p>{{ tr.ID }}</p>
-              </vs-td>
               <vs-td>
                 <p>{{ indextr+1 }}</p>
               </vs-td>
               <vs-td :data="tr.TypeName">
                 <p>{{ tr.TypeName }}</p>
-                <!-- <template slot="edit">
-                  <vs-input v-model="tr.TypeName" class="inputx" placeholder />
-                  <vs-button color="primary" type="border">更改</vs-button>
-                </template>-->
               </vs-td>
               <vs-td :data="tr.Remark">
                 <p>{{ tr.Remark }}</p>
-                <!-- <template slot="edit">
-                  <vs-input v-model="tr.Remark" class="inputx" />
-                </template>-->
               </vs-td>
               <vs-td>
                 <p>{{ tr.Sort }}</p>
@@ -69,18 +58,13 @@
                 <p>{{ tr.IsLocked?'是':'否' }}</p>
               </vs-td>
               <vs-td>
-                <p class="product-category">{{ tr.ModifyName}}</p>
+                <p>{{ tr.ModifyName}}</p>
               </vs-td>
               <vs-td>
                 <p>{{ tr.ModifyTime | formatDate }}</p>
               </vs-td>
               <vs-td class="whitespace-no-wrap">
-                <span
-                  class="text-primary"
-                  size="small"
-                  type="border"
-                  @click.stop="editData(tr)"
-                >编辑</span>
+                <span class="text-primary" size="small" type="border" @click.stop="editData(tr)">编辑</span>
               </vs-td>
             </vs-tr>
           </tbody>
@@ -119,7 +103,7 @@ export default {
       isMounted: false,
 
       //Page
-      itemsPerPage: 10,
+      itemsPerPage: 3,
       currentPage: 1,
       totalPage: 0,
       descriptionItems: [10, 20, 50, 100],
@@ -129,7 +113,17 @@ export default {
       addNewDataSidebar: false,
       sidebarData: {},
 
-      typeNameInput: ""
+      typeNameInput: "",
+
+      cloumns: [
+        { headerName: "项目类型名称", field: "TypeName" },
+        { headerName: "描述", field: "Remark" },
+        { headerName: "排序", field: "Sort" },
+        { headerName: "是否锁定", field: "IsLocked" },
+        { headerName: "修改人", field: "ModifyName" },
+        { headerName: "创建时间", field: "ModifyTime" },
+        { headerName: "操作", field: "age" }
+      ]
     };
   },
   computed: {},

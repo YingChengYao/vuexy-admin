@@ -11,9 +11,9 @@
       <tab-content title="Cart" icon="feather icon-shopping-cart" class="mb-5">
         <form data-vv-scope="step-base">
           <div class="vx-row">
-            <div class="vx-col md:w-1/4 w-full mt-2">
-              <label class="label-name px-2">计划名称</label>
+            <div class="vx-col md:w-1/4 w-full">
               <vs-input
+                label="计划名称"
                 class="w-full"
                 v-model="data_local.PlanName"
                 v-validate="'required|alpha'"
@@ -24,28 +24,35 @@
                 v-show="errors.has('step-base.计划名称')"
               >{{ errors.first('step-base.计划名称') }}</span>
             </div>
-            <div class="vx-col md:w-1/4 w-full mt-2">
-              <label class="label-name px-2">开始日期</label>
+            <div class="vx-col md:w-1/4 w-full">
+              <label class="vs-input--label">本次计划体检开始日期</label>
               <datepicker
                 label="开始日期"
                 format="yyyy-MM-dd"
                 placeholder
                 v-model="data_local.StartTime"
                 name="开始日期"
+                :language="languages['zh']"
+                @selected="selectedStartTime"
               ></datepicker>
               <span
                 class="text-danger text-sm"
                 v-show="errors.has('开始日期')"
               >{{ errors.first('开始日期') }}</span>
             </div>
-            <div class="vx-col md:w-1/4 w-full mt-2">
-              <label class="label-name px-2">结束日期</label>
-              <datepicker label="结束日期" format="yyyy-MM-dd" placeholder v-model="data_local.EndTime"></datepicker>
-
+            <div class="vx-col md:w-1/4 w-full">
+              <label class="vs-input--label">本次计划体检结束日期</label>
+              <datepicker
+                label="结束日期"
+                format="yyyy-MM-dd"
+                placeholder
+                v-model="data_local.EndTime"
+                :language="languages.zh"
+              ></datepicker>
               <!-- <span class="text-danger text-sm" v-show="errors.has('结束日期')">{{ errors.first('结束日期') }}</span> -->
             </div>
             <div class="vx-col md:w-1/4 w-full">
-              <vs-select label="计划类型" v-model="data_local.PlanType" class="w-full select-large">
+              <vs-select label="体检模式" v-model="data_local.PlanType" class="w-full select-large">
                 <vs-select-item
                   v-for="(item,index) in planTypeOptions"
                   :key="index"
@@ -69,125 +76,61 @@
             </div>
           </div>
         </form>
-        <vs-table ref="table" multiple v-model="selected" stripe :data="medicalCenters">
-          <div
-            slot="header"
-            class="flex flex-wrap-reverse items-center flex-grow justify-between mb-4"
-          >
-            <vs-row vs-align="center">
-              <label class="vx-col label-name px-2">体检中心名称</label>
-              <vs-input
-                placeholder="Placeholder"
-                v-model="medicalCenterNameInput"
-                class="vx-col md:w-1/6 sm:w-1/2 w-full px-2"
-              />
-              <vs-button
-                class="vx-col flex"
-                color="primary"
-                type="border"
-                @click="loadMedicalCenterData"
-              >查询</vs-button>
-            </vs-row>
-          </div>
-
-          <template slot="thead">
-            <vs-th>编号</vs-th>
-            <vs-th>体检中心名称</vs-th>
-            <vs-th>体检中心编号</vs-th>
-            <vs-th>联系人</vs-th>
-            <vs-th>手机号</vs-th>
-            <vs-th>电话</vs-th>
-            <vs-th>排序</vs-th>
-            <vs-th>修改人</vs-th>
-            <vs-th>创建时间</vs-th>
-          </template>
-
-          <template slot-scope="{data}">
-            <tbody>
-              <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data">
-                <vs-td>
-                  <p>{{ indextr+1 }}</p>
-                </vs-td>
-                <vs-td>
-                  <p>{{ tr.MecName }}</p>
-                </vs-td>
-                <vs-td>
-                  <p>{{ tr.MecCode }}</p>
-                </vs-td>
-                <vs-td>
-                  <p>{{ tr.Contact }}</p>
-                </vs-td>
-                <vs-td>
-                  <p>{{ tr.Mobile }}</p>
-                </vs-td>
-                <vs-td>
-                  <p>{{ tr.Tel }}</p>
-                </vs-td>
-                <vs-td>
-                  <p>{{ tr.Sort }}</p>
-                </vs-td>
-                <vs-td>
-                  <p class="product-category">{{ tr.ModifyName}}</p>
-                </vs-td>
-                <vs-td>
-                  <p>{{ tr.ModifyTime | formatDate }}</p>
-                </vs-td>
-              </vs-tr>
-            </tbody>
-          </template>
-        </vs-table>
-
-        <div class="flex">
-          <span class="mt-5">
-            <span>
-              <vs-button class="vx-col ml-auto mt-2" color="primary" @click="save_base_info">保存</vs-button>
+        <medical-center-list ref="medicalCenter" :multipleCheck="true">
+          <template>
+            <span class="mt-5">
+              <span>
+                <vs-button class="vx-col ml-auto mt-2" color="primary" @click="save_base_info">保存</vs-button>
+              </span>
+              <span class="px-2">
+                <vs-button class="vx-col ml-4 mt-2" type="border" color="warning" @click="cancel">取消</vs-button>
+              </span>
             </span>
-            <span class="px-2">
-              <vs-button class="vx-col ml-4 mt-2" type="border" color="warning" @click="cancel">取消</vs-button>
-            </span>
-          </span>
-          <vs-pagination
-            style="flex:1"
-            :total="totalPage"
-            v-model="currentPage"
-            :pagedown="true"
-            :totalItems="totalItems"
-            @changePageMaxItems="changePageMaxItems"
-            :pagedownItems="descriptionItems"
-            :size="itemsPerPage"
-            class="the-footer flex-wrap justify-between"
-          ></vs-pagination>
-        </div>
+          </template>
+        </medical-center-list>
       </tab-content>
 
       <!-- tab 2 content -->
       <tab-content title="Address" icon="feather icon-home" class="mb-5">
-        <staff-employee-list
-          ref="employee"
-          :isSelectedPop="true"
-        />
+        <staff-employee-list ref="employee" :isPop="true" :multipleCheck="true">
+          <template>
+            <span class="mt-5">
+              <span>
+                <vs-button class="vx-col" color="primary" type="border" @click="save_employee">保存</vs-button>
+              </span>
+              <span class="px-2">
+                <vs-button class="vx-col" color="primary" type="border">取消</vs-button>
+              </span>
+            </span>
+          </template>
+        </staff-employee-list>
       </tab-content>
 
       <!-- tab 3 content -->
-      <tab-content title="Payment" icon="feather icon-credit-card" class="mb-5"></tab-content>
+      <tab-content title="Payment" icon="feather icon-credit-card" class="mb-5">
+        <plan-standard-list ref="standard"></plan-standard-list>
+      </tab-content>
     </form-wizard>
   </div>
 </template>
 
 <script>
 import Datepicker from "vuejs-datepicker";
+import * as lang from "vuejs-datepicker/src/locale";
 import draggable from "vuedraggable";
-import PositionList from "../staff/position/List";
-import StaffEmployeeList from "views/staff/employee/List";
-
 import { FormWizard, TabContent } from "vue-form-wizard";
 import "vue-form-wizard/dist/vue-form-wizard.min.css";
+
+import MedicalCenterList from "views/medical_center/List";
+import StaffEmployeeList from "views/staff/employee/List";
+import PlanStandardList from "views/plan/standard/List";
 
 import {
   getMaritalDataSource,
   getGenderDataSource,
   getPlanTypeDataSource
 } from "@/http/data_source.js";
+import { formatTimeToStr } from "@/common/utils/data/date";
 import { addPlan, editPlan, getPlanDetail } from "@/http/plan.js";
 import { getMedicalCenters } from "@/http/medical_center.js";
 
@@ -196,10 +139,11 @@ export default {
   components: {
     Datepicker,
     draggable,
-    PositionList,
     FormWizard,
     TabContent,
-    StaffEmployeeList
+    MedicalCenterList,
+    StaffEmployeeList,
+    PlanStandardList
   },
   props: {
     planId: {
@@ -223,32 +167,12 @@ export default {
     return {
       colors: ["primary", "success", "danger", "warning", "dark", "#24c1a0"],
       counterDanger: false,
+      languages: lang,
       data_local: {},
-
-      //Page
-      medicalCenters: [],
-      medicalCenterNameInput: null,
-      itemsPerPage: 10,
-      currentPage: 1,
-      totalPage: 0,
-      descriptionItems: [10, 20, 50, 100],
-      totalItems: 0,
-      selected: [],
 
       marriageOptions: [],
       genderOptions: [],
-      planTypeOptions: [],
-
-      //职工
-      employeeNameInput: null,
-      employees: [],
-      isCheckedAll: false,
-      checkedGroup: [],
-      employeeItemsPerPage: 2,
-      employeeCurrentPage: 1,
-      employeeTotalPage: 0,
-      employeeDescriptionItems: [10, 20, 50, 100],
-      employeeTotalItems: 0
+      planTypeOptions: []
     };
   },
   computed: {},
@@ -257,14 +181,10 @@ export default {
     this.loadGender();
     this.loadPlanTypeData();
     this.loadData();
-    this.loadMedicalCenterData();
+    console.log("lang:", lang);
   },
   mounted() {},
-  watch: {
-    currentPage() {
-      this.loadMedicalCenterData();
-    }
-  },
+  watch: {},
   methods: {
     //#region 初始化数据
     loadData() {
@@ -308,23 +228,26 @@ export default {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.planTypeOptions = data;
+          if (this.planTypeOptions.length > 0) {
+            this.data_local.PlanType = this.planTypeOptions[0].Value;
+          }
         }
       });
     },
-    loadMedicalCenterData() {
-      let para = {
-        pageIndex: this.currentPage,
-        pageSize: this.itemsPerPage,
-        mecName: this.medicalCenterNameInput
-      };
-      getMedicalCenters(para).then(res => {
-        if (res.resultType == 0) {
-          const data = JSON.parse(res.message);
-          this.medicalCenters = data.Items;
-          this.totalPage = data.TotalPages;
-          this.totalItems = data.TotalItems;
-        }
-      });
+    selectedStartTime(val) {
+      let start = formatTimeToStr(val, "yyyy-MM-dd");
+      if (!this.data_local.EndTime) return;
+      if (start > formatTimeToStr(this.data_local.EndTime, "yyyy-MM-dd")) {
+        alert(1);
+      }
+    },
+    selectedEndTime(val) {
+      let end = formatTimeToStr(val, "yyyy-MM-dd");
+
+      if (!this.data_local.StartTime) return;
+      if (this.data_local.StartTime > end) {
+        alert(1);
+      }
     },
     //#endregion
     save_changes() {
@@ -410,23 +333,45 @@ export default {
       this.$emit("closePop", false);
     },
     //#region 基础信息
-    changePageMaxItems(index) {
-      this.itemsPerPage = this.descriptionItems[index];
-      this.currentPage = 1;
-      this.loadMedicalCenterData();
-    },
     save_base_info() {
       return new Promise(() => {
         this.$validator.validateAll("step-base").then(result => {
           if (result) {
-            this.$vs.notify({
-              title: "Success",
-              text: "Payment received successfully",
-              color: "success",
-              iconPack: "feather",
-              icon: "icon-check"
+            let mecIDs = [];
+
+            let checkedGroup = this.$refs.medicalCenter.checkedGroup;
+            if (checkedGroup.length > 0) {
+              checkedGroup.map((item, index) => {
+                mecIDs.push(item.ID);
+              });
+            }
+
+            let para = {
+              planName: this.data_local.PlanName,
+              startTime: this.data_local.StartTime,
+              endTime: this.data_local.EndTime,
+              remark: this.data_local.Remark,
+              mecIDs: JSON.stringify(mecIDs)
+            };
+
+            addPlan(para).then(res => {
+              if (res.resultType == 0) {
+                this.$vs.notify({
+                  title: "Success",
+                  text: res.message,
+                  color: "success"
+                });
+              }
             });
-            this.$refs.checkoutWizard.nextTab();
+
+            // this.$vs.notify({
+            //   title: "Success",
+            //   text: "Payment received successfully",
+            //   color: "success",
+            //   iconPack: "feather",
+            //   icon: "icon-check"
+            // });
+            // this.$refs.checkoutWizard.nextTab();
           } else {
             this.$vs.notify({
               title: "Error",
@@ -445,12 +390,19 @@ export default {
     showEmployee() {
       this.isEmployeeTab = true;
     },
-    changeEmployeePageMaxItems(index) {
-      this.employeeItemsPerPage = this.employeeDescriptionItems[index];
-      this.employeeCurrentPage = 1;
-      this.loadEmployeeData();
+    save_employee() {
+      let result = true;
+      if (result) {
+        this.$vs.notify({
+          title: "Success",
+          text: "Payment received successfully",
+          color: "success",
+          iconPack: "feather",
+          icon: "icon-check"
+        });
+        this.$refs.checkoutWizard.nextTab();
+      }
     },
-    loadEmployeeData() {},
     //#endregion
 
     changeEmployeePop(data) {

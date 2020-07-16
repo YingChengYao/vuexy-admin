@@ -17,9 +17,6 @@ export const addPlan = params => {
     url: "/api/plan/insert",
     method: "post",
     params: params,
-    headers: {
-      "Content-Type": "application/json;charset=UTF-8"
-    }
   });
 };
 

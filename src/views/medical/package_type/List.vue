@@ -35,7 +35,8 @@
     </vx-card>
 
     <div class="vx-card p-6">
-      <vs-table ref="table" stripe :data="types">
+      <grid-table :cloumns="cloumns" :rowData="types"></grid-table>
+      <!-- <vs-table ref="table" stripe :data="types">
         <div slot="header" class="flex flex-wrap-reverse items-center flex-grow justify-between">
           <div class="flex flex-wrap-reverse items-center data-list-btn-container header-left">
             <vs-button color="primary" type="border" class="mb-4 mr-4" @click="addNewData">添加</vs-button>
@@ -79,7 +80,7 @@
             </vs-tr>
           </tbody>
         </template>
-      </vs-table>
+      </vs-table>-->
     </div>
     <div class="con-pagination-table vs-table--pagination">
       <vs-pagination
@@ -101,14 +102,38 @@
 
 <script>
 import PackageTypeDataViewSidebar from "./PackageTypeDataViewSidebar";
+import GridTable from "components/grid-table/GridTable";
 import { getPackageTypes } from "@/http/package.js";
 export default {
   components: {
-    PackageTypeDataViewSidebar
+    PackageTypeDataViewSidebar,
+    GridTable
   },
   data() {
     return {
       types: [],
+      cloumns: [
+        {
+          title: "套餐类型名称",
+          field: "TypeName"
+        },
+        {
+          title: "排序",
+          field: "Sort"
+        },
+        {
+          title: "是否锁定",
+          field: "IsLocked",
+        },
+        {
+          title: "修改人",
+          field: "ModifyName"
+        },
+        {
+          title: "修改时间",
+          field: "ModifyTime"
+        }
+      ],
 
       isLockedSelectOptions: [
         {

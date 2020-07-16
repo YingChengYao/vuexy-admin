@@ -25,7 +25,7 @@
       <vs-popup fullscreen title="添加职工" :active.sync="popupActiveEmployee">
         <staff-employee-list
           ref="employee"
-          :isSelectedPop="true"
+          :isPop="true"
           @closePop="closeEmployeePop"
           @saveEmployeeSelected="saveEmployeeSelected"
         />

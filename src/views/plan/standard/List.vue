@@ -1,6 +1,6 @@
 <template>
   <div id class="data-list-container">
-    <vs-popup :title="title" :active.sync="popupActive">
+    <!-- <vs-popup :title="title" :active.sync="popupActive">
       <employee-edit
         @closePop="closePop"
         @loadData="loadData"
@@ -9,7 +9,7 @@
         :mark="mark"
         :data="employeeData"
       />
-    </vs-popup>
+    </vs-popup>-->
 
     <vx-card ref="filterCard" title class="user-list-filters mb-8">
       <vs-row vs-align="center">
@@ -38,9 +38,14 @@
         </div>
 
         <template slot="thead">
-          <th class="td-check" v-if="multipleCheck">
+          <th class="td-check">
             <span class="con-td-check">
-              <vs-checkbox :checked="isCheckedAll" @change="handleCheckAll()" size="small" />
+              <vs-checkbox
+                :checked="isCheckedAll"
+                @change="handleCheckAll()"
+                v-if="multipleCheck"
+                size="small"
+              />
             </span>
           </th>
           <vs-th>编号</vs-th>
@@ -59,8 +64,13 @@
         <template slot-scope="{data}">
           <tbody>
             <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data">
-              <vs-td v-if="multipleCheck">
-                <vs-checkbox :checked="tr.isChecked" @change="handleCheckbox(tr)" size="small" />
+              <vs-td>
+                <vs-checkbox
+                  :checked="tr.isChecked"
+                  @change="handleCheckbox"
+                  size="small"
+                  v-if="multipleCheck"
+                />
               </vs-td>
               <vs-td>
                 <p>{{ indextr+1 }}</p>
@@ -110,14 +120,6 @@
 
       <div class="flex">
         <slot></slot>
-        <!-- <span class="mt-5">
-          <span>
-            <vs-button class="vx-col" color="primary" type="border" @click="save">保存</vs-button>
-          </span>
-          <span class="px-2">
-            <vs-button class="vx-col" color="primary" type="border" @click="cancel">取消</vs-button>
-          </span>
-        </span>-->
         <vs-pagination
           style="flex:1"
           :total="totalPage"
@@ -135,19 +137,17 @@
 </template>
 
 <script>
-import EmployeeEdit from "./Edit";
 import { AgGridVue } from "ag-grid-vue";
 
 import { getEmployees } from "@/http/staff.js";
 export default {
   components: {
-    EmployeeEdit,
     AgGridVue
   },
   props: {
     multipleCheck: {
       type: Boolean,
-      default: true
+      default: false
     },
     isPop: {
       type: Boolean,

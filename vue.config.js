@@ -18,7 +18,8 @@ module.exports = {
     config.resolve.alias
       .set("@", resolve("./src"))
       .set("views", resolve("./src/views"))
-      .set("assets", resolve("./src/assets"));
+      .set("assets", resolve("./src/assets"))
+      .set("components", resolve("./src/components"));
     //...可以继续自定义别名
     //set 第一个参数：设置的别名；第二个参数：原来默认的路径
   },
