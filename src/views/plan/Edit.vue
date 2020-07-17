@@ -6,6 +6,7 @@
       :title="null"
       :subtitle="null"
       :hide-buttons="true"
+      :startIndex="startIndex"
     >
       <!-- tab 1 content -->
       <tab-content title="Cart" icon="feather icon-shopping-cart" class="mb-5">
@@ -16,7 +17,7 @@
                 label="计划名称"
                 class="w-full"
                 v-model="data_local.PlanName"
-                v-validate="'required|alpha'"
+                v-validate="'required'"
                 name="计划名称"
               />
               <span
@@ -29,10 +30,9 @@
               <datepicker
                 label="开始日期"
                 format="yyyy-MM-dd"
-                placeholder
                 v-model="data_local.StartTime"
                 name="开始日期"
-                :language="languages['zh']"
+                :language="languages.zh"
                 @selected="selectedStartTime"
               ></datepicker>
               <span
@@ -45,9 +45,9 @@
               <datepicker
                 label="结束日期"
                 format="yyyy-MM-dd"
-                placeholder
                 v-model="data_local.EndTime"
                 :language="languages.zh"
+                @selected="selectedEndTime"
               ></datepicker>
               <!-- <span class="text-danger text-sm" v-show="errors.has('结束日期')">{{ errors.first('结束日期') }}</span> -->
             </div>
@@ -92,7 +92,7 @@
 
       <!-- tab 2 content -->
       <tab-content title="Address" icon="feather icon-home" class="mb-5">
-        <staff-employee-list ref="employee" :isPop="true" :multipleCheck="true">
+        <staff-employee-list ref="employee" :isPop="false" :multipleCheck="true">
           <template>
             <span class="mt-5">
               <span>
@@ -131,7 +131,13 @@ import {
   getPlanTypeDataSource
 } from "@/http/data_source.js";
 import { formatTimeToStr } from "@/common/utils/data/date";
-import { addPlan, editPlan, getPlanDetail } from "@/http/plan.js";
+import {
+  addPlan,
+  addEmployeeForPlan,
+  editPlan,
+  editEmployeeForPlan,
+  getPlanDetail
+} from "@/http/plan.js";
 import { getMedicalCenters } from "@/http/medical_center.js";
 
 export default {
@@ -168,8 +174,11 @@ export default {
       colors: ["primary", "success", "danger", "warning", "dark", "#24c1a0"],
       counterDanger: false,
       languages: lang,
-      data_local: {},
 
+      startIndex: 0,
+
+      data_local: {},
+      planId_local: {},
       marriageOptions: [],
       genderOptions: [],
       planTypeOptions: []
@@ -181,9 +190,11 @@ export default {
     this.loadGender();
     this.loadPlanTypeData();
     this.loadData();
-    console.log("lang:", lang);
+    this.planId_local = this.planId;
   },
-  mounted() {},
+  mounted() {
+    console.log("checkoutWizard：", this.$refs.checkoutWizard);
+  },
   watch: {},
   methods: {
     //#region 初始化数据
@@ -235,19 +246,18 @@ export default {
       });
     },
     selectedStartTime(val) {
-      let start = formatTimeToStr(val, "yyyy-MM-dd");
-      if (!this.data_local.EndTime) return;
-      if (start > formatTimeToStr(this.data_local.EndTime, "yyyy-MM-dd")) {
-        alert(1);
-      }
+      // let start = formatTimeToStr(val, "yyyy-MM-dd");
+      // if (!this.data_local.EndTime) return;
+      // if (start > formatTimeToStr(this.data_local.EndTime, "yyyy-MM-dd")) {
+      //   this.data_local.StartTime = null;
+      // }
     },
     selectedEndTime(val) {
-      let end = formatTimeToStr(val, "yyyy-MM-dd");
-
-      if (!this.data_local.StartTime) return;
-      if (this.data_local.StartTime > end) {
-        alert(1);
-      }
+      // let end = formatTimeToStr(val, "yyyy-MM-dd");
+      // if (!this.data_local.StartTime) return;
+      // if (this.data_local.StartTime > end) {
+      //   alert(1);
+      // }
     },
     //#endregion
     save_changes() {
@@ -334,35 +344,53 @@ export default {
     },
     //#region 基础信息
     save_base_info() {
+      this.$refs.checkoutWizard.nextTab();
+      return;
       return new Promise(() => {
         this.$validator.validateAll("step-base").then(result => {
           if (result) {
-            let mecIDs = [];
-
             let checkedGroup = this.$refs.medicalCenter.checkedGroup;
-            if (checkedGroup.length > 0) {
-              checkedGroup.map((item, index) => {
-                mecIDs.push(item.ID);
-              });
-            }
+            let isValid = this.validBaseinfo(checkedGroup);
+            if (!isValid) return;
+
+            let mecIDs = checkedGroup
+              .map(obj => {
+                return obj.ID;
+              })
+              .join(",");
 
             let para = {
               planName: this.data_local.PlanName,
               startTime: this.data_local.StartTime,
               endTime: this.data_local.EndTime,
+              planType: this.data_local.PlanType,
               remark: this.data_local.Remark,
-              mecIDs: JSON.stringify(mecIDs)
+              mecIDs: mecIDs
             };
 
-            addPlan(para).then(res => {
-              if (res.resultType == 0) {
-                this.$vs.notify({
-                  title: "Success",
-                  text: res.message,
-                  color: "success"
-                });
-              }
-            });
+            if (this.planId_local) {
+              para.planId = this.planId_local;
+              editPlan(para).then(res => {
+                if (res.resultType == 0) {
+                  this.$vs.notify({
+                    title: "Success",
+                    text: res.message,
+                    color: "success"
+                  });
+                }
+              });
+            } else {
+              addPlan(para).then(res => {
+                if (res.resultType == 0) {
+                  this.$vs.notify({
+                    title: "Success",
+                    text: res.message,
+                    color: "success"
+                  });
+                  this.planId_local = res.data.planId;
+                }
+              });
+            }
 
             // this.$vs.notify({
             //   title: "Success",
@@ -371,11 +399,11 @@ export default {
             //   iconPack: "feather",
             //   icon: "icon-check"
             // });
-            // this.$refs.checkoutWizard.nextTab();
+            this.$refs.checkoutWizard.nextTab();
           } else {
             this.$vs.notify({
               title: "Error",
-              text: "Please enter valid details",
+              text: "请输入有效的信息",
               color: "warning",
               iconPack: "feather",
               icon: "icon-alert-circle"
@@ -384,6 +412,25 @@ export default {
         });
       });
     },
+    validBaseinfo(checkedGroup) {
+      let message = null;
+      if (!this.data_local.StartTime || !this.data_local.EndTime) {
+        message = "请选择本次计划体检时间";
+      } else if (this.data_local.StartTime > this.data_local.EndTime) {
+        message = "计划体检开始时间不能大于计划体检结束时间";
+      } else if (checkedGroup.length <= 0) {
+        message = "请至少选择一家体检中心机构";
+      }
+      if (!message) return true;
+      this.$vs.notify({
+        title: "Error",
+        text: message,
+        color: "warning",
+        iconPack: "feather",
+        icon: "icon-alert-circle"
+      });
+      return false;
+    },
     //#endregion
 
     //#region 职工
@@ -391,16 +438,44 @@ export default {
       this.isEmployeeTab = true;
     },
     save_employee() {
-      let result = true;
-      if (result) {
-        this.$vs.notify({
-          title: "Success",
-          text: "Payment received successfully",
-          color: "success",
-          iconPack: "feather",
-          icon: "icon-check"
+      this.$refs.checkoutWizard.nextTab();
+      return;
+      let checkedGroup = this.$refs.employee.checkedGroup;
+
+      let employees = checkedGroup
+        .map(obj => {
+          return obj.ID;
+        })
+        .join(",");
+
+      let para = {
+        planId: this.planId,
+        employees: employees
+      };
+
+      if (this.planId_local) {
+        para.planId = this.planId_local;
+        editEmployeeForPlan(para).then(res => {
+          if (res.resultType == 0) {
+            this.$vs.notify({
+              title: "Success",
+              text: res.message,
+              color: "success"
+            });
+            this.$refs.checkoutWizard.nextTab();
+          }
         });
-        this.$refs.checkoutWizard.nextTab();
+      } else {
+        addEmployeeForPlan(para).then(res => {
+          if (res.resultType == 0) {
+            this.$vs.notify({
+              title: "Success",
+              text: res.message,
+              color: "success"
+            });
+            this.$refs.checkoutWizard.nextTab();
+          }
+        });
       }
     },
     //#endregion

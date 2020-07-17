@@ -17,14 +17,20 @@
             class="w-full mt-4"
             label="身份证号"
             v-model="data_local.IdNo"
-            v-validate
+            v-validate="'required|id_card_no'"
             name="身份证号"
           />
           <span class="text-danger text-sm" v-show="errors.has('身份证号')">{{ errors.first('身份证号') }}</span>
         </div>
 
         <div class="vx-col md:w-1/2 w-full mt-4">
-          <vs-select label="婚姻状况" v-model="data_local.Marital" class="w-full select-large">
+          <vs-select
+            label="婚姻状况"
+            v-model="data_local.Marital"
+            class="w-full select-large"
+            name="婚姻状况"
+            v-validate="'required'"
+          >
             <vs-select-item
               v-for="(item,index) in marriageOptions"
               :key="index"
@@ -33,9 +39,16 @@
               class="w-full"
             />
           </vs-select>
+          <span class="text-danger text-sm" v-show="errors.has('婚姻状况')">{{ errors.first('婚姻状况') }}</span>
         </div>
         <div class="vx-col md:w-1/2 w-full mt-4">
-          <vs-select label="性别" v-model="data_local.Gender" class="w-full select-large">
+          <vs-select
+            label="性别"
+            v-model="data_local.Gender"
+            class="w-full select-large"
+            name="性别"
+            v-validate="'required'"
+          >
             <vs-select-item
               v-for="(item,index) in genderOptions"
               :key="index"
@@ -44,13 +57,20 @@
               class="w-full"
             />
           </vs-select>
+          <span class="text-danger text-sm" v-show="errors.has('性别')">{{ errors.first('性别') }}</span>
         </div>
 
         <div class="vx-col md:w-1/2 w-full">
-          <vs-input class="w-full mt-4" label="手机号" v-model="data_local.Mobile" name="手机号" />
+          <vs-input
+            class="w-full mt-4"
+            label="手机号"
+            v-model="data_local.Mobile"
+            name="手机号"
+            v-validate="'required|phone'"
+          />
           <span class="text-danger text-sm" v-show="errors.has('手机号')">{{ errors.first('手机号') }}</span>
         </div>
-        <div class="vx-col md:w-1/2 w-full mt-4">
+        <div class="vx-col md:w-1/2 w-full mt-4" v-if="mark=='edit'">
           <vs-select label="在职状态" v-model="data_local.WorkingStatus" class="w-full select-large">
             <vs-select-item
               v-for="(item,index) in workingStatusOptions"
@@ -63,23 +83,8 @@
         </div>
 
         <div class="vx-col md:w-1/2 w-full mt-4">
-          <vs-input
-            class="w-full"
-            label="排序"
-            v-model="data_local.Sort"
-            name="排序"
-            v-validate="'numeric'"
-          />
-          <span class="text-danger text-sm" v-show="errors.has('排序')">{{ errors.first('排序') }}</span>
-        </div>
-        <div class="vx-col md:w-1/2 w-full mt-4">
           <vs-input class="w-full" label="备注" v-model="data_local.Remark" name="备注" />
           <span class="text-danger text-sm" v-show="errors.has('备注')">{{ errors.first('备注') }}</span>
-        </div>
-
-        <div class="vx-col md:w-1/2 w-full mt-6" v-if="mark=='edit'">
-          <label class="vs-input--label">是否锁定</label>
-          <vs-switch v-model="data_local.IsLocked" />
         </div>
       </div>
 
@@ -167,7 +172,6 @@ export default {
       this.$validator.validateAll().then(result => {
         if (result) {
           let userInfo = JSON.parse(localStorage.getItem("userInfo"));
-          this.data_local.PositionID = "6642291296421289984";
           let para = {
             CompanyId: userInfo.companyID,
             EmployeeName: this.data_local.EmployeeName,
@@ -175,9 +179,7 @@ export default {
             Marital: this.data_local.Marital,
             IdNo: this.data_local.IdNo,
             Mobile: this.data_local.Mobile,
-            WorkingStatus: this.data_local.WorkingStatus | 1,
-            PositionID: this.data_local.PositionID,
-            Sort: this.data_local.Sort,
+            WorkingStatus: this.data_local.WorkingStatus,
             Remark: this.data_local.Remark
           };
 
@@ -195,7 +197,6 @@ export default {
             });
           } else if (this.mark == "edit") {
             para.ID = this.data_local.ID;
-            para.isLocked = this.data_local.IsLocked;
 
             editEmployee(para).then(res => {
               if (res.resultType == 0) {
@@ -236,6 +237,7 @@ export default {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.workingStatusOptions = data;
+          console.log("data1:", data);
         }
       });
     }

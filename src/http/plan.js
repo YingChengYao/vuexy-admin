@@ -16,7 +16,7 @@ export const addPlan = params => {
   return request({
     url: "/api/plan/insert",
     method: "post",
-    params: params,
+    params: params
   });
 };
 
@@ -46,6 +46,24 @@ export const submitPlan = params => {
     params: params
   });
 };
+
+//添加体检计划的职工名单
+export const addEmployeeForPlan = params => {
+  return request({
+    url: "/api/plan/employee/insert",
+    method: "post",
+    params: params
+  });
+};
+//修改体检计划的职工名单
+export const editEmployeeForPlan = params => {
+  return request({
+    url: "/api/plan/employee/update",
+    method: "post",
+    params: params
+  });
+};
+
 //#endregion
 
 //#region 体检计划(体检中心)

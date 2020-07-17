@@ -11,14 +11,31 @@
       />
     </vs-popup>
 
+    <vs-popup title :active.sync="popupActivePosition">
+      <position-list v-if="popupActivePosition" />
+    </vs-popup>
+
     <vx-card ref="filterCard" title class="user-list-filters mb-8">
       <vs-row vs-align="center">
-        <label class="vx-col label-name px-2">职工名称</label>
+        <label :style="{'z-index':'currentPage'}" class="vx-col label-name px-2">职工名称</label>
         <vs-input
           placeholder="Placeholder"
           v-model="employeeNameInput"
           class="vx-col md:w-1/6 sm:w-1/2 w-full px-2"
         />
+        <label class="vx-col label-name px-2">在职状态</label>
+        <vs-select
+          v-model="workingStatusSelect"
+          class="vx-col md:w-1/6 sm:w-1/2 w-full px-2 select-large"
+        >
+          <vs-select-item
+            v-for="(item,index) in workingStatusOptions"
+            :key="index"
+            :value="item.Value"
+            :text="item.Name"
+            class="w-full"
+          />
+        </vs-select>
         <vs-button class="vx-col flex" color="primary" type="border" @click="loadData">查询</vs-button>
       </vs-row>
     </vx-card>
@@ -49,8 +66,7 @@
           <vs-th>婚姻状态</vs-th>
           <vs-th>性别</vs-th>
           <vs-th>手机号</vs-th>
-          <vs-th>排序</vs-th>
-          <vs-th v-if="!isPop">是否锁定</vs-th>
+          <vs-th>在职状态</vs-th>
           <vs-th v-if="!isPop">修改人</vs-th>
           <vs-th v-if="!isPop">修改时间</vs-th>
           <vs-th v-if="!isPop">操作</vs-th>
@@ -59,7 +75,7 @@
         <template slot-scope="{data}">
           <tbody>
             <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data">
-              <vs-td v-if="multipleCheck">
+              <vs-td v-if="multipleCheck" class="td-check">
                 <vs-checkbox :checked="tr.isChecked" @change="handleCheckbox(tr)" size="small" />
               </vs-td>
               <vs-td>
@@ -89,10 +105,7 @@
                 <p>{{ tr.Mobile }}</p>
               </vs-td>
               <vs-td>
-                <p>{{ tr.Sort }}</p>
-              </vs-td>
-              <vs-td v-if="!isPop">
-                <p>{{ tr.IsLocked?'是':'否' }}</p>
+                <p>{{ tr.WorkingStatusName }}</p>
               </vs-td>
               <vs-td v-if="!isPop">
                 <p>{{ tr.ModifyName }}</p>
@@ -102,6 +115,12 @@
               </vs-td>
               <vs-td class="whitespace-no-wrap" v-if="!isPop">
                 <span class="text-primary" size="small" type="border" @click.stop="editData(tr)">编辑</span>
+                <span
+                  class="text-primary px-2"
+                  size="small"
+                  type="border"
+                  @click.stop="deployPosition(tr)"
+                >设置职位</span>
               </vs-td>
             </vs-tr>
           </tbody>
@@ -136,13 +155,16 @@
 
 <script>
 import EmployeeEdit from "./Edit";
+import PositionList from "views/staff/position/List";
 import { AgGridVue } from "ag-grid-vue";
 
+import { getWorkingStatusDataSource } from "@/http/data_source.js";
 import { getEmployees } from "@/http/staff.js";
 export default {
   components: {
+    AgGridVue,
     EmployeeEdit,
-    AgGridVue
+    PositionList
   },
   props: {
     multipleCheck: {
@@ -156,34 +178,25 @@ export default {
   },
   data() {
     return {
-      items: [],
-      isLockedSelectOptions: [
-        {
-          name: "请选择",
-          value: null
-        },
-        {
-          name: "否",
-          value: false
-        },
-        {
-          name: "是",
-          value: true
-        }
-      ],
-
       //filter
       employeeNameInput: "",
-      isLockedSelect: false,
+      workingStatusSelect: null,
+      workingStatusOptions: [],
 
       //Page
-      itemsPerPage: 2,
+      items: [],
+      itemsPerPage: 10,
       currentPage: 1,
       totalPage: 0,
       descriptionItems: [10, 20, 50, 100],
       totalItems: 0,
 
-      // Pop
+      //checked
+      checkedGroup: [],
+      isCheckField: "ID",
+      isCheckedAll: false,
+
+      // 职工添加修改Pop
       title: null,
       popupActive: false,
       employeeId: null,
@@ -191,13 +204,20 @@ export default {
       mark: null,
       employeeData: null,
 
-      //checked
-      checkedGroup: [],
-      isCheckField: "ID",
-      isCheckedAll: false
+      //设置职位
+      popupActivePosition: false
     };
   },
   computed: {},
+  created() {
+    this.loadWorkingStatus();
+  },
+  mounted() {},
+  watch: {
+    currentPage() {
+      this.loadData();
+    }
+  },
   methods: {
     loadData() {
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
@@ -206,7 +226,8 @@ export default {
         pageIndex: this.currentPage,
         pageSize: this.itemsPerPage,
         companyId: userInfo.companyID,
-        employeeName: this.employeeNameInput
+        employeeName: this.employeeNameInput,
+        workingStatus: this.workingStatusSelect
       };
 
       getEmployees(para).then(res => {
@@ -216,38 +237,28 @@ export default {
           this.totalPage = data.TotalPages;
           this.totalItems = data.TotalItems;
           console.log("职工:", data);
-          this.addIsChecked();
+          if (this.multipleCheck) this.addIsChecked();
         }
       });
     },
     initCheckedGroup() {
       this.checkedGroup = [];
     },
-
-    //#region 弹窗
-    addNewData() {
-      this.employeeId = null;
-      this.popupActive = true;
-      this.title = "添加员工信息";
-      this.mark = "add";
-      this.handleLoad();
+    loadWorkingStatus() {
+      let para = {
+        isSelect: true
+      };
+      getWorkingStatusDataSource(para).then(res => {
+        if (res.resultType == 0) {
+          const data = JSON.parse(res.message);
+          this.workingStatusOptions = data;
+          if (data.length > 0) {
+            this.workingStatusSelect = data[1].Value;
+          }
+          this.loadData();
+        }
+      });
     },
-    editData(tr) {
-      console.log(tr);
-      this.employeeId = tr.ID;
-      this.employeeData = tr;
-      this.popupActive = true;
-      this.title = "修改员工信息";
-      this.mark = "edit";
-      this.handleLoad();
-    },
-    closePop() {
-      this.popupActive = false;
-    },
-    handleLoad() {
-      this.timer = new Date().getTime();
-    },
-    //#endregion
     //#region 自定义checked
     handleCheckbox(tr) {
       if (tr) {
@@ -312,6 +323,36 @@ export default {
       }
     },
     //#endregion
+
+    //#region 职工
+    addNewData() {
+      this.employeeId = null;
+      this.popupActive = true;
+      this.title = "添加员工信息";
+      this.mark = "add";
+      this.handleLoad();
+    },
+    editData(tr) {
+      this.employeeId = tr.ID;
+      this.employeeData = tr;
+      this.popupActive = true;
+      this.title = "修改员工信息";
+      this.mark = "edit";
+      this.handleLoad();
+    },
+    closePop() {
+      this.popupActive = false;
+    },
+    handleLoad() {
+      this.timer = new Date().getTime();
+    },
+    //#endregion
+    //#region 职位
+    deployPosition() {
+      this.popupActivePosition = true;
+    },
+    //#endregion
+
     changePageMaxItems(index) {
       this.itemsPerPage = this.descriptionItems[index];
       this.loadData();
@@ -322,15 +363,6 @@ export default {
     },
     cancel() {
       this.$emit("closePop");
-    }
-  },
-  created() {
-    this.loadData();
-  },
-  mounted() {},
-  watch: {
-    currentPage() {
-      this.loadData();
     }
   }
 };

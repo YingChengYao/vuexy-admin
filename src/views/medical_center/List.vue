@@ -55,7 +55,7 @@
           <tbody>
             <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data">
               <vs-td v-if="multipleCheck" class="td-check">
-                <vs-checkbox :checked="tr.isChecked" @change="handleCheckbox" size="small" />
+                <vs-checkbox :checked="tr.isChecked" @change="handleCheckbox(tr)" size="small" />
               </vs-td>
               <vs-td>
                 <p>{{ indextr+1 }}</p>
@@ -204,7 +204,6 @@ export default {
         sort: tr.Sort,
         remark: tr.Remark
       };
-      console.log(para);
       editPosition(para).then(res => {
         if (res.resultType == 0) {
           this.$vs.notify({
@@ -226,7 +225,6 @@ export default {
     handleCheckbox(tr) {
       if (tr) {
         tr.isChecked = !tr.isChecked;
-
         if (tr.isChecked) {
           this.checkedGroup.push(tr);
         } else {
@@ -238,8 +236,6 @@ export default {
     handleCheckboxAll() {
       let checkedCount = this.medicalCenters.filter(f => f.isChecked).length;
       let count = this.medicalCenters.length;
-      console.log("checkedCount：", checkedCount);
-      console.log("count", count);
       this.isCheckedAll = checkedCount == count ? true : false;
     },
     handleCheckAll() {

@@ -1,4 +1,6 @@
 import validate, { Validator } from "vee-validate";
+import zh_CN from "vee-validate/dist/locale/zh_CN";
+Validator.localize("zh_CN", zh_CN);
 
 const zh = {
   after: (field, [target]) => ` ${field}必须在${target}之后`,
@@ -8,7 +10,7 @@ const zh = {
   alpha: field => ` ${field} 只能包含字母字符.`,
   before: (field, [target]) => ` ${field} 必须在${target} 之前.`,
   betwmineen: (field, [min, max]) => ` ${field} 必须在${min} ${max}之间.`,
-  between:(field, [min, max]) => ` ${field} 必须在${min}和 ${max}之间.`,
+  between: (field, [min, max]) => ` ${field} 必须在${min}和 ${max}之间.`,
   confirmed: (field, [confirmedField]) =>
     ` ${field} 不能和${confirmedField}匹配.`,
   date_between: (field, [min, max]) => ` ${field}必须在${min}和${max}之间.`,
@@ -42,11 +44,8 @@ Validator.extend("numsection", {
 });
 //手机号码
 Validator.extend("phone", {
-  getMessage: field => field + " 格式不正确",
-  validate: value =>
-    !!/^[1](([3][0-9])|([4][5-9])|([5][0-3,5-9])|([6][5,6])|([7][0-8])|([8][0-9])|([9][1,8,9]))[0-9]{8}$/.test(
-      value
-    )
+  validate: value => !!/^1[0-9]{10}$/.test(value),
+  getMessage: field => field + " 格式不正确"
 });
 //6位手机短信验证码
 Validator.extend("msg_code", {
@@ -61,18 +60,21 @@ Validator.extend("nick_name", {
 //身份证
 Validator.extend("id_card_no", {
   getMessage: field => field + " 格式不正确",
-  validate: value => !!/^[1-9]\d{5}(18|19|20|(3\d))\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/.test(value)
+  validate: value =>
+    !!/^[1-9]\d{5}(18|19|20|(3\d))\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/.test(
+      value
+    )
 });
 
-const config = {
-  errorBagName: "errors", // change if property conflicts
-  fieldsBagName: "fieldsBag",
-  locale: "zh_CN",
-  dictionary: {
-    zh_CN: {
-      messages: zh
-    }
-  }
-};
-export { config };
+// const config = {
+//   errorBagName: "errors", // change if property conflicts
+//   fieldsBagName: "fieldsBag",
+//   locale: "zh_CN",
+//   dictionary: {
+//     zh_CN: {
+//       messages: zh
+//     }
+//   }
+// };
+// export { config };
 export default validate;

@@ -18,7 +18,7 @@
         :workers="workers"
         :standards="standards"
       />
-
+<!-- 
       <vs-popup title="添加标准" :active.sync="popupActiveStandard">
         <standard-add :data="standardData" @closePop="closeStandardPop" @addStandard="addStandard" />
       </vs-popup>
@@ -29,7 +29,7 @@
           @closePop="closeEmployeePop"
           @saveEmployeeSelected="saveEmployeeSelected"
         />
-      </vs-popup>
+      </vs-popup> -->
     </vs-popup>
 
     <vx-card ref="filterCard" title class="user-list-filters mb-8">
@@ -137,7 +137,7 @@
 
 <script>
 import PlanEdit from "./Edit";
-import StandardAdd from "./standard/Add";
+import StandardAdd from "./standard/Edit";
 import StaffEmployeeList from "../staff/employee/List";
 import { getPlans, submitPlan } from "@/http/plan.js";
 export default {

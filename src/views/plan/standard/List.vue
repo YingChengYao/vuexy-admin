@@ -1,7 +1,7 @@
 <template>
   <div id class="data-list-container">
-    <!-- <vs-popup :title="title" :active.sync="popupActive">
-      <employee-edit
+    <vs-popup :title="title" :active.sync="popupActive">
+      <plan-standard-edit
         @closePop="closePop"
         @loadData="loadData"
         :employeeId="employeeId"
@@ -9,9 +9,9 @@
         :mark="mark"
         :data="employeeData"
       />
-    </vs-popup>-->
+    </vs-popup>
 
-    <vx-card ref="filterCard" title class="user-list-filters mb-8">
+    <vx-card  ref="filterCard" title class="user-list-filters mb-8">
       <vs-row vs-align="center">
         <label class="vx-col label-name px-2">职工名称</label>
         <vs-input
@@ -138,11 +138,13 @@
 
 <script>
 import { AgGridVue } from "ag-grid-vue";
+import PlanStandardEdit from "views/plan/standard/Edit";
 
 import { getEmployees } from "@/http/staff.js";
 export default {
   components: {
-    AgGridVue
+    AgGridVue,
+    PlanStandardEdit
   },
   props: {
     multipleCheck: {

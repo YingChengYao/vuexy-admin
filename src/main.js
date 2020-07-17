@@ -61,12 +61,12 @@ import "@/assets/icon/iconfont.css";
 // Note: In latest version you have to add it separately
 // import 'vue-select/dist/vue-select.css'
 
-import validate, { config } from "@/lib/vee-validate/zh"; //中文提示
-Vue.use(validate, config);
+// import validate, { config } from "@/lib/vee-validate/zh"; //中文提示
+// Vue.use(validate, config);
+import "@/lib/vee-validate/validate.js";
 
 Vue.config.productionTip = false;
 Vue.prototype.hasPerm = hasBtnPermission;
-
 
 //插入过滤器名和对应方法
 import * as filters from "@/common/plugins/filters.js";
