@@ -21,42 +21,57 @@
     </vx-card>
 
     <div class="vx-card p-6">
-      <vx-table ref="table" :items="types" @loadData="loadData">
-        <template slot="cloumn">
-          <vs-th>项目类型名称</vs-th>
-          <vs-th>描述</vs-th>
-          <vs-th>排序</vs-th>
-          <vs-th>是否锁定</vs-th>
-          <vs-th>修改人</vs-th>
-          <vs-th>创建时间</vs-th>
+      <vs-table ref="table" multiple stripe v-model="selected" :data="types">
+        <div slot="header" class="flex flex-wrap-reverse items-center flex-grow justify-between">
+          <div class="flex flex-wrap-reverse items-center data-list-btn-container header-left">
+            <vs-button color="primary" type="border" class="mb-4 mr-4" @click="addNewData">添加</vs-button>
+          </div>
+        </div>
+
+        <template slot="thead">
+          <vs-th sort-key="id">编号</vs-th>
+          <vs-th sort-key="item_type_name">项目类型名称</vs-th>
+          <vs-th sort-key="remark">描述</vs-th>
+          <vs-th sort-key="sort">排序</vs-th>
+          <vs-th sort-key="is_locked">是否锁定</vs-th>
+          <vs-th sort-key="modify_name">修改人</vs-th>
+          <vs-th sort-key="modify_time">创建时间</vs-th>
           <vs-th>操作</vs-th>
         </template>
-        <template slot="row" slot-scope="item">
-          <vs-td>
-            <p>{{ item.tr.TypeName }}</p>
-          </vs-td>
-          <vs-td>
-            <p>{{ item.tr.Remark }}</p>
-          </vs-td>
-          <vs-td>
-            <p>{{ item.tr.Sort }}</p>
-          </vs-td>
-          <vs-td>
-            <p>{{ item.tr.IsLocked?'是':'否' }}</p>
-          </vs-td>
-          <vs-td>
-            <p>{{ item.tr.ModifyName}}</p>
-          </vs-td>
-          <vs-td>
-            <p>{{ item.tr.ModifyTime | formatDate }}</p>
-          </vs-td>
-          <vs-td class="whitespace-no-wrap">
-            <span class="text-primary" size="small" type="border" @click.stop="editData(item.tr)">编辑</span>
-          </vs-td>
+
+        <template slot-scope="{data}">
+          <tbody>
+            <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data">
+              <vs-td>
+                <p>{{ indextr+1 }}</p>
+              </vs-td>
+              <vs-td :data="tr.TypeName">
+                <p>{{ tr.TypeName }}</p>
+              </vs-td>
+              <vs-td :data="tr.Remark">
+                <p>{{ tr.Remark }}</p>
+              </vs-td>
+              <vs-td>
+                <p>{{ tr.Sort }}</p>
+              </vs-td>
+              <vs-td>
+                <p>{{ tr.IsLocked?'是':'否' }}</p>
+              </vs-td>
+              <vs-td>
+                <p>{{ tr.ModifyName}}</p>
+              </vs-td>
+              <vs-td>
+                <p>{{ tr.ModifyTime | formatDate }}</p>
+              </vs-td>
+              <vs-td class="whitespace-no-wrap">
+                <span class="text-primary" size="small" type="border" @click.stop="editData(tr)">编辑</span>
+              </vs-td>
+            </vs-tr>
+          </tbody>
         </template>
-      </vx-table>
+      </vs-table>
     </div>
-    <!-- <div class="con-pagination-table vs-table--pagination">
+    <div class="con-pagination-table vs-table--pagination">
       <vs-pagination
         :total="totalPage"
         v-model="currentPage"
@@ -66,7 +81,7 @@
         :pagedownItems="descriptionItems"
         :size="itemsPerPage"
       ></vs-pagination>
-    </div>-->
+    </div>
 
     <!-- <div class="vx-card p-6" style="position: fixed;bottom: 0;width: calc(100% - 4.4rem - 260px);z-index: 9919;">
        
@@ -76,12 +91,10 @@
 
 <script>
 import DataViewSidebar from "./DataViewSidebar";
-import VxTable from "components/vx-table/VxTable";
 import { getItemTypes } from "@/http/package.js";
 export default {
   components: {
-    DataViewSidebar,
-    VxTable
+    DataViewSidebar
   },
   data() {
     return {
@@ -90,11 +103,11 @@ export default {
       isMounted: false,
 
       //Page
-      // itemsPerPage: 2,
-      // currentPage: 1,
-      // totalPage: 0,
-      // descriptionItems: [10, 20, 50, 100],
-      // totalItems: 0,
+      itemsPerPage: 3,
+      currentPage: 1,
+      totalPage: 0,
+      descriptionItems: [10, 20, 50, 100],
+      totalItems: 0,
 
       // Data Sidebar
       addNewDataSidebar: false,
@@ -119,8 +132,8 @@ export default {
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
       let para = {
-        pageIndex: this.$refs.table.currentPage,
-        pageSize: this.$refs.table.itemsPerPage,
+        pageIndex: this.currentPage,
+        pageSize: this.itemsPerPage,
         mecid: userInfo.mecID,
         typename: this.typeNameInput
       };
@@ -130,8 +143,8 @@ export default {
           const data = JSON.parse(res.message);
           console.log("类型：", data);
           this.types = data.Items;
-          this.$refs.table.totalPage = data.TotalPages;
-          this.$refs.table.totalItems = data.TotalItems;
+          this.totalPage = data.TotalPages;
+          this.totalItems = data.TotalItems;
         }
       });
     },
