@@ -7116,12 +7116,12 @@ var vsUpload_component = normalizeComponent(
 /* harmony default export */ var components_vsUpload = (function (Vue) {
   Vue.component(vsUpload.name, vsUpload);
 });
-// CONCATENATED MODULE: C:/Users/ycy/AppData/Roaming/npm/node_modules/@vue/cli-service-global/node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"26bbbe1a-vue-loader-template"}!C:/Users/ycy/AppData/Roaming/npm/node_modules/@vue/cli-service-global/node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!C:/Users/ycy/AppData/Roaming/npm/node_modules/@vue/cli-service-global/node_modules/cache-loader/dist/cjs.js??ref--0-0!C:/Users/ycy/AppData/Roaming/npm/node_modules/@vue/cli-service-global/node_modules/vue-loader/lib??vue-loader-options!./src/components/vsPopup/vsPopup.vue?vue&type=template&id=acad2bae&lang=html&
-var vsPopupvue_type_template_id_acad2bae_lang_html_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('transition',{attrs:{"name":"popup-t"}},[_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.active),expression:"active"}],ref:"con",staticClass:"vs-component con-vs-popup",class:[("vs-popup-" + _vm.color),{'fullscreen':_vm.fullscreen}],on:{"click":function($event){return _vm.close($event,true)}}},[_c('div',{staticClass:"vs-popup--background",style:(_vm.styleCon)}),_c('div',{ref:"popupx",staticClass:"vs-popup",style:(_vm.stylePopup)},[_c('header',{staticClass:"vs-popup--header",style:(_vm.styleHeader)},[_c('div',{staticClass:"vs-popup--title"},[_c('h3',[_vm._v(_vm._s(_vm.title))])]),(!_vm.buttonCloseHidden)?_c('vs-icon',{ref:"btnclose",staticClass:"vs-popup--close vs-popup--close--icon",style:(_vm.stylePopup),attrs:{"icon-pack":_vm.iconPack,"icon":_vm.iconClose},on:{"click":_vm.close}}):_vm._e()],1),_c('div',{staticClass:"vs-popup--content",class:_vm.classContent,style:(_vm.styleContent)},[_vm._t("default")],2)])])])}
-var vsPopupvue_type_template_id_acad2bae_lang_html_staticRenderFns = []
+// CONCATENATED MODULE: C:/Users/ycy/AppData/Roaming/npm/node_modules/@vue/cli-service-global/node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"26bbbe1a-vue-loader-template"}!C:/Users/ycy/AppData/Roaming/npm/node_modules/@vue/cli-service-global/node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!C:/Users/ycy/AppData/Roaming/npm/node_modules/@vue/cli-service-global/node_modules/cache-loader/dist/cjs.js??ref--0-0!C:/Users/ycy/AppData/Roaming/npm/node_modules/@vue/cli-service-global/node_modules/vue-loader/lib??vue-loader-options!./src/components/vsPopup/vsPopup.vue?vue&type=template&id=4f6db6e0&lang=html&
+var vsPopupvue_type_template_id_4f6db6e0_lang_html_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('transition',{attrs:{"name":"popup-t"}},[_c('div',{directives:[{name:"show",rawName:"v-show",value:(_vm.active),expression:"active"}],ref:"con",staticClass:"vs-component con-vs-popup",class:[("vs-popup-" + _vm.color),{'fullscreen':_vm.fullscreen}],style:({'z-index':_vm.numPopup}),on:{"click":function($event){return _vm.close($event,true)}}},[_c('div',{staticClass:"vs-popup--background",style:(_vm.styleCon)}),_c('div',{ref:"popupx",staticClass:"vs-popup",style:(_vm.stylePopup)},[_c('header',{staticClass:"vs-popup--header",style:(_vm.styleHeader)},[_c('div',{staticClass:"vs-popup--title"},[_c('h3',[_vm._v(_vm._s(_vm.title))])]),(!_vm.buttonCloseHidden)?_c('vs-icon',{ref:"btnclose",staticClass:"vs-popup--close vs-popup--close--icon",style:(_vm.stylePopup),attrs:{"icon-pack":_vm.iconPack,"icon":_vm.iconClose},on:{"click":_vm.close}}):_vm._e()],1),_c('div',{staticClass:"vs-popup--content",class:_vm.classContent,style:(_vm.styleContent)},[_vm._t("default")],2)])])])}
+var vsPopupvue_type_template_id_4f6db6e0_lang_html_staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/components/vsPopup/vsPopup.vue?vue&type=template&id=acad2bae&lang=html&
+// CONCATENATED MODULE: ./src/components/vsPopup/vsPopup.vue?vue&type=template&id=4f6db6e0&lang=html&
 
 // CONCATENATED MODULE: C:/Users/ycy/AppData/Roaming/npm/node_modules/@vue/cli-service-global/node_modules/thread-loader/dist/cjs.js!C:/Users/ycy/AppData/Roaming/npm/node_modules/@vue/cli-service-global/node_modules/babel-loader/lib??ref--12-1!C:/Users/ycy/AppData/Roaming/npm/node_modules/@vue/cli-service-global/node_modules/cache-loader/dist/cjs.js??ref--0-0!C:/Users/ycy/AppData/Roaming/npm/node_modules/@vue/cli-service-global/node_modules/vue-loader/lib??vue-loader-options!./src/components/vsPopup/vsPopup.vue?vue&type=script&lang=js&
 
@@ -7172,12 +7172,13 @@ var vsPopupvue_type_template_id_acad2bae_lang_html_staticRenderFns = []
 //
 //
 //
+//
 
 /* harmony default export */ var vsPopupvue_type_script_lang_js_ = ({
-  name: 'VsPopup',
+  name: "VsPopup",
   props: {
     color: {
-      default: 'primary',
+      default: "primary",
       type: String
     },
     active: {
@@ -7185,7 +7186,7 @@ var vsPopupvue_type_template_id_acad2bae_lang_html_staticRenderFns = []
       type: Boolean
     },
     title: {
-      default: 'popup',
+      default: "popup",
       type: String
     },
     buttonCloseHidden: {
@@ -7201,7 +7202,7 @@ var vsPopupvue_type_template_id_acad2bae_lang_html_staticRenderFns = []
       type: String
     },
     backgroundColorPopup: {
-      default: 'rgb(255,255,255)',
+      default: "rgb(255,255,255)",
       type: String
     },
     styleContent: {
@@ -7213,13 +7214,18 @@ var vsPopupvue_type_template_id_acad2bae_lang_html_staticRenderFns = []
       type: String
     },
     iconPack: {
-      default: 'material-icons',
+      default: "material-icons",
       type: String
     },
     iconClose: {
-      default: 'close',
+      default: "close",
       type: String
     }
+  },
+  data: function data() {
+    return {
+      numPopup: 53000
+    };
   },
   computed: {
     styleHeader: function styleHeader() {
@@ -7241,7 +7247,16 @@ var vsPopupvue_type_template_id_acad2bae_lang_html_staticRenderFns = []
       return {
         background: utils_color.getColor(this.backgroundColorPopup, 1)
       };
-    }
+    } // numPopup() {
+    //   if (this.$vs.popNum) {
+    //     return (this.$vs.popNum += 1);
+    //   }
+    // }
+
+  },
+  created: function created() {
+    this.$vs.popNum += 1;
+    this.numPopup += this.$vs.popNum;
   },
   mounted: function mounted() {
     this.insertBody();
@@ -7252,12 +7267,12 @@ var vsPopupvue_type_template_id_acad2bae_lang_html_staticRenderFns = []
     },
     close: function close(event, con) {
       if (con) {
-        if (event.target.className && event.target.className.indexOf && event.target.className.indexOf('vs-popup--background') != -1) {
-          this.$emit('update:active', false);
-          this.$emit('close', false);
+        if (event.target.className && event.target.className.indexOf && event.target.className.indexOf("vs-popup--background") != -1) {
+          this.$emit("update:active", false);
+          this.$emit("close", false);
         } else if (!this.buttonCloseHidden && event.srcElement == this.$refs.btnclose.$el) {
-          this.$emit('update:active', false);
-          this.$emit('close', false);
+          this.$emit("update:active", false);
+          this.$emit("close", false);
         }
       }
     },
@@ -7279,8 +7294,8 @@ var vsPopupvue_type_template_id_acad2bae_lang_html_staticRenderFns = []
 
 var vsPopup_component = normalizeComponent(
   vsPopup_vsPopupvue_type_script_lang_js_,
-  vsPopupvue_type_template_id_acad2bae_lang_html_render,
-  vsPopupvue_type_template_id_acad2bae_lang_html_staticRenderFns,
+  vsPopupvue_type_template_id_4f6db6e0_lang_html_render,
+  vsPopupvue_type_template_id_4f6db6e0_lang_html_staticRenderFns,
   false,
   null,
   null,
@@ -13537,10 +13552,14 @@ var vsFunctions = {
 /* harmony default export */ var defineGlobalMixin = (function (Vue, options) {
   Vue.mixin({
     watch: {
-      '$vs.rtl': {
+      "$vs.rtl": {
         handler: function handler(val) {
           injectDirectionClass(val);
         }
+      },
+      "$vs.numPopup": {// handler(val) {
+        //   injectDirectionClass(val);
+        // }
       }
     },
     beforeCreate: function beforeCreate() {
@@ -13564,7 +13583,8 @@ var vsFunctions = {
  * all options listed here are reactive
  */
 /* harmony default export */ var utils_options = ({
-  rtl: false
+  rtl: false,
+  popNum: 1
 });
 // CONCATENATED MODULE: ./src/index.js
 
