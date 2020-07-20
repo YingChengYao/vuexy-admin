@@ -238,7 +238,7 @@ export default {
       this.handleLoad();
       this.workers = [];
       this.standards = [];
-      this.$refs.employee.initCheckedGroup();
+      //this.$refs.employee.initCheckedGroup();
     },
     editData(id) {
       this.planId = id;

@@ -6,7 +6,7 @@
           <!-- 标准 -->
           <vs-input
             label="标准"
-            v-model="data.Standard"
+            v-model="data_local.Standard"
             class="w-full"
             name="标准"
             v-validate="'required|numeric'"
@@ -18,7 +18,7 @@
           <v-select
             multiple
             :closeOnSelect="false"
-            v-model="data.Positions"
+            v-model="data_local.Positions"
             label="Name"
             :options="positionOptions"
             :dir="$vs.rtl ? 'rtl' : 'ltr'"
@@ -55,15 +55,10 @@ export default {
   components: {
     vSelect
   },
-  props: {
-    data: {
-      type: Object,
-      default: {}
-    }
-  },
   data() {
     return {
-      positionOptions: []
+      positionOptions: [],
+      data_local: {}
     };
   },
   created() {

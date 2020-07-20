@@ -175,7 +175,7 @@ export default {
       counterDanger: false,
       languages: lang,
 
-      startIndex: 0,
+      startIndex: 2,
 
       data_local: {},
       planId_local: {},
@@ -344,8 +344,8 @@ export default {
     },
     //#region 基础信息
     save_base_info() {
-      this.$refs.checkoutWizard.nextTab();
-      return;
+      // this.$refs.checkoutWizard.nextTab();
+      // return;
       return new Promise(() => {
         this.$validator.validateAll("step-base").then(result => {
           if (result) {
@@ -384,22 +384,16 @@ export default {
                 if (res.resultType == 0) {
                   this.$vs.notify({
                     title: "Success",
-                    text: res.message,
+                    text: "添加体检计划成功",
                     color: "success"
                   });
-                  this.planId_local = res.data.planId;
+                  console.log("res:", res);
+                  const data = JSON.parse(res.message); //"{"PlanID":"575642100966367232","PlanStep":0}"
+                  this.planId_local = data.PlanID;
+                  this.$refs.checkoutWizard.nextTab();
                 }
               });
             }
-
-            // this.$vs.notify({
-            //   title: "Success",
-            //   text: "Payment received successfully",
-            //   color: "success",
-            //   iconPack: "feather",
-            //   icon: "icon-check"
-            // });
-            this.$refs.checkoutWizard.nextTab();
           } else {
             this.$vs.notify({
               title: "Error",
@@ -438,8 +432,8 @@ export default {
       this.isEmployeeTab = true;
     },
     save_employee() {
-      this.$refs.checkoutWizard.nextTab();
-      return;
+      // this.$refs.checkoutWizard.nextTab();
+      // return;
       let checkedGroup = this.$refs.employee.checkedGroup;
 
       let employees = checkedGroup
@@ -449,34 +443,34 @@ export default {
         .join(",");
 
       let para = {
-        planId: this.planId,
+        planId: this.planId_local,
         employees: employees
       };
 
-      if (this.planId_local) {
-        para.planId = this.planId_local;
-        editEmployeeForPlan(para).then(res => {
-          if (res.resultType == 0) {
-            this.$vs.notify({
-              title: "Success",
-              text: res.message,
-              color: "success"
-            });
-            this.$refs.checkoutWizard.nextTab();
-          }
-        });
-      } else {
-        addEmployeeForPlan(para).then(res => {
-          if (res.resultType == 0) {
-            this.$vs.notify({
-              title: "Success",
-              text: res.message,
-              color: "success"
-            });
-            this.$refs.checkoutWizard.nextTab();
-          }
-        });
-      }
+      // if (this.planId_local) {
+      //   para.planId = this.planId_local;
+      //   editEmployeeForPlan(para).then(res => {
+      //     if (res.resultType == 0) {
+      //       this.$vs.notify({
+      //         title: "Success",
+      //         text: res.message,
+      //         color: "success"
+      //       });
+      //       this.$refs.checkoutWizard.nextTab();
+      //     }
+      //   });
+      // } else {
+      addEmployeeForPlan(para).then(res => {
+        if (res.resultType == 0) {
+          this.$vs.notify({
+            title: "Success",
+            text: res.message,
+            color: "success"
+          });
+          this.$refs.checkoutWizard.nextTab();
+        }
+      });
+      // }
     },
     //#endregion
 
