@@ -45,12 +45,25 @@
 
         <template slot-scope="{data}">
           <tbody>
-            <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data">
+            <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data" v-show="tr.isShow">
               <vs-td>
                 <p>{{ indextr+1 }}</p>
               </vs-td>
               <vs-td>
-                <p>{{ tr.CompanyName }}</p>
+                <p>{{ tr.ID }}</p>
+              </vs-td>
+              <vs-td>
+                <p>{{ tr.ParentID }}</p>
+              </vs-td>
+              <vs-td style="width:10rem;display: block;" class="wrap">
+                <span :style="'margin-left:'+ (tr.level)*20 +'px'">
+                  <span @click.stop="toggle(tr)" v-if="tr.children">
+                    <vs-icon
+                      :icon-pack="tr.isExpand?'iconfont icon-shangxiazuoyouTriangle11':'iconfont icon-shangxiazuoyouTriangle12'"
+                    ></vs-icon>
+                  </span>
+                  {{tr.CompanyName}}
+                </span>
               </vs-td>
               <vs-td>
                 <p>{{ tr.CompanyCode }}</p>
@@ -140,13 +153,54 @@ export default {
         id: userInfo.uid
       };
       getEmployeeUnits(para).then(res => {
-        console.log(3);
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
-          console.log("单位：", data);
-          this.units = data.Items;
           this.totalPage = data.TotalPages;
           this.totalItems = data.TotalItems;
+          console.log("单位：", data.Items);
+          this.units = [];
+          //let s = data.Items;
+          this.initData(data.Items, 0, null);
+          console.log("单位1：", this.units);
+        }
+      });
+    },
+    initData(items, level, parent) {
+      debugger;
+      if (!Array.isArray(items)) {
+        return;
+      }
+      items.map((item, index) => {
+        item = Object.assign({}, item, {
+          parent: parent,
+          level: level
+        });
+        if (item.children != undefined && item.children.length > 0) {
+          item = Object.assign({}, item, {
+            isExpand: true
+          });
+        }
+        if (typeof item.isChecked == "undefined") {
+          item = Object.assign({}, item, {
+            isChecked: false
+          });
+        }
+        if (typeof item.isShow == "undefined") {
+          item = Object.assign({}, item, {
+            isShow: true
+          });
+        }
+        let parentID = item.ID;
+
+        if (index > 0 && item.ParentID == items[index - 1].ID) {
+          //this.initData(item.children, level + 1, item.ID);
+          item = Object.assign({}, item, {
+            parent: parent,
+            level: level + 1
+          });
+          this.units.push(item);
+        } else {
+          this.units.push(item);
         }
       });
     },

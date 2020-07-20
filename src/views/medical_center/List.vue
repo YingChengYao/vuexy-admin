@@ -2,6 +2,7 @@
   <div class="data-list-container">
     <vs-popup :title="title" :active.sync="popupActive">
       <unit-edit
+        v-if="popupActive"
         @closePop="closePop"
         @loadData="loadData"
         :medicalCenterId="medicalCenterId"
@@ -26,7 +27,7 @@
 
     <div class="vx-card p-6">
       <vs-table ref="table" stripe :data="medicalCenters">
-        <div slot="header" class="flex flex-wrap-reverse items-center flex-grow justify-between">
+        <div slot="header" class="flex flex-wrap-reverse items-center flex-grow justify-between" v-if="!isPlanPop">
           <div class="flex flex-wrap-reverse items-center data-list-btn-container header-left">
             <vs-button color="primary" type="border" class="mb-4 mr-4" @click="addNewData">添加</vs-button>
           </div>
@@ -45,7 +46,6 @@
           <vs-th>手机号</vs-th>
           <vs-th>电话</vs-th>
           <vs-th>排序</vs-th>
-          <vs-th>备注</vs-th>
           <vs-th>修改人</vs-th>
           <vs-th>创建时间</vs-th>
           <vs-th>操作</vs-th>
@@ -77,9 +77,6 @@
               </vs-td>
               <vs-td>
                 <p>{{ tr.Sort }}</p>
-              </vs-td>
-              <vs-td>
-                <p>{{ tr.Remark }}</p>
               </vs-td>
               <vs-td>
                 <p class="product-category">{{ tr.ModifyName}}</p>
@@ -123,7 +120,11 @@ export default {
   props: {
     multipleCheck: {
       type: Boolean,
-      default: true
+      default: false
+    },
+    isPlanPop:{
+      type: Boolean,
+      default: false
     }
   },
   data() {

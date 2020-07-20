@@ -6,7 +6,7 @@
       :title="null"
       :subtitle="null"
       :hide-buttons="true"
-      :startIndex="startIndex"
+      :startIndex="step"
     >
       <!-- tab 1 content -->
       <tab-content title="Cart" icon="feather icon-shopping-cart" class="mb-5">
@@ -69,14 +69,19 @@
                   :counter-danger.sync="counterDanger"
                   v-model="data_local.CompanyName"
                   height="100px"
-                  counter="20"
+                  counter="200"
+                  v-validate="'max:200'"
+                  name="备注"
                 />
-                <!-- <vs-input label="备注" v-model="data_local.CompanyName" class="w-full" name="备注" /> -->
+                <span
+                  class="text-danger text-sm"
+                  v-show="errors.has('step-base.备注')"
+                >{{ errors.first('step-base.备注') }}</span>
               </div>
             </div>
           </div>
         </form>
-        <medical-center-list ref="medicalCenter" :multipleCheck="true">
+        <medical-center-list ref="medicalCenter" :multipleCheck="true" :isPlanPop="true">
           <template>
             <span class="mt-5">
               <span>
@@ -108,7 +113,7 @@
 
       <!-- tab 3 content -->
       <tab-content title="Payment" icon="feather icon-credit-card" class="mb-5">
-        <plan-standard-list ref="standard"></plan-standard-list>
+        <plan-standard-list v-if="isShowStandard" ref="standard" :planID="planId_local"></plan-standard-list>
       </tab-content>
     </form-wizard>
   </div>
@@ -167,6 +172,10 @@ export default {
     standards: {
       type: Array,
       default: null
+    },
+    step: {
+      type: Number,
+      default: 0
     }
   },
   data() {
@@ -175,7 +184,8 @@ export default {
       counterDanger: false,
       languages: lang,
 
-      startIndex: 2,
+      // startIndex: 2,
+      isShowStandard: false,
 
       data_local: {},
       planId_local: {},
@@ -191,6 +201,9 @@ export default {
     this.loadPlanTypeData();
     this.loadData();
     this.planId_local = this.planId;
+    if (this.step == "2") {
+      this.isShowStandard = true;
+    }
   },
   mounted() {
     console.log("checkoutWizard：", this.$refs.checkoutWizard);
@@ -209,11 +222,7 @@ export default {
           const data = JSON.parse(res.message);
           console.log("计划详情：", data);
           this.data_local = data.Model;
-          this.medicalExaminationCenterIDs = data.PlanPhysical;
-          console.log("计划详情mec：", data.PlanPhysical);
-          console.log("计划详情mec：", this.medicalExaminationCenterIDs);
-          this.$emit("bindEmployee", data.PlanEmployee);
-          this.$emit("bindStandard", data.PlanStandard);
+          this.$refs.medicalCenter.checkedGroup = data.PlanPhysical;
         }
       });
     },
@@ -468,9 +477,17 @@ export default {
             color: "success"
           });
           this.$refs.checkoutWizard.nextTab();
+          this.isShowStandard = true;
         }
       });
       // }
+    },
+    //#endregion
+
+    //#region 标准
+    showStandard() {
+      console.log(1);
+      this.isShowStandard = true;
     },
     //#endregion
 

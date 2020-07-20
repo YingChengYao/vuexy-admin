@@ -5,8 +5,8 @@ import { getToken } from "@/common/utils/auth/token";
 import vue from "@/main.js";
 
 const request = axios.create({
-  baseURL: "http://manage.qrtj.cn",
-  //baseURL: "http://localhost:5000/",
+  //baseURL: "http://manage.qrtj.cn",
+  baseURL: "http://localhost:5000/",
   timeout: 5000
 });
 

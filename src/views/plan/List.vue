@@ -9,16 +9,14 @@
         @changeStandardPop="changeStandardPop"
         @delStandard="delStandard"
         @delEmployee="delEmployee"
-        @bindEmployee="bindEmployee"
-        @bindStandard="bindStandard"
-        @bindPhysical="bindPhysical"
         :planId="planId"
         :key="timer"
         :mark="mark"
         :workers="workers"
         :standards="standards"
+        :step="step"
       />
-<!-- 
+      <!-- 
       <vs-popup title="添加标准" :active.sync="popupActiveStandard">
         <standard-add :data="standardData" @closePop="closeStandardPop" @addStandard="addStandard" />
       </vs-popup>
@@ -29,7 +27,7 @@
           @closePop="closeEmployeePop"
           @saveEmployeeSelected="saveEmployeeSelected"
         />
-      </vs-popup> -->
+      </vs-popup>-->
     </vs-popup>
 
     <vx-card ref="filterCard" title class="user-list-filters mb-8">
@@ -106,7 +104,7 @@
                   size="small"
                   type="border"
                   style="display:display"
-                  @click.stop="editData(tr.ID)"
+                  @click.stop="editData(tr)"
                   v-if="tr.Status==1"
                 >编辑</span>
                 <span
@@ -240,8 +238,9 @@ export default {
       this.standards = [];
       //this.$refs.employee.initCheckedGroup();
     },
-    editData(id) {
-      this.planId = id;
+    editData(tr) {
+      this.planId = tr.ID;
+      this.step = 0;
       this.popupActive = true;
       this.title = "修改体检计划信息";
       this.mark = "edit";
@@ -264,13 +263,6 @@ export default {
     closeEmployeePop() {
       this.popupActiveEmployee = false;
     },
-    bindEmployee(data) {
-      this.workers = data;
-    },
-    bindStandard(data) {
-      this.standards = data;
-    },
-    bindPhysical(data) {},
     //标准
     changeStandardPop(data) {
       this.popupActiveStandard = data;

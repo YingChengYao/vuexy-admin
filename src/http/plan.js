@@ -64,6 +64,31 @@ export const editEmployeeForPlan = params => {
   });
 };
 
+//获取体检计划的标准列表
+export const getStandards = params => {
+  return request({
+    url: "/api/plan/standard/list",
+    method: "get",
+    params: params
+  });
+};
+//添加体检计划的标准
+export const addStandard = params => {
+  return request({
+    url: "/api/plan/standard/insert",
+    method: "post",
+    params: params
+  });
+};
+//修改体检计划的标准
+export const editStandard = params => {
+  return request({
+    url: "/api/plan/standard/update",
+    method: "post",
+    params: params
+  });
+};
+
 //#endregion
 
 //#region 体检计划(体检中心)

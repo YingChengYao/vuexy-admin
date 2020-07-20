@@ -4,14 +4,15 @@
       <plan-standard-edit
         @closePop="closePop"
         @loadData="loadData"
-        :employeeId="employeeId"
+        :standardID="standardID"
+        :planID="planID"
         :key="timer"
         :mark="mark"
-        :data="employeeData"
+        v-if="popupActive"
       />
     </vs-popup>
 
-    <vx-card  ref="filterCard" title class="user-list-filters mb-8">
+    <vx-card ref="filterCard" title class="user-list-filters mb-8">
       <vs-row vs-align="center">
         <label class="vx-col label-name px-2">职工名称</label>
         <vs-input
@@ -49,13 +50,7 @@
             </span>
           </th>
           <vs-th>编号</vs-th>
-          <vs-th>职工名称</vs-th>
-          <vs-th>身份证</vs-th>
-          <vs-th>婚姻状态</vs-th>
-          <vs-th>性别</vs-th>
-          <vs-th>手机号</vs-th>
-          <vs-th>排序</vs-th>
-          <vs-th v-if="!isPop">是否锁定</vs-th>
+          <vs-th>标准</vs-th>
           <vs-th v-if="!isPop">修改人</vs-th>
           <vs-th v-if="!isPop">修改时间</vs-th>
           <vs-th v-if="!isPop">操作</vs-th>
@@ -76,33 +71,7 @@
                 <p>{{ indextr+1 }}</p>
               </vs-td>
               <vs-td>
-                <p>{{ tr.EmployeeName }}</p>
-              </vs-td>
-              <vs-td>
-                <p>{{ tr.IdNo }}</p>
-              </vs-td>
-              <vs-td>
-                <vs-chip
-                  transparent
-                  :color="tr.Marital | getMarriageForUserColor"
-                  v-if="!tr.Children"
-                >{{ tr.MaritalName}}</vs-chip>
-              </vs-td>
-              <vs-td>
-                <vs-chip
-                  transparent
-                  :color="tr.Gender | getGenderForUserColor"
-                  v-if="!tr.Children"
-                >{{ tr.GenderName}}</vs-chip>
-              </vs-td>
-              <vs-td>
-                <p>{{ tr.Mobile }}</p>
-              </vs-td>
-              <vs-td>
-                <p>{{ tr.Sort }}</p>
-              </vs-td>
-              <vs-td v-if="!isPop">
-                <p>{{ tr.IsLocked?'是':'否' }}</p>
+                <p>{{ tr.Standard }}</p>
               </vs-td>
               <vs-td v-if="!isPop">
                 <p>{{ tr.ModifyName }}</p>
@@ -140,7 +109,7 @@
 import { AgGridVue } from "ag-grid-vue";
 import PlanStandardEdit from "views/plan/standard/Edit";
 
-import { getEmployees } from "@/http/staff.js";
+import { getStandards } from "@/http/plan.js";
 export default {
   components: {
     AgGridVue,
@@ -154,25 +123,15 @@ export default {
     isPop: {
       type: Boolean,
       default: false
+    },
+    planID: {
+      type: String,
+      required: true
     }
   },
   data() {
     return {
       items: [],
-      isLockedSelectOptions: [
-        {
-          name: "请选择",
-          value: null
-        },
-        {
-          name: "否",
-          value: false
-        },
-        {
-          name: "是",
-          value: true
-        }
-      ],
 
       //filter
       employeeNameInput: "",
@@ -188,10 +147,9 @@ export default {
       // Pop
       title: null,
       popupActive: false,
-      employeeId: null,
+      standardID: null,
       timer: "",
       mark: null,
-      employeeData: null,
 
       //checked
       checkedGroup: [],
@@ -202,33 +160,26 @@ export default {
   computed: {},
   methods: {
     loadData() {
-      let userInfo = JSON.parse(localStorage.getItem("userInfo"));
-
       let para = {
         pageIndex: this.currentPage,
         pageSize: this.itemsPerPage,
-        companyId: userInfo.companyID,
-        employeeName: this.employeeNameInput
+        planID: this.planID
       };
 
-      getEmployees(para).then(res => {
+      getStandards(para).then(res => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.items = data.Items;
           this.totalPage = data.TotalPages;
           this.totalItems = data.TotalItems;
-          console.log("职工:", data);
-          this.addIsChecked();
+          console.log(this.items)
         }
       });
-    },
-    initCheckedGroup() {
-      this.checkedGroup = [];
     },
 
     //#region 弹窗
     addNewData() {
-      this.employeeId = null;
+      this.standardID = null;
       this.popupActive = true;
       this.title = "添加员工信息";
       this.mark = "add";
@@ -236,8 +187,7 @@ export default {
     },
     editData(tr) {
       console.log(tr);
-      this.employeeId = tr.ID;
-      this.employeeData = tr;
+      this.standardID = tr.ID;
       this.popupActive = true;
       this.title = "修改员工信息";
       this.mark = "edit";
