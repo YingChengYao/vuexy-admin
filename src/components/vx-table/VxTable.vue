@@ -1,17 +1,11 @@
 <template>
   <div>
     <vs-table ref="table" :data="items" stripe>
-      <!-- <div slot="header" class="flex flex-wrap-reverse items-center flex-grow justify-between">
+      <div slot="header" class="flex flex-wrap-reverse items-center flex-grow justify-between">
         <div class="flex flex-wrap-reverse items-center data-list-btn-container header-left">
-          <vs-button
-            v-if="!isPop"
-            color="primary"
-            type="border"
-            class="mb-4 mr-4"
-            @click="addNewData"
-          >添加</vs-button>
+          <slot name="header"></slot>
         </div>
-      </div>-->
+      </div>
 
       <template slot="thead">
         <th class="td-check" v-if="multipleCheck">
@@ -20,7 +14,7 @@
           </span>
         </th>
         <vs-th>编号</vs-th>
-        <slot name="cloumn"></slot>
+        <slot name="thead-header"></slot>
       </template>
 
       <template slot-scope="{data}">
@@ -32,14 +26,14 @@
             <vs-td>
               <p>{{ indextr+1 }}</p>
             </vs-td>
-            <slot name="row" :tr="tr"></slot>
+            <slot name="thead-content" :tr="tr"></slot>
           </vs-tr>
         </tbody>
       </template>
     </vs-table>
 
     <div class="flex">
-      <slot></slot>
+      <slot name="pagination"></slot>
       <vs-pagination
         style="flex:1"
         :total="totalPage"
@@ -56,6 +50,7 @@
 </template>
 <script>
 export default {
+  name: "vx-table",
   props: {
     items: {
       type: Array,
@@ -63,7 +58,7 @@ export default {
     },
     multipleCheck: {
       type: Boolean,
-      default: true
+      default: false
     },
     isCheckField: {
       type: String,
@@ -72,6 +67,24 @@ export default {
     isPop: {
       type: Boolean,
       default: false
+    },
+    totalPage: {
+      type: Number,
+      default: 0
+    },
+    totalItems: {
+      type: Number,
+      default: 0
+    },
+    descriptionItems: {
+      type: Array,
+      default: function() {
+        return [10, 20, 50, 100];
+      }
+    },
+    pageSize: {
+      type: Number,
+      default: 10
     }
   },
   data: () => ({
@@ -79,24 +92,28 @@ export default {
     isCheckedAll: false,
     checkedGroup: [],
     //Page
-    itemsPerPage: 2,
-    currentPage: 1,
-    totalPage: 0,
-    descriptionItems: [10, 20, 50, 100],
-    totalItems: 0
+    itemsPerPage: 10,
+    currentPage: 1
+    //totalPage: 0,
+    //descriptionItems: [10, 20, 50, 100]
+    //totalItems: 0
   }),
+  created() {
+    this.itemsPerPage = this.pageSize;
+  },
   watch: {
     currentPage() {
       //this.$parent.loadData();
       this.$emit("loadData");
+    },
+    items() {
+      if (this.multipleCheck) this.initCheckedItems();
     }
   },
   methods: {
-    loadData() {},
     changePageMaxItems(index) {
       this.itemsPerPage = this.descriptionItems[index];
       this.currentPage = 1;
-      //this.$parent.loadData();
       this.$emit("loadData");
     },
     //#region 自定义checked
@@ -147,6 +164,7 @@ export default {
     该项的id保存到数组内部去，当切换到第二页的时候，那么再返回到第一页的时候，会获取该id是否与数组的
     id是否相同，如果相同的话，就把该项数据选中*/
     initCheckedItems() {
+      debugger;
       if (this.items.length > 0) {
         this.items.map((item, index) => {
           if (this.checkedGroup.length > 0) {

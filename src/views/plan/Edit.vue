@@ -85,26 +85,31 @@
           <template>
             <span class="mt-5">
               <span>
-                <vs-button class="vx-col ml-auto mt-2" color="primary" @click="save_base_info">保存</vs-button>
+                <vs-button class="vx-col ml-auto mt-2" color="primary" @click="save_base_info">下一步</vs-button>
               </span>
-              <span class="px-2">
+              <!-- <span class="px-2">
                 <vs-button class="vx-col ml-4 mt-2" type="border" color="warning" @click="cancel">取消</vs-button>
-              </span>
+              </span>-->
             </span>
           </template>
         </medical-center-list>
       </tab-content>
 
       <!-- tab 2 content -->
-      <tab-content title="Address" icon="feather icon-home" class="mb-5">
+      <tab-content title="Address" icon="feather icon-home" class="mb-5" backButtonText>
         <staff-employee-list ref="employee" :isPop="false" :multipleCheck="true">
           <template>
             <span class="mt-5">
               <span>
-                <vs-button class="vx-col" color="primary" type="border" @click="save_employee">保存</vs-button>
+                <vs-button
+                  class="vx-col ml-auto mt-2"
+                  type="border"
+                  color="warning"
+                  @click="back_base_info"
+                >上一步</vs-button>
               </span>
-              <span class="px-2">
-                <vs-button class="vx-col" color="primary" type="border">取消</vs-button>
+              <span class="px-4">
+                <vs-button class="vx-col ml-auto mt-2" color="primary" @click="save_employee">下一步</vs-button>
               </span>
             </span>
           </template>
@@ -353,8 +358,8 @@ export default {
     },
     //#region 基础信息
     save_base_info() {
-      // this.$refs.checkoutWizard.nextTab();
-      // return;
+      this.$refs.checkoutWizard.nextTab();
+      return;
       return new Promise(() => {
         this.$validator.validateAll("step-base").then(result => {
           if (result) {
@@ -441,8 +446,8 @@ export default {
       this.isEmployeeTab = true;
     },
     save_employee() {
-      // this.$refs.checkoutWizard.nextTab();
-      // return;
+      this.$refs.checkoutWizard.nextTab();
+      return;
       let checkedGroup = this.$refs.employee.checkedGroup;
 
       let employees = checkedGroup
@@ -481,6 +486,9 @@ export default {
         }
       });
       // }
+    },
+    back_base_info() {
+      this.$refs.checkoutWizard.prevTab();
     },
     //#endregion
 

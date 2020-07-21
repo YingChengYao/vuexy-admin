@@ -97,4 +97,13 @@ export const editEmployee = params => {
   });
 };
 
+//修改职工的职位信息
+export const deployPositionForEmployee = params => {
+  return request({
+    url: "/api/employee/position/update",
+    method: "post",
+    params: params
+  });
+};
+
 //#endregion

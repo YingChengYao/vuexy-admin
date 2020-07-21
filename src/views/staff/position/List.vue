@@ -2,9 +2,11 @@
   <div class="data-list-container">
     <vs-popup :title="title" :active.sync="popupActive">
       <unit-edit
+        v-if="popupActive"
         @closePop="closePop"
         @loadData="loadData"
         :positionId="positionId"
+        :positionData="positionData"
         :key="timer"
         :mark="mark"
       />
@@ -18,78 +20,77 @@
           v-model="positionNameInput"
           class="vx-col md:w-1/6 sm:w-1/2 w-full px-2"
         />
+        <!-- <label class="vx-col label-name px-2">是否锁定</label>
+        <vs-select
+          v-model="isLockedSelect"
+          class="vx-col md:w-1/6 sm:w-1/2 w-full px-2 select-large"
+        >
+          <vs-select-item
+            v-for="(item,index) in isLockedSelectOptions"
+            :key="index"
+            :value="item.value"
+            :text="item.name"
+            class="w-full"
+          />
+        </vs-select>-->
 
         <vs-button class="vx-col" color="primary" type="border" @click="loadData">查询</vs-button>
       </vs-row>
     </vx-card>
 
     <div class="vx-card p-6">
-      <vs-table ref="table" stripe :data="types">
-        <div slot="header" class="flex flex-wrap-reverse items-center flex-grow justify-between">
-          <div class="flex flex-wrap-reverse items-center data-list-btn-container header-left">
-            <vs-button color="primary" type="border" class="mb-4 mr-4" @click="addNewData">添加</vs-button>
-          </div>
-        </div>
-
-        <template slot="thead">
-          <vs-th>编号</vs-th>
+      <vx-table
+        ref="table"
+        :items="positions"
+        @loadData="loadData"
+        :totalPage="totalPage"
+        :totalItems="totalItems"
+        :pageSize="10"
+        :multipleCheck="multipleCheck"
+      >
+        <template slot="header">
+          <vs-button
+            v-if="!isPop"
+            color="primary"
+            type="border"
+            class="mb-4 mr-4"
+            @click="addNewData"
+          >添加</vs-button>
+        </template>
+        <template slot="thead-header">
           <vs-th>职位名称</vs-th>
           <vs-th>排序</vs-th>
           <vs-th>备注</vs-th>
           <vs-th>修改人</vs-th>
           <vs-th>创建时间</vs-th>
+          <vs-th v-if="!isPop">操作</vs-th>
         </template>
-
-        <template slot-scope="{data}">
-          <tbody>
-            <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data">
-              <vs-td>
-                <p>{{ indextr+1 }}</p>
-              </vs-td>
-              <vs-td>
-                <p>{{ tr.PositionName }}</p>
-              </vs-td>
-              <vs-td>
-                <p>{{ tr.Sort }}</p>
-              </vs-td>
-              <vs-td>
-                <p>{{ tr.Remark }}</p>
-              </vs-td>
-              <vs-td>
-                <p class="product-category">{{ tr.ModifyName}}</p>
-              </vs-td>
-              <vs-td>
-                <p>{{ tr.ModifyTime | formatDate }}</p>
-              </vs-td>
-
-              <template slot="expand">
-                <div class="w-full">
-                  <div class="flex items-center justify-between">
-                    <div class="flex items-center justify-start">
-                      <p class="px-2">职位</p>
-                      <vs-input v-model="tr.PositionName" class="inputx" name="'职位名称'" />
-                    </div>
-
-                    <div class="flex items-center justify-start">
-                      <p class="px-2">排序</p>
-                      <vs-input v-model="tr.Sort" class="inputx" placeholder />
-                    </div>
-                    <div class="flex items-center justify-start">
-                      <p class="px-2">备注</p>
-                      <vs-input v-model="tr.Remark" class="inputx" placeholder />
-                    </div>
-                    <div class="flex">
-                      <vs-button type="border" size="small" class="mr-2" @click="save(tr)">保存</vs-button>
-                    </div>
-                  </div>
-                </div>
-              </template>
-            </vs-tr>
-          </tbody>
+        <template slot="thead-content" slot-scope="item">
+          <vs-td>
+            <p>{{ item.tr.PositionName }}</p>
+          </vs-td>
+          <vs-td>
+            <p>{{ item.tr.Sort }}</p>
+          </vs-td>
+          <vs-td>
+            <p>{{ item.tr.Remark }}</p>
+          </vs-td>
+          <vs-td>
+            <p class="product-category">{{ item.tr.ModifyName}}</p>
+          </vs-td>
+          <vs-td>
+            <p>{{ item.tr.ModifyTime | formatDate }}</p>
+          </vs-td>
+          <vs-td v-if="!isPop">
+            <span class="text-primary" size="small" type="border" @click.stop="editData(item.tr)">编辑</span>
+          </vs-td>
         </template>
-      </vs-table>
+        <template slot="pagination">
+          <slot></slot>
+        </template>
+      </vx-table>
     </div>
-    <div class="con-pagination-table vs-table--pagination">
+    <!-- <div class="con-pagination-table vs-table--pagination">
       <vs-pagination
         :total="totalPage"
         v-model="currentPage"
@@ -99,7 +100,7 @@
         :pagedownItems="descriptionItems"
         :size="itemsPerPage"
       ></vs-pagination>
-    </div>
+    </div>-->
   </div>
 </template>
 
@@ -110,18 +111,46 @@ export default {
   components: {
     UnitEdit
   },
+  props: {
+    isPop: {
+      type: Boolean,
+      default: false
+    },
+    multipleCheck: {
+      type: Boolean,
+      default: false
+    },
+    checkedGroup: {
+      type: Array,
+      default: function() {
+        return [];
+      }
+    }
+  },
   data() {
     return {
       //Page
-      types: [],
-      itemsPerPage: 10,
-      currentPage: 1,
+      positions: [],
       totalPage: 0,
-      descriptionItems: [10, 20, 50, 100],
       totalItems: 0,
 
       //filter
       positionNameInput: null,
+      isLockedSelectOptions: [
+        {
+          name: "请选择",
+          value: null
+        },
+        {
+          name: "否",
+          value: false
+        },
+        {
+          name: "是",
+          value: true
+        }
+      ],
+      isLockedSelect: false,
 
       // Pop
       title: null,
@@ -132,22 +161,26 @@ export default {
     };
   },
   computed: {},
+  created() {
+    if (this.multipleCheck) {
+      this.$refs.table.checkedGroup = this.checkedGroup;
+    }
+  },
   methods: {
     loadData() {
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
       let para = {
-        pageIndex: this.currentPage,
-        pageSize: this.itemsPerPage,
+        pageIndex: this.$refs.table.currentPage,
+        pageSize: this.$refs.table.itemsPerPage,
         companyId: userInfo.companyID,
         positionName: this.positionNameInput
       };
       getPositions(para).then(res => {
-        console.log(3);
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           console.log("职位：", data);
-          this.types = data.Items;
+          this.positions = data.Items;
           this.totalPage = data.TotalPages;
           this.totalItems = data.TotalItems;
         }
@@ -161,8 +194,9 @@ export default {
       this.mark = "add";
       this.handleLoad();
     },
-    editData(id) {
-      this.positionId = null;
+    editData(tr) {
+      this.positionId = tr.ID;
+      this.positionData = tr;
       this.popupActive = true;
       this.title = "修改职位信息";
       this.mark = "edit";
@@ -173,42 +207,12 @@ export default {
     },
     closePop() {
       this.popupActive = false;
-    },
-    //#endregion
-    save(tr) {
-      let para = {
-        id: tr.ID,
-        positionName: tr.PositionName,
-        sort: tr.Sort,
-        remark: tr.Remark
-      };
-      console.log(para)
-      editPosition(para).then(res => {
-        if (res.resultType == 0) {
-          this.$vs.notify({
-            title: "Success",
-            text: res.message,
-            color: "success"
-          });
-          this.loadData();
-        }
-      });
-    },
-
-    changePageMaxItems(index) {
-      this.itemsPerPage = this.descriptionItems[index];
-      this.currentPage = 1;
-      this.loadData();
     }
   },
   mounted() {
     this.loadData();
   },
-  watch: {
-    currentPage() {
-      this.loadData();
-    }
-  }
+  watch: {}
 };
 </script>
 

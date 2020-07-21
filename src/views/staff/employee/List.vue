@@ -11,8 +11,19 @@
       />
     </vs-popup>
 
-    <vs-popup title :active.sync="popupActivePosition">
-      <position-list v-if="popupActivePosition" />
+    <vs-popup fullscreen title :active.sync="popupActivePosition">
+      <position-list v-if="popupActivePosition" :isPop="true" :multipleCheck="true">
+        <template>
+          <span class="mt-5">
+            <span>
+              <vs-button class="vx-col" color="primary" type="border" @click="savePosition">保存</vs-button>
+            </span>
+            <span class="px-2">
+              <vs-button class="vx-col" color="primary" type="border" @click="cancelPosition">取消</vs-button>
+            </span>
+          </span>
+        </template>
+      </position-list>
     </vs-popup>
 
     <vx-card ref="filterCard" title class="user-list-filters mb-8">
@@ -129,14 +140,6 @@
 
       <div class="flex">
         <slot></slot>
-        <!-- <span class="mt-5">
-          <span>
-            <vs-button class="vx-col" color="primary" type="border" @click="save">保存</vs-button>
-          </span>
-          <span class="px-2">
-            <vs-button class="vx-col" color="primary" type="border" @click="cancel">取消</vs-button>
-          </span>
-        </span>-->
         <vs-pagination
           style="flex:1"
           :total="totalPage"
@@ -159,7 +162,7 @@ import PositionList from "views/staff/position/List";
 import { AgGridVue } from "ag-grid-vue";
 
 import { getWorkingStatusDataSource } from "@/http/data_source.js";
-import { getEmployees } from "@/http/staff.js";
+import { getEmployees, deployPositionForEmployee } from "@/http/staff.js";
 export default {
   components: {
     AgGridVue,
@@ -350,6 +353,25 @@ export default {
     //#region 职位
     deployPosition() {
       this.popupActivePosition = true;
+    },
+    savePosition() {
+      let para={
+        employeeid:employeeid,
+        positionid:positionid
+      }
+      deployPositionForEmployee(para).then(res => {
+        if (res.resultType == 0) {
+          // const data = JSON.parse(res.message);
+          // this.items = data.Items;
+          // this.totalPage = data.TotalPages;
+          // this.totalItems = data.TotalItems;
+          // console.log("职工:", data);
+          // if (this.multipleCheck) this.addIsChecked();
+        }
+      });
+    },
+    cancelPosition() {
+      this.popupActivePosition = false;
     },
     //#endregion
 

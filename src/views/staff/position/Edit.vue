@@ -29,6 +29,11 @@
         <div class="vx-col md:w-1/2 w-full mt-4">
           <vs-input label="备注" v-model="data_local.Remark" class="w-full" />
         </div>
+
+        <div class="vx-col md:w-1/2 w-full mt-6" v-if="positionData.ID">
+          <label class="vs-input--label">是否锁定</label>
+          <vs-switch v-model="data_local.IsLocked" />
+        </div>
       </div>
 
       <!-- Save & Reset Button -->
@@ -45,7 +50,7 @@
 </template>
 
 <script>
-import { addPosition } from "@/http/staff.js";
+import { addPosition, editPosition } from "@/http/staff.js";
 
 export default {
   name: "",
@@ -54,6 +59,10 @@ export default {
     mark: {
       type: String,
       default: null
+    },
+    positionData: {
+      type: Object,
+      default: {}
     }
   },
   data() {
@@ -62,23 +71,39 @@ export default {
     };
   },
   computed: {},
-  created() {},
+  created() {
+    this.data_local = this.positionData;
+  },
   mounted() {},
   methods: {
     save_changes() {
       this.$validator.validateAll().then(result => {
         if (result) {
-          let userInfo = JSON.parse(localStorage.getItem("userInfo"));
-
           let para = {
-            companyID: userInfo.companyID,
             positionName: this.data_local.PositionName,
             sort: this.data_local.Sort,
             remark: this.data_local.Remark
           };
 
           if (this.mark === "add") {
+            let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+            para.companyID = userInfo.companyID;
             addPosition(para).then(res => {
+              if (res.resultType == 0) {
+                this.$vs.notify({
+                  title: "Success",
+                  text: res.message,
+                  color: "success"
+                });
+                this.$emit("loadData");
+                this.cancel();
+              }
+            });
+          } else if (this.mark === "edit") {
+            para.ID = this.data_local.ID;
+            para.isLocked = this.data_local.IsLocked;
+
+            editPosition(para).then(res => {
               if (res.resultType == 0) {
                 this.$vs.notify({
                   title: "Success",

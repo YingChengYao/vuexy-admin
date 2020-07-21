@@ -21,8 +21,24 @@
     </vx-card>
 
     <div class="vx-card p-6">
-      <vx-table ref="table" :items="types" @loadData="loadData">
-        <template slot="cloumn">
+      <vx-table
+        ref="table"
+        :items="types"
+        @loadData="loadData"
+        :totalPage="totalPage"
+        :totalItems="totalItems"
+        :pageSize="10"
+      >
+        <template slot="header">
+          <vs-button
+            v-if="!isPop"
+            color="primary"
+            type="border"
+            class="mb-4 mr-4"
+            @click="addNewData"
+          >添加</vs-button>
+        </template>
+        <template slot="thead-header">
           <vs-th>项目类型名称</vs-th>
           <vs-th>描述</vs-th>
           <vs-th>排序</vs-th>
@@ -31,7 +47,7 @@
           <vs-th>创建时间</vs-th>
           <vs-th>操作</vs-th>
         </template>
-        <template slot="row" slot-scope="item">
+        <template slot="thead-content" slot-scope="item">
           <vs-td>
             <p>{{ item.tr.TypeName }}</p>
           </vs-td>
@@ -56,32 +72,21 @@
         </template>
       </vx-table>
     </div>
-    <!-- <div class="con-pagination-table vs-table--pagination">
-      <vs-pagination
-        :total="totalPage"
-        v-model="currentPage"
-        :pagedown="true"
-        :totalItems="totalItems"
-        @changePageMaxItems="changePageMaxItems"
-        :pagedownItems="descriptionItems"
-        :size="itemsPerPage"
-      ></vs-pagination>
-    </div>-->
-
-    <!-- <div class="vx-card p-6" style="position: fixed;bottom: 0;width: calc(100% - 4.4rem - 260px);z-index: 9919;">
-       
-    </div>-->
   </div>
 </template>
 
 <script>
 import DataViewSidebar from "./DataViewSidebar";
-import VxTable from "components/vx-table/VxTable";
 import { getItemTypes } from "@/http/package.js";
 export default {
   components: {
-    DataViewSidebar,
-    VxTable
+    DataViewSidebar
+  },
+  props: {
+    isPop: {
+      type: Boolean,
+      default: false
+    }
   },
   data() {
     return {
@@ -90,11 +95,8 @@ export default {
       isMounted: false,
 
       //Page
-      // itemsPerPage: 2,
-      // currentPage: 1,
-      // totalPage: 0,
-      // descriptionItems: [10, 20, 50, 100],
-      // totalItems: 0,
+      totalPage: 0,
+      totalItems: 0,
 
       // Data Sidebar
       addNewDataSidebar: false,
@@ -130,8 +132,8 @@ export default {
           const data = JSON.parse(res.message);
           console.log("类型：", data);
           this.types = data.Items;
-          this.$refs.table.totalPage = data.TotalPages;
-          this.$refs.table.totalItems = data.TotalItems;
+          this.totalPage = data.TotalPages;
+          this.totalItems = data.TotalItems;
         }
       });
     },

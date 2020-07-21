@@ -111,8 +111,14 @@
                   class="text-primary px-2"
                   size="small"
                   type="border"
-                  @click.stop="submitMePlan(tr.ID)"
+                  @click.stop="confirmSubmitPlan(tr.ID)"
                 >提交</span>
+                <span
+                  class="text-primary px-2"
+                  size="small"
+                  type="border"
+                  @click.stop="confirmSubmitPlan(tr.ID)"
+                >审核</span>
               </vs-td>
             </vs-tr>
           </tbody>
@@ -182,7 +188,9 @@ export default {
       standardData: {},
       popupActiveEmployee: false,
       workers: [],
-      standards: []
+      standards: [],
+
+      activeConfirm: false
     };
   },
   computed: {},
@@ -211,22 +219,29 @@ export default {
         }
       });
     },
-    submitMePlan(id) {
+    confirmSubmitPlan(id) {
       let para = {
         id: id
       };
-      submitPlan(para).then(res => {
-        if (res.resultType == 0) {
-          this.$vs.notify({
-            title: "Success",
-            text: res.message,
-            color: "success"
+      this.$vs.dialog({
+        type: "confirm",
+        color: "success",
+        title: `提交体检计划`,
+        text: "该计划提交后将不可更改",
+        accept: para => {
+          submitPlan(para).then(res => {
+            if (res.resultType == 0) {
+              this.$vs.notify({
+                title: "Success",
+                text: res.message,
+                color: "success"
+              });
+              this.loadData();
+            }
           });
-          this.loadData();
         }
       });
     },
-
     //#region 弹窗
     addNewData() {
       this.planId = null;

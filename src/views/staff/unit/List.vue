@@ -150,7 +150,7 @@ export default {
       let para = {
         pageIndex: this.currentPage,
         pageSize: this.itemsPerPage,
-        id: userInfo.uid
+        id: "6750305733891072000" //userInfo.uid
       };
       getEmployeeUnits(para).then(res => {
         if (res.resultType == 0) {

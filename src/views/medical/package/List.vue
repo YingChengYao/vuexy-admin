@@ -153,7 +153,7 @@ export default {
       isLockedSelect: false,
 
       //Page
-      itemsPerPage: 10,
+      itemsPerPage: 3,
       currentPage: 1,
       totalPage: 0,
       descriptionItems: [10, 20, 50, 100],
