@@ -13,7 +13,8 @@
             <vs-checkbox :checked="isCheckedAll" @change="handleCheckAll()" size="small" />
           </span>
         </th>
-        <vs-th>编号</vs-th>
+        <vs-th v-if="showIndex">编号</vs-th>
+        <!-- <vs-th :key="index" v-for="(item,index) in cloumns">{{item.title}}</vs-th> -->
         <slot name="thead-header"></slot>
       </template>
 
@@ -23,7 +24,7 @@
             <vs-td v-if="multipleCheck" class="td-check">
               <vs-checkbox :checked="tr.isChecked" @change="handleCheckbox(tr)" size="small" />
             </vs-td>
-            <vs-td>
+            <vs-td v-if="showIndex">
               <p>{{ indextr+1 }}</p>
             </vs-td>
             <slot name="thead-content" :tr="tr"></slot>
@@ -64,6 +65,14 @@ export default {
       type: String,
       default: "ID"
     },
+    showIndex: {
+      type: Boolean,
+      default: true
+    },
+    // cloumns: {
+    //   type: Array,
+    //   required: true
+    // },
     isPop: {
       type: Boolean,
       default: false

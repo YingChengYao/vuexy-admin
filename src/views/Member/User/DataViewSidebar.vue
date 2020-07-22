@@ -43,7 +43,7 @@
         <span class="text-danger text-sm" v-show="errors.has('身份证')">{{ errors.first('身份证') }}</span>
 
         <!-- 手机号 -->
-        <vs-input label="手机号" v-model="mobile" class="mt-5 w-full" name="手机号" v-validate="'phone'" />
+        <vs-input label="手机号" v-model="mobile" class="mt-5 w-full" name="手机号" v-validate="'mobile'" />
         <span class="text-danger text-sm" v-show="errors.has('手机号')">{{ errors.first('手机号') }}</span>
 
         <!-- 婚姻状况 -->

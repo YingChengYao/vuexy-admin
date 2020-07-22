@@ -1,6 +1,6 @@
 <template>
   <div class="data-list-container">
-    <vs-popup :title="title" :active.sync="popupActive">
+    <vs-popup fullscreen :title="title" :active.sync="popupActive">
       <unit-edit
         v-if="popupActive"
         @closePop="closePop"
@@ -131,7 +131,7 @@ export default {
     return {
       //Page
       medicalCenters: [],
-      itemsPerPage: 4,
+      itemsPerPage: 10,
       currentPage: 1,
       totalPage: 0,
       descriptionItems: [10, 20, 50, 100],

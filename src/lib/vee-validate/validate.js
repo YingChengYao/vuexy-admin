@@ -78,9 +78,14 @@ Validator.extend("numsection", {
   validate: value => /^100$|^(\d|[1-9]\d)(\.\d+)*$/.test(value)
 });
 //手机号码
-Validator.extend("phone", {
+Validator.extend("mobile", {
   getMessage: () => `请输入正确的手机号码`,
   validate: value => !!/^1[0-9]{10}$/.test(value)
+});
+//电话
+Validator.extend("phone", {
+  getMessage: () => `请输入正确的电话号码`,
+  validate: value => !!/^([0-9]{3,4}-)?[0-9]{7,8}$/.test(value)
 });
 //6位手机短信验证码
 Validator.extend("msg_code", {

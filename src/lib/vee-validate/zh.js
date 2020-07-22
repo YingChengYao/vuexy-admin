@@ -43,7 +43,7 @@ Validator.extend("numsection", {
   validate: value => /^100$|^(\d|[1-9]\d)(\.\d+)*$/.test(value)
 });
 //手机号码
-Validator.extend("phone", {
+Validator.extend("mobile", {
   validate: value => !!/^1[0-9]{10}$/.test(value),
   getMessage: field => field + " 格式不正确"
 });

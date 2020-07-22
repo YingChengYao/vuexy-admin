@@ -82,7 +82,14 @@
         </div>
 
         <div class="vx-col w-full mt-4">
-          <vs-select
+          <project-item-list
+            ref="projectItem"
+            :isPop="true"
+            :multipleCheck="true"
+            tableTitle="单项配置"
+          ></project-item-list>
+
+          <!-- <vs-select
             label="单项管理"
             v-model="data_local.Singles"
             class="w-full select-large"
@@ -96,7 +103,7 @@
               :text="item.Name"
               class="w-full"
             />
-          </vs-select>
+          </vs-select>-->
         </div>
       </div>
 
@@ -110,48 +117,12 @@
         </div>
       </div>
     </vx-card>
-
-    <!-- <vx-card title="单项管理" class="p-6">
-      <vs-table
-        ref="table"
-        stripe
-        :data="types"
-        multiple
-        v-model="selected"
-        @selected="handleSelected"
-      >
-        <template slot="thead">
-          <vs-th>编号</vs-th>
-          <vs-th>项目单项名称</vs-th>
-          <vs-th>是否作为项目使用</vs-th>
-          <vs-th>排序</vs-th>
-        </template>
-
-        <template slot-scope="{data}">
-          <tbody>
-            <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data">
-              <vs-td>
-                <p>{{ indextr+1 }}</p>
-              </vs-td>
-              <vs-td :data="tr.SingleName">
-                <p>{{ tr.SingleName }}</p>
-              </vs-td>
-              <vs-td>
-                <p>{{ tr.IsOptional?'是':'否' }}</p>
-              </vs-td>
-              <vs-td>
-                <p>{{ tr.Sort }}</p>
-              </vs-td>
-            </vs-tr>
-          </tbody>
-        </template>
-      </vs-table>
-    </vx-card>-->
   </div>
 </template>
 
 <script>
 import vSelect from "vue-select";
+import ProjectItemList from "views/medical/project_item/List";
 
 import {
   getProjectTypeDataSource,
@@ -169,7 +140,8 @@ import {
 export default {
   name: "",
   components: {
-    vSelect
+    vSelect,
+    ProjectItemList
   },
   props: {
     projectId: String,
@@ -257,11 +229,15 @@ export default {
       this.$validator.validateAll().then(result => {
         if (result) {
           let userInfo = JSON.parse(localStorage.getItem("userInfo"));
-          let singles = "";
-          if (this.data_local.Singles.length > 0) {
-            singles = this.data_local.Singles.map(r => r).join(",");
-          }
+          //let singles = "";
+          // if (this.data_local.Singles.length > 0) {
+          //   singles = this.data_local.Singles.map(r => r).join(",");
+          // }
 
+          let singles = this.$refs.projectItem.$refs.table.checkedGroup
+            .map(r => r.ID)
+            .join(",");
+          return;
           let para = {
             itemTypeID: this.data_local.ItemTypeID,
             itemName: this.data_local.ItemName,

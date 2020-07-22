@@ -23,15 +23,28 @@
     </vx-card>
 
     <div class="vx-card p-6">
-      <vs-table ref="table" stripe :data="types">
-        <div slot="header" class="flex flex-wrap-reverse items-center flex-grow justify-between">
-          <div class="flex flex-wrap-reverse items-center data-list-btn-container header-left">
-            <vs-button color="primary" type="border" class="mb-4 mr-4" @click="addNewData">添加</vs-button>
-          </div>
-        </div>
-
-        <template slot="thead">
-          <vs-th>编号</vs-th>
+      <vs-row v-if="tableTitle">
+        <span class="mb-4">{{tableTitle}}</span>
+      </vs-row>
+      <vx-table
+        ref="table"
+        :items="items"
+        @loadData="loadData"
+        :totalPage="totalPage"
+        :totalItems="totalItems"
+        :pageSize="10"
+        :multipleCheck="multipleCheck"
+      >
+        <template slot="header">
+          <vs-button
+            v-if="!isPop"
+            color="primary"
+            type="border"
+            class="mb-4 mr-4"
+            @click="addNewData"
+          >添加</vs-button>
+        </template>
+        <template slot="thead-header">
           <vs-th>项目单项名称</vs-th>
           <vs-th>是否作为项目使用</vs-th>
           <vs-th>排序</vs-th>
@@ -40,54 +53,35 @@
           <vs-th>创建时间</vs-th>
           <vs-th>操作</vs-th>
         </template>
-
-        <template slot-scope="{data}">
-          <tbody>
-            <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data">
-              <vs-td>
-                <p>{{ indextr+1 }}</p>
-              </vs-td>
-              <vs-td :data="tr.SingleName">
-                <p>{{ tr.SingleName }}</p>
-              </vs-td>
-              <vs-td>
-                <p>{{ tr.IsOptional?'是':'否' }}</p>
-              </vs-td>
-              <vs-td>
-                <p>{{ tr.Sort }}</p>
-              </vs-td>
-              <vs-td>
-                <p>{{ tr.IsLocked?'是':'否' }}</p>
-              </vs-td>
-              <vs-td>
-                <p class="product-category">{{ tr.ModifyName}}</p>
-              </vs-td>
-              <vs-td>
-                <p>{{ tr.ModifyTime | formatDate }}</p>
-              </vs-td>
-              <vs-td class="whitespace-no-wrap">
-                <span
-                  class="text-primary"
-                  size="small"
-                  type="border"
-                  @click.stop="editData(tr.ID)"
-                >编辑</span>
-              </vs-td>
-            </vs-tr>
-          </tbody>
+        <template slot="thead-content" slot-scope="item">
+          <vs-td>
+            <p>{{ item.tr.SingleName }}</p>
+          </vs-td>
+          <vs-td>
+            <p>{{ item.tr.IsOptional?'是':'否' }}</p>
+          </vs-td>
+          <vs-td>
+            <p>{{ item.tr.Sort }}</p>
+          </vs-td>
+          <vs-td>
+            <p>{{ item.tr.IsLocked?'是':'否' }}</p>
+          </vs-td>
+          <vs-td>
+            <p>{{ item.tr.ModifyName}}</p>
+          </vs-td>
+          <vs-td>
+            <p>{{ item.tr.ModifyTime | formatDate }}</p>
+          </vs-td>
+          <vs-td class="whitespace-no-wrap">
+            <span
+              class="text-primary"
+              size="small"
+              type="border"
+              @click.stop="editData(item.tr.ID)"
+            >编辑</span>
+          </vs-td>
         </template>
-      </vs-table>
-    </div>
-    <div class="con-pagination-table vs-table--pagination">
-      <vs-pagination
-        :total="totalPage"
-        v-model="currentPage"
-        :pagedown="true"
-        :totalItems="totalItems"
-        @changePageMaxItems="changePageMaxItems"
-        :pagedownItems="descriptionItems"
-        :size="itemsPerPage"
-      ></vs-pagination>
+      </vx-table>
     </div>
   </div>
 </template>
@@ -99,15 +93,26 @@ export default {
   components: {
     ProjectItemEdit
   },
+  props: {
+    isPop: {
+      type: Boolean,
+      default: false
+    },
+    multipleCheck: {
+      type: Boolean,
+      default: false
+    },
+    tableTitle: {
+      type: String,
+      default: null
+    }
+  },
   data() {
     return {
       //Page
-      types: [],
+      items: [],
       singleNameInput: null,
-      itemsPerPage: 10,
-      currentPage: 1,
       totalPage: 0,
-      descriptionItems: [10, 20, 50, 100],
       totalItems: 0,
 
       // Pop
@@ -134,7 +139,7 @@ export default {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           console.log("单项：", data);
-          this.types = data.Items;
+          this.items = data.Items;
           this.totalPage = data.TotalPages;
           this.totalItems = data.TotalItems;
         }

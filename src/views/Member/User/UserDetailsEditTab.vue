@@ -24,7 +24,7 @@
           class="w-full mt-4"
           label="手机号"
           v-model="data_local.Mobile"
-          v-validate="'required|phone'"
+          v-validate="'required|mobile'"
           name="手机号"
         />
         <span class="text-danger text-sm" v-show="errors.has('手机号')">{{ errors.first('手机号') }}</span>

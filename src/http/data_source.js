@@ -1,5 +1,6 @@
 import request from "./request";
 
+//#region 体检套餐相关
 //获取项目分类数据源
 export const getProjectTypeDataSource = params => {
   return request({
@@ -9,28 +10,10 @@ export const getProjectTypeDataSource = params => {
   });
 };
 
-//获取婚姻状况数据源(用户)
-export const getMaritalForUserDataSource = params => {
-  return request({
-    url: "/api/user/marital/select",
-    method: "get",
-    params: params
-  });
-};
-
 //获取婚姻状况数据源(体检套餐，体检项目使用)
 export const getMaritalDataSource = params => {
   return request({
     url: "/api/project/marriage/select",
-    method: "get",
-    params: params
-  });
-};
-
-//获取性别数据源(用户)
-export const getGenderForUserDataSource = params => {
-  return request({
-    url: "/api/user/gender/select",
     method: "get",
     params: params
   });
@@ -62,6 +45,26 @@ export const getProjectItemDataSource = params => {
     params: params
   });
 };
+//#endregion
+
+//获取婚姻状况数据源(用户)
+export const getMaritalForUserDataSource = params => {
+  return request({
+    url: "/api/user/marital/select",
+    method: "get",
+    params: params
+  });
+};
+
+//获取性别数据源(用户)
+export const getGenderForUserDataSource = params => {
+  return request({
+    url: "/api/user/gender/select",
+    method: "get",
+    params: params
+  });
+};
+
 //#region 体检计划
 //获取计划的标准数据源
 export const getStandardForPlanDataSource = params => {
@@ -70,7 +73,7 @@ export const getStandardForPlanDataSource = params => {
     method: "get",
     params: params
   });
-}; 
+};
 //获取计划类型数据源
 export const getPlanTypeDataSource = params => {
   return request({
@@ -113,6 +116,25 @@ export const getIndustryDataSource = params => {
 export const getSubordinateUnitDataSource = params => {
   return request({
     url: "/api/company/select",
+    method: "get",
+    params: params
+  });
+};
+//#endregion
+
+//#region 体检中心
+//获取体检中心等级数据源
+export const getMedicalCenterGradeDataSource = params => {
+  return request({
+    url: "/api/physical/grade/list",
+    method: "get",
+    params: params
+  });
+};
+//获取体检中心性质数据源
+export const getMedicalCenterNatureDataSource = params => {
+  return request({
+    url: "/api/physical/nature/list",
     method: "get",
     params: params
   });

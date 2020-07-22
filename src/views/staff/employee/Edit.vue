@@ -66,7 +66,7 @@
             label="手机号"
             v-model="data_local.Mobile"
             name="手机号"
-            v-validate="'required|phone'"
+            v-validate="'required|mobile'"
           />
           <span class="text-danger text-sm" v-show="errors.has('手机号')">{{ errors.first('手机号') }}</span>
         </div>
@@ -84,7 +84,6 @@
 
         <div class="vx-col md:w-1/2 w-full mt-4">
           <vs-input class="w-full" label="备注" v-model="data_local.Remark" name="备注" />
-          <span class="text-danger text-sm" v-show="errors.has('备注')">{{ errors.first('备注') }}</span>
         </div>
       </div>
 

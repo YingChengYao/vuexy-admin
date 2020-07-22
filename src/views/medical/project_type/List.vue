@@ -86,7 +86,42 @@ export default {
     isPop: {
       type: Boolean,
       default: false
-    }
+    },
+    // cloumns: {
+    //   type: Array,
+    //   default: function() {
+    //     return [
+    //       {
+    //         title: "项目类型名称",
+    //         field: "TypeName"
+    //       },
+    //       {
+    //         title: "描述",
+    //         field: "Remark"
+    //       },
+    //       {
+    //         title: "排序",
+    //         field: "Sort"
+    //       },
+    //       {
+    //         title: "是否锁定",
+    //         field: "IsLocked"
+    //       },
+    //       {
+    //         title: "修改人",
+    //         field: "ModifyName"
+    //       },
+    //       {
+    //         title: "修改时间",
+    //         field: "ModifyTime"
+    //       },
+    //       {
+    //         title: "操作",
+    //         field: ""
+    //       }
+    //     ];
+    //   }
+    // }
   },
   data() {
     return {
@@ -102,17 +137,7 @@ export default {
       addNewDataSidebar: false,
       sidebarData: {},
 
-      typeNameInput: "",
-
-      cloumns: [
-        { headerName: "项目类型名称", field: "TypeName" },
-        { headerName: "描述", field: "Remark" },
-        { headerName: "排序", field: "Sort" },
-        { headerName: "是否锁定", field: "IsLocked" },
-        { headerName: "修改人", field: "ModifyName" },
-        { headerName: "创建时间", field: "ModifyTime" },
-        { headerName: "操作", field: "age" }
-      ]
+      typeNameInput: ""
     };
   },
   computed: {},
@@ -153,11 +178,6 @@ export default {
     toggleDataSidebar(val = false) {
       this.addNewDataSidebar = val;
     },
-    changePageMaxItems(index) {
-      this.itemsPerPage = this.descriptionItems[index];
-      this.currentPage = 1;
-      this.loadData();
-    }
   },
   mounted() {
     this.isMounted = true;

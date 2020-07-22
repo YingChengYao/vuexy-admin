@@ -60,7 +60,6 @@
         <template slot="thead-header">
           <vs-th>职位名称</vs-th>
           <vs-th>排序</vs-th>
-          <vs-th>备注</vs-th>
           <vs-th>修改人</vs-th>
           <vs-th>创建时间</vs-th>
           <vs-th v-if="!isPop">操作</vs-th>
@@ -71,9 +70,6 @@
           </vs-td>
           <vs-td>
             <p>{{ item.tr.Sort }}</p>
-          </vs-td>
-          <vs-td>
-            <p>{{ item.tr.Remark }}</p>
           </vs-td>
           <vs-td>
             <p class="product-category">{{ item.tr.ModifyName}}</p>
