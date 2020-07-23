@@ -116,11 +116,9 @@ export default {
       type: Boolean,
       default: false
     },
-    checkedGroup: {
-      type: Array,
-      default: function() {
-        return [];
-      }
+    employeeID: {
+      type: String,
+      default: ""
     }
   },
   data() {
@@ -158,9 +156,9 @@ export default {
   },
   computed: {},
   created() {
-    if (this.multipleCheck) {
-      this.$refs.table.checkedGroup = this.checkedGroup;
-    }
+    // if (this.multipleCheck) {
+    //   this.$refs.table.checkedGroup = this.checkedGroup;
+    // }
   },
   methods: {
     loadData() {

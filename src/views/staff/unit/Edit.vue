@@ -5,6 +5,7 @@
         <div class="vx-col md:w-1/2 w-full mt-4">
           <vs-select label="父级单位" v-model="data_local.ParentID" class="w-full select-large">
             <vs-select-item
+              :style="'margin-left:'+ (item.level)*20 +'px'"
               v-for="(item,index) in unitOptions"
               :key="index"
               :value="item.Value"
@@ -92,6 +93,7 @@
 <script>
 import vSelect from "vue-select";
 
+import { composeTree } from "@/common/utils/data/array.js";
 import {
   getIndustryDataSource,
   getSubordinateUnitDataSource
@@ -151,11 +153,44 @@ export default {
       getSubordinateUnitDataSource(para).then(res => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
-          console.log("下属单位：", data);
-          this.unitOptions = data;
+          this.unitOptions = [];
+          let b = composeTree(data, "Value", "ParentID");
+          console.log("下属单位1：", b);
+          this.initSubordinateUnitData(b, 0, null);
+          console.log("下属单位：", this.unitOptions);
         }
       });
     },
+    initSubordinateUnitData(items, level, parent) {
+      if (!Array.isArray(items)) {
+        return;
+      }
+      items.map((item, index) => {
+        item = Object.assign({}, item, {
+          parent: parent,
+          level: level
+        });
+        if (item.children != undefined && item.children.length > 0) {
+          item = Object.assign({}, item, {
+            isExpand: true
+          });
+        }
+        if (typeof item.isChecked == "undefined") {
+          item = Object.assign({}, item, {
+            isChecked: false
+          });
+        }
+        if (typeof item.isShow == "undefined") {
+          item = Object.assign({}, item, {
+            isShow: true
+          });
+        }
+        this.unitOptions.push(item);
+
+        this.initSubordinateUnitData(item.children, level + 1, item.Value);
+      });
+    },
+
     loadData() {
       if (!this.unitId) return;
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));

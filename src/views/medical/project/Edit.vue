@@ -134,7 +134,6 @@ import {
   addProject,
   editProject,
   getProjectDetail,
-  getProjectItems
 } from "@/http/package.js";
 
 export default {
@@ -161,7 +160,6 @@ export default {
       projectItemOptions: [],
 
       //单项
-      types: [],
       singleNameInput: null,
       itemsPerPage: 10,
       currentPage: 1,
@@ -175,7 +173,6 @@ export default {
   created() {
     this.initValues();
     this.loadData();
-    this.loadItemData();
   },
   mounted() {
     this.loadMaritalStatus();
@@ -201,27 +198,8 @@ export default {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.data_local = data;
-        }
-      });
-    },
-    loadItemData() {
-      let userInfo = JSON.parse(localStorage.getItem("userInfo"));
-
-      let para = {
-        pageIndex: this.currentPage,
-        pageSize: this.itemsPerPage,
-        mecid: userInfo.mecID,
-        singleName: this.singleNameInput,
-        isLocked: false
-      };
-
-      getProjectItems(para).then(res => {
-        if (res.resultType == 0) {
-          const data = JSON.parse(res.message);
-          console.log("单项：", data);
-          this.types = data.Items;
-          this.totalPage = data.TotalPages;
-          this.totalItems = data.TotalItems;
+          console.log('单项1：',data)
+          //this.$refs.projectItem.$refs.table.checkedGroup=
         }
       });
     },
@@ -229,15 +207,11 @@ export default {
       this.$validator.validateAll().then(result => {
         if (result) {
           let userInfo = JSON.parse(localStorage.getItem("userInfo"));
-          //let singles = "";
-          // if (this.data_local.Singles.length > 0) {
-          //   singles = this.data_local.Singles.map(r => r).join(",");
-          // }
 
           let singles = this.$refs.projectItem.$refs.table.checkedGroup
             .map(r => r.ID)
             .join(",");
-          return;
+ 
           let para = {
             itemTypeID: this.data_local.ItemTypeID,
             itemName: this.data_local.ItemName,

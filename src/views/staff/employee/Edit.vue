@@ -116,7 +116,7 @@ export default {
     vSelect
   },
   props: {
-    employeeId: {
+    employeeID: {
       type: String,
       default: null
     },
@@ -151,12 +151,12 @@ export default {
   },
   methods: {
     loadData() {
-      if (!this.employeeId) return;
+      if (!this.employeeID) return;
       //let userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
       // let para = {
       //   mecid: userInfo.mecID,
-      //   id: this.employeeId
+      //   id: this.employeeID
       // };
       // getProjectItemDetails(para).then(res => {
       //   if (res.resultType == 0) {
@@ -236,7 +236,6 @@ export default {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.workingStatusOptions = data;
-          console.log("data1:", data);
         }
       });
     }

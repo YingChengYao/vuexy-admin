@@ -49,13 +49,7 @@
               <vs-td>
                 <p>{{ indextr+1 }}</p>
               </vs-td>
-              <vs-td>
-                <p>{{ tr.ID }}</p>
-              </vs-td>
-              <vs-td>
-                <p>{{ tr.ParentID }}</p>
-              </vs-td>
-              <vs-td style="width:10rem;display: block;" class="wrap">
+              <vs-td class="wrap">
                 <span :style="'margin-left:'+ (tr.level)*20 +'px'">
                   <span @click.stop="toggle(tr)" v-if="tr.children">
                     <vs-icon
@@ -116,6 +110,7 @@
 
 <script>
 import UnitEdit from "./Edit";
+import { composeTree } from "@/common/utils/data/array.js";
 import { getEmployeeUnits } from "@/http/staff.js";
 export default {
   components: {
@@ -159,8 +154,11 @@ export default {
           this.totalItems = data.TotalItems;
           console.log("单位：", data.Items);
           this.units = [];
+          let d = composeTree(data.Items, "ID", "ParentID");
+          console.log("ddd1：", d);
+
           //let s = data.Items;
-          this.initData(data.Items, 0, null);
+          this.initData(d, 0, null);
           console.log("单位1：", this.units);
         }
       });
@@ -190,20 +188,36 @@ export default {
             isShow: true
           });
         }
-        let parentID = item.ID;
+        this.units.push(item);
 
-        if (index > 0 && item.ParentID == items[index - 1].ID) {
-          //this.initData(item.children, level + 1, item.ID);
-          item = Object.assign({}, item, {
-            parent: parent,
-            level: level + 1
-          });
-          this.units.push(item);
-        } else {
-          this.units.push(item);
+        this.initData(item.children, level + 1, item.ID);
+      });
+    },
+    toggle: function(m) {
+      if (m.children) {
+        this.toggleExpand(m.ID, !m.isExpand);
+        m.isExpand = !m.isExpand;
+      }
+    },
+    toggleExpand(ID, isShow) {
+      debugger;
+      this.units.map(i => {
+        if (i.parent == ID) {
+          i.isShow = isShow;
+          if (i.children) {
+            if (isShow) {
+              if (i.isExpand) this.toggleExpand(i.ID, isShow);
+              // i.isExpand = isShow;
+            } else {
+              if (i.isExpand) {
+                this.toggleExpand(i.ID, isShow);
+              }
+            }
+          }
         }
       });
     },
+
     //#region 弹窗
     addNewData() {
       this.unitId = null;

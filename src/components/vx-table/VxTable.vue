@@ -73,10 +73,6 @@ export default {
     //   type: Array,
     //   required: true
     // },
-    isPop: {
-      type: Boolean,
-      default: false
-    },
     totalPage: {
       type: Number,
       default: 0
@@ -129,7 +125,6 @@ export default {
     handleCheckbox(tr) {
       if (tr) {
         tr.isChecked = !tr.isChecked;
-
         if (tr.isChecked) {
           this.checkedGroup.push(tr);
         } else {

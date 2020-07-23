@@ -4,7 +4,7 @@
       <employee-edit
         @closePop="closePop"
         @loadData="loadData"
-        :employeeId="employeeId"
+        :employeeID="employeeID"
         :key="timer"
         :mark="mark"
         :data="employeeData"
@@ -12,7 +12,13 @@
     </vs-popup>
 
     <vs-popup fullscreen title :active.sync="popupActivePosition">
-      <position-list v-if="popupActivePosition" :isPop="true" :multipleCheck="true">
+      <position-list
+        ref="position"
+        v-if="popupActivePosition"
+        :isPop="true"
+        :multipleCheck="true"
+        :employeeID="employeeID"
+      >
         <template>
           <span class="mt-5">
             <span>
@@ -172,7 +178,7 @@ export default {
   props: {
     multipleCheck: {
       type: Boolean,
-      default: true
+      default: false
     },
     isPop: {
       type: Boolean,
@@ -202,7 +208,7 @@ export default {
       // 职工添加修改Pop
       title: null,
       popupActive: false,
-      employeeId: null,
+      employeeID: null,
       timer: "",
       mark: null,
       employeeData: null,
@@ -329,14 +335,15 @@ export default {
 
     //#region 职工
     addNewData() {
-      this.employeeId = null;
+      this.employeeID = null;
       this.popupActive = true;
       this.title = "添加员工信息";
       this.mark = "add";
       this.handleLoad();
     },
     editData(tr) {
-      this.employeeId = tr.ID;
+      this.employeeID = tr.ID;
+      console.log(tr)
       this.employeeData = tr;
       this.popupActive = true;
       this.title = "修改员工信息";
@@ -351,14 +358,18 @@ export default {
     },
     //#endregion
     //#region 职位
-    deployPosition() {
+    deployPosition(tr) {
       this.popupActivePosition = true;
+      this.employeeID = tr.ID;
     },
     savePosition() {
-      let para={
-        employeeid:employeeid,
-        positionid:positionid
-      }
+      let positionids = this.$refs.position.$refs.table.checkedGroup
+        .map(r => r.ID)
+        .join(",");
+      let para = {
+        employeeID: this.$refs.position.employeeID,
+        positionid: positionids
+      };
       deployPositionForEmployee(para).then(res => {
         if (res.resultType == 0) {
           // const data = JSON.parse(res.message);
