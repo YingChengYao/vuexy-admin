@@ -3,9 +3,9 @@
     <vx-card title>
       <div class="vx-row">
         <div class="vx-col md:w-1/2 w-full mt-4">
-          <vs-select label="父级单位" v-model="data_local.ParentID" class="w-full select-large">
+          <vs-select autocomplete :disabled="mark!='add'" label="父级单位" v-model="data_local.ParentID" class="w-full select-large">
             <vs-select-item
-              :style="'margin-left:'+ (item.level)*20 +'px'"
+              :style="'margin-left:'+ (item.level)*10 +'px'"
               v-for="(item,index) in unitOptions"
               :key="index"
               :value="item.Value"
@@ -148,14 +148,13 @@ export default {
     loadSubordinateUnitData() {
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
       let para = {
-        companyId: "6750305733891072000" //userInfo.companyID
+        companyId: userInfo.companyID
       };
       getSubordinateUnitDataSource(para).then(res => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.unitOptions = [];
           let b = composeTree(data, "Value", "ParentID");
-          console.log("下属单位1：", b);
           this.initSubordinateUnitData(b, 0, null);
           console.log("下属单位：", this.unitOptions);
         }

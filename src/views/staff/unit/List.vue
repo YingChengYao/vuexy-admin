@@ -114,7 +114,7 @@ import { composeTree } from "@/common/utils/data/array.js";
 import { getEmployeeUnits } from "@/http/staff.js";
 export default {
   components: {
-    UnitEdit
+    UnitEdit,
   },
   data() {
     return {
@@ -134,7 +134,7 @@ export default {
       popupActive: false,
       unitId: null,
       timer: "",
-      mark: null
+      mark: null,
     };
   },
   computed: {},
@@ -145,21 +145,16 @@ export default {
       let para = {
         pageIndex: this.currentPage,
         pageSize: this.itemsPerPage,
-        id: "6750305733891072000" //userInfo.uid
+        id: userInfo.uid, //"6750305733891072000", //userInfo.uid
       };
-      getEmployeeUnits(para).then(res => {
+      getEmployeeUnits(para).then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.totalPage = data.TotalPages;
           this.totalItems = data.TotalItems;
-          console.log("单位：", data.Items);
           this.units = [];
           let d = composeTree(data.Items, "ID", "ParentID");
-          console.log("ddd1：", d);
-
-          //let s = data.Items;
           this.initData(d, 0, null);
-          console.log("单位1：", this.units);
         }
       });
     },
@@ -171,21 +166,21 @@ export default {
       items.map((item, index) => {
         item = Object.assign({}, item, {
           parent: parent,
-          level: level
+          level: level,
         });
         if (item.children != undefined && item.children.length > 0) {
           item = Object.assign({}, item, {
-            isExpand: true
+            isExpand: true,
           });
         }
         if (typeof item.isChecked == "undefined") {
           item = Object.assign({}, item, {
-            isChecked: false
+            isChecked: false,
           });
         }
         if (typeof item.isShow == "undefined") {
           item = Object.assign({}, item, {
-            isShow: true
+            isShow: true,
           });
         }
         this.units.push(item);
@@ -193,7 +188,7 @@ export default {
         this.initData(item.children, level + 1, item.ID);
       });
     },
-    toggle: function(m) {
+    toggle: function (m) {
       if (m.children) {
         this.toggleExpand(m.ID, !m.isExpand);
         m.isExpand = !m.isExpand;
@@ -201,7 +196,7 @@ export default {
     },
     toggleExpand(ID, isShow) {
       debugger;
-      this.units.map(i => {
+      this.units.map((i) => {
         if (i.parent == ID) {
           i.isShow = isShow;
           if (i.children) {
@@ -245,7 +240,7 @@ export default {
       this.itemsPerPage = this.descriptionItems[index];
       this.currentPage = 1;
       this.loadData();
-    }
+    },
   },
   mounted() {
     this.loadData();
@@ -253,8 +248,8 @@ export default {
   watch: {
     currentPage() {
       this.loadData();
-    }
-  }
+    },
+  },
 };
 </script>
 
