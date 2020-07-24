@@ -128,30 +128,26 @@ import {
   getProjectTypeDataSource,
   getMaritalDataSource,
   getGenderDataSource,
-  getProjectItemDataSource
+  getProjectItemDataSource,
 } from "@/http/data_source.js";
-import {
-  addProject,
-  editProject,
-  getProjectDetail,
-} from "@/http/package.js";
+import { addProject, editProject, getProjectDetail } from "@/http/package.js";
 
 export default {
   name: "",
   components: {
     vSelect,
-    ProjectItemList
+    ProjectItemList,
   },
   props: {
     projectId: String,
-    default: ""
+    default: "",
   },
   data() {
     return {
       mark: null,
 
       data_local: {
-        Singles: []
+        Singles: [],
       },
 
       projectTypeOptions: [],
@@ -166,7 +162,7 @@ export default {
       totalPage: 0,
       descriptionItems: [10, 20, 50, 100],
       totalItems: 0,
-      selected: []
+      selected: [],
     };
   },
   computed: {},
@@ -183,7 +179,7 @@ export default {
   methods: {
     initValues() {
       this.data_local = {
-        Singles: []
+        Singles: [],
       };
     },
     loadData() {
@@ -192,26 +188,26 @@ export default {
 
       let para = {
         mecid: userInfo.mecID,
-        itemId: this.projectId
+        itemId: this.projectId,
       };
-      getProjectDetail(para).then(res => {
+      getProjectDetail(para).then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.data_local = data;
-          console.log('单项1：',data)
-          //this.$refs.projectItem.$refs.table.checkedGroup=
+          console.log("单项1：", data);
+          //this.$refs.projectItem.$refs.table.initCheckedGroup()
         }
       });
     },
     save_changes() {
-      this.$validator.validateAll().then(result => {
+      this.$validator.validateAll().then((result) => {
         if (result) {
           let userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
           let singles = this.$refs.projectItem.$refs.table.checkedGroup
-            .map(r => r.ID)
+            .map((r) => r.ID)
             .join(",");
- 
+
           let para = {
             itemTypeID: this.data_local.ItemTypeID,
             itemName: this.data_local.ItemName,
@@ -223,16 +219,16 @@ export default {
             remark: this.data_local.Remark,
             sort: this.data_local.Sort,
             mecid: userInfo.mecID,
-            isLocked: this.data_local.isLocked
+            isLocked: this.data_local.isLocked,
           };
 
           if (!this.projectId) {
-            addProject(para).then(res => {
+            addProject(para).then((res) => {
               if (res.resultType == 0) {
                 this.$vs.notify({
                   title: "Success",
                   text: res.message,
-                  color: "success"
+                  color: "success",
                 });
                 this.$emit("loadData");
                 this.cancel();
@@ -241,12 +237,12 @@ export default {
           } else if (this.projectId) {
             para.ID = this.projectId;
             para.isLocked = this.data_local.IsLocked;
-            editProject(para).then(res => {
+            editProject(para).then((res) => {
               if (res.resultType == 0) {
                 this.$vs.notify({
                   title: "Success",
                   text: res.message,
-                  color: "success"
+                  color: "success",
                 });
                 this.$emit("loadData");
                 this.cancel();
@@ -263,7 +259,7 @@ export default {
       console.log("this.selected:", this.selected);
     },
     loadMaritalStatus() {
-      getMaritalDataSource().then(res => {
+      getMaritalDataSource().then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.marriageOptions = data;
@@ -271,7 +267,7 @@ export default {
       });
     },
     loadGender() {
-      getGenderDataSource().then(res => {
+      getGenderDataSource().then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.genderOptions = data;
@@ -281,9 +277,9 @@ export default {
     loadProjectTypeData() {
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
       let para = {
-        mecid: userInfo.mecID
+        mecid: userInfo.mecID,
       };
-      getProjectTypeDataSource(para).then(res => {
+      getProjectTypeDataSource(para).then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.projectTypeOptions = data;
@@ -293,16 +289,16 @@ export default {
     loadProjectItemData() {
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
       let para = {
-        mecid: userInfo.mecID
+        mecid: userInfo.mecID,
       };
-      getProjectItemDataSource(para).then(res => {
+      getProjectItemDataSource(para).then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.projectItemOptions = data;
         }
       });
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang='sass' scoped>

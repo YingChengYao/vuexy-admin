@@ -28,12 +28,14 @@
       </vs-row>
       <vx-table
         ref="table"
+        v-model="selected"
         :items="items"
-        @loadData="loadData"
         :totalPage="totalPage"
         :totalItems="totalItems"
-        :pageSize="10"
+        :pageSize="3"
         :multipleCheck="multipleCheck"
+        @loadData="loadData"
+        @input="handleInput"
       >
         <template slot="header">
           <vs-button
@@ -91,21 +93,21 @@ import ProjectItemEdit from "./Edit";
 import { getProjectItems } from "@/http/package.js";
 export default {
   components: {
-    ProjectItemEdit
+    ProjectItemEdit,
   },
   props: {
     isPop: {
       type: Boolean,
-      default: false
+      default: false,
     },
     multipleCheck: {
       type: Boolean,
-      default: false
+      default: false,
     },
     tableTitle: {
       type: String,
-      default: null
-    }
+      default: null,
+    },
   },
   data() {
     return {
@@ -114,13 +116,14 @@ export default {
       singleNameInput: null,
       totalPage: 0,
       totalItems: 0,
+      selected: [],
 
       // Pop
       title: null,
       popupActive: false,
       projectItemId: null,
       timer: "",
-      mark: null
+      mark: null,
     };
   },
   computed: {},
@@ -129,13 +132,13 @@ export default {
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
       let para = {
-        pageIndex: this.currentPage,
-        pageSize: this.itemsPerPage,
+        pageIndex: this.$refs.table.currentPage,
+        pageSize: this.$refs.table.itemsPerPage,
         mecid: userInfo.mecID,
-        singleName: this.singleNameInput
+        singleName: this.singleNameInput,
       };
 
-      getProjectItems(para).then(res => {
+      getProjectItems(para).then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           console.log("单项：", data);
@@ -167,12 +170,9 @@ export default {
       this.popupActive = false;
     },
     //#endregion
-
-    changePageMaxItems(index) {
-      this.itemsPerPage = this.descriptionItems[index];
-      this.currentPage = 1;
-      this.loadData();
-    }
+    handleInput(val) {
+      console.log(val);
+    },
   },
   mounted() {
     this.loadData();
@@ -180,8 +180,8 @@ export default {
   watch: {
     currentPage() {
       this.loadData();
-    }
-  }
+    },
+  },
 };
 </script>
 

@@ -1,6 +1,6 @@
 <template>
   <div id="user-edit-tab-info">
-    <vx-card title="套餐信息">
+    <vx-card title="">
       <div class="vx-row">
         <div class="vx-col md:w-1/2 w-full">
           <vs-input
@@ -52,7 +52,7 @@
             </vs-select>
           </div>
 
-          <div class="mt-4" v-if="packageId">
+          <div class="mt-4" v-if="packageID">
             <label class="vs-input--label">是否锁定</label>
             <vs-switch v-model="data_local.IsLocked" />
           </div>
@@ -78,24 +78,34 @@ import vSelect from "vue-select";
 import {
   getPackageTypeDataSource,
   getMaritalDataSource,
-  getGenderDataSource
+  getGenderDataSource,
 } from "@/http/data_source.js";
 import { addPackage, editPackage, getPackageDetails } from "@/http/package.js";
 
 export default {
   name: "",
   components: {
-    vSelect
+    vSelect,
+  },
+  props: {
+    packageID: {
+      type: String,
+      default: null,
+    },
+    mark: {
+      type: String,
+      default: null,
+    },
   },
   data() {
     return {
-      packageId: null,
-      mark: null,
+      // packageId: null,
+      // mark: null,
 
       data_local: {},
       marriageOptions: [],
       genderOptions: [],
-      packageTypeOptions: []
+      packageTypeOptions: [],
     };
   },
   computed: {
@@ -103,29 +113,29 @@ export default {
       get() {
         return {
           Name: this.data_local.MarriageName,
-          Value: this.data_local.Marriage
+          Value: this.data_local.Marriage,
         };
       },
       set(obj) {
         this.data_local.Marriage = obj.Value;
         this.data_local.MarriageName = obj.Name;
-      }
+      },
     },
     gender_local: {
       get() {
         return {
           Name: this.data_local.GenderName,
-          Value: this.data_local.Gender
+          Value: this.data_local.Gender,
         };
       },
       set(obj) {
         this.data_local.Gender = obj.Value;
         this.data_local.GenderName = obj.Name;
-      }
-    }
+      },
+    },
   },
   created() {
-    this.initData();
+    //this.initData();
     this.loadMaritalStatus();
     this.loadGender();
     this.loadPackageTypes();
@@ -139,14 +149,14 @@ export default {
       this.mark = params.mark;
     },
     loadData() {
-      if (!this.packageId) return;
+      if (!this.packageID) return;
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
       let para = {
         mecid: userInfo.mecID,
-        packageId: this.packageId
+        packageID: this.packageID,
       };
-      getPackageDetails(para).then(res => {
+      getPackageDetails(para).then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.data_local = data;
@@ -155,14 +165,14 @@ export default {
       });
     },
     save_changes() {
-      this.$validator.validateAll().then(result => {
+      this.$validator.validateAll().then((result) => {
         if (result) {
           let userInfo = JSON.parse(localStorage.getItem("userInfo"));
           let packageTypes = null;
           if (this.data_local.PackageTypes) {
-            packageTypes = this.data_local.PackageTypes.map(r => r.Value).join(
-              ","
-            );
+            packageTypes = this.data_local.PackageTypes.map(
+              (r) => r.Value
+            ).join(",");
           }
 
           let para = {
@@ -173,27 +183,27 @@ export default {
             sort: this.data_local.Sort,
             mecid: userInfo.mecID,
             packageType: packageTypes,
-            isLocked: this.data_local.IsLocked
+            isLocked: this.data_local.IsLocked,
           };
           if (this.mark == "add") {
-            addPackage(para).then(res => {
+            addPackage(para).then((res) => {
               if (res.resultType == 0) {
                 this.$vs.notify({
                   title: "Success",
                   text: res.message,
-                  color: "success"
+                  color: "success",
                 });
                 this.cancel();
               }
             });
           } else if (this.mark == "edit") {
-            para.ID = this.packageId;
-            editPackage(para).then(res => {
+            para.ID = this.packageID;
+            editPackage(para).then((res) => {
               if (res.resultType == 0) {
                 this.$vs.notify({
                   title: "Success",
                   text: res.message,
-                  color: "success"
+                  color: "success",
                 });
                 this.cancel();
               }
@@ -206,7 +216,7 @@ export default {
       this.$router.push("/package").catch(() => {});
     },
     loadMaritalStatus() {
-      getMaritalDataSource().then(res => {
+      getMaritalDataSource().then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.marriageOptions = data;
@@ -214,7 +224,7 @@ export default {
       });
     },
     loadGender() {
-      getGenderDataSource().then(res => {
+      getGenderDataSource().then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.genderOptions = data;
@@ -226,17 +236,17 @@ export default {
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
       let para = {
-        mecid: userInfo.mecID
+        mecid: userInfo.mecID,
       };
-      getPackageTypeDataSource(para).then(res => {
+      getPackageTypeDataSource(para).then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.packageTypeOptions = data;
-          console.log("标识data:",data)
+          console.log("标识data:", data);
         }
       });
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang='sass' scoped>

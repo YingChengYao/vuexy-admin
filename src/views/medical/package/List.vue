@@ -1,5 +1,27 @@
 <template>
   <div id class="data-list-container">
+    <vs-popup :title="title" :active.sync="popupActive">
+      <package-edit
+        v-if="popupActive"
+        @closePop="closePop"
+        @loadData="loadData"
+        :packageID="packageID"
+        :key="timer"
+        :mark="mark"
+      />
+    </vs-popup>
+
+    <vs-popup :title="title" :active.sync="popupActive">
+      <package-edit
+        v-if="popupActive"
+        @closePop="closePop"
+        @loadData="loadData"
+        :packageID="packageID"
+        :key="timer"
+        :mark="mark"
+      />
+    </vs-popup>
+
     <vx-card ref="filterCard" title class="user-list-filters mb-8">
       <vs-row vs-align="center">
         <label class="vx-col label-name px-2">套餐名称</label>
@@ -106,6 +128,12 @@
                   type="border"
                   @click.stop="deployProject(tr.ID)"
                 >项目配置</span>
+                <span
+                  class="text-primary px-2"
+                  size="small"
+                  type="border"
+                  @click.stop="deployProject(tr.ID)"
+                >项目配置</span>
               </vs-td>
             </vs-tr>
           </tbody>
@@ -128,24 +156,27 @@
 
 <script>
 import { getPackages } from "@/http/package.js";
+import PackageEdit from "./Edit";
 export default {
-  components: {},
+  components: {
+    PackageEdit,
+  },
   data() {
     return {
       items: [],
       isLockedSelectOptions: [
         {
           name: "请选择",
-          value: null
+          value: null,
         },
         {
           name: "否",
-          value: false
+          value: false,
         },
         {
           name: "是",
-          value: true
-        }
+          value: true,
+        },
       ],
 
       //filter
@@ -159,9 +190,12 @@ export default {
       descriptionItems: [10, 20, 50, 100],
       totalItems: 0,
 
-      // Data Sidebar
-      addNewDataSidebar: false,
-      sidebarData: {}
+      // Pop
+      title: null,
+      popupActive: false,
+      packageID: null,
+      timer: "",
+      mark: null,
     };
   },
   computed: {},
@@ -174,10 +208,10 @@ export default {
         pageSize: this.itemsPerPage,
         mecid: userInfo.mecID,
         packageName: this.packageNameInput,
-        isLocked: this.isLockedSelect
+        isLocked: this.isLockedSelect,
       };
 
-      getPackages(para).then(res => {
+      getPackages(para).then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.items = data.Items;
@@ -188,14 +222,24 @@ export default {
       });
     },
     addNewData() {
-      this.$router
-        .push({ name: "package_edit", params: { mark: "add" } })
-        .catch(() => {});
+      this.packageID = null;
+      this.popupActive = true;
+      this.title = "添加套餐信息";
+      this.mark = "add";
+      this.handleLoad();
     },
-    editData(data) {
-      this.$router
-        .push({ name: "package_edit", params: { id: data, mark: "edit" } })
-        .catch(() => {});
+    editData(id) {
+      this.packageID = id;
+      this.popupActive = true;
+      this.title = "修改套餐信息";
+      this.mark = "edit";
+      this.handleLoad();
+    },
+    handleLoad() {
+      this.timer = new Date().getTime();
+    },
+    closePop() {
+      this.popupActive = false;
     },
     deployProject(data) {
       this.$router.push(`/deploy_project/${data}`).catch(() => {});
@@ -203,7 +247,7 @@ export default {
     changePageMaxItems(index) {
       this.itemsPerPage = this.descriptionItems[index];
       this.loadData();
-    }
+    },
   },
   created() {},
   mounted() {
@@ -212,8 +256,8 @@ export default {
   watch: {
     currentPage() {
       this.loadData();
-    }
-  }
+    },
+  },
 };
 </script>
 

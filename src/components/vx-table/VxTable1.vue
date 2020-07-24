@@ -9,9 +9,6 @@
 
       <template slot="thead">
         <th class="td-check" v-if="multipleCheck">
-          <!-- <span class="con-td-check">
-            <vs-checkbox :checked="isCheckedAll" @change="handleCheckAll()" size="small" />
-          </span>-->
           <span class="con-td-check">
             <vs-checkbox :checked="isCheckedAll" @change="handleCheckAll()" size="small" />
           </span>
@@ -26,14 +23,7 @@
           <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data">
             <vs-td v-if="multipleCheck" class="td-check">
               <vs-checkbox :checked="tr.isChecked" @change="handleCheckbox(tr)" size="small" />
-              <!-- <vs-checkbox
-                :checked="!!checkedGroup.includes(tr)"
-                v-model="checkedGroup"
-                :vs-value="tr"
-                size="small"
-              />-->
             </vs-td>
-
             <vs-td v-if="showIndex">
               <p>{{ indextr+1 }}</p>
             </vs-td>
@@ -72,7 +62,7 @@ export default {
       type: Boolean,
       default: false,
     },
-    checkField: {
+    isCheckField: {
       type: String,
       default: "ID",
     },
@@ -80,10 +70,6 @@ export default {
       type: Boolean,
       default: true,
     },
-    // cloumns: {
-    //   type: Array,
-    //   required: true
-    // },
     totalPage: {
       type: Number,
       default: 0,
@@ -134,13 +120,14 @@ export default {
       this.$emit("loadData");
     },
     //#region 自定义checked
-    initCheckedGroup(val) {
-      this.checkedGroup = val;
-    },
     handleCheckbox(tr) {
       if (this.multipleCheck) {
         tr.isChecked = !tr.isChecked;
-        this.changeCheckbox(tr);
+        if (tr.isChecked) {
+          this.checkedGroup.push(tr);
+        } else {
+          this.delChecked(tr);
+        }
         this.handleCheckboxAll();
       }
     },
@@ -159,16 +146,20 @@ export default {
       });
     },
     changeCheckbox(tr) {
-      let val = this.value.slice(0);
       if (tr && tr.isChecked) {
-        val.push(tr);
+        this.checkedGroup.push(tr);
       } else {
-        val.splice(
-          val.findIndex((i) => i[this.checkField]),
-          1
-        );
+        this.delChecked(tr);
       }
-      this.$emit("input", val);
+    },
+    delChecked(tr) {
+      if (this.checkedGroup.length > 0) {
+        this.checkedGroup.map((item, index) => {
+          if (item[this.isCheckField] === tr[this.isCheckField]) {
+            this.checkedGroup.splice(index, 1);
+          }
+        });
+      }
     },
     /*分页请求后返回新数据的时候，该每一项设置属性 isChecked 为 false，但是当数组内部有保存的数据时，
     且该保存的数据和请求返回回来的相同的话，就把该项选中，比如我勾选了第一页中的某一项，会把
@@ -177,9 +168,9 @@ export default {
     initCheckedItems() {
       if (this.items.length > 0) {
         this.items.map((item, index) => {
-          if (this.value.length > 0) {
-            this.value.map((checkedItem, index) => {
-              if (item[this.checkField] === checkedItem[this.checkField]) {
+          if (this.checkedGroup.length > 0) {
+            this.checkedGroup.map((checkedItem, index) => {
+              if (item[this.isCheckField] === checkedItem[this.isCheckField]) {
                 item.isChecked = true;
               }
             });
