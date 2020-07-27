@@ -23,15 +23,14 @@
 
       <template slot-scope="{data}">
         <tbody>
-          <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data">
+          <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data" v-show="!tr.isHide">
             <vs-td v-if="multipleCheck" class="td-check">
-              <vs-checkbox :checked="tr.isChecked" @change="handleCheckbox(tr)" size="small" />
-              <!-- <vs-checkbox
-                :checked="!!checkedGroup.includes(tr)"
-                v-model="checkedGroup"
-                :vs-value="tr"
+              <vs-checkbox
+                v-if="!tr.noUseTrCheckBox"
+                :checked="tr.isChecked"
+                @change="handleCheckbox(tr)"
                 size="small"
-              />-->
+              />
             </vs-td>
 
             <vs-td v-if="showIndex">
@@ -43,10 +42,11 @@
       </template>
     </vs-table>
 
-    <div class="flex">
-      <slot name="pagination"></slot>
+    <div class="flex mt-4">
+      <!-- <div class="flex-1 justify-center">
+        <slot name="pagination"></slot>
+      </div>-->
       <vs-pagination
-        style="flex:1"
         :total="totalPage"
         v-model="currentPage"
         :pagedown="true"
@@ -54,8 +54,8 @@
         @changePageMaxItems="changePageMaxItems"
         :pagedownItems="descriptionItems"
         :size="itemsPerPage"
-        class="the-footer flex-wrap justify-between"
       ></vs-pagination>
+      <slot name="paginationright"></slot>
     </div>
   </div>
 </template>
@@ -106,7 +106,6 @@ export default {
   data: () => ({
     //checked
     isCheckedAll: false,
-    checkedGroup: [],
     //Page
     itemsPerPage: 10,
     currentPage: 1,
@@ -134,11 +133,9 @@ export default {
       this.$emit("loadData");
     },
     //#region 自定义checked
-    initCheckedGroup(val) {
-      this.checkedGroup = val;
-    },
     handleCheckbox(tr) {
-      if (this.multipleCheck) {
+      debugger
+      if (this.multipleCheck && !tr.noUseTrCheckBox) {
         tr.isChecked = !tr.isChecked;
         this.changeCheckbox(tr);
         this.handleCheckboxAll();
@@ -150,18 +147,28 @@ export default {
       this.isCheckedAll = checkedCount == count ? true : false;
     },
     handleCheckAll() {
+      debugger;
       this.isCheckedAll = !this.isCheckedAll;
       if (!this.items.length > 0) return;
-      let val = this.isCheckedAll;
-      this.items.map((item, index) => {
-        item.isChecked = val;
+      let isCheckedAll = this.isCheckedAll;
+
+      let datas = this.items.slice(0).filter((f) => {
+        return !f.isChecked;
+      });
+      datas.map((item, index) => {
+        item.isChecked = isCheckedAll;
         this.changeCheckbox(item);
       });
     },
     changeCheckbox(tr) {
-      let val = this.value.slice(0);
-      if (tr && tr.isChecked) {
-        val.push(tr);
+      if (tr.noUseTrCheckBox) return;
+      let val = this.value;
+      if (tr.isChecked) {
+        let isExist =
+          val.filter((v) => {
+            return v[this.checkField] == tr[this.checkField];
+          }).length > 0;
+        if (!isExist) val.push(tr);
       } else {
         val.splice(
           val.findIndex((i) => i[this.checkField]),

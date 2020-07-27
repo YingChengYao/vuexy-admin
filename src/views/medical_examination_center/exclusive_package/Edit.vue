@@ -630,15 +630,8 @@ export default {
     //#endregion
     //#region 套餐价格
     changeDiscount(event) {
-      console.log("event:", event);
-      console.log("packagePrice:", this.packagePrice);
-      console.log("event / 10:", accDivCoupon(event, 10));
-      console.log("price", accDivCoupon(event, 10));
-
       let price = accMul(this.packagePrice, accDivCoupon(event, 10));
-      console.log("price:", price);
       this.discountPrice = price.toFixed(2);
-      console.log("discountPrice:", this.discountPrice);
     },
     changeDiscountPrice(event) {
       let dis = (event / this.packagePrice) * 10;

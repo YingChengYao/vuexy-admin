@@ -10,11 +10,14 @@
         :mark="mark"
       />
     </vs-popup>
-
-    <vs-popup :title="title" :active.sync="popupActive">
-      <package-edit
-        v-if="popupActive"
-        @closePop="closePop"
+    <vs-popup
+      fullscreen
+      :title="titlePackageDeployProject"
+      :active.sync="popupActivePackageDeployProject"
+    >
+      <package-deploy-project
+        v-if="popupActivePackageDeployProject"
+        @closePop="closePackageDeployProjectPop"
         @loadData="loadData"
         :packageID="packageID"
         :key="timer"
@@ -157,9 +160,11 @@
 <script>
 import { getPackages } from "@/http/package.js";
 import PackageEdit from "./Edit";
+import PackageDeployProject from "./DeployProject";
 export default {
   components: {
     PackageEdit,
+    PackageDeployProject,
   },
   data() {
     return {
@@ -196,6 +201,12 @@ export default {
       packageID: null,
       timer: "",
       mark: null,
+
+      //配置项目窗口
+      popupActivePackageDeployProject: false,
+      titlePackageDeployProject: null,
+      timer: "",
+      markPackageDeployProject: null,
     };
   },
   computed: {},
@@ -241,8 +252,15 @@ export default {
     closePop() {
       this.popupActive = false;
     },
-    deployProject(data) {
-      this.$router.push(`/deploy_project/${data}`).catch(() => {});
+    deployProject(id) {
+      //this.$router.push(`/deploy_project/${data}`).catch(() => {});
+      this.popupActivePackageDeployProject = true;
+      this.packageID = id;
+      this.titlePackageDeployProject = "配置套餐项目";
+      this.handleLoad();
+    },
+    closePackageDeployProjectPop() {
+      this.popupActivePackageDeployProject = false;
     },
     changePageMaxItems(index) {
       this.itemsPerPage = this.descriptionItems[index];

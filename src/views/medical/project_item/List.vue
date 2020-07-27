@@ -35,7 +35,6 @@
         :pageSize="3"
         :multipleCheck="multipleCheck"
         @loadData="loadData"
-        @input="handleInput"
       >
         <template slot="header">
           <vs-button
@@ -170,9 +169,6 @@ export default {
       this.popupActive = false;
     },
     //#endregion
-    handleInput(val) {
-      console.log(val);
-    },
   },
   mounted() {
     this.loadData();
