@@ -119,7 +119,6 @@ export default {
   },
   watch: {
     currentPage() {
-      //this.$parent.loadData();
       this.$emit("loadData");
     },
     items() {
@@ -134,7 +133,7 @@ export default {
     },
     //#region 自定义checked
     handleCheckbox(tr) {
-      debugger
+      debugger;
       if (this.multipleCheck && !tr.noUseTrCheckBox) {
         tr.isChecked = !tr.isChecked;
         this.changeCheckbox(tr);
@@ -143,7 +142,7 @@ export default {
     },
     handleCheckboxAll() {
       let checkedCount = this.items.filter((f) => f.isChecked).length;
-      let count = this.items.length;
+      let count = this.items.filter((f) => !f.noUseTrCheckBox).length;
       this.isCheckedAll = checkedCount == count ? true : false;
     },
     handleCheckAll() {
@@ -152,9 +151,11 @@ export default {
       if (!this.items.length > 0) return;
       let isCheckedAll = this.isCheckedAll;
 
-      let datas = this.items.slice(0).filter((f) => {
-        return !f.isChecked;
+      let datas = [];
+      datas = this.items.filter((f) => {
+        return f.isChecked != isCheckedAll;
       });
+
       datas.map((item, index) => {
         item.isChecked = isCheckedAll;
         this.changeCheckbox(item);
@@ -170,10 +171,11 @@ export default {
           }).length > 0;
         if (!isExist) val.push(tr);
       } else {
-        val.splice(
-          val.findIndex((i) => i[this.checkField]),
-          1
+        let index = val.findIndex(
+          (i) => i[this.checkField] == tr[this.checkField]
         );
+        if (index < 0) return;
+        val.splice(index, 1);
       }
       this.$emit("input", val);
     },
