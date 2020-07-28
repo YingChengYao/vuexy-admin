@@ -14,7 +14,7 @@
 
 <script>
 import ProjectList from "views/medical/project/List";
-import ProjectShow from "views/medical/project/Show";
+import ProjectShow from "views/medical/project/Show1";
 
 export default {
   name: "",

@@ -127,7 +127,6 @@
 </template>
 
 <script>
-import ProjectShow from "./Show";
 import ProjectEdit from "./Edit";
 import {
   getItems,
@@ -144,7 +143,7 @@ import {
 
 export default {
   props: {
-    packageId: {
+    packageID: {
       type: String,
       default: null,
     },
@@ -158,7 +157,6 @@ export default {
     },
   },
   components: {
-    ProjectShow,
     ProjectEdit,
   },
   data() {
@@ -228,116 +226,10 @@ export default {
         }
       });
     },
-    addNewData() {
-      this.projectId = null;
-      this.popupActive = true;
-      this.title = "添加项目信息";
-      this.handleLoad();
-    },
-    editData(id) {
-      this.projectId = id;
-      this.title = "修改项目信息";
-      this.popupActive = true;
-      this.handleLoad();
-    },
-    save() {
-      let projectIds = this.checkedGroup
-        .map((obj) => {
-          return obj.ItemID;
-        })
-        .join(",");
-
-      let para = {
-        packageID: this.packageId,
-        itemIDs: projectIds,
-        discount: this.discount / 10,
-        discountPrice: this.discountPrice,
-      };
-      deployProjectForPackage(para).then((res) => {
-        if (res.resultType == 0) {
-          this.$vs.notify({
-            title: "Success",
-            text: res.message,
-            color: "success",
-          });
-          this.cancel();
-        }
-      });
-    },
-    handleLoad() {
-      this.timer = new Date().getTime();
-    },
-    cancel() {
-      this.$router.push("/package").catch(() => {});
-    },
-    changePageMaxItems(index) {
-      this.itemsPerPage = this.descriptionItems[index];
-      this.loadData();
-    },
-    toggle: function (m) {
-      console.log(m);
-      console.log(this.initItems);
-      debugger;
-      if (m.Children) {
-        this.initItems.forEach((i) => {
-          if (i.parent == m.ID) {
-            i.isHide = !i.isHide;
-          }
-        });
-        m.isExpand = !m.isExpand;
-      }
-    },
     initItemsData(items, level, parent) {
       this.initItems = [];
       this.initData(items, level, parent);
     },
-    checkedGroupChange(tr) {
-      if (tr.isChecked) {
-        let r = this.checkedGroup.filter(function (x) {
-          return x.ItemID === tr.ID;
-        });
-        if (r.length > 0) return;
-
-        let item = {
-          ItemID: tr.ID,
-          ItemName: tr.ItemName,
-          ItemPrice: tr.ItemPrice,
-        };
-        this.checkedGroup.push(item);
-      } else {
-        this.delProject(tr.ID);
-      }
-    },
-    loadCheckedGroup() {
-      if (!this.packageId) return;
-      let para = {
-        packageId: this.packageId,
-      };
-      getProjectsForPackage(para).then((res) => {
-        if (res.resultType == 0) {
-          const data = JSON.parse(res.message);
-          console.log("项目：", data);
-          this.checkedGroup = data.Item;
-          this.checkedGroup.map((item, index) => {
-            if (!item.ItemPrice) item.ItemPrice = 0;
-          });
-          data.Discount = !data.Discount ? 1 : data.Discount;
-
-          this.discount = accMul(data.Discount, 10);
-          console.log("discount:", this.discount);
-
-          this.discountPrice =
-            data.DiscountPrice == null ? 0 : data.DiscountPrice;
-
-          this.$event.$emit("initProjectCheckedData", {
-            checkedGroup: this.checkedGroup,
-            discount: this.discount,
-            discountPrice: this.discountPrice,
-          });
-        }
-      });
-    },
-    // 数据处理 增加自定义属性监听
     initData(items, level, parent) {
       if (!items) {
         return;
@@ -370,94 +262,102 @@ export default {
         }
       });
     },
-    // 深度拷贝函数
-    deepCopy(data) {
-      var t = this.type(data),
-        o,
-        i,
-        ni;
-      if (t === "array") {
-        o = [];
-      } else if (t === "object") {
-        o = {};
-      } else {
-        return data;
-      }
-      if (t === "array") {
-        for (i = 0, ni = data.length; i < ni; i++) {
-          o.push(this.deepCopy(data[i]));
-        }
-        return o;
-      } else if (t === "object") {
-        for (i in data) {
-          o[i] = this.deepCopy(data[i]);
-        }
-        return o;
-      }
-    },
-    type(obj) {
-      var toString = Object.prototype.toString;
-      var map = {
-        "[object Boolean]": "boolean",
-        "[object Number]": "number",
-        "[object String]": "string",
-        "[object Function]": "function",
-        "[object Array]": "array",
-        "[object Date]": "date",
-        "[object RegExp]": "regExp",
-        "[object Undefined]": "undefined",
-        "[object Null]": "null",
-        "[object Object]": "object",
+    loadCheckedGroup() {
+      if (!this.packageID) return;
+      let para = {
+        packageID: this.packageID,
       };
-      return map[toString.call(obj)];
+      getProjectsForPackage(para).then((res) => {
+        if (res.resultType == 0) {
+          const data = JSON.parse(res.message);
+          console.log("勾选项目：", data);
+          data.Item.map((item) => {
+            item.ID = item.ItemID;
+          });
+          this.selected = data.Item;
+          this.$refs.table.initCheckedItems();
+        }
+      });
     },
-
+    toggle(m) {
+      if (m.Children) {
+        this.initItems.forEach((i) => {
+          if (i.parent == m.ID) {
+            i.isHide = !i.isHide;
+          }
+        });
+        m.isExpand = !m.isExpand;
+      }
+    },
+    delProject(data) {
+      let index = this.selected.findIndex((i) => i.ID === data.ID);
+      if (index < 0) return;
+      this.selected.splice(index, 1);
+      this.$refs.table.initCheckedItems();
+    },
+    loadSelectedData(data) {
+      this.selected = data;
+      this.$refs.table.initCheckedItems();
+    },
     //#region 弹窗
+    addNewData() {
+      this.projectId = null;
+      this.popupActive = true;
+      this.title = "添加项目信息";
+      this.handleLoad();
+    },
+    editData(id) {
+      this.projectId = id;
+      this.title = "修改项目信息";
+      this.popupActive = true;
+      this.handleLoad();
+    },
+    handleLoad() {
+      this.timer = new Date().getTime();
+    },
     closePop() {
       this.popupActive = false;
     },
     //#endregion
+    save() {
+      let projectIds = this.checkedGroup
+        .map((obj) => {
+          return obj.ItemID;
+        })
+        .join(",");
+
+      let para = {
+        packageID: this.packageID,
+        itemIDs: projectIds,
+        discount: this.discount / 10,
+        discountPrice: this.discountPrice,
+      };
+      deployProjectForPackage(para).then((res) => {
+        if (res.resultType == 0) {
+          this.$vs.notify({
+            title: "Success",
+            text: res.message,
+            color: "success",
+          });
+          this.cancel();
+        }
+      });
+    },
+
+    cancel() {
+      this.$router.push("/package").catch(() => {});
+    },
   },
   created() {
-    this.isPop = this.packageId ? true : false;
-    this.loadCheckedGroup();
+    this.isPop = this.packageID ? true : false;
+    //this.loadCheckedGroup();
   },
   mounted() {
     this.loadData();
-    this.$event.$on("delProject", (data) => {
-      this.$nextTick(() => {
-        this.checkprojectBox(data);
-      });
-    });
-    this.$event.$on("projectDiscount", (data) => {
-      this.$nextTick(() => {
-        this.discount = data;
-      });
-    });
-    this.$event.$on("projectDiscountPrice", (data) => {
-      this.$nextTick(() => {
-        this.discountPrice = data;
-      });
-    });
   },
   watch: {
-    currentPage() {
-      this.loadData();
-    },
     selected() {
-      console.log("this.selected:", this.selected);
-
       this.$emit("checkHandle", this.selected);
-    },
-    checkedGroup() {
-      this.$event.$emit("checkedItems", {
-        checkedGroup: this.checkedGroup,
-      });
-    },
-    popupActive() {
-      if (!this.popupActive) {
-        this.projectId = null;
-      }
     },
   },
 };

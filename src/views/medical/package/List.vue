@@ -131,12 +131,6 @@
                   type="border"
                   @click.stop="deployProject(tr.ID)"
                 >项目配置</span>
-                <span
-                  class="text-primary px-2"
-                  size="small"
-                  type="border"
-                  @click.stop="deployProject(tr.ID)"
-                >项目配置</span>
               </vs-td>
             </vs-tr>
           </tbody>
@@ -189,7 +183,7 @@ export default {
       isLockedSelect: false,
 
       //Page
-      itemsPerPage: 3,
+      itemsPerPage: 10,
       currentPage: 1,
       totalPage: 0,
       descriptionItems: [10, 20, 50, 100],
@@ -253,7 +247,6 @@ export default {
       this.popupActive = false;
     },
     deployProject(id) {
-      //this.$router.push(`/deploy_project/${data}`).catch(() => {});
       this.popupActivePackageDeployProject = true;
       this.packageID = id;
       this.titlePackageDeployProject = "配置套餐项目";

@@ -138,7 +138,7 @@ import PlanStandardList from "views/plan/standard/List";
 import {
   getMaritalDataSource,
   getGenderDataSource,
-  getPlanTypeDataSource
+  getPlanTypeDataSource,
 } from "@/http/data_source.js";
 import { formatTimeToStr } from "@/common/utils/data/date";
 import {
@@ -146,7 +146,7 @@ import {
   addEmployeeForPlan,
   editPlan,
   editEmployeeForPlan,
-  getPlanDetail
+  getPlanDetail,
 } from "@/http/plan.js";
 import { getMedicalCenters } from "@/http/medical_center.js";
 
@@ -159,29 +159,29 @@ export default {
     TabContent,
     MedicalCenterList,
     StaffEmployeeList,
-    PlanStandardList
+    PlanStandardList,
   },
   props: {
     planId: {
       type: String,
-      default: null
+      default: null,
     },
     mark: {
       type: String,
-      default: null
+      default: null,
     },
     workers: {
       type: Array,
-      default: null
+      default: null,
     },
     standards: {
       type: Array,
-      default: null
+      default: null,
     },
     step: {
       type: Number,
-      default: 0
-    }
+      default: 0,
+    },
   },
   data() {
     return {
@@ -196,7 +196,7 @@ export default {
       planId_local: {},
       marriageOptions: [],
       genderOptions: [],
-      planTypeOptions: []
+      planTypeOptions: [],
     };
   },
   computed: {},
@@ -217,12 +217,15 @@ export default {
   methods: {
     //#region 初始化数据
     loadData() {
+      this.loadBaseInfoData();
+    },
+    loadBaseInfoData() {
       if (!this.planId) return;
 
       let para = {
-        planId: this.planId
+        planId: this.planId,
       };
-      getPlanDetail(para).then(res => {
+      getPlanDetail(para).then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           console.log("计划详情：", data);
@@ -232,7 +235,7 @@ export default {
       });
     },
     loadMaritalStatus() {
-      getMaritalDataSource().then(res => {
+      getMaritalDataSource().then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.marriageOptions = data;
@@ -240,7 +243,7 @@ export default {
       });
     },
     loadGender() {
-      getGenderDataSource().then(res => {
+      getGenderDataSource().then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.genderOptions = data;
@@ -249,7 +252,7 @@ export default {
       });
     },
     loadPlanTypeData() {
-      getPlanTypeDataSource().then(res => {
+      getPlanTypeDataSource().then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.planTypeOptions = data;
@@ -275,7 +278,7 @@ export default {
     },
     //#endregion
     save_changes() {
-      this.$validator.validateAll().then(result => {
+      this.$validator.validateAll().then((result) => {
         if (result) {
           let userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
@@ -290,7 +293,7 @@ export default {
 
           var employees = [];
           if (this.workers.length > 0) {
-            this.workers.forEach(function(item) {
+            this.workers.forEach(function (item) {
               employees.push(item.ID);
             });
           }
@@ -306,7 +309,7 @@ export default {
                 item.Positions !== undefined &&
                 typeof item.Positions !== "string"
               ) {
-                item.Positions = item.Positions.map(r => r.Value).join(",");
+                item.Positions = item.Positions.map((r) => r.Value).join(",");
                 // item = Object.assign({}, item, {
                 //   PositionID: item.PositionID.map(r => r.Value).join(",")
                 // });
@@ -321,16 +324,16 @@ export default {
             remark: this.data_local.Remark,
             mecIDs: JSON.stringify(mecIDs),
             employees: JSON.stringify(employees),
-            standars: JSON.stringify(this.standards)
+            standars: JSON.stringify(this.standards),
           };
 
           if (this.mark === "add") {
-            addPlan(para).then(res => {
+            addPlan(para).then((res) => {
               if (res.resultType == 0) {
                 this.$vs.notify({
                   title: "Success",
                   text: res.message,
-                  color: "success"
+                  color: "success",
                 });
                 this.$emit("loadData");
                 this.cancel();
@@ -338,12 +341,12 @@ export default {
             });
           } else if (this.mark == "edit") {
             para.ID = this.planId;
-            editPlan(para).then(res => {
+            editPlan(para).then((res) => {
               if (res.resultType == 0) {
                 this.$vs.notify({
                   title: "Success",
                   text: res.message,
-                  color: "success"
+                  color: "success",
                 });
                 this.$emit("loadData");
                 this.cancel();
@@ -358,17 +361,15 @@ export default {
     },
     //#region 基础信息
     save_base_info() {
-      this.$refs.checkoutWizard.nextTab();
-      return;
       return new Promise(() => {
-        this.$validator.validateAll("step-base").then(result => {
+        this.$validator.validateAll("step-base").then((result) => {
           if (result) {
             let checkedGroup = this.$refs.medicalCenter.checkedGroup;
             let isValid = this.validBaseinfo(checkedGroup);
             if (!isValid) return;
 
             let mecIDs = checkedGroup
-              .map(obj => {
+              .map((obj) => {
                 return obj.ID;
               })
               .join(",");
@@ -379,27 +380,27 @@ export default {
               endTime: this.data_local.EndTime,
               planType: this.data_local.PlanType,
               remark: this.data_local.Remark,
-              mecIDs: mecIDs
+              mecIDs: mecIDs,
             };
 
             if (this.planId_local) {
               para.planId = this.planId_local;
-              editPlan(para).then(res => {
+              editPlan(para).then((res) => {
                 if (res.resultType == 0) {
                   this.$vs.notify({
                     title: "Success",
                     text: res.message,
-                    color: "success"
+                    color: "success",
                   });
                 }
               });
             } else {
-              addPlan(para).then(res => {
+              addPlan(para).then((res) => {
                 if (res.resultType == 0) {
                   this.$vs.notify({
                     title: "Success",
                     text: "添加体检计划成功",
-                    color: "success"
+                    color: "success",
                   });
                   console.log("res:", res);
                   const data = JSON.parse(res.message); //"{"PlanID":"575642100966367232","PlanStep":0}"
@@ -414,7 +415,7 @@ export default {
               text: "请输入有效的信息",
               color: "warning",
               iconPack: "feather",
-              icon: "icon-alert-circle"
+              icon: "icon-alert-circle",
             });
           }
         });
@@ -435,7 +436,7 @@ export default {
         text: message,
         color: "warning",
         iconPack: "feather",
-        icon: "icon-alert-circle"
+        icon: "icon-alert-circle",
       });
       return false;
     },
@@ -451,14 +452,14 @@ export default {
       let checkedGroup = this.$refs.employee.checkedGroup;
 
       let employees = checkedGroup
-        .map(obj => {
+        .map((obj) => {
           return obj.ID;
         })
         .join(",");
 
       let para = {
         planId: this.planId_local,
-        employees: employees
+        employees: employees,
       };
 
       // if (this.planId_local) {
@@ -474,12 +475,12 @@ export default {
       //     }
       //   });
       // } else {
-      addEmployeeForPlan(para).then(res => {
+      addEmployeeForPlan(para).then((res) => {
         if (res.resultType == 0) {
           this.$vs.notify({
             title: "Success",
             text: res.message,
-            color: "success"
+            color: "success",
           });
           this.$refs.checkoutWizard.nextTab();
           this.isShowStandard = true;
@@ -510,8 +511,8 @@ export default {
     },
     delEmployee(data) {
       this.$emit("delEmployee", data);
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang='sass' scoped>

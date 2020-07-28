@@ -176,7 +176,6 @@
 </template>
 
 <script>
-import ProjectShow from "./Show";
 import ProjectEdit from "./Edit";
 import {
   getItems,
@@ -203,7 +202,6 @@ export default {
     },
   },
   components: {
-    ProjectShow,
     ProjectEdit,
   },
   data() {

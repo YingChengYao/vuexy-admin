@@ -12,7 +12,7 @@
                 class="text-primary px-4 cursor-pointer"
                 size="small"
                 type="border"
-                @click="delProject(tr.ID)"
+                @click="delProject(tr)"
               >删除</span>
             </li>
           </ul>
@@ -88,9 +88,17 @@
 
 <script>
 import ProjectList from "views/medical/project/List";
-import ProjectShow from "views/medical/project/Show";
 
-import { deployProjectForPackage } from "@/http/package.js";
+import {
+  deployProjectForPackage,
+  getProjectsForPackage,
+} from "@/http/package.js";
+import {
+  accAdd,
+  accSubtr,
+  accMul,
+  accDivCoupon,
+} from "@/common/utils/data/calc";
 export default {
   name: "",
   props: {
@@ -103,15 +111,23 @@ export default {
     return {
       discount: 10,
       discountPrice: 0,
-      packagePrice: 0,
+      //packagePrice: 0,
       projectList: [],
     };
   },
   components: {
     ProjectList,
-    ProjectShow,
   },
-  created() {},
+  computed: {
+    packagePrice() {
+      return this.projectList.reduce((pre, cur) => {
+        return pre + cur.ItemPrice;
+      }, 0);
+    },
+  },
+  created() {
+    this.loadCheckedGroup();
+  },
   mounted() {},
   watch: {
     packagePrice() {
@@ -120,6 +136,29 @@ export default {
     },
   },
   methods: {
+    loadCheckedGroup() {
+      if (!this.packageID) return;
+      let para = {
+        packageID: this.packageID,
+      };
+      getProjectsForPackage(para).then((res) => {
+        if (res.resultType == 0) {
+          const data = JSON.parse(res.message);
+          console.log("勾选项目：", data);
+          data.Item.map((item) => {
+            item.ID = item.ItemID;
+          });
+
+          this.$refs.projectList.loadSelectedData(data.Item);
+          data.Discount = !data.Discount ? 1 : data.Discount;
+
+          this.discount = accMul(data.Discount, 10);
+
+          this.discountPrice =
+            data.DiscountPrice == null ? 0 : data.DiscountPrice;
+        }
+      });
+    },
     save() {
       let projectIds = this.$refs.projectList.selected
         .map((obj) => {
@@ -148,7 +187,6 @@ export default {
       this.$emit("closePop", false);
     },
     checkHandle(val) {
-      console.log("val：", val);
       this.projectList = val;
     },
     changeDiscount(event) {
@@ -158,6 +196,9 @@ export default {
     changeDiscountPrice(event) {
       let dis = (event / this.packagePrice) * 10;
       this.discount = dis.toFixed(1);
+    },
+    delProject(data) {
+      this.$refs.projectList.delProject(data);
     },
   },
 };

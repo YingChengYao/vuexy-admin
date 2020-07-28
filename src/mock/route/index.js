@@ -69,17 +69,6 @@ export default {
               }
             },
             {
-              path: "/deploy_project/:id",
-              url: "/deploy_project",
-              name: "套餐项目配置",
-              slug: "deploy_project",
-              component: "views/medical/project/DeployProject",
-              isHide: true,
-              meta: {
-                title: "套餐项目配置"
-              }
-            },
-            {
               path: "/package-packagetype",
               url: "/package-packagetype",
               name: "套餐类型管理",

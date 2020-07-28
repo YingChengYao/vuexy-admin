@@ -140,7 +140,6 @@ export default {
       getProjectItems(para).then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
-          console.log("单项：", data);
           this.items = data.Items;
           this.totalPage = data.TotalPages;
           this.totalItems = data.TotalItems;

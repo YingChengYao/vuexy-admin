@@ -194,8 +194,6 @@ export default {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.data_local = data;
-          console.log("单项1：", data);
-          //this.$refs.projectItem.$refs.table.initCheckedGroup()
         }
       });
     },

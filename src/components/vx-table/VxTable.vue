@@ -109,9 +109,6 @@ export default {
     //Page
     itemsPerPage: 10,
     currentPage: 1,
-    //totalPage: 0,
-    //descriptionItems: [10, 20, 50, 100]
-    //totalItems: 0
   }),
   computed: {},
   created() {
@@ -133,7 +130,6 @@ export default {
     },
     //#region 自定义checked
     handleCheckbox(tr) {
-      debugger;
       if (this.multipleCheck && !tr.noUseTrCheckBox) {
         tr.isChecked = !tr.isChecked;
         this.changeCheckbox(tr);
@@ -141,12 +137,13 @@ export default {
       }
     },
     handleCheckboxAll() {
-      let checkedCount = this.items.filter((f) => f.isChecked).length;
+      let checkedCount = this.items.filter(
+        (f) => f.isChecked && !f.noUseTrCheckBox
+      ).length;
       let count = this.items.filter((f) => !f.noUseTrCheckBox).length;
       this.isCheckedAll = checkedCount == count ? true : false;
     },
     handleCheckAll() {
-      debugger;
       this.isCheckedAll = !this.isCheckedAll;
       if (!this.items.length > 0) return;
       let isCheckedAll = this.isCheckedAll;
@@ -187,11 +184,10 @@ export default {
       if (this.items.length > 0) {
         this.items.map((item, index) => {
           if (this.value.length > 0) {
-            this.value.map((checkedItem, index) => {
-              if (item[this.checkField] === checkedItem[this.checkField]) {
-                item.isChecked = true;
-              }
-            });
+            let val = this.value.find(
+              (t) => t[this.checkField] === item[this.checkField]
+            );
+            item.isChecked = !val ? false : true;
           }
         });
         this.handleCheckboxAll();
