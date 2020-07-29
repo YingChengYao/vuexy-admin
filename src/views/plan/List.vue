@@ -5,10 +5,6 @@
         v-if="popupActive"
         @closePop="closePop"
         @loadData="loadData"
-        @changeEmployeePop="changeEmployeePop"
-        @changeStandardPop="changeStandardPop"
-        @delStandard="delStandard"
-        @delEmployee="delEmployee"
         :planId="planId"
         :key="timer"
         :mark="mark"
@@ -16,18 +12,6 @@
         :standards="standards"
         :step="step"
       />
-      <!-- 
-      <vs-popup title="添加标准" :active.sync="popupActiveStandard">
-        <standard-add :data="standardData" @closePop="closeStandardPop" @addStandard="addStandard" />
-      </vs-popup>
-      <vs-popup fullscreen title="添加职工" :active.sync="popupActiveEmployee">
-        <staff-employee-list
-          ref="employee"
-          :isPop="true"
-          @closePop="closeEmployeePop"
-          @saveEmployeeSelected="saveEmployeeSelected"
-        />
-      </vs-popup>-->
     </vs-popup>
 
     <vx-card ref="filterCard" title class="user-list-filters mb-8">
@@ -52,15 +36,18 @@
     </vx-card>
 
     <div class="vx-card p-6">
-      <vs-table ref="table" stripe :data="plans">
-        <div slot="header" class="flex flex-wrap-reverse items-center flex-grow justify-between">
-          <div class="flex flex-wrap-reverse items-center data-list-btn-container header-left">
-            <vs-button color="primary" type="border" class="mb-4 mr-4" @click="addNewData">添加</vs-button>
-          </div>
-        </div>
-
-        <template slot="thead">
-          <vs-th>编号</vs-th>
+      <vx-table
+        ref="table"
+        :items="plans"
+        :totalPage="totalPage"
+        :totalItems="totalItems"
+        :pageSize="10"
+        @loadData="loadData"
+      >
+        <template slot="header">
+          <vs-button color="primary" type="border" class="mb-4 mr-4" @click="addNewData">添加</vs-button>
+        </template>
+        <template slot="thead-header">
           <vs-th>计划名称</vs-th>
           <vs-th>排序</vs-th>
           <vs-th>状态</vs-th>
@@ -70,94 +57,71 @@
           <vs-th>创建时间</vs-th>
           <vs-th>操作</vs-th>
         </template>
-
-        <template slot-scope="{data}">
-          <tbody>
-            <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data">
-              <vs-td>
-                <p>{{ indextr+1 }}</p>
-              </vs-td>
-              <vs-td>
-                <p>{{ tr.PlanName }}</p>
-              </vs-td>
-              <vs-td>
-                <p>{{ tr.Sort }}</p>
-              </vs-td>
-              <vs-td>
-                <p>{{ tr.StatusName }}</p>
-              </vs-td>
-              <vs-td>
-                <p>{{ tr.PlanTypeName }}</p>
-              </vs-td>
-              <vs-td>
-                <p>{{ tr.IsLocked?'是':'否' }}</p>
-              </vs-td>
-              <vs-td>
-                <p class="product-category">{{ tr.ModifyName}}</p>
-              </vs-td>
-              <vs-td>
-                <p>{{ tr.ModifyTime | formatDate }}</p>
-              </vs-td>
-              <vs-td class="whitespace-no-wrap">
-                <span
-                  class="text-primary px-2"
-                  size="small"
-                  type="border"
-                  style="display:display"
-                  @click.stop="editData(tr)"
-                  v-if="tr.Status==1"
-                >编辑</span>
-                <span
-                  class="text-primary px-2"
-                  size="small"
-                  type="border"
-                  @click.stop="confirmSubmitPlan(tr.ID)"
-                >提交</span>
-                <span
-                  class="text-primary px-2"
-                  size="small"
-                  type="border"
-                  @click.stop="confirmSubmitPlan(tr.ID)"
-                >审核</span>
-              </vs-td>
-            </vs-tr>
-          </tbody>
+        <template slot="thead-content" slot-scope="item">
+          <vs-td>
+            <p>{{ item.tr.PlanName }}</p>
+          </vs-td>
+          <vs-td>
+            <p>{{ item.tr.Sort }}</p>
+          </vs-td>
+          <vs-td>
+            <p>{{ item.tr.StatusName }}</p>
+          </vs-td>
+          <vs-td>
+            <p>{{ item.tr.PlanTypeName }}</p>
+          </vs-td>
+          <vs-td>
+            <p>{{ item.tr.IsLocked?'是':'否' }}</p>
+          </vs-td>
+          <vs-td>
+            <p class="product-category">{{ item.tr.ModifyName}}</p>
+          </vs-td>
+          <vs-td>
+            <p>{{ item.tr.ModifyTime | formatDate }}</p>
+          </vs-td>
+          <vs-td class="whitespace-no-wrap">
+            <span
+              class="text-primary px-2"
+              size="small"
+              type="border"
+              style="display:display"
+              @click.stop="editData(item.tr)"
+              v-if="item.tr.Status==1"
+            >编辑</span>
+            <span
+              class="text-primary px-2"
+              size="small"
+              type="border"
+              @click.stop="confirmSubmitPlan(item.tr.ID)"
+            >提交</span>
+            <span
+              class="text-primary px-2"
+              size="small"
+              type="border"
+              @click.stop="confirmSubmitPlan(item.tr.ID)"
+            >审核</span>
+          </vs-td>
         </template>
-      </vs-table>
-    </div>
-    <div class="con-pagination-table vs-table--pagination">
-      <vs-pagination
-        :total="totalPage"
-        v-model="currentPage"
-        :pagedown="true"
-        :totalItems="totalItems"
-        @changePageMaxItems="changePageMaxItems"
-        :pagedownItems="descriptionItems"
-        :size="itemsPerPage"
-      ></vs-pagination>
+        <template slot="paginationright">
+          <slot name="paginationright"></slot>
+        </template>
+      </vx-table>
     </div>
   </div>
 </template>
 
 <script>
 import PlanEdit from "./Edit";
-import StandardAdd from "./standard/Edit";
-import StaffEmployeeList from "../staff/employee/List";
 import { getPlans, submitPlan } from "@/http/plan.js";
 export default {
   components: {
     PlanEdit,
-    StandardAdd,
-    StaffEmployeeList
   },
   data() {
     return {
       //Page
       plans: [],
-      itemsPerPage: 10,
-      currentPage: 1,
       totalPage: 0,
-      descriptionItems: [10, 20, 50, 100],
       totalItems: 0,
 
       //filter
@@ -166,16 +130,16 @@ export default {
       isLockedSelectOptions: [
         {
           name: "请选择",
-          value: null
+          value: null,
         },
         {
           name: "是",
-          value: true
+          value: true,
         },
         {
           name: "否",
-          value: false
-        }
+          value: false,
+        },
       ],
 
       // Pop
@@ -190,7 +154,7 @@ export default {
       workers: [],
       standards: [],
 
-      activeConfirm: false
+      activeConfirm: false,
     };
   },
   computed: {},
@@ -199,17 +163,17 @@ export default {
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
       let para = {
-        pageIndex: this.currentPage,
-        pageSize: this.itemsPerPage,
+        pageIndex: this.$refs.table.currentPage,
+        pageSize: this.$refs.table.itemsPerPage,
         mecid: userInfo.mecID,
-        isLocked: this.isLockedSelect
+        isLocked: this.isLockedSelect,
       };
 
       if (this.planNameInput) {
         para.planName = this.planNameInput;
       }
 
-      getPlans(para).then(res => {
+      getPlans(para).then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.plans = data.Items;
@@ -221,25 +185,25 @@ export default {
     },
     confirmSubmitPlan(id) {
       let para = {
-        id: id
+        id: id,
       };
       this.$vs.dialog({
         type: "confirm",
         color: "success",
         title: `提交体检计划`,
         text: "该计划提交后将不可更改",
-        accept: para => {
-          submitPlan(para).then(res => {
+        accept: (para) => {
+          submitPlan(para).then((res) => {
             if (res.resultType == 0) {
               this.$vs.notify({
                 title: "Success",
                 text: res.message,
-                color: "success"
+                color: "success",
               });
               this.loadData();
             }
           });
-        }
+        },
       });
     },
     //#region 弹窗
@@ -251,7 +215,6 @@ export default {
       this.handleLoad();
       this.workers = [];
       this.standards = [];
-      //this.$refs.employee.initCheckedGroup();
     },
     editData(tr) {
       this.planId = tr.ID;
@@ -267,55 +230,12 @@ export default {
     closePop() {
       this.popupActive = false;
     },
-    //职工
-    changeEmployeePop(data) {
-      this.popupActiveEmployee = data;
-      this.$refs.employee.loadData();
-    },
-    saveEmployeeSelected(data) {
-      this.workers = data;
-    },
-    closeEmployeePop() {
-      this.popupActiveEmployee = false;
-    },
-    //标准
-    changeStandardPop(data) {
-      this.popupActiveStandard = data;
-    },
-    closeStandardPop() {
-      this.popupActiveStandard = false;
-    },
-    addStandard(data) {
-      this.standardData = {
-        Positions: null
-      };
-      this.standards.push(data);
-    },
-    delStandard(data) {
-      if (this.standards.length > 0) {
-        this.standards.map((item, index) => {
-          if (item.Standard === data.Standard) {
-            this.standards.splice(index, 1);
-          }
-        });
-      }
-    },
-    delEmployee(data) {
-      if (this.workers.length > 0) {
-        this.workers.map((item, index) => {
-          if (item.ID === data) {
-            this.workers.splice(index, 1);
-          }
-        });
-      }
-    },
     //#endregion
-
     changePageMaxItems(index) {
       this.itemsPerPage = this.descriptionItems[index];
       this.currentPage = 1;
       this.loadData();
-    }
+    },
   },
   mounted() {
     this.loadData();
@@ -323,8 +243,8 @@ export default {
   watch: {
     currentPage() {
       this.loadData();
-    }
-  }
+    },
+  },
 };
 </script>
 

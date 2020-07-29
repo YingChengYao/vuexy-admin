@@ -1,5 +1,5 @@
 <template>
-  <div id="user-edit-tab-info">
+  <div>
     <form-wizard
       ref="checkoutWizard"
       color="rgba(var(--vs-primary), 1)"
@@ -9,7 +9,7 @@
       :startIndex="step"
     >
       <!-- tab 1 content -->
-      <tab-content title="Cart" icon="feather icon-shopping-cart" class="mb-5">
+      <tab-content title="Cart" icon="feather icon-shopping-cart">
         <form data-vv-scope="step-base">
           <div class="vx-row">
             <div class="vx-col md:w-1/4 w-full">
@@ -81,22 +81,21 @@
             </div>
           </div>
         </form>
-        <medical-center-list ref="medicalCenter" :multipleCheck="true" :isPlanPop="true">
-          <template>
-            <span class="mt-5">
-              <span>
-                <vs-button class="vx-col ml-auto mt-2" color="primary" @click="save_base_info">下一步</vs-button>
-              </span>
-              <!-- <span class="px-2">
-                <vs-button class="vx-col ml-4 mt-2" type="border" color="warning" @click="cancel">取消</vs-button>
-              </span>-->
-            </span>
-          </template>
-        </medical-center-list>
+        <medical-center-list ref="medicalCenter" :multipleCheck="true" :isPlanPop="true"></medical-center-list>
+        <!-- <vs-card> -->
+        <div class="text-right mt-5">
+          <span>
+            <vs-button class="vx-col ml-auto" color="primary" @click="save_base_info">下一步</vs-button>
+          </span>
+          <span class="px-2">
+            <vs-button class="vx-col ml-4" type="border" color="warning" @click="cancel">取消</vs-button>
+          </span>
+        </div>
+        <!-- </vs-card> -->
       </tab-content>
 
       <!-- tab 2 content -->
-      <tab-content title="Address" icon="feather icon-home" class="mb-5" backButtonText>
+      <tab-content title="Address" icon="feather icon-home" backButtonText>
         <staff-employee-list ref="employee" :isPop="false" :multipleCheck="true">
           <template>
             <span class="mt-5">
@@ -117,7 +116,7 @@
       </tab-content>
 
       <!-- tab 3 content -->
-      <tab-content title="Payment" icon="feather icon-credit-card" class="mb-5">
+      <tab-content title="Payment" icon="feather icon-credit-card">
         <plan-standard-list v-if="isShowStandard" ref="standard" :planID="planId_local"></plan-standard-list>
       </tab-content>
     </form-wizard>
@@ -189,7 +188,6 @@ export default {
       counterDanger: false,
       languages: lang,
 
-      // startIndex: 2,
       isShowStandard: false,
 
       data_local: {},
@@ -204,33 +202,42 @@ export default {
     this.loadMaritalStatus();
     this.loadGender();
     this.loadPlanTypeData();
-    this.loadData();
-    this.planId_local = this.planId;
+
     if (this.step == "2") {
       this.isShowStandard = true;
     }
   },
   mounted() {
+    this.planId_local = this.planId;
+    this.loadData();
     console.log("checkoutWizard：", this.$refs.checkoutWizard);
   },
   watch: {},
   methods: {
     //#region 初始化数据
     loadData() {
-      this.loadBaseInfoData();
+      debugger;
+      if (this.step == "0") {
+        this.loadBaseInfoData();
+      }
     },
     loadBaseInfoData() {
-      if (!this.planId) return;
+      debugger;
+      if (!this.planId_local) return;
 
       let para = {
-        planId: this.planId,
+        planId: this.planId_local,
       };
       getPlanDetail(para).then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           console.log("计划详情：", data);
           this.data_local = data.Model;
-          this.$refs.medicalCenter.checkedGroup = data.PlanPhysical;
+          data.PlanPhysical.map((item) => {
+            item.ID = item.Value;
+          });
+          debugger;
+          this.$refs.medicalCenter.loadSelectedData(data.PlanPhysical);
         }
       });
     },
@@ -364,7 +371,7 @@ export default {
       return new Promise(() => {
         this.$validator.validateAll("step-base").then((result) => {
           if (result) {
-            let checkedGroup = this.$refs.medicalCenter.checkedGroup;
+            let checkedGroup = this.$refs.medicalCenter.selected;
             let isValid = this.validBaseinfo(checkedGroup);
             if (!isValid) return;
 
@@ -384,7 +391,7 @@ export default {
             };
 
             if (this.planId_local) {
-              para.planId = this.planId_local;
+              para.ID = this.planId_local;
               editPlan(para).then((res) => {
                 if (res.resultType == 0) {
                   this.$vs.notify({
@@ -506,14 +513,14 @@ export default {
     changeStandardPop(data) {
       this.$emit("changeStandardPop", data);
     },
-    delStandard(data) {
-      this.$emit("delStandard", data);
-    },
-    delEmployee(data) {
-      this.$emit("delEmployee", data);
-    },
   },
 };
 </script>
-<style lang='sass' scoped>
+<style lang='scss' scoped>
+.vue-form-wizard {
+  padding-bottom: 0;
+}
+.con-vs-popup.fullscreen .vs-popup {
+  height: auto;
+}
 </style>

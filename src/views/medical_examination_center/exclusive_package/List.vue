@@ -211,6 +211,7 @@ export default {
   computed: {},
   methods: {
     loadData() {
+      debugger
       if (!this.planId) return;
       console.log("planId:", this.planId);
       let para = {

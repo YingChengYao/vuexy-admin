@@ -125,10 +125,10 @@ export default {
       }, 0);
     },
   },
-  created() {
+  created() {},
+  mounted() {
     this.loadCheckedGroup();
   },
-  mounted() {},
   watch: {
     packagePrice() {
       let price = (this.discount / 10) * this.packagePrice;
@@ -143,17 +143,13 @@ export default {
       };
       getProjectsForPackage(para).then((res) => {
         if (res.resultType == 0) {
+          debugger
           const data = JSON.parse(res.message);
-          console.log("勾选项目：", data);
-          data.Item.map((item) => {
-            item.ID = item.ItemID;
-          });
 
           this.$refs.projectList.loadSelectedData(data.Item);
+
           data.Discount = !data.Discount ? 1 : data.Discount;
-
           this.discount = accMul(data.Discount, 10);
-
           this.discountPrice =
             data.DiscountPrice == null ? 0 : data.DiscountPrice;
         }

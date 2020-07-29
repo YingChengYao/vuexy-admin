@@ -43,9 +43,9 @@
     </vs-table>
 
     <div class="flex mt-4">
-      <!-- <div class="flex-1 justify-center">
+      <div class="flex-1 justify-center">
         <slot name="pagination"></slot>
-      </div>-->
+      </div>
       <vs-pagination
         :total="totalPage"
         v-model="currentPage"
@@ -119,8 +119,16 @@ export default {
       this.$emit("loadData");
     },
     items() {
-      if (this.multipleCheck) this.initCheckedItems();
+      if (this.multipleCheck) {
+        this.initCheckedItems();
+      }
     },
+    // value() {
+    //   debugger
+    //   if (this.multipleCheck) {
+    //     this.initCheckedItems();
+    //   }
+    // },
   },
   methods: {
     changePageMaxItems(index) {
@@ -174,13 +182,13 @@ export default {
         if (index < 0) return;
         val.splice(index, 1);
       }
-      this.$emit("input", val);
     },
     /*分页请求后返回新数据的时候，该每一项设置属性 isChecked 为 false，但是当数组内部有保存的数据时，
     且该保存的数据和请求返回回来的相同的话，就把该项选中，比如我勾选了第一页中的某一项，会把
     该项的id保存到数组内部去，当切换到第二页的时候，那么再返回到第一页的时候，会获取该id是否与数组的
     id是否相同，如果相同的话，就把该项数据选中*/
     initCheckedItems() {
+      if (!this.multipleCheck) return;
       if (this.items.length > 0) {
         this.items.map((item, index) => {
           if (this.value.length > 0) {

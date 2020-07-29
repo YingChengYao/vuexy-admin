@@ -35,8 +35,8 @@
     </vx-card>
 
     <div class="vx-card p-6">
-      <grid-table :cloumns="cloumns" :rowData="types"></grid-table>
-      <!-- <vs-table ref="table" stripe :data="types">
+      <!-- <grid-table :cloumns="cloumns" :rowData="types"></grid-table> -->
+      <vs-table ref="table" stripe :data="types">
         <div slot="header" class="flex flex-wrap-reverse items-center flex-grow justify-between">
           <div class="flex flex-wrap-reverse items-center data-list-btn-container header-left">
             <vs-button color="primary" type="border" class="mb-4 mr-4" @click="addNewData">添加</vs-button>
@@ -80,7 +80,7 @@
             </vs-tr>
           </tbody>
         </template>
-      </vs-table>-->
+      </vs-table>
     </div>
     <div class="con-pagination-table vs-table--pagination">
       <vs-pagination
@@ -94,9 +94,6 @@
       ></vs-pagination>
     </div>
 
-    <!-- <div class="vx-card p-6" style="position: fixed;bottom: 0;width: calc(100% - 4.4rem - 260px);z-index: 9919;">
-       
-    </div>-->
   </div>
 </template>
 

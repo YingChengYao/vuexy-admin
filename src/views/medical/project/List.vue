@@ -196,9 +196,6 @@ export default {
       //pop
       isPop: true,
       checkedGroup: [],
-      discount: 10,
-      discountPrice: 0,
-      packagePrice: 0,
     };
   },
   computed: {},
@@ -262,23 +259,6 @@ export default {
         }
       });
     },
-    loadCheckedGroup() {
-      if (!this.packageID) return;
-      let para = {
-        packageID: this.packageID,
-      };
-      getProjectsForPackage(para).then((res) => {
-        if (res.resultType == 0) {
-          const data = JSON.parse(res.message);
-          console.log("勾选项目：", data);
-          data.Item.map((item) => {
-            item.ID = item.ItemID;
-          });
-          this.selected = data.Item;
-          this.$refs.table.initCheckedItems();
-        }
-      });
-    },
     toggle(m) {
       if (m.Children) {
         this.initItems.forEach((i) => {
@@ -297,7 +277,21 @@ export default {
     },
     loadSelectedData(data) {
       this.selected = data;
-      this.$refs.table.initCheckedItems();
+      // this.$refs.table.initCheckedItems();
+      this.initCheckedItems();
+    },
+    initCheckedItems() {
+      debugger;
+      if (!this.multipleCheck) return;
+      if (this.initItems.length > 0) {
+        this.initItems.map((item, index) => {
+          if (this.selected.length > 0) {
+            let val = this.selected.find((t) => t.ID === item.ID);
+            item.isChecked = !val ? false : true;
+          }
+        });
+        this.$refs.table.handleCheckboxAll();
+      }
     },
     //#region 弹窗
     addNewData() {
@@ -319,38 +313,9 @@ export default {
       this.popupActive = false;
     },
     //#endregion
-    save() {
-      let projectIds = this.checkedGroup
-        .map((obj) => {
-          return obj.ItemID;
-        })
-        .join(",");
-
-      let para = {
-        packageID: this.packageID,
-        itemIDs: projectIds,
-        discount: this.discount / 10,
-        discountPrice: this.discountPrice,
-      };
-      deployProjectForPackage(para).then((res) => {
-        if (res.resultType == 0) {
-          this.$vs.notify({
-            title: "Success",
-            text: res.message,
-            color: "success",
-          });
-          this.cancel();
-        }
-      });
-    },
-
-    cancel() {
-      this.$router.push("/package").catch(() => {});
-    },
   },
   created() {
     this.isPop = this.packageID ? true : false;
-    //this.loadCheckedGroup();
   },
   mounted() {
     this.loadData();
