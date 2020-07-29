@@ -101,10 +101,6 @@
         :size="itemsPerPage"
       ></vs-pagination>
     </div>
-
-    <!-- <div class="vx-card p-6" style="position: fixed;bottom: 0;width: calc(100% - 4.4rem - 260px);z-index: 9919;">
-       
-    </div>-->
   </div>
 </template>
 
@@ -145,7 +141,7 @@ export default {
       let para = {
         pageIndex: this.currentPage,
         pageSize: this.itemsPerPage,
-        id: userInfo.uid, //"6750305733891072000", //userInfo.uid
+        id: "6750305733891072000", //userInfo.uid
       };
       getEmployeeUnits(para).then((res) => {
         if (res.resultType == 0) {
@@ -159,7 +155,6 @@ export default {
       });
     },
     initData(items, level, parent) {
-      debugger;
       if (!Array.isArray(items)) {
         return;
       }

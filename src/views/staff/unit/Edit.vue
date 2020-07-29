@@ -3,7 +3,13 @@
     <vx-card title>
       <div class="vx-row">
         <div class="vx-col md:w-1/2 w-full mt-4">
-          <vs-select autocomplete :disabled="mark!='add'" label="父级单位" v-model="data_local.ParentID" class="w-full select-large">
+          <vs-select
+            autocomplete
+            :disabled="mark!='add'"
+            label="父级单位"
+            v-model="data_local.ParentID"
+            class="w-full select-large"
+          >
             <vs-select-item
               :style="'margin-left:'+ (item.level)*10 +'px'"
               v-for="(item,index) in unitOptions"
@@ -96,28 +102,28 @@ import vSelect from "vue-select";
 import { composeTree } from "@/common/utils/data/array.js";
 import {
   getIndustryDataSource,
-  getSubordinateUnitDataSource
+  getSubordinateUnitDataSource,
 } from "@/http/data_source.js";
 import {
   addEmployeeUnit,
   editEmployeeUnit,
-  getEmployeeUnitDetail
+  getEmployeeUnitDetail,
 } from "@/http/staff.js";
 
 export default {
   name: "",
   components: {
-    vSelect
+    vSelect,
   },
   props: {
     unitId: {
       type: String,
-      default: null
+      default: null,
     },
     mark: {
       type: String,
-      default: null
-    }
+      default: null,
+    },
   },
   data() {
     return {
@@ -126,7 +132,7 @@ export default {
 
       data_local: {},
       industryOptions: [],
-      unitOptions: []
+      unitOptions: [],
     };
   },
   computed: {},
@@ -138,7 +144,7 @@ export default {
   mounted() {},
   methods: {
     loadIndustryData() {
-      getIndustryDataSource().then(res => {
+      getIndustryDataSource().then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.industryOptions = data;
@@ -148,12 +154,13 @@ export default {
     loadSubordinateUnitData() {
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
       let para = {
-        companyId: userInfo.companyID
+        companyId: userInfo.companyID,
       };
-      getSubordinateUnitDataSource(para).then(res => {
+      getSubordinateUnitDataSource(para).then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.unitOptions = [];
+          console.log("下属单位1：", data);
           let b = composeTree(data, "Value", "ParentID");
           this.initSubordinateUnitData(b, 0, null);
           console.log("下属单位：", this.unitOptions);
@@ -167,21 +174,21 @@ export default {
       items.map((item, index) => {
         item = Object.assign({}, item, {
           parent: parent,
-          level: level
+          level: level,
         });
         if (item.children != undefined && item.children.length > 0) {
           item = Object.assign({}, item, {
-            isExpand: true
+            isExpand: true,
           });
         }
         if (typeof item.isChecked == "undefined") {
           item = Object.assign({}, item, {
-            isChecked: false
+            isChecked: false,
           });
         }
         if (typeof item.isShow == "undefined") {
           item = Object.assign({}, item, {
-            isShow: true
+            isShow: true,
           });
         }
         this.unitOptions.push(item);
@@ -195,17 +202,18 @@ export default {
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
       let para = {
-        companyid: this.unitId
+        companyid: this.unitId,
       };
-      getEmployeeUnitDetail(para).then(res => {
+      getEmployeeUnitDetail(para).then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
+          console.log("data:", data);
           this.data_local = data;
         }
       });
     },
     save_changes() {
-      this.$validator.validateAll().then(result => {
+      this.$validator.validateAll().then((result) => {
         if (result) {
           let userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
@@ -218,7 +226,7 @@ export default {
             mobile: this.data_local.Mobile,
             sort: this.data_local.Sort,
             industry: this.data_local.Industry,
-            remark: this.data_local.Remark
+            remark: this.data_local.Remark,
           };
 
           // if (this.data_local.IsOptional) {
@@ -231,12 +239,12 @@ export default {
           //       : null;
           // }
           if (this.mark === "add") {
-            addEmployeeUnit(para).then(res => {
+            addEmployeeUnit(para).then((res) => {
               if (res.resultType == 0) {
                 this.$vs.notify({
                   title: "Success",
                   text: res.message,
-                  color: "success"
+                  color: "success",
                 });
                 this.$emit("loadData");
                 this.cancel();
@@ -245,12 +253,12 @@ export default {
           } else if (this.mark == "edit") {
             para.ID = this.unitId;
             para.isLocked = this.data_local.IsLocked;
-            editEmployeeUnit(para).then(res => {
+            editEmployeeUnit(para).then((res) => {
               if (res.resultType == 0) {
                 this.$vs.notify({
                   title: "Success",
                   text: res.message,
-                  color: "success"
+                  color: "success",
                 });
                 this.$emit("loadData");
                 this.cancel();
@@ -262,8 +270,8 @@ export default {
     },
     cancel() {
       this.$emit("closePop", false);
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang='sass' scoped>

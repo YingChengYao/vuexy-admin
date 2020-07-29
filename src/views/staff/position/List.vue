@@ -41,6 +41,7 @@
     <div class="vx-card p-6">
       <vx-table
         ref="table"
+        v-model="selected"
         :items="positions"
         @loadData="loadData"
         :totalPage="totalPage"
@@ -86,17 +87,6 @@
         </template>
       </vx-table>
     </div>
-    <!-- <div class="con-pagination-table vs-table--pagination">
-      <vs-pagination
-        :total="totalPage"
-        v-model="currentPage"
-        :pagedown="true"
-        :totalItems="totalItems"
-        @changePageMaxItems="changePageMaxItems"
-        :pagedownItems="descriptionItems"
-        :size="itemsPerPage"
-      ></vs-pagination>
-    </div>-->
   </div>
 </template>
 
@@ -105,44 +95,41 @@ import UnitEdit from "./Edit";
 import { getPositions, editPosition } from "@/http/staff.js";
 export default {
   components: {
-    UnitEdit
+    UnitEdit,
   },
   props: {
     isPop: {
       type: Boolean,
-      default: false
+      default: false,
     },
     multipleCheck: {
       type: Boolean,
-      default: false
+      default: false,
     },
-    employeeID: {
-      type: String,
-      default: ""
-    }
   },
   data() {
     return {
       //Page
       positions: [],
       totalPage: 0,
-      totalItems: 0,
+      totalItems: 2,
+      selected: [],
 
       //filter
       positionNameInput: null,
       isLockedSelectOptions: [
         {
           name: "请选择",
-          value: null
+          value: null,
         },
         {
           name: "否",
-          value: false
+          value: false,
         },
         {
           name: "是",
-          value: true
-        }
+          value: true,
+        },
       ],
       isLockedSelect: false,
 
@@ -151,7 +138,7 @@ export default {
       popupActive: false,
       positionId: null,
       timer: "",
-      mark: null
+      mark: null,
     };
   },
   computed: {},
@@ -168,9 +155,9 @@ export default {
         pageIndex: this.$refs.table.currentPage,
         pageSize: this.$refs.table.itemsPerPage,
         companyId: userInfo.companyID,
-        positionName: this.positionNameInput
+        positionName: this.positionNameInput,
       };
-      getPositions(para).then(res => {
+      getPositions(para).then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           console.log("职位：", data);
@@ -201,12 +188,12 @@ export default {
     },
     closePop() {
       this.popupActive = false;
-    }
+    },
   },
   mounted() {
     this.loadData();
   },
-  watch: {}
+  watch: {},
 };
 </script>
 

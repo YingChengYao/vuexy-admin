@@ -79,6 +79,15 @@ export const getEmployees = params => {
   });
 };
 
+//获取单个员工详情信息
+export const getEmployeesDetails = params => {
+  return request({
+    url: "/api/employee/details",
+    method: "get",
+    params: params
+  });
+};
+
 //插入职工信息
 export const addEmployee = params => {
   return request({

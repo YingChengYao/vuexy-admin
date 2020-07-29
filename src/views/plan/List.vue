@@ -218,7 +218,7 @@ export default {
     },
     editData(tr) {
       this.planId = tr.ID;
-      this.step = 0;
+      this.step = 1;
       this.popupActive = true;
       this.title = "修改体检计划信息";
       this.mark = "edit";

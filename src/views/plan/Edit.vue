@@ -66,8 +66,7 @@
               <div class="mt-4">
                 <label class="vs-input--label">备注</label>
                 <vs-textarea
-                  :counter-danger.sync="counterDanger"
-                  v-model="data_local.CompanyName"
+                  v-model="data_local.Remark"
                   height="100px"
                   counter="200"
                   v-validate="'max:200'"
@@ -85,8 +84,11 @@
         <!-- <vs-card> -->
         <div class="text-right mt-5">
           <span>
-            <vs-button class="vx-col ml-auto" color="primary" @click="save_base_info">下一步</vs-button>
+            <vs-button class="vx-col ml-auto" color="primary" @click="save_base_info">保存</vs-button>
           </span>
+          <!-- <span class="px-2">
+            <vs-button class="vx-col ml-4" color="primary" @click="next_base_info">下一步</vs-button>
+          </span>-->
           <span class="px-2">
             <vs-button class="vx-col ml-4" type="border" color="warning" @click="cancel">取消</vs-button>
           </span>
@@ -96,23 +98,28 @@
 
       <!-- tab 2 content -->
       <tab-content title="Address" icon="feather icon-home" backButtonText>
-        <staff-employee-list ref="employee" :isPop="false" :multipleCheck="true">
-          <template>
-            <span class="mt-5">
-              <span>
-                <vs-button
-                  class="vx-col ml-auto mt-2"
-                  type="border"
-                  color="warning"
-                  @click="back_base_info"
-                >上一步</vs-button>
-              </span>
-              <span class="px-4">
-                <vs-button class="vx-col ml-auto mt-2" color="primary" @click="save_employee">下一步</vs-button>
-              </span>
-            </span>
-          </template>
+        <staff-employee-list
+          ref="employee"
+          :isPop="true"
+          :isShowWorkingStatus="false"
+          :multipleCheck="true"
+        >
+          <!-- <template>
+          </template>-->
         </staff-employee-list>
+        <div class="text-right mt-5">
+          <span>
+            <vs-button
+              class="vx-col ml-auto mt-2"
+              type="border"
+              color="warning"
+              @click="back_base_info"
+            >上一步</vs-button>
+          </span>
+          <span class="px-4">
+            <vs-button class="vx-col ml-auto mt-2" color="primary" @click="save_employee">下一步</vs-button>
+          </span>
+        </div>
       </tab-content>
 
       <!-- tab 3 content -->
@@ -142,9 +149,8 @@ import {
 import { formatTimeToStr } from "@/common/utils/data/date";
 import {
   addPlan,
-  addEmployeeForPlan,
+  addOrEditEmployeeForPlan,
   editPlan,
-  editEmployeeForPlan,
   getPlanDetail,
 } from "@/http/plan.js";
 import { getMedicalCenters } from "@/http/medical_center.js";
@@ -185,7 +191,6 @@ export default {
   data() {
     return {
       colors: ["primary", "success", "danger", "warning", "dark", "#24c1a0"],
-      counterDanger: false,
       languages: lang,
 
       isShowStandard: false,
@@ -217,9 +222,9 @@ export default {
     //#region 初始化数据
     loadData() {
       debugger;
-      if (this.step == "0") {
-        this.loadBaseInfoData();
-      }
+      // if (this.step == "0") {
+      this.loadBaseInfoData();
+      // }
     },
     loadBaseInfoData() {
       debugger;
@@ -396,9 +401,10 @@ export default {
                 if (res.resultType == 0) {
                   this.$vs.notify({
                     title: "Success",
-                    text: res.message,
+                    text: "修啊给i体检计划成功",
                     color: "success",
                   });
+                  this.$refs.checkoutWizard.nextTab();
                 }
               });
             } else {
@@ -447,17 +453,38 @@ export default {
       });
       return false;
     },
+    next_base_info() {
+      return new Promise(() => {
+        this.$validator.validateAll("step-base").then((result) => {
+          if (!result) {
+            this.$vs.notify({
+              title: "Error",
+              text: "请输入有效的信息",
+              color: "warning",
+              iconPack: "feather",
+              icon: "icon-alert-circle",
+            });
+            return;
+          }
+          this.$refs.checkoutWizard.nextTab();
+        });
+      });
+    },
     //#endregion
 
     //#region 职工
-    showEmployee() {
-      this.isEmployeeTab = true;
-    },
     save_employee() {
-      this.$refs.checkoutWizard.nextTab();
-      return;
-      let checkedGroup = this.$refs.employee.checkedGroup;
+      debugger
+      let checkedGroup = this.$refs.employee.selected;
 
+      if (!checkedGroup.length > 0) {
+        this.$vs.notify({
+          title: "Error",
+          text: "请选择职工名单",
+          color: "Error",
+        });
+        return;
+      }
       let employees = checkedGroup
         .map((obj) => {
           return obj.ID;
@@ -469,20 +496,7 @@ export default {
         employees: employees,
       };
 
-      // if (this.planId_local) {
-      //   para.planId = this.planId_local;
-      //   editEmployeeForPlan(para).then(res => {
-      //     if (res.resultType == 0) {
-      //       this.$vs.notify({
-      //         title: "Success",
-      //         text: res.message,
-      //         color: "success"
-      //       });
-      //       this.$refs.checkoutWizard.nextTab();
-      //     }
-      //   });
-      // } else {
-      addEmployeeForPlan(para).then((res) => {
+      addOrEditEmployeeForPlan(para).then((res) => {
         if (res.resultType == 0) {
           this.$vs.notify({
             title: "Success",
@@ -493,9 +507,14 @@ export default {
           this.isShowStandard = true;
         }
       });
-      // }
     },
     back_base_info() {
+      this.$refs.checkoutWizard.prevTab();
+    },
+    nextTab() {
+      this.$refs.checkoutWizard.nextTab();
+    },
+    prevTab() {
       this.$refs.checkoutWizard.prevTab();
     },
     //#endregion

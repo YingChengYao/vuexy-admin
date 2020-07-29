@@ -64,6 +64,15 @@ export const editEmployeeForPlan = params => {
   });
 };
 
+//添加或修改体检计划的职工名单
+export const addOrEditEmployeeForPlan = params => {
+  return request({
+    url: "/api/plan/employee/add",
+    method: "post",
+    params: params
+  });
+};
+
 //获取体检计划的标准列表
 export const getStandards = params => {
   return request({
