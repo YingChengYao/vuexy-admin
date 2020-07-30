@@ -114,12 +114,12 @@
             <p>{{ item.tr.ModifyTime | formatDate }}</p>
           </vs-td>
           <vs-td class="whitespace-no-wrap" v-if="!isPop">
-            <span class="text-primary" size="small" type="border" @click.stop="editData(tr)">编辑</span>
+            <span class="text-primary" size="small" type="border" @click.stop="editData(item.tr)">编辑</span>
             <span
               class="text-primary px-2"
               size="small"
               type="border"
-              @click.stop="deployPosition(tr)"
+              @click.stop="deployPosition(item.tr)"
             >设置职位</span>
           </vs-td>
         </template>
@@ -140,7 +140,7 @@ import { getWorkingStatusDataSource } from "@/http/data_source.js";
 import {
   getEmployees,
   deployPositionForEmployee,
-  getEmployeesDetails,
+  getPositionForEmployee,
 } from "@/http/staff.js";
 export default {
   components: {
@@ -174,11 +174,6 @@ export default {
       totalPage: 0,
       totalItems: 0,
       selected: [],
-
-      //checked
-      checkedGroup: [],
-      isCheckField: "ID",
-      isCheckedAll: false,
 
       // 职工添加修改Pop
       title: null,
@@ -224,6 +219,22 @@ export default {
         }
       });
     },
+    loadSelectedData(data) {
+      this.selected = data;
+      this.initCheckedItems();
+    },
+    initCheckedItems() {
+      if (!this.multipleCheck) return;
+      if (this.items.length > 0) {
+        this.items.map((item, index) => {
+          if (this.selected.length > 0) {
+            let val = this.selected.find((t) => t.ID === item.ID);
+            item.isChecked = !val ? false : true;
+          }
+        });
+        this.$refs.table.handleCheckboxAll();
+      }
+    },
     loadWorkingStatus() {
       let para = {
         isSelect: true,
@@ -267,6 +278,7 @@ export default {
     deployPosition(tr) {
       this.popupActivePosition = true;
       this.employeeID = tr.ID;
+      this.loadPositionData(this.employeeID);
     },
     savePosition() {
       let positionids = this.$refs.position.selected.map((r) => r.ID).join(",");
@@ -286,21 +298,14 @@ export default {
         }
       });
     },
-    loadPositionData() {
-      let positionids = this.$refs.position.selected.map((r) => r.ID).join(",");
+    loadPositionData(id) {
       let para = {
-        employeeID: this.employeeID,
-        positionIDs: positionids,
+        employeeID: id,
       };
-      getEmployeesDetails(para).then((res) => {
+      getPositionForEmployee(para).then((res) => {
         if (res.resultType == 0) {
-          this.$vs.notify({
-            title: "Success",
-            text: "职位设置成功",
-            color: "success",
-          });
-          this.popupActivePosition = false;
-          this.loadData();
+          const data = JSON.parse(res.message);
+          this.$refs.position.loadSelectedData(data);
         }
       });
     },
@@ -308,18 +313,6 @@ export default {
       this.popupActivePosition = false;
     },
     //#endregion
-
-    changePageMaxItems(index) {
-      this.itemsPerPage = this.descriptionItems[index];
-      this.loadData();
-    },
-    save() {
-      this.$emit("saveEmployeeSelected", this.checkedGroup);
-      this.cancel();
-    },
-    cancel() {
-      this.$emit("closePop");
-    },
   },
 };
 </script>

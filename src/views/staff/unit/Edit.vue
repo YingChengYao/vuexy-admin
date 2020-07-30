@@ -48,16 +48,88 @@
         </div>
         <!-- 联系人 -->
         <div class="vx-col md:w-1/2 w-full mt-4">
-          <vs-input label="联系人" v-model="data_local.Contact" class="w-full" />
+          <vs-input
+            label="联系人"
+            v-model="data_local.Contact"
+            class="w-full"
+            name="联系人"
+            v-validate="'required'"
+          />
+          <span class="text-danger text-sm" v-show="errors.has('联系人')">{{ errors.first('联系人') }}</span>
         </div>
 
         <!-- 联系电话 -->
         <div class="vx-col md:w-1/2 w-full mt-4">
-          <vs-input label="联系电话" v-model="data_local.Tel" class="w-full" />
+          <vs-input
+            label="联系电话"
+            v-model="data_local.Tel"
+            class="w-full"
+            name="联系电话"
+            v-validate="'required|phone'"
+          />
+          <span class="text-danger text-sm" v-show="errors.has('联系电话')">{{ errors.first('联系电话') }}</span>
         </div>
         <!-- 手机号 -->
         <div class="vx-col md:w-1/2 w-full mt-4">
-          <vs-input label="手机号" v-model="data_local.Mobile" class="w-full" />
+          <vs-input
+            label="手机号"
+            v-model="data_local.Mobile"
+            class="w-full"
+            name="手机号"
+            v-validate="'required|mobile'"
+          />
+          <span class="text-danger text-sm" v-show="errors.has('手机号')">{{ errors.first('手机号') }}</span>
+        </div>
+
+        <div class="vx-col md:w-1/2 w-full mt-4">
+          <label class="vs-select--label">所在省</label>
+          <v-select
+            label="ProvinceName"
+            v-model="data_local.Province"
+            :options="provinceOptions"
+            @input="loadCityData(data_local.Province)"
+            :clearable="false"
+            name="所在省"
+            v-validate="'required'"
+          />
+          <span class="text-danger text-sm" v-show="errors.has('所在省')">{{ errors.first('所在省') }}</span>
+        </div>
+        <div class="vx-col md:w-1/2 w-full mt-4">
+          <label class="vs-select--label">所在市</label>
+          <v-select
+            ref="city"
+            label="CityName"
+            v-model="data_local.City"
+            @input="loadCountyData(data_local.City)"
+            :options="cityOptions"
+            :clearable="false"
+            name="所在市"
+            v-validate="'required'"
+          />
+          <span class="text-danger text-sm" v-show="errors.has('所在市')">{{ errors.first('所在市') }}</span>
+        </div>
+        <div class="vx-col md:w-1/2 w-full mt-4">
+          <label class="vs-select--label">所在区</label>
+          <v-select
+            ref="county"
+            label="CountyName"
+            v-model="data_local.County"
+            :options="countyOptions"
+            :clearable="false"
+            name="所在区"
+            v-validate="'required'"
+          />
+          <span class="text-danger text-sm" v-show="errors.has('所在区')">{{ errors.first('所在区') }}</span>
+        </div>
+        <div class="vx-col md:w-1/2 w-full mt-4">
+          <vs-input
+            label="街道"
+            v-model="data_local.Street"
+            class="w-full"
+            name="街道"
+            v-validate="'required'"
+          />
+          <span class="text-danger text-sm" v-show="errors.has('街道')">{{ errors.first('街道') }}</span>
         </div>
 
         <!-- 排序 -->
@@ -103,6 +175,9 @@ import { composeTree } from "@/common/utils/data/array.js";
 import {
   getIndustryDataSource,
   getSubordinateUnitDataSource,
+  getProvinceDataSource,
+  getCityDataSource,
+  getCountyDataSource,
 } from "@/http/data_source.js";
 import {
   addEmployeeUnit,
@@ -127,22 +202,39 @@ export default {
   },
   data() {
     return {
-      //id: null,
-      //mark: null,
-
       data_local: {},
       industryOptions: [],
       unitOptions: [],
+      provinceOptions: [],
+      cityOptions: [],
+      countyOptions: [],
     };
   },
   computed: {},
   created() {
     this.loadIndustryData();
     this.loadSubordinateUnitData();
+    this.loadProvinceData();
     this.loadData();
   },
   mounted() {},
   methods: {
+    loadData() {
+      if (!this.unitId) return;
+      let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+
+      let para = {
+        companyid: this.unitId,
+      };
+      getEmployeeUnitDetail(para).then((res) => {
+        if (res.resultType == 0) {
+          const data = JSON.parse(res.message);
+          console.log("data:", data);
+          this.data_local = data;
+        }
+      });
+    },
+    //行业下拉数据加载
     loadIndustryData() {
       getIndustryDataSource().then((res) => {
         if (res.resultType == 0) {
@@ -151,19 +243,19 @@ export default {
         }
       });
     },
+    //子级单位数据加载
     loadSubordinateUnitData() {
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
       let para = {
-        companyId: userInfo.companyID,
+        companyId: "6750305733891072000", //userInfo.companyID,
       };
       getSubordinateUnitDataSource(para).then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
+          console.log(data);
           this.unitOptions = [];
-          console.log("下属单位1：", data);
           let b = composeTree(data, "Value", "ParentID");
           this.initSubordinateUnitData(b, 0, null);
-          console.log("下属单位：", this.unitOptions);
         }
       });
     },
@@ -196,19 +288,36 @@ export default {
         this.initSubordinateUnitData(item.children, level + 1, item.Value);
       });
     },
-
-    loadData() {
-      if (!this.unitId) return;
-      let userInfo = JSON.parse(localStorage.getItem("userInfo"));
-
-      let para = {
-        companyid: this.unitId,
-      };
-      getEmployeeUnitDetail(para).then((res) => {
+    //省市区数据加载
+    loadProvinceData() {
+      getProvinceDataSource().then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
-          console.log("data:", data);
-          this.data_local = data;
+          this.provinceOptions = data;
+        }
+      });
+    },
+    loadCityData(data) {
+      if (!data) return;
+      this.cityOptions = [];
+      this.$refs.city.clearSelection();
+      this.countyOptions = [];
+      this.$refs.county.clearSelection();
+      getCityDataSource(data).then((res) => {
+        if (res.resultType == 0) {
+          const data = JSON.parse(res.message);
+          this.cityOptions = data;
+        }
+      });
+    },
+    loadCountyData(data) {
+      if (!data) return;
+      this.countyOptions = [];
+      this.$refs.county.clearSelection();
+      getCountyDataSource(data).then((res) => {
+        if (res.resultType == 0) {
+          const data = JSON.parse(res.message);
+          this.countyOptions = data;
         }
       });
     },
@@ -226,18 +335,13 @@ export default {
             mobile: this.data_local.Mobile,
             sort: this.data_local.Sort,
             industry: this.data_local.Industry,
+            province: this.data_local.Province.ProvinceCode,
+            city: this.data_local.City.CityCode,
+            county: this.data_local.County.CountyCode,
+            street: this.data_local.Street,
             remark: this.data_local.Remark,
           };
 
-          // if (this.data_local.IsOptional) {
-          //   para.singlePrice = this.data_local.SinglePrice;
-          //   para.marriage = this.data_local.Marriage;
-          //   para.gender = this.data_local.Gender;
-          //   para.itemTypeID =
-          //     this.data_local.ItemTypeID != null
-          //       ? this.data_local.ItemTypeID.Value
-          //       : null;
-          // }
           if (this.mark === "add") {
             addEmployeeUnit(para).then((res) => {
               if (res.resultType == 0) {

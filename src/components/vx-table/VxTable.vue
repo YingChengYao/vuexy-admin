@@ -187,12 +187,18 @@ export default {
     且该保存的数据和请求返回回来的相同的话，就把该项选中，比如我勾选了第一页中的某一项，会把
     该项的id保存到数组内部去，当切换到第二页的时候，那么再返回到第一页的时候，会获取该id是否与数组的
     id是否相同，如果相同的话，就把该项数据选中*/
-    initCheckedItems() {
-      debugger
+    initCheckedItems(datas) {
+      debugger;
+      console.log('datas:',datas)
       if (!this.multipleCheck) return;
       if (this.items.length > 0) {
         this.items.map((item, index) => {
-          if (this.value.length > 0) {
+          if (Array.isArray(datas) && datas.length > 0) {
+            let val = datas.find(
+              (t) => t[this.checkField] === item[this.checkField]
+            );
+            item.isChecked = !val ? false : true;
+          } else if (this.value.length > 0) {
             let val = this.value.find(
               (t) => t[this.checkField] === item[this.checkField]
             );

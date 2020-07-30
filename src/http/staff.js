@@ -115,4 +115,13 @@ export const deployPositionForEmployee = params => {
   });
 };
 
+//获取职工的职位信息
+export const getPositionForEmployee = params => {
+  return request({
+    url: "/api/employee/position/list",
+    method: "get",
+    params: params
+  });
+};
+
 //#endregion

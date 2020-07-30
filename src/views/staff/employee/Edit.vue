@@ -106,28 +106,32 @@ import vSelect from "vue-select";
 import {
   getMaritalForUserDataSource,
   getGenderForUserDataSource,
-  getWorkingStatusDataSource
+  getWorkingStatusDataSource,
 } from "@/http/data_source.js";
-import { addEmployee, editEmployee } from "@/http/staff.js";
+import {
+  addEmployee,
+  editEmployee,
+  getEmployeesDetails,
+} from "@/http/staff.js";
 
 export default {
   name: "",
   components: {
-    vSelect
+    vSelect,
   },
   props: {
     employeeID: {
       type: String,
-      default: null
+      default: null,
     },
     mark: {
       type: String,
-      default: null
+      default: null,
     },
     data: {
       type: Object,
-      default: null
-    }
+      default: null,
+    },
   },
   data() {
     return {
@@ -137,7 +141,7 @@ export default {
       data_local: {},
       marriageOptions: [],
       genderOptions: [],
-      workingStatusOptions: []
+      workingStatusOptions: [],
     };
   },
   computed: {},
@@ -152,23 +156,18 @@ export default {
   methods: {
     loadData() {
       if (!this.employeeID) return;
-      //let userInfo = JSON.parse(localStorage.getItem("userInfo"));
-
-      // let para = {
-      //   mecid: userInfo.mecID,
-      //   id: this.employeeID
-      // };
-      // getProjectItemDetails(para).then(res => {
-      //   if (res.resultType == 0) {
-      //     const data = JSON.parse(res.message);
-      //     this.data_local = data;
-      //   }
-      // });
-      console.log("data:", this.data);
-      this.data_local = this.data;
+      let para = {
+        employeeID: this.employeeID,
+      };
+      getEmployeesDetails(para).then((res) => {
+        if (res.resultType == 0) {
+          const data = JSON.parse(res.message);
+          this.data_local = data;
+        }
+      });
     },
     save_changes() {
-      this.$validator.validateAll().then(result => {
+      this.$validator.validateAll().then((result) => {
         if (result) {
           let userInfo = JSON.parse(localStorage.getItem("userInfo"));
           let para = {
@@ -179,16 +178,16 @@ export default {
             IdNo: this.data_local.IdNo,
             Mobile: this.data_local.Mobile,
             WorkingStatus: this.data_local.WorkingStatus,
-            Remark: this.data_local.Remark
+            Remark: this.data_local.Remark,
           };
 
           if (this.mark === "add") {
-            addEmployee(para).then(res => {
+            addEmployee(para).then((res) => {
               if (res.resultType == 0) {
                 this.$vs.notify({
                   title: "Success",
                   text: res.message,
-                  color: "success"
+                  color: "success",
                 });
                 this.$emit("loadData");
                 this.cancel();
@@ -197,12 +196,12 @@ export default {
           } else if (this.mark == "edit") {
             para.ID = this.data_local.ID;
 
-            editEmployee(para).then(res => {
+            editEmployee(para).then((res) => {
               if (res.resultType == 0) {
                 this.$vs.notify({
                   title: "Success",
                   text: res.message,
-                  color: "success"
+                  color: "success",
                 });
                 this.$emit("loadData");
                 this.cancel();
@@ -216,7 +215,7 @@ export default {
       this.$emit("closePop", false);
     },
     loadMaritalStatus() {
-      getMaritalForUserDataSource().then(res => {
+      getMaritalForUserDataSource().then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.marriageOptions = data;
@@ -224,7 +223,7 @@ export default {
       });
     },
     loadGender() {
-      getGenderForUserDataSource().then(res => {
+      getGenderForUserDataSource().then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.genderOptions = data;
@@ -232,14 +231,14 @@ export default {
       });
     },
     loadWorkingStatus() {
-      getWorkingStatusDataSource().then(res => {
+      getWorkingStatusDataSource().then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.workingStatusOptions = data;
         }
       });
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang='sass' scoped>

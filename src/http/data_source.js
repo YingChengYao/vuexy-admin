@@ -140,3 +140,30 @@ export const getMedicalCenterNatureDataSource = params => {
   });
 };
 //#endregion
+
+//#region 省市区
+//获取体检中心等级数据源
+export const getProvinceDataSource = params => {
+  return request({
+    url: "/api/province/list",
+    method: "get",
+    params: params
+  });
+};
+//获取体检中心性质数据源
+export const getCityDataSource = params => {
+  return request({
+    url: "/api/city/list",
+    method: "get",
+    params: params
+  });
+};
+//获取体检中心性质数据源
+export const getCountyDataSource = params => {
+  return request({
+    url: "/api/county/list",
+    method: "get",
+    params: params
+  });
+};
+//#endregion

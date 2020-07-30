@@ -20,7 +20,7 @@
           v-model="positionNameInput"
           class="vx-col md:w-1/6 sm:w-1/2 w-full px-2"
         />
-        <!-- <label class="vx-col label-name px-2">是否锁定</label>
+        <label class="vx-col label-name px-2">是否锁定</label>
         <vs-select
           v-model="isLockedSelect"
           class="vx-col md:w-1/6 sm:w-1/2 w-full px-2 select-large"
@@ -32,7 +32,7 @@
             :text="item.name"
             class="w-full"
           />
-        </vs-select>-->
+        </vs-select>
 
         <vs-button class="vx-col" color="primary" type="border" @click="loadData">查询</vs-button>
       </vs-row>
@@ -92,7 +92,11 @@
 
 <script>
 import UnitEdit from "./Edit";
-import { getPositions, editPosition } from "@/http/staff.js";
+import {
+  getPositions,
+  editPosition,
+  getPositionForEmployee,
+} from "@/http/staff.js";
 export default {
   components: {
     UnitEdit,
@@ -160,13 +164,29 @@ export default {
       getPositions(para).then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
-          console.log("职位：", data);
           this.positions = data.Items;
           this.totalPage = data.TotalPages;
           this.totalItems = data.TotalItems;
         }
       });
     },
+    loadSelectedData(data) {
+      this.selected = data;
+      // this.initCheckedItems();
+      this.$refs.table.initCheckedItems(this.selected);
+    },
+    // initCheckedItems() {
+    //   if (!this.multipleCheck) return;
+    //   if (this.positions.length > 0) {
+    //     this.positions.map((item, index) => {
+    //       if (this.selected.length > 0) {
+    //         let val = this.selected.find((t) => t.ID === item.ID);
+    //         item.isChecked = !val ? false : true;
+    //       }
+    //     });
+    //     this.$refs.table.handleCheckboxAll();
+    //   }
+    // },
     //#region 弹窗
     addNewData() {
       this.positionId = null;

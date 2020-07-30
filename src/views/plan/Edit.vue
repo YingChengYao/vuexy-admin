@@ -222,12 +222,6 @@ export default {
     //#region 初始化数据
     loadData() {
       debugger;
-      // if (this.step == "0") {
-      this.loadBaseInfoData();
-      // }
-    },
-    loadBaseInfoData() {
-      debugger;
       if (!this.planId_local) return;
 
       let para = {
@@ -243,6 +237,7 @@ export default {
           });
           debugger;
           this.$refs.medicalCenter.loadSelectedData(data.PlanPhysical);
+          this.$refs.employee.loadSelectedData(data.PlanEmployee);
         }
       });
     },
@@ -474,7 +469,7 @@ export default {
 
     //#region 职工
     save_employee() {
-      debugger
+      debugger;
       let checkedGroup = this.$refs.employee.selected;
 
       if (!checkedGroup.length > 0) {
