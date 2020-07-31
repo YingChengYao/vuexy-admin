@@ -124,4 +124,14 @@ export const getPositionForEmployee = params => {
   });
 };
 
+//批量插入职工信息
+export const batchAddEmployee = (data, config) => {
+  return request({
+    url: "/api/employee/inserts",
+    method: "post",
+    data: data,
+    config: config
+  });
+};
+
 //#endregion

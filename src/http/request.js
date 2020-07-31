@@ -14,6 +14,7 @@ const request = axios.create({
 //#region http request 拦截器
 request.interceptors.request.use(
   config => {
+    debugger;
     //this.$vs.loading();
     let curTime = new Date();
     let accessExpiration = window.localStorage.getItem("AccessExpiration");
@@ -36,23 +37,17 @@ request.interceptors.request.use(
       config.headers.Authorization = "Bearer " + token;
     }
 
-    // if (config.method === "get") {
-    //   var querystring = require("querystring");
+    config.headers["Content-Type"] =
+      config.config &&
+      config.config.headers &&
+      config.config.headers["Content-Type"]
+        ? config.config.headers["Content-Type"]
+        : "application/json; charset=UTF-8";
 
-    //   config.data = querystring.encode(config.data);
-    // }
-
-    // if (config.method === "post") {
-    //   config.data = JSON.stringify(config.data);
-    // }
-    // config.data = JSON.stringify(config.data);
-    // config.headers["Content-Type"] =
-    //   "application/x-www-form-urlencoded; charset=UTF-8";
-    config.headers["Content-Type"] = "application/json; charset=UTF-8";
-    // config.data = qs.stringify(config.data);
     return config;
   },
   error => {
+    debugger;
     vue.$vs.notify({
       title: "Error",
       text: error.message,

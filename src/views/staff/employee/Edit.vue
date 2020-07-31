@@ -162,6 +162,7 @@ export default {
       getEmployeesDetails(para).then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
+          console.log(data)
           this.data_local = data;
         }
       });

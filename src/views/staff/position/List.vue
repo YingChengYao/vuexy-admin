@@ -160,6 +160,7 @@ export default {
         pageSize: this.$refs.table.itemsPerPage,
         companyId: userInfo.companyID,
         positionName: this.positionNameInput,
+        islocked: this.isLockedSelect,
       };
       getPositions(para).then((res) => {
         if (res.resultType == 0) {

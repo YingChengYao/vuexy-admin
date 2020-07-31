@@ -28,6 +28,12 @@
         <div slot="header" class="flex flex-wrap-reverse items-center flex-grow justify-between">
           <div class="flex flex-wrap-reverse items-center data-list-btn-container header-left">
             <vs-button color="primary" type="border" class="mb-4 mr-4" @click="addNewData">添加</vs-button>
+            <vs-button
+              color="primary"
+              type="border"
+              class="mb-4 mr-4"
+              @click.stop="$refs.fileInput.click()"
+            >批量导入</vs-button>
           </div>
         </div>
 
@@ -100,6 +106,17 @@
         :pagedownItems="descriptionItems"
         :size="itemsPerPage"
       ></vs-pagination>
+    </div>
+
+    <div class="excel-import" style="display:none">
+      <input
+        type="file"
+        ref="fileInput"
+        multiple
+        class="hidden"
+        accept=".xlsx, .xls"
+        @change="handleClick"
+      />
     </div>
   </div>
 </template>
@@ -207,7 +224,31 @@ export default {
         }
       });
     },
+    handleClick(e) {
+      let userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
+      let para = {
+        companyID: userInfo.companyID,
+      };
+      let formData = new FormData();
+      formData.append("Files", e.target.files[0]);
+      formData.append("CompanyID", userInfo.companyID);
+      let config = {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      };
+      batchAddEmployee(formData, config).then((res) => {
+        if (res.resultType == 0) {
+          this.$vs.notify({
+            title: "Success",
+            text: "名单导入成功",
+            color: "success",
+          });
+          this.loadData();
+        }
+      });
+    },
     //#region 弹窗
     addNewData() {
       this.unitId = null;

@@ -3,13 +3,7 @@
     <vx-card title>
       <div class="vx-row">
         <div class="vx-col md:w-1/2 w-full mt-4">
-          <vs-select
-            autocomplete
-            :disabled="mark!='add'"
-            label="父级单位"
-            v-model="data_local.ParentID"
-            class="w-full select-large"
-          >
+          <vs-select label="父级单位" v-model="data_local.ParentID" class="w-full select-large">
             <vs-select-item
               :style="'margin-left:'+ (item.level)*10 +'px'"
               v-for="(item,index) in unitOptions"
@@ -28,6 +22,7 @@
             class="w-full"
             name="组织机构代码"
             v-validate="'required'"
+            :disabled="mark=='edit'"
           />
           <span
             class="text-danger text-sm"
@@ -85,6 +80,7 @@
           <label class="vs-select--label">所在省</label>
           <v-select
             label="ProvinceName"
+            value="ProvinceCode"
             v-model="data_local.Province"
             :options="provinceOptions"
             @input="loadCityData(data_local.Province)"
@@ -99,6 +95,7 @@
           <v-select
             ref="city"
             label="CityName"
+            value="CityCode"
             v-model="data_local.City"
             @input="loadCountyData(data_local.City)"
             :options="cityOptions"
@@ -113,6 +110,7 @@
           <v-select
             ref="county"
             label="CountyName"
+            value="CountyCode"
             v-model="data_local.County"
             :options="countyOptions"
             :clearable="false"
@@ -328,7 +326,6 @@ export default {
 
           let para = {
             parentID: this.data_local.ParentID,
-            companyCode: this.data_local.CompanyCode,
             companyName: this.data_local.CompanyName,
             contact: this.data_local.Contact,
             tel: this.data_local.Tel,
@@ -343,6 +340,7 @@ export default {
           };
 
           if (this.mark === "add") {
+            para.companyCode = this.data_local.CompanyCode;
             addEmployeeUnit(para).then((res) => {
               if (res.resultType == 0) {
                 this.$vs.notify({
