@@ -1,6 +1,5 @@
 // 将数组转换成tree结构数组
 export function composeTree(list = [], field, parentField) {
-  debugger
   const data = JSON.parse(JSON.stringify(list)); // 浅拷贝不改变源数据
   const result = [];
   if (!Array.isArray(data)) {

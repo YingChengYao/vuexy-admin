@@ -124,7 +124,7 @@
 
       <!-- tab 3 content -->
       <tab-content title="Payment" icon="feather icon-credit-card">
-        <plan-standard-list v-if="isShowStandard" ref="standard" :planID="planId_local"></plan-standard-list>
+        <plan-standard-list ref="standard" :planID="planID_local"></plan-standard-list>
       </tab-content>
     </form-wizard>
   </div>
@@ -167,20 +167,12 @@ export default {
     PlanStandardList,
   },
   props: {
-    planId: {
+    planID: {
       type: String,
       default: null,
     },
     mark: {
       type: String,
-      default: null,
-    },
-    workers: {
-      type: Array,
-      default: null,
-    },
-    standards: {
-      type: Array,
       default: null,
     },
     step: {
@@ -196,7 +188,7 @@ export default {
       isShowStandard: false,
 
       data_local: {},
-      planId_local: {},
+      planID_local: null,
       marriageOptions: [],
       genderOptions: [],
       planTypeOptions: [],
@@ -204,38 +196,31 @@ export default {
   },
   computed: {},
   created() {
+    this.planID_local = this.planID;
     this.loadMaritalStatus();
     this.loadGender();
     this.loadPlanTypeData();
-
-    if (this.step == "2") {
-      this.isShowStandard = true;
-    }
   },
   mounted() {
-    this.planId_local = this.planId;
+    debugger;
     this.loadData();
-    console.log("checkoutWizard：", this.$refs.checkoutWizard);
   },
   watch: {},
   methods: {
     //#region 初始化数据
     loadData() {
       debugger;
-      if (!this.planId_local) return;
+      if (!this.planID_local) return;
 
       let para = {
-        planId: this.planId_local,
+        planID: this.planID_local,
       };
       getPlanDetail(para).then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           console.log("计划详情：", data);
           this.data_local = data.Model;
-          data.PlanPhysical.map((item) => {
-            item.ID = item.Value;
-          });
-          debugger;
+
           this.$refs.medicalCenter.loadSelectedData(data.PlanPhysical);
           this.$refs.employee.loadSelectedData(data.PlanEmployee);
         }
@@ -284,88 +269,6 @@ export default {
       // }
     },
     //#endregion
-    save_changes() {
-      this.$validator.validateAll().then((result) => {
-        if (result) {
-          let userInfo = JSON.parse(localStorage.getItem("userInfo"));
-
-          let mecIDs = [];
-          if (this.medicalExaminationCenterIDs.length > 0) {
-            this.medicalExaminationCenterIDs.map((item, index) => {
-              mecIDs.push(item.Value);
-            });
-          }
-          console.log("MecIDs", mecIDs);
-          let standards = this.standards;
-
-          var employees = [];
-          if (this.workers.length > 0) {
-            this.workers.forEach(function (item) {
-              employees.push(item.ID);
-            });
-          }
-
-          console.log("11:", this.standards);
-
-          if (this.standards.length > 0) {
-            this.standards.map((item, index) => {
-              console.log("type:", typeof item.Positions);
-              console.log("Position:", item.Positions);
-              if (
-                item.Positions !== null &&
-                item.Positions !== undefined &&
-                typeof item.Positions !== "string"
-              ) {
-                item.Positions = item.Positions.map((r) => r.Value).join(",");
-                // item = Object.assign({}, item, {
-                //   PositionID: item.PositionID.map(r => r.Value).join(",")
-                // });
-              }
-            });
-          }
-
-          let para = {
-            planName: this.data_local.PlanName,
-            startTime: this.data_local.StartTime,
-            endTime: this.data_local.EndTime,
-            remark: this.data_local.Remark,
-            mecIDs: JSON.stringify(mecIDs),
-            employees: JSON.stringify(employees),
-            standars: JSON.stringify(this.standards),
-          };
-
-          if (this.mark === "add") {
-            addPlan(para).then((res) => {
-              if (res.resultType == 0) {
-                this.$vs.notify({
-                  title: "Success",
-                  text: res.message,
-                  color: "success",
-                });
-                this.$emit("loadData");
-                this.cancel();
-              }
-            });
-          } else if (this.mark == "edit") {
-            para.ID = this.planId;
-            editPlan(para).then((res) => {
-              if (res.resultType == 0) {
-                this.$vs.notify({
-                  title: "Success",
-                  text: res.message,
-                  color: "success",
-                });
-                this.$emit("loadData");
-                this.cancel();
-              }
-            });
-          }
-        }
-      });
-    },
-    cancel() {
-      this.$emit("closePop", false);
-    },
     //#region 基础信息
     save_base_info() {
       return new Promise(() => {
@@ -390,13 +293,13 @@ export default {
               mecIDs: mecIDs,
             };
 
-            if (this.planId_local) {
-              para.ID = this.planId_local;
+            if (this.planID_local) {
+              para.ID = this.planID_local;
               editPlan(para).then((res) => {
                 if (res.resultType == 0) {
                   this.$vs.notify({
                     title: "Success",
-                    text: "修啊给i体检计划成功",
+                    text: "修改体检计划成功",
                     color: "success",
                   });
                   this.$refs.checkoutWizard.nextTab();
@@ -411,8 +314,8 @@ export default {
                     color: "success",
                   });
                   console.log("res:", res);
-                  const data = JSON.parse(res.message); //"{"PlanID":"575642100966367232","PlanStep":0}"
-                  this.planId_local = data.PlanID;
+                  const data = JSON.parse(res.message); //"{"planID":"575642100966367232","PlanStep":0}"
+                  this.planID_local = data.planID;
                   this.$refs.checkoutWizard.nextTab();
                 }
               });
@@ -465,6 +368,9 @@ export default {
         });
       });
     },
+    cancel() {
+      this.$emit("closePop", false);
+    },
     //#endregion
 
     //#region 职工
@@ -487,7 +393,7 @@ export default {
         .join(",");
 
       let para = {
-        planId: this.planId_local,
+        planID: this.planID_local,
         employees: employees,
       };
 
@@ -499,7 +405,6 @@ export default {
             color: "success",
           });
           this.$refs.checkoutWizard.nextTab();
-          this.isShowStandard = true;
         }
       });
     },
@@ -515,10 +420,7 @@ export default {
     //#endregion
 
     //#region 标准
-    showStandard() {
-      console.log(1);
-      this.isShowStandard = true;
-    },
+
     //#endregion
 
     changeEmployeePop(data) {

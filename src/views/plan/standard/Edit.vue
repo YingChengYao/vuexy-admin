@@ -50,51 +50,66 @@
 <script>
 import { getPositionDataSource } from "@/http/data_source.js";
 import vSelect from "vue-select";
-import { addStandard, editStandard } from "@/http/plan.js";
+import { addStandard, editStandard, getStandardDetail } from "@/http/plan.js";
 
 export default {
   components: {
-    vSelect
+    vSelect,
   },
   props: {
     mark: { type: String, default: "" },
     standardID: { type: String, default: "" },
-    planID: { type: String, default: "" }
+    planID: { type: String, default: "" },
   },
   data() {
     return {
       positionOptions: [],
-      data_local: {}
+      data_local: {},
     };
   },
   created() {
     this.loadPosition();
+    this.loadData();
   },
   methods: {
+    loadData() {
+      if (!this.standardID) return;
+      let para = {
+        ID: this.standardID,
+      };
+      getStandardDetail(para).then((res) => {
+        if (res.resultType == 0) {
+          const data = JSON.parse(res.message);
+          console.log(data);
+          this.data_local = data;
+          this.data_local.Positions = data.Aggregate;
+        }
+      });
+    },
     save() {
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
       let para = {
         planID: this.planID,
         standard: this.data_local.Standard,
-        positions: this.data_local.Positions
+        positions: this.data_local.Positions,
       };
 
       if (!this.planID) {
         this.$vs.notify({
           title: "Error",
           text: "未找到该体检计划",
-          color: "Error"
+          color: "Error",
         });
         return;
       }
       if (this.mark == "add") {
-        addStandard(para).then(res => {
+        addStandard(para).then((res) => {
           if (res.resultType == 0) {
             this.$vs.notify({
               title: "Success",
               text: res.message,
-              color: "success"
+              color: "success",
             });
             this.$emit("loadData");
             this.cancel();
@@ -102,12 +117,12 @@ export default {
         });
       } else if (this.mark == "edit") {
         para.ID = this.data_local.StandardID;
-        editStandard(para).then(res => {
+        editStandard(para).then((res) => {
           if (res.resultType == 0) {
             this.$vs.notify({
               title: "Success",
               text: res.message,
-              color: "success"
+              color: "success",
             });
             this.$emit("loadData");
             this.cancel();
@@ -122,16 +137,16 @@ export default {
     loadPosition() {
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
       let para = {
-        companyid: userInfo.companyID
+        companyid: userInfo.companyID,
       };
-      getPositionDataSource(para).then(res => {
+      getPositionDataSource(para).then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.positionOptions = data;
         }
       });
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped>

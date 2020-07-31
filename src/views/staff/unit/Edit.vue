@@ -79,8 +79,8 @@
         <div class="vx-col md:w-1/2 w-full mt-4">
           <label class="vs-select--label">所在省</label>
           <v-select
-            label="ProvinceName"
-            value="ProvinceCode"
+            label="Name"
+            value="Code"
             v-model="data_local.Province"
             :options="provinceOptions"
             @input="loadCityData(data_local.Province)"
@@ -94,8 +94,8 @@
           <label class="vs-select--label">所在市</label>
           <v-select
             ref="city"
-            label="CityName"
-            value="CityCode"
+            label="Name"
+            value="Code"
             v-model="data_local.City"
             @input="loadCountyData(data_local.City)"
             :options="cityOptions"
@@ -109,8 +109,8 @@
           <label class="vs-select--label">所在区</label>
           <v-select
             ref="county"
-            label="CountyName"
-            value="CountyCode"
+            label="Name"
+            value="Code"
             v-model="data_local.County"
             :options="countyOptions"
             :clearable="false"
@@ -219,7 +219,6 @@ export default {
   methods: {
     loadData() {
       if (!this.unitId) return;
-      let userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
       let para = {
         companyid: this.unitId,
@@ -227,7 +226,6 @@ export default {
       getEmployeeUnitDetail(para).then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
-          console.log("data:", data);
           this.data_local = data;
         }
       });
@@ -288,10 +286,13 @@ export default {
     },
     //省市区数据加载
     loadProvinceData() {
+      debugger;
       getProvinceDataSource().then((res) => {
+        debugger;
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.provinceOptions = data;
+          console.log("data:", data);
         }
       });
     },
@@ -301,7 +302,10 @@ export default {
       this.$refs.city.clearSelection();
       this.countyOptions = [];
       this.$refs.county.clearSelection();
-      getCityDataSource(data).then((res) => {
+      let para = {
+        code: data.Code,
+      };
+      getCityDataSource(para).then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.cityOptions = data;
@@ -312,6 +316,9 @@ export default {
       if (!data) return;
       this.countyOptions = [];
       this.$refs.county.clearSelection();
+      let para = {
+        code: data.Code,
+      };
       getCountyDataSource(data).then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
@@ -332,9 +339,9 @@ export default {
             mobile: this.data_local.Mobile,
             sort: this.data_local.Sort,
             industry: this.data_local.Industry,
-            province: this.data_local.Province.ProvinceCode,
-            city: this.data_local.City.CityCode,
-            county: this.data_local.County.CountyCode,
+            province: this.data_local.Province.Code,
+            city: this.data_local.City.Code,
+            county: this.data_local.County.Code,
             street: this.data_local.Street,
             remark: this.data_local.Remark,
           };

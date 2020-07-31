@@ -12,7 +12,7 @@
       />
     </vs-popup>
 
-    <vx-card ref="filterCard" title class="user-list-filters mb-8">
+    <!-- <vx-card ref="filterCard" title class="user-list-filters mb-8">
       <vs-row vs-align="center">
         <label class="vx-col label-name px-2">职工名称</label>
         <vs-input
@@ -22,7 +22,7 @@
         />
         <vs-button class="vx-col flex" color="primary" type="border" @click="loadData">查询</vs-button>
       </vs-row>
-    </vx-card>
+    </vx-card> -->
 
     <div class="vx-card p-6">
       <vs-table ref="table" :data="items" stripe>
@@ -138,7 +138,7 @@ export default {
       isLockedSelect: false,
 
       //Page
-      itemsPerPage: 2,
+      itemsPerPage: 10,
       currentPage: 1,
       totalPage: 0,
       descriptionItems: [10, 20, 50, 100],

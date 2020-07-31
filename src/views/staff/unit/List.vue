@@ -2,6 +2,7 @@
   <div class="data-list-container">
     <vs-popup :title="title" :active.sync="popupActive">
       <unit-edit
+        v-if="popupActive"
         @closePop="closePop"
         @loadData="loadData"
         :unitId="unitId"

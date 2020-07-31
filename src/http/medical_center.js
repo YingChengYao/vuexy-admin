@@ -13,7 +13,7 @@ export const getMedicalCenters = params => {
 //获取体检中心详情
 export const getMedicalCenterDetail = params => {
   return request({
-    url: "/api/item/single/details",
+    url: "/api/mec/details",
     method: "get",
     params: params
   });

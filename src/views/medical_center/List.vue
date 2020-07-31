@@ -5,7 +5,7 @@
         v-if="popupActive"
         @closePop="closePop"
         @loadData="loadData"
-        :medicalCenterId="medicalCenterId"
+        :medicalCenterID="medicalCenterID"
         :medicalCenterData="medicalCenterData"
         :key="timer"
         :mark="mark"
@@ -124,7 +124,7 @@ export default {
       // Pop
       title: null,
       popupActive: false,
-      medicalCenterId: null,
+      medicalCenterID: null,
       medicalCenterData: null,
       timer: "",
       mark: null,
@@ -145,6 +145,7 @@ export default {
       getMedicalCenters(para).then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
+          console.log("体检中心：", data);
           this.medicalCenters = data.Items;
           this.totalPage = data.TotalPages;
           this.totalItems = data.TotalItems;
@@ -155,31 +156,18 @@ export default {
       debugger;
       this.selected = data;
       console.log("this.selected:", this.selected);
-      this.initCheckedItems();
-    },
-    initCheckedItems() {
-      if (!this.multipleCheck) return;
-      if (this.medicalCenters.length > 0) {
-        this.medicalCenters.map((item, index) => {
-          if (this.selected.length > 0) {
-            let val = this.selected.find((t) => t.ID === item.ID);
-            item.isChecked = !val ? false : true;
-          }
-        });
-        this.$refs.table.handleCheckboxAll();
-      }
+      this.$refs.table.initCheckedItems(this.selected);
     },
     //#region 弹窗
     addNewData() {
-      this.medicalCenterId = null;
+      this.medicalCenterID = null;
       this.popupActive = true;
       this.title = "添加体检中心信息";
       this.mark = "add";
       this.handleLoad();
     },
     editData(tr) {
-      this.medicalCenterId = tr.ID;
-      this.medicalCenterData = tr;
+      this.medicalCenterID = tr.ID;
       this.popupActive = true;
       this.title = "修改体检中心信息";
       this.mark = "edit";
@@ -212,8 +200,7 @@ export default {
     },
     //#endregion
   },
-  created() {
-  },
+  created() {},
   mounted() {
     this.loadData();
   },

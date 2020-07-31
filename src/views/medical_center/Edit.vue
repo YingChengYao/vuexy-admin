@@ -119,7 +119,62 @@
           />
           <span class="text-danger text-sm" v-show="errors.has('排序')">{{ errors.first('排序') }}</span>
         </div>
-        <div class="vx-col md:w-1/2 w-full mt-4"></div>
+
+        <!-- 所在省 -->
+        <div class="vx-col md:w-1/2 w-full mt-4">
+          <label class="vs-select--label">所在省</label>
+          <v-select
+            label="ProvinceName"
+            value="ProvinceCode"
+            v-model="data_local.Province"
+            :options="provinceOptions"
+            @input="loadCityData"
+            :clearable="false"
+            name="所在省"
+            v-validate="'required'"
+          />
+          <span class="text-danger text-sm" v-show="errors.has('所在省')">{{ errors.first('所在省') }}</span>
+        </div>
+        <!-- 所在市 -->
+        <div class="vx-col md:w-1/2 w-full mt-4">
+          <label class="vs-select--label">所在市</label>
+          <v-select
+            ref="city"
+            label="CityName"
+            value="CityCode"
+            v-model="data_local.City"
+            @input="loadCountyData(data_local.City)"
+            :options="cityOptions"
+            :clearable="false"
+            name="所在市"
+            v-validate="'required'"
+          />
+          <span class="text-danger text-sm" v-show="errors.has('所在市')">{{ errors.first('所在市') }}</span>
+        </div>
+        <div class="vx-col md:w-1/2 w-full mt-4">
+          <label class="vs-select--label">所在区</label>
+          <v-select
+            ref="county"
+            label="CountyName"
+            value="CountyCode"
+            v-model="data_local.County"
+            :options="countyOptions"
+            :clearable="false"
+            name="所在区"
+            v-validate="'required'"
+          />
+          <span class="text-danger text-sm" v-show="errors.has('所在区')">{{ errors.first('所在区') }}</span>
+        </div>
+        <div class="vx-col md:w-1/2 w-full mt-4">
+          <vs-input
+            label="街道"
+            v-model="data_local.Street"
+            class="w-full"
+            name="街道"
+            v-validate="'required'"
+          />
+          <span class="text-danger text-sm" v-show="errors.has('街道')">{{ errors.first('街道') }}</span>
+        </div>
 
         <!-- 描述 -->
         <div class="vx-col w-full mt-4" style="height:40rem">
@@ -146,69 +201,106 @@ import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
 import "quill/dist/quill.bubble.css";
 import { quillEditor } from "vue-quill-editor";
+import vSelect from "vue-select";
 
-import { addMedicalCenter, editMedicalCenter } from "@/http/medical_center.js";
+import {
+  addMedicalCenter,
+  editMedicalCenter,
+  getMedicalCenterDetail,
+} from "@/http/medical_center.js";
 import {
   getMedicalCenterGradeDataSource,
-  getMedicalCenterNatureDataSource
+  getMedicalCenterNatureDataSource,
+  getProvinceDataSource,
+  getCityDataSource,
+  getCountyDataSource,
 } from "@/http/data_source.js";
 
 export default {
   name: "",
   components: {
-    quillEditor
+    quillEditor,
+    vSelect,
   },
   props: {
     mark: {
       type: String,
-      default: null
+      default: null,
     },
-    medicalCenterData: {
-      type: Object,
-      default: {}
-    },
-    medicalCenterId: {
+    medicalCenterID: {
       type: String,
-      default: null
-    }
+      default: null,
+    },
   },
   data() {
     return {
       data_local: {},
       gradeOptions: [],
-      natureOptions: []
+      natureOptions: [],
+      provinceOptions: [],
+      cityOptions: [],
+      countyOptions: [],
     };
   },
   computed: {},
   created() {
     this.loadMedicalCenterGrade();
     this.loadMedicalCenterNature();
-    this.medicalCenterId ? this.loadData() : this.initData();
+    this.loadData();
+    this.loadProvinceData();
   },
   mounted() {},
   methods: {
-    initData() {
-      this.data_local = {};
-    },
     loadData() {
-      if (!this.medicalCenterData) return;
-      this.data_local = this.medicalCenterData;
-      console.log(this.medicalCenterData);
-      //   let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+      if (!this.medicalCenterID) return;
 
-      //   let para = {
-      //     mecid: userInfo.mecID,
-      //     id: this.projectItemId
-      //   };
-      //   getProjectItemDetails(para).then(res => {
-      //     if (res.resultType == 0) {
-      //       const data = JSON.parse(res.message);
-      //       this.data_local = data;
-      //     }
-      //   });
+      let para = {
+        mecid: this.medicalCenterID,
+      };
+      getMedicalCenterDetail(para).then((res) => {
+        if (res.resultType == 0) {
+          const data = JSON.parse(res.message);
+          this.data_local = data;
+          console.log("dataID:", data);
+        }
+      });
+    },
+    //省市区数据加载
+    loadProvinceData() {
+      getProvinceDataSource().then((res) => {
+        if (res.resultType == 0) {
+          const data = JSON.parse(res.message);
+          this.provinceOptions = data;
+        }
+      });
+    },
+    loadCityData() {
+      debugger;
+      let data = this.data_local.City;
+      // this.cityOptions = [];
+      this.$refs.city.clearSelection();
+      // this.countyOptions = [];
+      this.$refs.county.clearSelection();
+      getCityDataSource(data).then((res) => {
+        if (res.resultType == 0) {
+          const data = JSON.parse(res.message);
+          this.cityOptions = data;
+        }
+      });
+    },
+    loadCountyData(data) {
+      if (!data) return;
+      this.countyOptions = [];
+      this.$refs.county.clearSelection();
+      getCountyDataSource(data).then((res) => {
+        if (res.resultType == 0) {
+          const data = JSON.parse(res.message);
+          this.countyOptions = data;
+        }
+      });
     },
     save_changes() {
-      this.$validator.validateAll().then(result => {
+      this.$validator.validateAll().then((result) => {
         if (result) {
           let userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
@@ -220,17 +312,17 @@ export default {
             Tel: this.data_local.Tel,
             Mobile: this.data_local.Mobile,
             sort: this.data_local.Sort,
-            remark: this.data_local.Remark
+            remark: this.data_local.Remark,
           };
 
           if (this.mark === "add") {
             para.MecCode = this.data_local.MecCode;
-            addMedicalCenter(para).then(res => {
+            addMedicalCenter(para).then((res) => {
               if (res.resultType == 0) {
                 this.$vs.notify({
                   title: "Success",
                   text: res.message,
-                  color: "success"
+                  color: "success",
                 });
                 this.$emit("loadData");
                 this.cancel();
@@ -238,12 +330,12 @@ export default {
             });
           } else if (this.mark === "edit") {
             para.ID = this.data_local.ID;
-            editMedicalCenter(para).then(res => {
+            editMedicalCenter(para).then((res) => {
               if (res.resultType == 0) {
                 this.$vs.notify({
                   title: "Success",
                   text: res.message,
-                  color: "success"
+                  color: "success",
                 });
                 this.$emit("loadData");
                 this.cancel();
@@ -257,7 +349,7 @@ export default {
       this.$emit("closePop", false);
     },
     loadMedicalCenterGrade() {
-      getMedicalCenterGradeDataSource().then(res => {
+      getMedicalCenterGradeDataSource().then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.gradeOptions = data;
@@ -268,7 +360,7 @@ export default {
       });
     },
     loadMedicalCenterNature() {
-      getMedicalCenterNatureDataSource().then(res => {
+      getMedicalCenterNatureDataSource().then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.natureOptions = data;
@@ -277,8 +369,8 @@ export default {
           }
         }
       });
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang='sass' scoped>

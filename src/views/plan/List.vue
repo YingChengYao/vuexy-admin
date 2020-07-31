@@ -5,11 +5,9 @@
         v-if="popupActive"
         @closePop="closePop"
         @loadData="loadData"
-        :planId="planId"
+        :planID="planID"
         :key="timer"
         :mark="mark"
-        :workers="workers"
-        :standards="standards"
         :step="step"
       />
     </vs-popup>
@@ -52,7 +50,7 @@
           <vs-th>排序</vs-th>
           <vs-th>状态</vs-th>
           <vs-th>类型</vs-th>
-          <vs-th>是否锁定</vs-th>
+          <vs-th>参与人数</vs-th>
           <vs-th>修改人</vs-th>
           <vs-th>创建时间</vs-th>
           <vs-th>操作</vs-th>
@@ -71,7 +69,7 @@
             <p>{{ item.tr.PlanTypeName }}</p>
           </vs-td>
           <vs-td>
-            <p>{{ item.tr.IsLocked?'是':'否' }}</p>
+            <p>{{ item.tr.PlanEmployeeCount }}</p>
           </vs-td>
           <vs-td>
             <p class="product-category">{{ item.tr.ModifyName}}</p>
@@ -145,14 +143,13 @@ export default {
       // Pop
       title: null,
       popupActive: false,
-      planId: null,
+      planID: null,
       timer: "",
       mark: null,
       popupActiveStandard: false,
       standardData: {},
       popupActiveEmployee: false,
-      workers: [],
-      standards: [],
+      step: 0,
 
       activeConfirm: false,
     };
@@ -177,9 +174,9 @@ export default {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.plans = data.Items;
+          console.log("计划列表：", data);
           this.totalPage = data.TotalPages;
           this.totalItems = data.TotalItems;
-          console.log("计划列表：", this.plans);
         }
       });
     },
@@ -208,17 +205,16 @@ export default {
     },
     //#region 弹窗
     addNewData() {
-      this.planId = null;
+      this.planID = null;
       this.popupActive = true;
       this.title = "添加体检计划";
       this.mark = "add";
       this.handleLoad();
-      this.workers = [];
-      this.standards = [];
     },
     editData(tr) {
-      this.planId = tr.ID;
-      this.step = 1;
+      debugger;
+      this.planID = tr.ID;
+      this.step = 2;
       this.popupActive = true;
       this.title = "修改体检计划信息";
       this.mark = "edit";

@@ -98,6 +98,14 @@ export const editStandard = params => {
   });
 };
 
+//获取体检计划的标准信息
+export const getStandardDetail = params => {
+  return request({
+    url: "/api/plan/standard/details",
+    method: "get",
+    params: params
+  });
+};
 //#endregion
 
 //#region 体检计划(体检中心)

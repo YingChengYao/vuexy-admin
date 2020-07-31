@@ -5,8 +5,8 @@ import { getToken } from "@/common/utils/auth/token";
 import vue from "@/main.js";
 
 const request = axios.create({
-  //baseURL: "http://manage.qrtj.cn",
-  baseURL: "http://localhost:5000/",
+  baseURL: "http://manage.qrtj.cn",
+  //baseURL: "http://localhost:5000",
   //baseURL: "http://managea.tijian.cn",
   timeout: 5000
 });
@@ -14,7 +14,6 @@ const request = axios.create({
 //#region http request 拦截器
 request.interceptors.request.use(
   config => {
-    debugger;
     //this.$vs.loading();
     let curTime = new Date();
     let accessExpiration = window.localStorage.getItem("AccessExpiration");

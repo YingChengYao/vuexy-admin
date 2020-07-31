@@ -145,23 +145,25 @@ export const getMedicalCenterNatureDataSource = params => {
 //获取体检中心等级数据源
 export const getProvinceDataSource = params => {
   return request({
-    url: "/api/province/list",
+    url: "/api/province/select",
     method: "get",
     params: params
   });
 };
+
 //获取体检中心性质数据源
 export const getCityDataSource = params => {
   return request({
-    url: "/api/city/list",
+    url: "/api/city/select",
     method: "get",
     params: params
   });
 };
+
 //获取体检中心性质数据源
 export const getCountyDataSource = params => {
   return request({
-    url: "/api/county/list",
+    url: "/api/county/select",
     method: "get",
     params: params
   });
