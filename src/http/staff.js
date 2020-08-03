@@ -19,6 +19,16 @@ export const addEmployeeUnit = params => {
   });
 };
 
+//批量添加职工单位
+export const batchAddEmployeeUnit = (data, config) => {
+  return request({
+    url: "/api/company/inserts",
+    method: "post",
+    data: data,
+    config: config
+  });
+};
+
 //修改职工单位
 export const editEmployeeUnit = params => {
   return request({

@@ -84,20 +84,28 @@
               type="border"
               style="display:display"
               @click.stop="editData(item.tr)"
-              v-if="item.tr.Status==1"
+              v-if="[0,1].indexOf(item.tr.Status)!=-1"
             >编辑</span>
             <span
               class="text-primary px-2"
               size="small"
               type="border"
               @click.stop="confirmSubmitPlan(item.tr.ID)"
+              v-if="[1].indexOf(item.tr.Status)!=-1"
             >提交</span>
             <span
               class="text-primary px-2"
               size="small"
               type="border"
-              @click.stop="confirmSubmitPlan(item.tr.ID)"
+              @click.stop="confirmAuditPlan(item.tr.ID)"
+              v-if="[2].indexOf(item.tr.Status)!=-1"
             >审核</span>
+            <span
+              class="text-primary px-2"
+              size="small"
+              type="border"
+              @click.stop="confirmAuditPlan(item.tr.ID)"
+            >查看计划</span>
           </vs-td>
         </template>
         <template slot="paginationright">
@@ -143,7 +151,7 @@ export default {
       // Pop
       title: null,
       popupActive: false,
-      planID: null,
+      planID: "",
       timer: "",
       mark: null,
       popupActiveStandard: false,
@@ -181,15 +189,15 @@ export default {
       });
     },
     confirmSubmitPlan(id) {
-      let para = {
-        id: id,
-      };
       this.$vs.dialog({
         type: "confirm",
         color: "success",
         title: `提交体检计划`,
         text: "该计划提交后将不可更改",
-        accept: (para) => {
+        accept: () => {
+          let para = {
+            id: id,
+          };
           submitPlan(para).then((res) => {
             if (res.resultType == 0) {
               this.$vs.notify({
@@ -203,18 +211,20 @@ export default {
         },
       });
     },
+    confirmAuditPlan(id) {},
     //#region 弹窗
     addNewData() {
-      this.planID = null;
+      this.planID = "";
       this.popupActive = true;
       this.title = "添加体检计划";
       this.mark = "add";
+      this.step = 0;
       this.handleLoad();
     },
     editData(tr) {
       debugger;
       this.planID = tr.ID;
-      this.step = 2;
+      this.step = tr.PlanStep;
       this.popupActive = true;
       this.title = "修改体检计划信息";
       this.mark = "edit";

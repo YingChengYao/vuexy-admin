@@ -1,7 +1,7 @@
 <template>
   <div id class="data-list-container">
     <vs-popup fullscreen :title="title" :active.sync="popupActive">
-      <project-edit @closePop="closePop" @loadData="loadData" :projectId="projectId" :key="timer" />
+      <project-edit @closePop="closePop" @loadData="loadData" :projectID="projectID" :key="timer" />
     </vs-popup>
 
     <vx-card ref="filterCard" title class="user-list-filters mb-8">
@@ -163,7 +163,7 @@ export default {
     return {
       //Pop
       popupActive: false,
-      projectId: null,
+      projectID: null,
       title: null,
       timer: "",
 
@@ -295,13 +295,13 @@ export default {
     },
     //#region 弹窗
     addNewData() {
-      this.projectId = null;
+      this.projectID = null;
       this.popupActive = true;
       this.title = "添加项目信息";
       this.handleLoad();
     },
     editData(id) {
-      this.projectId = id;
+      this.projectID = id;
       this.title = "修改项目信息";
       this.popupActive = true;
       this.handleLoad();

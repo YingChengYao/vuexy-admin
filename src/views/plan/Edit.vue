@@ -49,7 +49,6 @@
                 :language="languages.zh"
                 @selected="selectedEndTime"
               ></datepicker>
-              <!-- <span class="text-danger text-sm" v-show="errors.has('结束日期')">{{ errors.first('结束日期') }}</span> -->
             </div>
             <div class="vx-col md:w-1/4 w-full">
               <vs-select label="体检模式" v-model="data_local.PlanType" class="w-full select-large">
@@ -81,19 +80,14 @@
           </div>
         </form>
         <medical-center-list ref="medicalCenter" :multipleCheck="true" :isPlanPop="true"></medical-center-list>
-        <!-- <vs-card> -->
         <div class="text-right mt-5">
           <span>
             <vs-button class="vx-col ml-auto" color="primary" @click="save_base_info">保存</vs-button>
           </span>
-          <!-- <span class="px-2">
-            <vs-button class="vx-col ml-4" color="primary" @click="next_base_info">下一步</vs-button>
-          </span>-->
           <span class="px-2">
             <vs-button class="vx-col ml-4" type="border" color="warning" @click="cancel">取消</vs-button>
           </span>
         </div>
-        <!-- </vs-card> -->
       </tab-content>
 
       <!-- tab 2 content -->
@@ -103,17 +97,14 @@
           :isPop="true"
           :isShowWorkingStatus="false"
           :multipleCheck="true"
-        >
-          <!-- <template>
-          </template>-->
-        </staff-employee-list>
+        ></staff-employee-list>
         <div class="text-right mt-5">
           <span>
             <vs-button
               class="vx-col ml-auto mt-2"
               type="border"
               color="warning"
-              @click="back_base_info"
+              @click="prevTab"
             >上一步</vs-button>
           </span>
           <span class="px-4">
@@ -125,6 +116,22 @@
       <!-- tab 3 content -->
       <tab-content title="Payment" icon="feather icon-credit-card">
         <plan-standard-list ref="standard" :planID="planID_local"></plan-standard-list>
+        <div class="text-right mt-5">
+          <span>
+            <vs-button
+              class="vx-col ml-auto mt-2"
+              type="border"
+              color="warning"
+              @click="prevTab"
+            >上一步</vs-button>
+          </span>
+          <span class="px-4">
+            <vs-button class="vx-col ml-auto mt-2" color="primary" @click="savePlan">保存</vs-button>
+          </span>
+          <span class="px-4">
+            <vs-button class="vx-col ml-auto mt-2" color="primary" @click="confirmSubmitPlan">提交</vs-button>
+          </span>
+        </div>
       </tab-content>
     </form-wizard>
   </div>
@@ -152,6 +159,8 @@ import {
   addOrEditEmployeeForPlan,
   editPlan,
   getPlanDetail,
+  submitPlan,
+  savePlan,
 } from "@/http/plan.js";
 import { getMedicalCenters } from "@/http/medical_center.js";
 
@@ -169,11 +178,11 @@ export default {
   props: {
     planID: {
       type: String,
-      default: null,
+      default: "",
     },
     mark: {
       type: String,
-      default: null,
+      default: "",
     },
     step: {
       type: Number,
@@ -202,14 +211,12 @@ export default {
     this.loadPlanTypeData();
   },
   mounted() {
-    debugger;
     this.loadData();
   },
   watch: {},
   methods: {
     //#region 初始化数据
     loadData() {
-      debugger;
       if (!this.planID_local) return;
 
       let para = {
@@ -218,9 +225,14 @@ export default {
       getPlanDetail(para).then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
-          console.log("计划详情：", data);
           this.data_local = data.Model;
-
+          console.log("计划详情：", data);
+          data.PlanPhysical.map((item) => {
+            item.ID = item.MecID;
+          });
+          data.PlanEmployee.map((item) => {
+            item.ID = item.EmployeeID;
+          });
           this.$refs.medicalCenter.loadSelectedData(data.PlanPhysical);
           this.$refs.employee.loadSelectedData(data.PlanEmployee);
         }
@@ -275,8 +287,7 @@ export default {
         this.$validator.validateAll("step-base").then((result) => {
           if (result) {
             let checkedGroup = this.$refs.medicalCenter.selected;
-            let isValid = this.validBaseinfo(checkedGroup);
-            if (!isValid) return;
+            if (!this.validBaseinfo) return;
 
             let mecIDs = checkedGroup
               .map((obj) => {
@@ -313,9 +324,8 @@ export default {
                     text: "添加体检计划成功",
                     color: "success",
                   });
-                  console.log("res:", res);
-                  const data = JSON.parse(res.message); //"{"planID":"575642100966367232","PlanStep":0}"
-                  this.planID_local = data.planID;
+                  const data = JSON.parse(res.message);
+                  this.planID_local = data.PlanID;
                   this.$refs.checkoutWizard.nextTab();
                 }
               });
@@ -332,14 +342,18 @@ export default {
         });
       });
     },
-    validBaseinfo(checkedGroup) {
+    validBaseinfo() {
       let message = null;
+
       if (!this.data_local.StartTime || !this.data_local.EndTime) {
         message = "请选择本次计划体检时间";
       } else if (this.data_local.StartTime > this.data_local.EndTime) {
         message = "计划体检开始时间不能大于计划体检结束时间";
-      } else if (checkedGroup.length <= 0) {
-        message = "请至少选择一家体检中心机构";
+      } else {
+        let checkedGroup = this.$refs.medicalCenter.selected;
+        if (checkedGroup.length <= 0) {
+          message = "请至少选择一家体检中心机构";
+        }
       }
       if (!message) return true;
       this.$vs.notify({
@@ -375,17 +389,8 @@ export default {
 
     //#region 职工
     save_employee() {
-      debugger;
+      if (!this.validEmployee()) return;
       let checkedGroup = this.$refs.employee.selected;
-
-      if (!checkedGroup.length > 0) {
-        this.$vs.notify({
-          title: "Error",
-          text: "请选择职工名单",
-          color: "Error",
-        });
-        return;
-      }
       let employees = checkedGroup
         .map((obj) => {
           return obj.ID;
@@ -408,8 +413,15 @@ export default {
         }
       });
     },
-    back_base_info() {
-      this.$refs.checkoutWizard.prevTab();
+    validEmployee() {
+      let checkedGroup = this.$refs.employee.selected;
+      if (checkedGroup.length > 0) return true;
+      this.$vs.notify({
+        title: "Error",
+        text: "请选择职工名单",
+        color: "Error",
+      });
+      return false;
     },
     nextTab() {
       this.$refs.checkoutWizard.nextTab();
@@ -420,15 +432,84 @@ export default {
     //#endregion
 
     //#region 标准
+    validStandard() {
+      debugger;
+      let standards = this.$refs.standard.standards;
+      if (standards.length > 0) return true;
+      this.$vs.notify({
+        title: "Error",
+        text: "请添加标准",
+        color: "Error",
+      });
+      return false;
+    },
+    savePlan() {
+      if (!this.validPlan()) return;
+      let para = {
+        planID: this.planID_local,
+      };
+      savePlan(para).then((res) => {
+        if (res.resultType == 0) {
+          this.$vs.notify({
+            title: "Success",
+            text: res.message,
+            color: "success",
+          });
+          this.$emit("loadData");
+          this.cancel();
+        }
+      });
+    },
+    confirmSubmitPlan() {
+      if (!this.validPlan()) return;
+      debugger;
 
+      this.$vs.dialog({
+        type: "confirm",
+        color: "success",
+        title: `提交体检计划`,
+        text: "该计划提交后将不可更改",
+        acceptText: "确认",
+        cancelText: "取消",
+        accept: this.submitPlan,
+      });
+    },
+    submitPlan() {
+      let para = {
+        id: this.planID_local,
+      };
+      submitPlan(para).then((res) => {
+        if (res.resultType == 0) {
+          this.$vs.notify({
+            title: "Success",
+            text: res.message,
+            color: "success",
+          });
+          this.$emit("loadData");
+          this.cancel();
+        }
+      });
+    },
+    validPlan() {
+      if (
+        !this.validBaseinfo() ||
+        !this.validEmployee() ||
+        !this.validStandard()
+      ) {
+        return false;
+      }
+
+      if (!this.planID_local) {
+        this.$vs.notify({
+          title: "Error",
+          text: "未找到相对应的体检计划，请刷新后重新添加或修改",
+          color: "Error",
+        });
+        return false;
+      }
+      return true;
+    },
     //#endregion
-
-    changeEmployeePop(data) {
-      this.$emit("changeEmployeePop", data);
-    },
-    changeStandardPop(data) {
-      this.$emit("changeStandardPop", data);
-    },
   },
 };
 </script>

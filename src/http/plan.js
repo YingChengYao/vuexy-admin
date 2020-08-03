@@ -47,6 +47,15 @@ export const submitPlan = params => {
   });
 };
 
+//提交体检计划
+export const savePlan = params => {
+  return request({
+    url: "/api/plan/examine",
+    method: "post",
+    params: params
+  });
+};
+
 //添加体检计划的职工名单
 export const addEmployeeForPlan = params => {
   return request({

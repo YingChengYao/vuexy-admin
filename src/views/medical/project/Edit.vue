@@ -76,7 +76,7 @@
           <vs-input class="w-full" label="备注" v-model="data_local.Remark" name="备注" />
           <span class="text-danger text-sm" v-show="errors.has('备注')">{{ errors.first('备注') }}</span>
         </div>
-        <div class="vx-col md:w-1/2 w-full mt-6" v-if="projectId">
+        <div class="vx-col md:w-1/2 w-full mt-6" v-if="projectID">
           <label class="vs-input--label">是否锁定</label>
           <vs-switch v-model="data_local.IsLocked" />
         </div>
@@ -130,7 +130,12 @@ import {
   getGenderDataSource,
   getProjectItemDataSource,
 } from "@/http/data_source.js";
-import { addProject, editProject, getProjectDetail } from "@/http/package.js";
+import {
+  addProject,
+  editProject,
+  getProjectDetail,
+  getSinglesForProject,
+} from "@/http/package.js";
 
 export default {
   name: "",
@@ -139,7 +144,7 @@ export default {
     ProjectItemList,
   },
   props: {
-    projectId: String,
+    projectID: String,
     default: "",
   },
   data() {
@@ -183,17 +188,32 @@ export default {
       };
     },
     loadData() {
-      if (!this.projectId) return;
+      if (!this.projectID) return;
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
       let para = {
         mecid: userInfo.mecID,
-        itemId: this.projectId,
+        itemId: this.projectID,
       };
       getProjectDetail(para).then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.data_local = data;
+          console.log("项目详情:", data);
+        }
+      });
+    },
+    loadSingleData() {
+      if (!this.projectID) return;
+
+      let para = {
+        itemID: this.projectID,
+      };
+      getSinglesForProject(para).then((res) => {
+        if (res.resultType == 0) {
+          const data = JSON.parse(res.message);
+          this.data_local = data;
+          this.$refs.medicalCenter.loadSelectedData(data.PlanPhysical);
         }
       });
     },
@@ -202,7 +222,7 @@ export default {
         if (result) {
           let userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
-          let singles = this.$refs.projectItem.$refs.table.checkedGroup
+          let singles = this.$refs.projectItem.selected
             .map((r) => r.ID)
             .join(",");
 
@@ -220,7 +240,7 @@ export default {
             isLocked: this.data_local.isLocked,
           };
 
-          if (!this.projectId) {
+          if (!this.projectID) {
             addProject(para).then((res) => {
               if (res.resultType == 0) {
                 this.$vs.notify({
@@ -232,8 +252,8 @@ export default {
                 this.cancel();
               }
             });
-          } else if (this.projectId) {
-            para.ID = this.projectId;
+          } else if (this.projectID) {
+            para.ID = this.projectID;
             para.isLocked = this.data_local.IsLocked;
             editProject(para).then((res) => {
               if (res.resultType == 0) {

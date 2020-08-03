@@ -125,7 +125,7 @@
 <script>
 import UnitEdit from "./Edit";
 import { composeTree } from "@/common/utils/data/array.js";
-import { getEmployeeUnits } from "@/http/staff.js";
+import { getEmployeeUnits, batchAddEmployeeUnit } from "@/http/staff.js";
 export default {
   components: {
     UnitEdit,
@@ -239,7 +239,7 @@ export default {
           "Content-Type": "multipart/form-data",
         },
       };
-      batchAddEmployee(formData, config).then((res) => {
+      batchAddEmployeeUnit(formData, config).then((res) => {
         if (res.resultType == 0) {
           this.$vs.notify({
             title: "Success",
