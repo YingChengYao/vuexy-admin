@@ -5,12 +5,12 @@
         <div class="vx-col md:w-1/2 w-full">
           <vs-input
             class="w-full mt-4"
-            label="职工名称"
+            label="姓名"
             v-model="data_local.EmployeeName"
             v-validate="'required'"
-            name="职工名称"
+            name="姓名"
           />
-          <span class="text-danger text-sm" v-show="errors.has('职工名称')">{{ errors.first('职工名称') }}</span>
+          <span class="text-danger text-sm" v-show="errors.has('姓名')">{{ errors.first('姓名') }}</span>
         </div>
         <div class="vx-col md:w-1/2 w-full">
           <vs-input

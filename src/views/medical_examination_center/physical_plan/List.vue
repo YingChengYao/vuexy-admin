@@ -22,87 +22,79 @@
       </vs-popup>
     </vs-popup>
 
-    <vx-card title="体检计划列表" class="p-6" refresh-content-action @refresh="refreshData">
-      <vs-table ref="table" stripe :data="plans">
-        <!-- <div slot="header" class="flex flex-wrap-reverse items-center flex-grow justify-between">
-          <div class="flex flex-wrap-reverse items-center data-list-btn-container header-left">
-            <vs-button color="primary" type="border" class="mb-4 mr-4" @click="addNewData">添加</vs-button>
-          </div>
-        </div>-->
+    <vx-card ref="filterCard" title class="user-list-filters mb-8">
+      <vs-row vs-align="center">
+        <label class="vx-col label-name px-2">计划名称名称</label>
+        <vs-input placeholder v-model="planNameInput" class="vx-col md:w-1/6 sm:w-1/2 w-full px-2" />
+        <!-- <label class="vx-col label-name px-2">是否锁定</label>
+        <vs-select
+          v-model="isLockedSelect"
+          class="vx-col md:w-1/6 sm:w-1/2 w-full px-2 select-large"
+        >
+          <vs-select-item
+            v-for="(item,index) in isLockedSelectOptions"
+            :key="index"
+            :value="item.value"
+            :text="item.name"
+            class="w-full"
+          />
+        </vs-select>-->
+        <vs-button class="vx-col" color="primary" type="border" @click="loadData">查询</vs-button>
+        <vs-button class="vx-col ml-4" color="primary" type="border" @click="refreshData">刷新</vs-button>
+      </vs-row>
+    </vx-card>
 
-        <template slot="thead">
-          <vs-th>编号</vs-th>
-          <vs-th>计划名称</vs-th>
+    <vx-card title="体检计划列表" class="p-6">
+      <vx-table
+        ref="table"
+        :items="plans"
+        :totalPage="totalPage"
+        :totalItems="totalItems"
+        :pageSize="10"
+        @loadData="loadData"
+      >
+        <template slot="thead-header">
           <vs-th>单位</vs-th>
+          <vs-th>计划名称</vs-th>
           <vs-th>状态</vs-th>
-          <vs-th>排序</vs-th>
-          <vs-th>是否锁定</vs-th>
-          <vs-th>修改人</vs-th>
-          <vs-th>创建时间</vs-th>
+          <vs-th>参与人数</vs-th>
+          <vs-th>体检周期</vs-th>
+
           <vs-th>操作</vs-th>
         </template>
-
-        <template slot-scope="{data}">
-          <tbody>
-            <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data">
-              <vs-td>
-                <p>{{ indextr+1 }}</p>
-              </vs-td>
-              <vs-td>
-                <p>{{ tr.PlanName }}</p>
-              </vs-td>
-              <vs-td>
-                <p>{{ tr.CompanyName }}</p>
-              </vs-td>
-              <vs-td>
-                <p>{{ tr.StatusName }}</p>
-              </vs-td>
-              <vs-td>
-                <p>{{ tr.Sort }}</p>
-              </vs-td>
-              <vs-td>
-                <p>{{ tr.IsLocked?'是':'否' }}</p>
-              </vs-td>
-              <vs-td>
-                <p class="product-category">{{ tr.ModifyName}}</p>
-              </vs-td>
-              <vs-td>
-                <p>{{ tr.ModifyTime | formatDate }}</p>
-              </vs-td>
-              <vs-td class="whitespace-no-wrap">
-                <span
-                  class="text-primary px-2"
-                  size="small"
-                  type="border"
-                  @click.stop="addPackage(tr)"
-                >配置套餐</span>
-                <span
-                  class="text-primary"
-                  size="small"
-                  type="border"
-                  @click.stop="lookPackage(tr.ID)"
-                >查看套餐</span>
-              </vs-td>
-            </vs-tr>
-          </tbody>
+        <template slot="thead-content" slot-scope="item">
+          <vs-td>
+            <p>{{ item.tr.CompanyName }}</p>
+          </vs-td>
+          <vs-td>
+            <p>{{ item.tr.PlanName }}</p>
+          </vs-td>
+          <vs-td>
+            <p>{{ item.tr.StatusName }}</p>
+          </vs-td>
+          <vs-td>
+            <p>{{ item.tr.PlanEmployeeCount }}</p>
+          </vs-td>
+          <vs-td>
+            <p>{{ item.tr.StartTime | formatDate("yyyy-MM-dd") }}到{{ item.tr.EndTime | formatDate("yyyy-MM-dd")}}</p>
+          </vs-td>
+          <vs-td class="whitespace-no-wrap">
+            <span
+              class="text-primary px-2"
+              size="small"
+              type="border"
+              @click.stop="addPackage(item.tr)"
+            >配置套餐</span>
+            <span
+              class="text-primary"
+              size="small"
+              type="border"
+              @click.stop="lookPackage(item.tr.ID)"
+            >查看套餐</span>
+          </vs-td>
         </template>
-      </vs-table>
+      </vx-table>
     </vx-card>
-    <div class="con-pagination-table vs-table--pagination">
-      <vs-pagination
-        :total="totalPage"
-        v-model="currentPage"
-        :pagedown="true"
-        :totalItems="totalItems"
-        @changePageMaxItems="changePageMaxItems"
-        :pagedownItems="descriptionItems"
-        :size="itemsPerPage"
-      ></vs-pagination>
-    </div>
-
-    <!-- <div class="vx-card p-6" style="position: fixed;bottom: 0;width: calc(100% - 4.4rem - 260px);z-index: 9919;">
-       
-    </div>-->
   </div>
 </template>
 
@@ -114,16 +106,13 @@ import { getPlansForPhysical } from "@/http/plan.js";
 export default {
   components: {
     ExclusivePackageEdit,
-    ExclusivePackageList
+    ExclusivePackageList,
   },
   data() {
     return {
       //Page
       plans: [],
-      itemsPerPage: 10,
-      currentPage: 1,
       totalPage: 0,
-      descriptionItems: [10, 20, 50, 100],
       totalItems: 0,
 
       // Pop
@@ -135,7 +124,7 @@ export default {
       popupActivePackageEdit: false,
       titlePackageEdit: null,
       markPackageEdit: null,
-      packageId: null
+      packageId: null,
     };
   },
   computed: {},
@@ -144,11 +133,11 @@ export default {
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
       let para = {
-        pageIndex: this.currentPage,
-        pageSize: this.itemsPerPage
+        pageIndex: this.$refs.table.currentPage,
+        pageSize: this.$refs.table.itemsPerPage,
       };
 
-      getPlansForPhysical(para).then(res => {
+      getPlansForPhysical(para).then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           console.log("计划列表：", data);
@@ -158,9 +147,9 @@ export default {
         }
       });
     },
-    refreshData(card) {
+    refreshData() {
+      this.$refs.table.changeCurrentPage(1);
       this.loadData();
-      card.removeRefreshAnimation(1000);
     },
     //#region 弹窗
     addPackage(data) {
@@ -202,21 +191,12 @@ export default {
       this.popupActivePackageEdit = false;
     },
     //#endregion
-    changePageMaxItems(index) {
-      this.itemsPerPage = this.descriptionItems[index];
-      this.currentPage = 1;
-      this.loadData();
-    }
   },
-  created() {
+  created() {},
+  mounted() {
     this.loadData();
   },
-  mounted() {},
-  watch: {
-    currentPage() {
-      this.loadData();
-    }
-  }
+  watch: {},
 };
 </script>
 

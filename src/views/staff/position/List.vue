@@ -143,6 +143,7 @@ export default {
       positionId: null,
       timer: "",
       mark: null,
+      positionData: null,
     };
   },
   computed: {},

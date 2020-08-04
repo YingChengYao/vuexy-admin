@@ -48,6 +48,9 @@
         <template slot="thead-header">
           <vs-th>体检中心名称</vs-th>
           <vs-th>体检中心编号</vs-th>
+          <vs-th>级别</vs-th>
+          <vs-th>性质</vs-th>
+          <vs-th>辖区</vs-th>
           <vs-th>联系人</vs-th>
           <vs-th>手机号</vs-th>
           <vs-th>电话</vs-th>
@@ -62,6 +65,15 @@
           </vs-td>
           <vs-td>
             <p>{{ item.tr.MecCode }}</p>
+          </vs-td>
+          <vs-td>
+            <p>{{ item.tr.MecGradeName }}</p>
+          </vs-td>
+          <vs-td>
+            <p>{{ item.tr.MecnNatureName }}</p>
+          </vs-td>
+          <vs-td>
+            <p>{{ item.tr.County }}</p>
           </vs-td>
           <vs-td>
             <p>{{ item.tr.Contact }}</p>
@@ -153,9 +165,7 @@ export default {
       });
     },
     loadSelectedData(data) {
-      debugger;
       this.selected = data;
-      console.log("this.selected:", this.selected);
       this.$refs.table.initCheckedItems(this.selected);
     },
     //#region 弹窗

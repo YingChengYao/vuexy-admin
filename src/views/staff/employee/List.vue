@@ -77,7 +77,7 @@
           >批量导入</vs-button>
         </template>
         <template slot="thead-header">
-          <vs-th>职工名称</vs-th>
+          <vs-th>姓名</vs-th>
           <vs-th>身份证</vs-th>
           <vs-th>婚姻状态</vs-th>
           <vs-th>性别</vs-th>
@@ -98,14 +98,12 @@
             <vs-chip
               transparent
               :color="item.tr.Marital | getMarriageForUserColor"
-              v-if="!item.tr.Children"
             >{{ item.tr.MaritalName}}</vs-chip>
           </vs-td>
           <vs-td>
             <vs-chip
               transparent
               :color="item.tr.Gender | getGenderForUserColor"
-              v-if="!item.tr.Children"
             >{{ item.tr.GenderName}}</vs-chip>
           </vs-td>
           <vs-td>

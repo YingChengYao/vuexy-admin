@@ -12,11 +12,15 @@
       />
     </vs-popup>
 
+    <vs-popup fullscreen :title="title" :active.sync="popupViewPlan">
+      <plan-show v-if="popupViewPlan" @closePop="closeViewPlanPop" :planID="planID" />
+    </vs-popup>
+
     <vx-card ref="filterCard" title class="user-list-filters mb-8">
       <vs-row vs-align="center">
         <label class="vx-col label-name px-2">计划名称名称</label>
         <vs-input placeholder v-model="planNameInput" class="vx-col md:w-1/6 sm:w-1/2 w-full px-2" />
-        <label class="vx-col label-name px-2">是否锁定</label>
+        <!-- <label class="vx-col label-name px-2">是否锁定</label>
         <vs-select
           v-model="isLockedSelect"
           class="vx-col md:w-1/6 sm:w-1/2 w-full px-2 select-large"
@@ -28,7 +32,7 @@
             :text="item.name"
             class="w-full"
           />
-        </vs-select>
+        </vs-select> -->
         <vs-button class="vx-col" color="primary" type="border" @click="loadData">查询</vs-button>
       </vs-row>
     </vx-card>
@@ -47,20 +51,17 @@
         </template>
         <template slot="thead-header">
           <vs-th>计划名称</vs-th>
-          <vs-th>排序</vs-th>
           <vs-th>状态</vs-th>
-          <vs-th>类型</vs-th>
+          <vs-th>体检模式</vs-th>
           <vs-th>参与人数</vs-th>
+          <vs-th>体检周期</vs-th>
           <vs-th>修改人</vs-th>
-          <vs-th>创建时间</vs-th>
+          <vs-th>修改时间</vs-th>
           <vs-th>操作</vs-th>
         </template>
         <template slot="thead-content" slot-scope="item">
           <vs-td>
             <p>{{ item.tr.PlanName }}</p>
-          </vs-td>
-          <vs-td>
-            <p>{{ item.tr.Sort }}</p>
           </vs-td>
           <vs-td>
             <p>{{ item.tr.StatusName }}</p>
@@ -70,6 +71,9 @@
           </vs-td>
           <vs-td>
             <p>{{ item.tr.PlanEmployeeCount }}</p>
+          </vs-td>
+          <vs-td>
+            <p>{{ item.tr.StartTime | formatDate("yyyy-MM-dd") }}到{{ item.tr.EndTime | formatDate("yyyy-MM-dd")}}</p>
           </vs-td>
           <vs-td>
             <p class="product-category">{{ item.tr.ModifyName}}</p>
@@ -104,7 +108,7 @@
               class="text-primary px-2"
               size="small"
               type="border"
-              @click.stop="confirmAuditPlan(item.tr.ID)"
+              @click.stop="viewPlan(item.tr.ID)"
             >查看计划</span>
           </vs-td>
         </template>
@@ -118,10 +122,12 @@
 
 <script>
 import PlanEdit from "./Edit";
+import PlanShow from "./Show";
 import { getPlans, submitPlan } from "@/http/plan.js";
 export default {
   components: {
     PlanEdit,
+    PlanShow,
   },
   data() {
     return {
@@ -132,21 +138,6 @@ export default {
 
       //filter
       planNameInput: null,
-      isLockedSelect: false,
-      isLockedSelectOptions: [
-        {
-          name: "请选择",
-          value: null,
-        },
-        {
-          name: "是",
-          value: true,
-        },
-        {
-          name: "否",
-          value: false,
-        },
-      ],
 
       // Pop
       title: null,
@@ -158,8 +149,8 @@ export default {
       standardData: {},
       popupActiveEmployee: false,
       step: 0,
-
-      activeConfirm: false,
+      //查看计划弹窗
+      popupViewPlan: false,
     };
   },
   computed: {},
@@ -171,7 +162,6 @@ export default {
         pageIndex: this.$refs.table.currentPage,
         pageSize: this.$refs.table.itemsPerPage,
         mecid: userInfo.mecID,
-        isLocked: this.isLockedSelect,
       };
 
       if (this.planNameInput) {
@@ -237,20 +227,23 @@ export default {
       this.popupActive = false;
     },
     //#endregion
-    changePageMaxItems(index) {
-      this.itemsPerPage = this.descriptionItems[index];
-      this.currentPage = 1;
-      this.loadData();
+    //#region 查看计划弹窗
+    viewPlan(id) {
+      this.planID = id;
+      this.popupViewPlan = true;
+      this.title = "查看体检计划";
+      this.mark = "add";
+      this.handleLoad();
     },
+    closeViewPlanPop() {
+      this.popupViewPlan = false;
+    },
+    //#endregion
   },
   mounted() {
     this.loadData();
   },
-  watch: {
-    currentPage() {
-      this.loadData();
-    },
-  },
+  watch: {},
 };
 </script>
 

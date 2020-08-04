@@ -12,7 +12,8 @@ let asyncRouterFlag = 0;
 
 router.beforeEach(async (to, from, next) => {
   NProgress.start();
-  document.title = to.meta.title;
+  // document.title = to.meta.title;
+  document.title ="平台管理"
 
   // if (!to.meta.authRequired) {
   //   return next();

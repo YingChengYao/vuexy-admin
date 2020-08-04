@@ -130,11 +130,11 @@ export default {
             {
               path: "/unit",
               url: "/unit",
-              name: "职工单位管理",
+              name: "分支机构管理",
               slug: "unit",
               component: "views/staff/unit/List",
               meta: {
-                title: "职工单位管理"
+                title: "分支机构管理"
               }
             },
             {
@@ -173,7 +173,7 @@ export default {
               meta: {
                 title: "体检计划"
               }
-            },
+            }
           ]
         },
         {
@@ -252,7 +252,7 @@ export default {
           path: "-",
           icon: "FileIcon",
           name: "系统设置",
-          isHide: true,
+          isHide: false,
           children: [
             {
               path: "/user-settings",
@@ -260,8 +260,19 @@ export default {
               slug: "user-settings",
               name: "用户设置",
               component: "views/SystemSettings/UserSettings/UserSettings",
+              isHide: true,
               meta: {
                 title: "用户设置"
+              }
+            },
+            {
+              path: "/user-settings",
+              url: "/user-settings",
+              slug: "user-settings",
+              name: "字典管理",
+              component: "views/SystemSettings/UserSettings/UserSettings",
+              meta: {
+                title: "字典管理"
               }
             }
           ]

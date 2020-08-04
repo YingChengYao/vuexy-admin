@@ -3,15 +3,15 @@
     <vx-card>
       <div class="vx-row">
         <div class="vx-col md:w-1/2 w-full mt-4">
-          <!-- 标准 -->
+          <!-- 套餐级别 -->
           <vs-input
-            label="标准"
+            label="套餐级别"
             v-model="data_local.Standard"
             class="w-full"
-            name="标准"
+            name="套餐级别"
             v-validate="'required|numeric'"
           />
-          <span class="text-danger text-sm" v-show="errors.has('标准')">{{ errors.first('标准') }}</span>
+          <span class="text-danger text-sm" v-show="errors.has('套餐级别')">{{ errors.first('套餐级别') }}</span>
         </div>
         <div class="vx-col md:w-1/2 w-full mt-4">
           <label class="vs-input--label">限定职位</label>

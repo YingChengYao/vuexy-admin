@@ -23,11 +23,11 @@
         @loadData="loadData"
       >
         <template slot="header">
-          <vs-button color="primary" type="border" class="mb-4 mr-4" @click="addNewData">添加</vs-button>
+          <vs-button color="primary" type="border" class="mb-4 mr-4" @click="addNewData">制定标准</vs-button>
         </template>
         <template slot="thead-header">
-          <vs-th>标准</vs-th>
-          <vs-th>修改人</vs-th>
+          <vs-th>套餐级别</vs-th>
+          <vs-th>限定职位</vs-th>
           <vs-th>修改时间</vs-th>
           <vs-th>操作</vs-th>
         </template>
@@ -108,6 +108,10 @@ export default {
           this.totalItems = data.TotalItems;
         }
       });
+    },
+    loadSelectedData(data) {
+      this.selected = data;
+      this.$refs.table.initCheckedItems(this.selected);
     },
 
     //#region 弹窗
