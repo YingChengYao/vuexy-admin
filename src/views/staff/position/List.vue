@@ -175,21 +175,8 @@ export default {
     loadSelectedData(data) {
       if (!Array.isArray(data) || !data.length > 0) return;
       this.selected = data;
-      // this.initCheckedItems();
       this.$refs.table.initCheckedItems(this.selected);
     },
-    // initCheckedItems() {
-    //   if (!this.multipleCheck) return;
-    //   if (this.positions.length > 0) {
-    //     this.positions.map((item, index) => {
-    //       if (this.selected.length > 0) {
-    //         let val = this.selected.find((t) => t.ID === item.ID);
-    //         item.isChecked = !val ? false : true;
-    //       }
-    //     });
-    //     this.$refs.table.handleCheckboxAll();
-    //   }
-    // },
     //#region 弹窗
     addNewData() {
       this.positionId = null;

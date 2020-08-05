@@ -4,41 +4,28 @@
       <exclusive-package-list
         @closePop="closePop"
         @loadData="loadData"
-        @openPackageEditPop="openPackageEditPop"
         :planId="planId"
         :key="timer"
         :mark="mark"
       />
-      <vs-popup fullscreen :title="titlePackageEdit" :active.sync="popupActivePackageEdit">
-        <exclusive-package-edit
-          v-if="popupActivePackageEdit"
-          @closePackageEditPop="closePackageEditPop"
-          @loadData="loadData"
-          :packageId="packageId"
-          :planId="planId"
-          :key="timer"
-          :mark="markPackageEdit"
-        />
-      </vs-popup>
     </vs-popup>
+
+    <!-- <vs-popup fullscreen :title="titlePackageEdit" :active.sync="popupActivePackageEdit">
+      <exclusive-package-edit
+        v-if="popupActivePackageEdit"
+        @closePackageEditPop="closePackageEditPop"
+        @loadData="loadData"
+        :packageId="packageId"
+        :planId="planId"
+        :key="timer"
+        :mark="markPackageEdit"
+      />
+    </vs-popup>-->
 
     <vx-card ref="filterCard" title class="user-list-filters mb-8">
       <vs-row vs-align="center">
         <label class="vx-col label-name px-2">计划名称名称</label>
         <vs-input placeholder v-model="planNameInput" class="vx-col md:w-1/6 sm:w-1/2 w-full px-2" />
-        <!-- <label class="vx-col label-name px-2">是否锁定</label>
-        <vs-select
-          v-model="isLockedSelect"
-          class="vx-col md:w-1/6 sm:w-1/2 w-full px-2 select-large"
-        >
-          <vs-select-item
-            v-for="(item,index) in isLockedSelectOptions"
-            :key="index"
-            :value="item.value"
-            :text="item.name"
-            class="w-full"
-          />
-        </vs-select>-->
         <vs-button class="vx-col" color="primary" type="border" @click="loadData">查询</vs-button>
         <vs-button class="vx-col ml-4" color="primary" type="border" @click="refreshData">刷新</vs-button>
       </vs-row>
@@ -172,24 +159,6 @@ export default {
     },
     closePop() {
       this.popupActive = false;
-    },
-
-    //套餐
-    //控制套餐弹窗
-    openPackageEditPop(data, mark) {
-      if (mark == "add") {
-        this.titlePackageEdit = "添加专属套餐信息";
-        this.markPackageEdit = "add";
-      } else if (mark == "edit") {
-        console.log("packdata:", data);
-        this.packageId = data;
-        this.markPackageEdit = "edit";
-        this.titlePackageEdit = "修改专属套餐信息";
-      }
-      this.popupActivePackageEdit = true;
-    },
-    closePackageEditPop() {
-      this.popupActivePackageEdit = false;
     },
     //#endregion
   },

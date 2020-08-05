@@ -1,5 +1,17 @@
 <template>
   <div class="data-list-container">
+    <vs-popup fullscreen :title="title" :active.sync="popupActive">
+      <exclusive-package-edit
+        v-if="popupActive"
+        @closePop="closePop"
+        @loadData="loadData"
+        :packageID="packageID"
+        :planId="planId"
+        :key="timer"
+        :mark="markPackageEdit"
+      />
+    </vs-popup>
+
     <div class="vx-row">
       <div class="vx-col w-full md:w-2/5 lg:w-2/5 rounded-lg">
         <vx-card>
@@ -41,7 +53,7 @@
 
             <template slot-scope="{data}">
               <tbody>
-                <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data">
+                <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data" v-clickDown="indextr">
                   <vs-td>
                     <p>{{ indextr+1 }}</p>
                   </vs-td>
@@ -136,7 +148,7 @@
                   </template>
                 </vs-table>
 
-                <div class="flex" v-if="packageId">
+                <div class="flex" v-if="packageID">
                   <div
                     class="mt-5"
                   >合计：共{{totalProjects}}条，总价：{{packagePrice}}，折扣价：{{discount}}，优惠价：{{discountPrice}}</div>
@@ -167,21 +179,21 @@ import ExclusivePackageEdit from "views/medical_examination_center/exclusive_pac
 import {
   getPlansForPhysical,
   getExclusivePackages,
-  getExclusivePackageProject
+  getExclusivePackageProject,
 } from "@/http/plan.js";
 export default {
   components: {
-    ExclusivePackageEdit
+    ExclusivePackageEdit,
   },
   props: {
     planId: {
       type: String,
-      default: ""
+      default: "",
     },
     mark: {
       type: String,
-      default: null
-    }
+      default: null,
+    },
   },
   data() {
     return {
@@ -191,7 +203,7 @@ export default {
       totalPage: 0,
       descriptionItems: [10, 20, 50, 100],
       totalItems: 0,
-      packageId: null,
+      packageID: null,
       packages: [],
       selected: [],
 
@@ -205,39 +217,46 @@ export default {
       totalProjects: 0,
       discount: 0,
       packagePrice: 0,
-      discountPrice: 0
+      discountPrice: 0,
+
+      // Pop
+      title: null,
+      popupActive: false,
+      timer: "",
+      markPackageEdit: null,
     };
   },
   computed: {},
   methods: {
     loadData() {
-      debugger
       if (!this.planId) return;
       console.log("planId:", this.planId);
       let para = {
         pageIndex: this.currentPage,
         pageSize: this.itemsPerPage,
-        planId: this.planId
+        planId: this.planId,
       };
-      getExclusivePackages(para).then(res => {
+      getExclusivePackages(para).then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.packages = data.Items;
           this.totalPage = data.TotalPages;
           this.totalItems = data.TotalItems;
+          console.log("table:", this.$refs.table.$el);
+          this.$refs.table.$el.click();
           console.log("套餐列表：", data);
         }
       });
     },
-    loadExclusivePackageProject(packageId) {
-      let id = packageId ? packageId : this.packageId;
+    loadExclusivePackageProject(packageID) {
+      let id = packageID ? packageID : this.packageID;
       let para = {
-        packageId: id,
+        packageID: id,
         pageIndex: this.currentProjectPage,
-        pageSize: this.projectsPerPage
+        pageSize: this.projectsPerPage,
       };
 
-      getExclusivePackageProject(para).then(res => {
+      getExclusivePackageProject(para).then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           let item = data.Item;
@@ -259,25 +278,36 @@ export default {
       this.loadData();
     },
     handleSelected(tr) {
-      this.packageId = tr.ID;
+      this.packageID = tr.ID;
       this.loadExclusivePackageProject(tr.ID);
     },
-    openPackageEditPop(data, mark) {
-      this.$emit("openPackageEditPop", data, mark);
-    },
     addPackageData() {
-      this.openPackageEditPop("", "add");
+      this.packageID = "";
+      this.popupActive = true;
+      this.title = "配置专属套餐";
+      this.markPackageEdit = "add";
+      this.handleLoad();
     },
     editPackageData() {
-      if (!this.packageId) {
+      if (!this.packageID) {
         this.$vs.notify({
           title: "Error",
           text: "请选择专属套餐！",
-          color: "danger"
+          color: "danger",
         });
-      } else {
-        this.openPackageEditPop(this.packageId, "edit");
+        return;
       }
+
+      this.popupActive = true;
+      this.title = "修改专属套餐";
+      this.markPackageEdit = "edit";
+      this.handleLoad();
+    },
+    handleLoad() {
+      this.timer = new Date().getTime();
+    },
+    closePop() {
+      this.popupActive = false;
     },
     //#endregion
 
@@ -311,16 +341,16 @@ export default {
       items.map((item, index) => {
         item = Object.assign({}, item, {
           parent: parent,
-          level: level
+          level: level,
         });
         if (item.Children != undefined && item.Children.length > 0) {
           item = Object.assign({}, item, {
-            isExpand: true
+            isExpand: true,
           });
         }
         if (typeof item.isShow == "undefined") {
           item = Object.assign({}, item, {
-            isShow: true
+            isShow: true,
           });
         }
 
@@ -333,14 +363,14 @@ export default {
     },
     toggle(m) {
       if (m.Children) {
-        this.initProjects.forEach(i => {
+        this.initProjects.forEach((i) => {
           if (i.parent == m.ID) {
             i.isShow = !i.isShow;
           }
         });
         m.isExpand = !m.isExpand;
       }
-    }
+    },
     //#endregion
   },
   created() {
@@ -353,8 +383,17 @@ export default {
     },
     currentProjectPage() {
       this.loadExclusivePackageProject();
-    }
-  }
+    },
+  },
+  directives: {
+    clickDown: {
+      inserted(el, binding, index) {
+        if (binding.value === 0) {
+          el.click();
+        }
+      },
+    },
+  },
 };
 </script>
 

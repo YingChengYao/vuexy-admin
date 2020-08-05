@@ -69,7 +69,7 @@
           :multipleCheck="true"
           @checkHandle="checkHandle"
         >
-          <template slot="paginationright">
+          <!-- <template slot="paginationright">
             <div class="pl-2 flex align-center">
               <div
                 class="flex flex-wrap items-center align-center justify-end vs-pagination--mb"
@@ -79,8 +79,16 @@
                 <vs-button type="border" color="warning" @click="cancel">取消</vs-button>
               </div>
             </div>
-          </template>
+          </template>-->
         </project-list>
+        <div v-if="isUseButton" class="text-right mt-5">
+          <span>
+            <vs-button @click="save" class="mr-2">保存</vs-button>
+          </span>
+          <span class="px-2">
+            <vs-button type="border" color="warning" @click="cancel">取消</vs-button>
+          </span>
+        </div>
       </div>
     </div>
   </div>
@@ -105,6 +113,10 @@ export default {
     packageID: {
       type: String,
       required: true,
+    },
+    isUseButton: {
+      type: Boolean,
+      default: true,
     },
   },
   data() {
@@ -143,7 +155,6 @@ export default {
       };
       getProjectsForPackage(para).then((res) => {
         if (res.resultType == 0) {
-          debugger
           const data = JSON.parse(res.message);
 
           this.$refs.projectList.loadSelectedData(data.Item);
