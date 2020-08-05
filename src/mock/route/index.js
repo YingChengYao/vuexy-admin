@@ -259,21 +259,15 @@ export default {
               url: "/user-settings",
               slug: "user-settings",
               name: "用户设置",
-              component: "views/SystemSettings/UserSettings/UserSettings",
+              component: "views/system_settings/user_settings/UserSettings",
               isHide: true,
-              meta: {
-                title: "用户设置"
-              }
             },
             {
-              path: "/user-settings",
-              url: "/user-settings",
-              slug: "user-settings",
+              path: "/dictionary",
+              url: "/dictionary",
+              slug: "dictionary",
               name: "字典管理",
-              component: "views/SystemSettings/UserSettings/UserSettings",
-              meta: {
-                title: "字典管理"
-              }
+              component: "views/system_settings/dictionary/List",
             }
           ]
         }

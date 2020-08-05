@@ -32,7 +32,7 @@
             :text="item.name"
             class="w-full"
           />
-        </vs-select> -->
+        </vs-select>-->
         <vs-button class="vx-col" color="primary" type="border" @click="loadData">查询</vs-button>
       </vs-row>
     </vx-card>
@@ -184,9 +184,11 @@ export default {
         color: "success",
         title: `提交体检计划`,
         text: "该计划提交后将不可更改",
+        acceptText: "确认",
+        cancelText: "取消",
         accept: () => {
           let para = {
-            id: id,
+            planID: id,
           };
           submitPlan(para).then((res) => {
             if (res.resultType == 0) {
@@ -214,7 +216,7 @@ export default {
     editData(tr) {
       debugger;
       this.planID = tr.ID;
-      this.step = tr.PlanStep;
+      this.step = tr.PlanStep + 1;
       this.popupActive = true;
       this.title = "修改体检计划信息";
       this.mark = "edit";

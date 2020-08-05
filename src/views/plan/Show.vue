@@ -161,14 +161,9 @@ export default {
             this.data_local.EndTime,
             "yyyy-MM-dd"
           );
-          data.PlanPhysical.map((item) => {
-            item.ID = item.MecID;
-          });
-          data.PlanEmployee.map((item) => {
-            item.ID = item.EmployeeID;
-          });
-          this.medicalCenters = data.PlanPhysical;
-          this.employees = data.PlanEmployee;
+          
+          this.medicalCenters = data.Physical;
+          this.employees = data.Employee;
           this.standards = data.PlanStandard;
         }
       });

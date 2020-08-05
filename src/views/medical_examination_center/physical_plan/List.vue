@@ -114,6 +114,7 @@ export default {
       plans: [],
       totalPage: 0,
       totalItems: 0,
+      planNameInput: null,
 
       // Pop
       title: null,

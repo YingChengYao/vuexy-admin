@@ -88,22 +88,6 @@
             :multipleCheck="true"
             tableTitle="单项配置"
           ></project-item-list>
-
-          <!-- <vs-select
-            label="单项管理"
-            v-model="data_local.Singles"
-            class="w-full select-large"
-            multiple
-            :autocomplete="true"
-          >
-            <vs-select-item
-              v-for="(item,index) in projectItemOptions"
-              :key="index"
-              :value="item.Value"
-              :text="item.Name"
-              class="w-full"
-            />
-          </vs-select>-->
         </div>
       </div>
 
@@ -134,7 +118,6 @@ import {
   addProject,
   editProject,
   getProjectDetail,
-  getSinglesForProject,
 } from "@/http/package.js";
 
 export default {
@@ -199,21 +182,9 @@ export default {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.data_local = data;
+          console.log("项目详情:", data.SingleList);
+          this.$refs.projectItem.loadSelectedData(data.SingleList);
           console.log("项目详情:", data);
-        }
-      });
-    },
-    loadSingleData() {
-      if (!this.projectID) return;
-
-      let para = {
-        itemID: this.projectID,
-      };
-      getSinglesForProject(para).then((res) => {
-        if (res.resultType == 0) {
-          const data = JSON.parse(res.message);
-          this.data_local = data;
-          this.$refs.medicalCenter.loadSelectedData(data.PlanPhysical);
         }
       });
     },

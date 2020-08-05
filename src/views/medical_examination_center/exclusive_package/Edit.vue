@@ -73,7 +73,11 @@
     </vx-card>
 
     <vx-card title="配置项目" class="mt-6">
-      <div class="vx-row">
+      <package-deploy-project
+        @loadData="loadData"
+        :packageID="packageID"
+      />
+      <!-- <div class="vx-row">
         <div class="vx-col w-full md:w-2/5 lg:w-1/5 rounded-lg">
           <vx-card>
             <div>已选项目</div>
@@ -145,7 +149,6 @@
           <vx-card>
             <div slot="no-body" class="tabs-container px-6 pt-6">
               <div class="tab-text">
-                <!-- <vx-card ref="filterCard" title class="user-list-filters mb-8"> -->
                 <vs-row vs-align="center">
                   <label class="vx-col label-name px-2">项目名称</label>
                   <vs-input
@@ -155,7 +158,6 @@
                   />
                   <vs-button class="vx-col" color="primary" type="border" @click="loadData">查询</vs-button>
                 </vs-row>
-                <!-- </vx-card> -->
                 <div class="p-6">
                   <vs-table ref="table" :data="initItems" stripe>
                     <template slot="thead">
@@ -269,51 +271,53 @@
             </div>
           </vx-card>
         </div>
-      </div>
+      </div> -->
     </vx-card>
   </div>
 </template>
 
 <script>
 import vSelect from "vue-select";
+import PackageDeployProject from "views/medical/package/DeployProject";
 
 import {
   getPackageTypeDataSource,
   getMaritalDataSource,
   getGenderDataSource,
-  getStandardForPlanDataSource
+  getStandardForPlanDataSource,
 } from "@/http/data_source.js";
 import { getItems } from "@/http/package.js";
 import {
   addExclusivePackage,
   editExclusivePackage,
-  getExclusivePackageDetail
+  getExclusivePackageDetail,
 } from "@/http/plan.js";
 import {
   accAdd,
   accSubtr,
   accMul,
-  accDivCoupon
+  accDivCoupon,
 } from "@/common/utils/data/calc";
 
 export default {
   name: "",
   components: {
-    vSelect
+    vSelect,
+    PackageDeployProject,
   },
   props: {
     packageId: {
       type: String,
-      default: null
+      default: null,
     },
     planId: {
       type: String,
-      default: null
+      default: null,
     },
     mark: {
       type: String,
-      default: null
-    }
+      default: null,
+    },
   },
   data() {
     return {
@@ -338,7 +342,7 @@ export default {
       checkedGroup: [],
 
       discount: 10,
-      discountPrice: 0
+      discountPrice: 0,
     };
   },
   computed: {
@@ -346,7 +350,7 @@ export default {
       return this.checkedGroup.reduce((pre, cur) => {
         return pre + cur.ItemPrice;
       }, 0);
-    }
+    },
   },
   created() {
     if (this.mark == "edit") this.loadData();
@@ -362,10 +366,10 @@ export default {
     loadData() {
       if (!this.packageId) return;
       let para = {
-        packageId: this.packageId
+        packageId: this.packageId,
       };
 
-      getExclusivePackageDetail(para).then(res => {
+      getExclusivePackageDetail(para).then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.data_local = data;
@@ -385,9 +389,9 @@ export default {
         pageSize: this.itemsPerPage,
         itemName: this.itemNameInput,
         mecid: userInfo.mecID,
-        isLocked: false
+        isLocked: false,
       };
-      getItems(para).then(res => {
+      getItems(para).then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.items = data.Items;
@@ -401,7 +405,7 @@ export default {
       });
     },
     loadMaritalStatus() {
-      getMaritalDataSource().then(res => {
+      getMaritalDataSource().then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.marriageOptions = data;
@@ -409,7 +413,7 @@ export default {
       });
     },
     loadGender() {
-      getGenderDataSource().then(res => {
+      getGenderDataSource().then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.genderOptions = data;
@@ -420,9 +424,9 @@ export default {
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
       let para = {
-        mecid: userInfo.mecID
+        mecid: userInfo.mecID,
       };
-      getPackageTypeDataSource(para).then(res => {
+      getPackageTypeDataSource(para).then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.packageTypeOptions = data;
@@ -431,9 +435,9 @@ export default {
     },
     loadStandard() {
       let para = {
-        planId: this.planId
+        planId: this.planId,
       };
-      getStandardForPlanDataSource(para).then(res => {
+      getStandardForPlanDataSource(para).then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.standardOptions = data;
@@ -444,19 +448,19 @@ export default {
       this.$emit("closePackageEditPop");
     },
     save() {
-      this.$validator.validateAll().then(result => {
+      this.$validator.validateAll().then((result) => {
         if (result) {
           let userInfo = JSON.parse(localStorage.getItem("userInfo"));
           let itemIDs = "";
           if (this.checkedGroup.length > 0) {
-            itemIDs = this.checkedGroup.map(r => r.ItemID).join(",");
+            itemIDs = this.checkedGroup.map((r) => r.ItemID).join(",");
           }
 
           let packageTypes = null;
           if (this.data_local.PackageTypes) {
-            packageTypes = this.data_local.PackageTypes.map(r => r.Value).join(
-              ","
-            );
+            packageTypes = this.data_local.PackageTypes.map(
+              (r) => r.Value
+            ).join(",");
           }
 
           let para = {
@@ -471,16 +475,16 @@ export default {
             sort: this.data_local.Sort,
             itemIDs: itemIDs,
             standardID: this.data_local.Standard,
-            packageType: packageTypes
+            packageType: packageTypes,
           };
 
           if (this.mark == "add") {
-            addExclusivePackage(para).then(res => {
+            addExclusivePackage(para).then((res) => {
               if (res.resultType == 0) {
                 this.$vs.notify({
                   title: "Success",
                   text: res.message,
-                  color: "success"
+                  color: "success",
                 });
                 // this.$emit("loadData");
                 this.cancel();
@@ -488,12 +492,12 @@ export default {
             });
           } else if (this.mark == "edit") {
             para.PackageID = this.packageId;
-            editExclusivePackage(para).then(res => {
+            editExclusivePackage(para).then((res) => {
               if (res.resultType == 0) {
                 this.$vs.notify({
                   title: "Success",
                   text: res.message,
-                  color: "success"
+                  color: "success",
                 });
                 // this.$emit("loadData");
                 this.cancel();
@@ -515,21 +519,21 @@ export default {
       items.map((item, index) => {
         item = Object.assign({}, item, {
           parent: parent,
-          level: level
+          level: level,
         });
         if (item.Children != undefined && item.Children.length > 0) {
           item = Object.assign({}, item, {
-            isExpand: true
+            isExpand: true,
           });
         }
         if (typeof item.isChecked == "undefined") {
           item = Object.assign({}, item, {
-            isChecked: false
+            isChecked: false,
           });
         }
         if (typeof item.isShow == "undefined") {
           item = Object.assign({}, item, {
-            isShow: true
+            isShow: true,
           });
         }
 
@@ -562,7 +566,7 @@ export default {
           let item = {
             ItemID: tr.ID,
             ItemName: tr.ItemName,
-            ItemPrice: tr.ItemPrice
+            ItemPrice: tr.ItemPrice,
           };
           tr.isChecked = !tr.isChecked;
 
@@ -574,9 +578,10 @@ export default {
       this.handleCheckboxAll();
     },
     handleCheckboxAll() {
-      let checkedCount = this.initItems.filter(f => !f.Children && f.isChecked)
-        .length;
-      let count = this.initItems.filter(f => !f.Children).length;
+      let checkedCount = this.initItems.filter(
+        (f) => !f.Children && f.isChecked
+      ).length;
+      let count = this.initItems.filter((f) => !f.Children).length;
 
       this.isCheckedAll = checkedCount == count ? true : false;
     },
@@ -599,7 +604,7 @@ export default {
               let checkItem = {
                 ItemID: item.ID,
                 ItemName: item.ItemName,
-                ItemPrice: item.ItemPrice
+                ItemPrice: item.ItemPrice,
               };
               item.isChecked = true;
               this.checkedGroup.push(checkItem);
@@ -644,7 +649,7 @@ export default {
             let item = {
               ItemID: tr.ID,
               ItemName: tr.ItemName,
-              ItemPrice: tr.ItemPrice
+              ItemPrice: tr.ItemPrice,
             };
             tr.isChecked = !tr.isChecked;
             this.checkedGroup.push(item);
@@ -654,7 +659,7 @@ export default {
           }
         }
       });
-    }
+    },
     //#endregion
   },
   watch: {
@@ -664,8 +669,8 @@ export default {
     packagePrice() {
       let price = (this.discount / 10) * this.packagePrice;
       this.discountPrice = price.toFixed(2);
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang='sass' scoped>

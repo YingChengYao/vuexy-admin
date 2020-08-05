@@ -110,6 +110,7 @@ export default {
       });
     },
     loadSelectedData(data) {
+      if (!Array.isArray(data) || !data.length > 0) return;
       this.selected = data;
       this.$refs.table.initCheckedItems(this.selected);
     },

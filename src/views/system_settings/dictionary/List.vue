@@ -1,8 +1,7 @@
 <template>
   <div class="data-list-container">
     <vs-popup :title="title" :active.sync="popupActive">
-      <project-item-edit
-        v-if="popupActive"
+      <dictionary-edit
         @closePop="closePop"
         @loadData="loadData"
         :projectItemId="projectItemId"
@@ -24,49 +23,38 @@
     </vx-card>
 
     <div class="vx-card p-6">
-      <vs-row v-if="tableTitle">
-        <span class="mb-4">{{tableTitle}}</span>
-      </vs-row>
       <vx-table
         ref="table"
-        v-model="selected"
-        :items="items"
+        :items="dictionarys"
         :totalPage="totalPage"
         :totalItems="totalItems"
         :pageSize="10"
-        :multipleCheck="multipleCheck"
         @loadData="loadData"
       >
         <template slot="header">
-          <vs-button
-            v-if="!isPop"
-            color="primary"
-            type="border"
-            class="mb-4 mr-4"
-            @click="addNewData"
-          >添加</vs-button>
+          <vs-button color="primary" type="border" class="mb-4 mr-4" @click="addNewData">添加</vs-button>
         </template>
         <template slot="thead-header">
-          <vs-th>项目单项名称</vs-th>
-          <vs-th>是否作为项目使用</vs-th>
-          <vs-th>排序</vs-th>
-          <vs-th>是否锁定</vs-th>
+          <vs-th>字典名</vs-th>
+          <vs-th>字典编码</vs-th>
+          <vs-th>状态</vs-th>
+          <vs-th>描述</vs-th>
           <vs-th>修改人</vs-th>
-          <vs-th>创建时间</vs-th>
+          <vs-th>修改时间</vs-th>
           <vs-th>操作</vs-th>
         </template>
         <template slot="thead-content" slot-scope="item">
           <vs-td>
-            <p>{{ item.tr.SingleName }}</p>
+            <p>{{ item.tr.Name }}</p>
           </vs-td>
           <vs-td>
-            <p>{{ item.tr.IsOptional?'是':'否' }}</p>
-          </vs-td>
-          <vs-td>
-            <p>{{ item.tr.Sort }}</p>
+            <p>{{ item.tr.Name }}</p>
           </vs-td>
           <vs-td>
             <p>{{ item.tr.IsLocked?'是':'否' }}</p>
+          </vs-td>
+          <vs-td>
+            <p>{{ item.tr.Remark }}</p>
           </vs-td>
           <vs-td>
             <p>{{ item.tr.ModifyName}}</p>
@@ -89,34 +77,21 @@
 </template>
 
 <script>
-import ProjectItemEdit from "./Edit";
-import { getProjectItems } from "@/http/package.js";
+import DictionaryEdit from "./Edit";
+
+import { getSysDictionarys } from "@/http/dictionary.js";
+
 export default {
   components: {
-    ProjectItemEdit,
-  },
-  props: {
-    isPop: {
-      type: Boolean,
-      default: false,
-    },
-    multipleCheck: {
-      type: Boolean,
-      default: false,
-    },
-    tableTitle: {
-      type: String,
-      default: null,
-    },
+    DictionaryEdit
   },
   data() {
     return {
       //Page
-      items: [],
+      dictionarys: [],
       singleNameInput: null,
       totalPage: 0,
       totalItems: 0,
-      selected: [],
 
       // Pop
       title: null,
@@ -129,28 +104,16 @@ export default {
   computed: {},
   methods: {
     loadData() {
-      let userInfo = JSON.parse(localStorage.getItem("userInfo"));
-
-      let para = {
-        pageIndex: this.$refs.table.currentPage,
-        pageSize: this.$refs.table.itemsPerPage,
-        mecid: userInfo.mecID,
-        singleName: this.singleNameInput,
-      };
-
-      getProjectItems(para).then((res) => {
+      getSysDictionarys().then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
-          this.items = data.Items;
+          console.log("dics:", data);
+          this.dictionarys = data;
+          // this.dictionarys = data.Items;
           this.totalPage = data.TotalPages;
           this.totalItems = data.TotalItems;
         }
       });
-    },
-    loadSelectedData(data) {
-      if (!Array.isArray(data) || !data.length > 0) return;
-      this.selected = data;
-      this.$refs.table.initCheckedItems(this.selected);
     },
     //#region 弹窗
     addNewData() {

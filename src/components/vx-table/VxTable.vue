@@ -148,6 +148,7 @@ export default {
     },
     //#region 自定义checked
     handleCheckbox(tr) {
+      debugger;
       if (this.multipleCheck && !tr.noUseTrCheckBox) {
         tr.isChecked = !tr.isChecked;
         this.changeCheckbox(tr);
@@ -198,6 +199,7 @@ export default {
     该项的id保存到数组内部去，当切换到第二页的时候，那么再返回到第一页的时候，会获取该id是否与数组的
     id是否相同，如果相同的话，就把该项数据选中*/
     initCheckedItems(datas) {
+      debugger;
       if (!this.multipleCheck) return;
       if (this.items.length > 0) {
         this.items.map((item, index) => {
@@ -206,7 +208,7 @@ export default {
               (t) => t[this.checkField] === item[this.checkField]
             );
             item.isChecked = !val ? false : true;
-          } else if (this.value.length > 0) {
+          } else if (Array.isArray(this.value) && this.value.length > 0) {
             let val = this.value.find(
               (t) => t[this.checkField] === item[this.checkField]
             );

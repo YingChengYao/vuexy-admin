@@ -19,16 +19,6 @@ export const getProjectDetail = params => {
   });
 };
 
-//获取体检项目的单项详情
-export const getSinglesForProject = params => {
-  return request({
-    url: "api/itemsingle/list",
-    method: "get",
-    params: params
-  });
-};
-
-
 //添加体检项目
 export const addProject = params => {
   return request({

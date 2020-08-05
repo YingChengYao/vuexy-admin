@@ -173,6 +173,7 @@ export default {
       });
     },
     loadSelectedData(data) {
+      if (!Array.isArray(data) || !data.length > 0) return;
       this.selected = data;
       // this.initCheckedItems();
       this.$refs.table.initCheckedItems(this.selected);

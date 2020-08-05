@@ -227,14 +227,14 @@ export default {
           const data = JSON.parse(res.message);
           this.data_local = data.Model;
           console.log("计划详情：", data);
-          data.PlanPhysical.map((item) => {
-            item.ID = item.MecID;
-          });
-          data.PlanEmployee.map((item) => {
-            item.ID = item.EmployeeID;
-          });
-          this.$refs.medicalCenter.loadSelectedData(data.PlanPhysical);
-          this.$refs.employee.loadSelectedData(data.PlanEmployee);
+          // data.PlanPhysical.map((item) => {
+          //   item.ID = item.MecID;
+          // });
+          // data.PlanEmployee.map((item) => {
+          //   item.ID = item.EmployeeID;
+          // });
+          this.$refs.medicalCenter.loadSelectedData(data.Physical);
+          this.$refs.employee.loadSelectedData(data.Employee);
         }
       });
     },
@@ -313,6 +313,7 @@ export default {
                     text: "修改体检计划成功",
                     color: "success",
                   });
+                  this.$emit("loadData");
                   this.$refs.checkoutWizard.nextTab();
                 }
               });
@@ -326,6 +327,7 @@ export default {
                   });
                   const data = JSON.parse(res.message);
                   this.planID_local = data.PlanID;
+                  this.$emit("loadData");
                   this.$refs.checkoutWizard.nextTab();
                 }
               });
@@ -409,18 +411,23 @@ export default {
             text: res.message,
             color: "success",
           });
+          this.$emit("loadData");
           this.$refs.checkoutWizard.nextTab();
         }
       });
     },
     validEmployee() {
       let checkedGroup = this.$refs.employee.selected;
+      alert(checkedGroup.length);
+
       if (checkedGroup.length > 0) return true;
+      console.log(1);
       this.$vs.notify({
         title: "Error",
         text: "请选择职工名单",
-        color: "Error",
+        color: "danger",
       });
+      console.log(2);
       return false;
     },
     nextTab() {
@@ -439,7 +446,7 @@ export default {
       this.$vs.notify({
         title: "Error",
         text: "请添加标准",
-        color: "Error",
+        color: "danger",
       });
       return false;
     },
@@ -476,7 +483,7 @@ export default {
     },
     submitPlan() {
       let para = {
-        id: this.planID_local,
+        planID: this.planID_local,
       };
       submitPlan(para).then((res) => {
         if (res.resultType == 0) {
@@ -503,7 +510,7 @@ export default {
         this.$vs.notify({
           title: "Error",
           text: "未找到相对应的体检计划，请刷新后重新添加或修改",
-          color: "Error",
+          color: "danger",
         });
         return false;
       }
