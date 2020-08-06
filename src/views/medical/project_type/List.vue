@@ -25,7 +25,6 @@
         ref="table"
         :items="types"
         @loadData="loadData"
-        :totalPage="totalPage"
         :totalItems="totalItems"
         :pageSize="10"
       >
@@ -130,7 +129,6 @@ export default {
       isMounted: false,
 
       //Page
-      totalPage: 0,
       totalItems: 0,
 
       // Data Sidebar
@@ -157,7 +155,6 @@ export default {
           const data = JSON.parse(res.message);
           console.log("类型：", data);
           this.types = data.Items;
-          this.totalPage = data.TotalPages;
           this.totalItems = data.TotalItems;
         }
       });

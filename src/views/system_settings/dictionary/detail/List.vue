@@ -27,7 +27,6 @@
       <vx-table
         ref="table"
         :items="dictionaryDetails"
-        :totalPage="totalPage"
         :totalItems="totalItems"
         :pageSize="10"
         @loadData="loadData"
@@ -103,7 +102,6 @@ export default {
       //Page
       dictionaryDetails: [],
       singleNameInput: null,
-      totalPage: 0,
       totalItems: 0,
 
       // Pop
@@ -125,7 +123,6 @@ export default {
           const data = JSON.parse(res.message);
           console.log("dics:", data);
           this.dictionaryDetails = data;
-          this.totalPage = data.TotalPages;
           this.totalItems = data.TotalItems;
         }
       });

@@ -31,7 +31,6 @@
         ref="table"
         v-model="selected"
         :items="items"
-        :totalPage="totalPage"
         :totalItems="totalItems"
         :pageSize="10"
         :multipleCheck="multipleCheck"
@@ -114,7 +113,6 @@ export default {
       //Page
       items: [],
       singleNameInput: null,
-      totalPage: 0,
       totalItems: 0,
       selected: [],
 
@@ -142,7 +140,6 @@ export default {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.items = data.Items;
-          this.totalPage = data.TotalPages;
           this.totalItems = data.TotalItems;
         }
       });

@@ -37,7 +37,6 @@
         v-model="selected"
         :items="initItems"
         @loadData="loadData"
-        :totalPage="totalPage"
         :totalItems="totalItems"
         :pageSize="10"
         :multipleCheck="multipleCheck"
@@ -187,7 +186,6 @@ export default {
       isLockedSelect: false,
 
       //Page
-      totalPage: 0,
       totalItems: 0,
       selected: [],
       items: [],
@@ -215,7 +213,6 @@ export default {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.items = data.Items;
-          this.totalPage = data.TotalPages;
           this.totalItems = data.TotalItems;
           if (this.items) {
             this.initItemsData(this.items, 0, null);

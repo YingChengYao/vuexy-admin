@@ -88,10 +88,6 @@ export default {
       default: true,
       type: Boolean,
     },
-    totalPage: {
-      type: Number,
-      default: 0,
-    },
     totalItems: {
       type: Number,
       default: 0,
@@ -115,9 +111,9 @@ export default {
     currentPage: 1,
   }),
   computed: {
-    // totalPage() {
-    //   return this.totalItems / this.pageSize;
-    // },
+    totalPage() {
+      return Math.ceil(this.totalItems / this.pageSize);
+    },
   },
   created() {
     if (this.pagination) this.itemsPerPage = this.pageSize;

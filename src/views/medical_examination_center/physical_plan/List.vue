@@ -35,7 +35,6 @@
       <vx-table
         ref="table"
         :items="plans"
-        :totalPage="totalPage"
         :totalItems="totalItems"
         :pageSize="10"
         @loadData="loadData"
@@ -99,7 +98,6 @@ export default {
     return {
       //Page
       plans: [],
-      totalPage: 0,
       totalItems: 0,
       planNameInput: null,
 
@@ -130,7 +128,6 @@ export default {
           const data = JSON.parse(res.message);
           console.log("计划列表：", data);
           this.plans = data.Items;
-          this.totalPage = data.TotalPages;
           this.totalItems = data.TotalItems;
         }
       });

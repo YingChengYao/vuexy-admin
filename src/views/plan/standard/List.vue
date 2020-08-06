@@ -16,7 +16,6 @@
       <vx-table
         ref="table"
         :items="standards"
-        :totalPage="totalPage"
         :totalItems="totalItems"
         :pageSize="10"
         :multipleCheck="multipleCheck"
@@ -74,7 +73,6 @@ export default {
     return {
       //Page
       standards: [],
-      totalPage: 0,
       totalItems: 0,
 
       // Pop
@@ -104,7 +102,6 @@ export default {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.standards = data.Items;
-          this.totalPage = data.TotalPages;
           this.totalItems = data.TotalItems;
         }
       });

@@ -55,7 +55,6 @@
         v-model="selected"
         :items="items"
         @loadData="loadData"
-        :totalPage="totalPage"
         :totalItems="totalItems"
         :pageSize="10"
         :multipleCheck="multipleCheck"
@@ -188,7 +187,6 @@ export default {
 
       //Page
       items: [],
-      totalPage: 0,
       totalItems: 0,
       selected: [],
 
@@ -230,7 +228,6 @@ export default {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.items = data.Items;
-          this.totalPage = data.TotalPages;
           this.totalItems = data.TotalItems;
           console.log("职工:", data);
         }

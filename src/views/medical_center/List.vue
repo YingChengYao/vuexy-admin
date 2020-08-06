@@ -30,7 +30,6 @@
         ref="table"
         v-model="selected"
         :items="medicalCenters"
-        :totalPage="totalPage"
         :totalItems="totalItems"
         :pageSize="10"
         :multipleCheck="multipleCheck"
@@ -126,7 +125,6 @@ export default {
     return {
       //Page
       medicalCenters: [],
-      totalPage: 0,
       totalItems: 0,
       selected: [],
 
@@ -159,7 +157,6 @@ export default {
           const data = JSON.parse(res.message);
           console.log("体检中心：", data);
           this.medicalCenters = data.Items;
-          this.totalPage = data.TotalPages;
           this.totalItems = data.TotalItems;
         }
       });
