@@ -19,7 +19,6 @@ Vue.use(Vuex);
 
 import permission from "./modules/permission.js";
 import auth from "./modules/auth.js";
-import medical from "./modules/medical.js";
 
 export default new Vuex.Store({
   getters,
@@ -28,8 +27,7 @@ export default new Vuex.Store({
   actions,
   modules: {
     permission: permission,
-    auth: auth,
-    medical: medical
+    auth: auth
   },
   strict: process.env.NODE_ENV !== "production"
 });

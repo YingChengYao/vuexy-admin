@@ -89,10 +89,13 @@ export default {
     save() {
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
+      let positions = this.data_local.Positions.map((obj) => {
+        return obj.Value;
+      }).join(",");
       let para = {
         planID: this.planID,
         standard: this.data_local.Standard,
-        positions: this.data_local.Positions,
+        positions: positions,
       };
 
       if (!this.planID) {
@@ -116,7 +119,7 @@ export default {
           }
         });
       } else if (this.mark == "edit") {
-        para.ID = this.data_local.StandardID;
+        para.ID = this.data_local.ID;
         editStandard(para).then((res) => {
           if (res.resultType == 0) {
             this.$vs.notify({

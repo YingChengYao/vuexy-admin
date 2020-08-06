@@ -1,5 +1,4 @@
 import request from "./request";
-import qs from "qs";
 
 //#region 体检计划
 // 获取体检计划信息列表
@@ -47,7 +46,7 @@ export const submitPlan = params => {
   });
 };
 
-//提交体检计划
+//完成体检计划
 export const savePlan = params => {
   return request({
     url: "/api/plan/examine",
@@ -55,6 +54,25 @@ export const savePlan = params => {
     params: params
   });
 };
+
+//中止体检计划
+export const abortPlan = params => {
+  return request({
+    url: "/api/plan/invalid",
+    method: "post",
+    params: params
+  });
+};
+
+//审核体检计划
+export const auditPlan = params => {
+  return request({
+    url: "/api/plan/stopaddpackage",
+    method: "post",
+    params: params
+  });
+};
+
 
 //添加体检计划的职工名单
 export const addEmployeeForPlan = params => {

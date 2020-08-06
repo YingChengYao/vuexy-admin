@@ -101,9 +101,16 @@
               class="text-primary px-2"
               size="small"
               type="border"
-              @click.stop="confirmAuditPlan(item.tr.ID)"
+              @click.stop="confirmAuditPlan(item.tr)"
               v-if="[2].indexOf(item.tr.Status)!=-1"
             >审核</span>
+            <span
+              class="text-primary px-2"
+              size="small"
+              type="border"
+              @click.stop="abortPlan(item.tr)"
+              v-if="[2].indexOf(item.tr.Status)!=-1"
+            >中止</span>
             <span
               class="text-primary px-2"
               size="small"
@@ -123,7 +130,7 @@
 <script>
 import PlanEdit from "./Edit";
 import PlanShow from "./Show";
-import { getPlans, submitPlan } from "@/http/plan.js";
+import { getPlans, submitPlan, abortPlan, auditPlan } from "@/http/plan.js";
 export default {
   components: {
     PlanEdit,
@@ -203,7 +210,36 @@ export default {
         },
       });
     },
-    confirmAuditPlan(id) {},
+    confirmAuditPlan(tr) {
+      let para = {
+        planID: tr.ID,
+      };
+      auditPlan(para).then((res) => {
+        if (res.resultType == 0) {
+          this.$vs.notify({
+            title: "Success",
+            text: `${tr.PlanName}审核成功`,
+            color: "success",
+          });
+          this.loadData();
+        }
+      });
+    },
+    abortPlan(tr) {
+      let para = {
+        planID: tr.ID,
+      };
+      abortPlan(para).then((res) => {
+        if (res.resultType == 0) {
+          this.$vs.notify({
+            title: "Success",
+            text: `${tr.PlanName}中止成功`,
+            color: "success",
+          });
+          this.loadData();
+        }
+      });
+    },
     //#region 弹窗
     addNewData() {
       this.planID = "";

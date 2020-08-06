@@ -10,15 +10,6 @@
         :mark="mark"
       />
     </vs-popup>
-    <vs-popup fullscreen :title="title" :active.sync="popupActiveDetail">
-      <dictionary-detail-list
-        v-if="popupActiveDetail"
-        @closePop="closePop"
-        @loadData="loadData"
-        :dictionaryID="dictionaryID"
-        :key="timer"
-      />
-    </vs-popup>
 
     <vx-card ref="filterCard" title class="user-list-filters mb-8">
       <vs-row vs-align="center">
@@ -35,7 +26,7 @@
     <div class="vx-card p-6">
       <vx-table
         ref="table"
-        :items="dictionarys"
+        :items="dictionaryDetails"
         :totalPage="totalPage"
         :totalItems="totalItems"
         :pageSize="10"
@@ -45,10 +36,10 @@
           <vs-button color="primary" type="border" class="mb-4 mr-4" @click="addNewData">添加</vs-button>
         </template>
         <template slot="thead-header">
-          <vs-th>字典名</vs-th>
-          <vs-th>字典编码</vs-th>
+          <vs-th>展示值</vs-th>
+          <vs-th>字典值</vs-th>
           <vs-th>状态</vs-th>
-          <vs-th>描述</vs-th>
+          <vs-th>排序</vs-th>
           <vs-th>修改人</vs-th>
           <vs-th>修改时间</vs-th>
           <vs-th>操作</vs-th>
@@ -77,14 +68,14 @@
               class="text-primary"
               size="small"
               type="border"
-              @click.stop="viewDetails(item.tr.ID)"
-            >详情</span>
+              @click.stop="editData(item.tr.ID)"
+            >编辑</span>
             <span
-              class="text-primary ml-2"
+              class="text-primary"
               size="small"
               type="border"
               @click.stop="editData(item.tr.ID)"
-            >编辑</span>
+            >删除</span>
           </vs-td>
         </template>
       </vx-table>
@@ -94,19 +85,23 @@
 
 <script>
 import DictionaryEdit from "./Edit";
-import DictionaryDetailList from "./detail/List";
 
-import { getSysDictionarys } from "@/http/dictionary.js";
+import { getSysDictionaryDetails } from "@/http/dictionary.js";
 
 export default {
   components: {
     DictionaryEdit,
-    DictionaryDetailList,
+  },
+  props: {
+    dictionaryID: {
+      type: String,
+      default: "",
+    },
   },
   data() {
     return {
       //Page
-      dictionarys: [],
+      dictionaryDetails: [],
       singleNameInput: null,
       totalPage: 0,
       totalItems: 0,
@@ -117,17 +112,19 @@ export default {
       dictionaryID: null,
       timer: "",
       mark: null,
-      popupActiveDetail: null,
     };
   },
   computed: {},
   methods: {
     loadData() {
-      getSysDictionarys().then((res) => {
+      let para = {
+        id: this.dictionaryID,
+      };
+      getSysDictionaryDetails(para).then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           console.log("dics:", data);
-          this.dictionarys = data;
+          this.dictionaryDetails = data;
           this.totalPage = data.TotalPages;
           this.totalItems = data.TotalItems;
         }
@@ -153,12 +150,6 @@ export default {
     },
     closePop() {
       this.popupActive = false;
-    },
-    viewDetails(id) {
-      this.dictionaryID = id;
-      this.popupActiveDetail = true;
-      this.title = "字典详情信息";
-      this.handleLoad();
     },
     //#endregion
   },

@@ -114,7 +114,11 @@ export default {
     itemsPerPage: 10,
     currentPage: 1,
   }),
-  computed: {},
+  computed: {
+    // totalPage() {
+    //   return this.totalItems / this.pageSize;
+    // },
+  },
   created() {
     if (this.pagination) this.itemsPerPage = this.pageSize;
   },
