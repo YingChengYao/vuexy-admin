@@ -16,7 +16,6 @@ export default {
   },
   watch: {
     currentPage() {
-      alert(this.currentPage);
       this.getTableData();
     }
   },
@@ -29,9 +28,8 @@ export default {
       this.currentPage = val;
       this.getTableData();
     },
-    async getTableData(page = this.currentPage, pageSize = this.itemsPerPage) {
-      debugger;
-      const table = await this.listApi({ page, pageSize, ...this.searchInfo });
+    async getTableData(pageIndex = this.currentPage, pageSize = this.itemsPerPage) {
+      const table = await this.listApi({ pageIndex, pageSize, ...this.searchInfo });
       const data = JSON.parse(table.message);
       console.log("data:", data);
       this.tableData = data.Items;

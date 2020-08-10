@@ -37,22 +37,6 @@
         </tbody>
       </template>
     </vs-table>
-
-    <!-- <div class="flex mt-4" v-if="pagination">
-      <div class="flex-1 justify-center">
-        <slot name="pagination"></slot>
-      </div>
-      <vs-pagination
-        :total="totalPage"
-        v-model="currentPage"
-        :pagedown="true"
-        :totalItems="totalItems"
-        @changePageMaxItems="changePageMaxItems"
-        :pagedownItems="descriptionItems"
-        :size="itemsPerPage"
-      ></vs-pagination>
-      <slot name="paginationright"></slot>
-    </div>-->
   </div>
 </template>
 <script>
@@ -60,14 +44,6 @@ export default {
   name: "qr-table",
   props: {
     value: {},
-    // searchInfo: {
-    //   type: Object,
-    //   default: {},
-    // },
-    // listApi: {
-    //   type: Function,
-    //   required: true,
-    // },
     items: {
       type: Array,
       required: true,
@@ -83,20 +59,6 @@ export default {
     showIndex: {
       type: Boolean,
       default: true,
-    },
-    // cloumns: {
-    //   type: Array,
-    //   required: true
-    // },
-    pagination: {
-      default: true,
-      type: Boolean,
-    },
-    descriptionItems: {
-      type: Array,
-      default: function () {
-        return [10, 20, 50, 100];
-      },
     },
   },
   data: () => ({
@@ -115,7 +77,6 @@ export default {
   methods: {
     //#region 自定义checked
     handleCheckbox(tr) {
-      debugger;
       if (this.multipleCheck && !tr.noUseTrCheckBox) {
         tr.isChecked = !tr.isChecked;
         this.changeCheckbox(tr);
@@ -166,7 +127,6 @@ export default {
     该项的id保存到数组内部去，当切换到第二页的时候，那么再返回到第一页的时候，会获取该id是否与数组的
     id是否相同，如果相同的话，就把该项数据选中*/
     initCheckedItems(datas) {
-      debugger;
       if (!this.multipleCheck) return;
       if (this.items.length > 0) {
         this.items.map((item, index) => {

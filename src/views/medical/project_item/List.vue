@@ -121,7 +121,6 @@ export default {
       searchInfo: {},
       selected: [],
       listApi: getProjectItems,
-      descriptionItems: [1, 2, 5, 8],
 
       // Pop
       title: null,
