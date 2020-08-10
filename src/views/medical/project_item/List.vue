@@ -4,7 +4,7 @@
       <project-item-edit
         v-if="popupActive"
         @closePop="closePop"
-        @loadData="loadData"
+        @loadData="getTableData"
         :projectItemId="projectItemId"
         :key="timer"
         :mark="mark"
@@ -16,10 +16,10 @@
         <label class="vx-col label-name px-2">项目类型名称</label>
         <vs-input
           placeholder
-          v-model="singleNameInput"
+          v-model="searchInfo.SingleName"
           class="vx-col md:w-1/6 sm:w-1/2 w-full px-2"
         />
-        <vs-button class="vx-col" color="primary" type="border" @click="loadData">查询</vs-button>
+        <vs-button class="vx-col" color="primary" type="border" @click="getTableData">查询</vs-button>
       </vs-row>
     </vx-card>
 
@@ -27,15 +27,7 @@
       <vs-row v-if="tableTitle">
         <span class="mb-4">{{tableTitle}}</span>
       </vs-row>
-      <vx-table
-        ref="table"
-        v-model="selected"
-        :items="items"
-        :totalItems="totalItems"
-        :pageSize="10"
-        :multipleCheck="multipleCheck"
-        @loadData="loadData"
-      >
+      <qr-table ref="table" v-model="selected" :items="tableData" :multipleCheck="multipleCheck">
         <template slot="header">
           <vs-button
             v-if="!isPop"
@@ -82,7 +74,18 @@
             >编辑</span>
           </vs-td>
         </template>
-      </vx-table>
+      </qr-table>
+      <div class="flex mt-4">
+        <vs-pagination
+          :total="totalPage"
+          v-model="currentPage"
+          :pagedown="true"
+          :totalItems="totalItems"
+          @changePageMaxItems="changePageMaxItems"
+          :pagedownItems="descriptionItems"
+          :size="itemsPerPage"
+        ></vs-pagination>
+      </div>
     </div>
   </div>
 </template>
@@ -90,7 +93,10 @@
 <script>
 import ProjectItemEdit from "./Edit";
 import { getProjectItems } from "@/http/package.js";
+import infoList from "@/components/mixins/infoList";
 export default {
+  name: "ProjectItem",
+  mixins: [infoList],
   components: {
     ProjectItemEdit,
   },
@@ -111,10 +117,11 @@ export default {
   data() {
     return {
       //Page
-      items: [],
-      singleNameInput: null,
-      totalItems: 0,
+      //items: [],
+      searchInfo: {},
       selected: [],
+      listApi: getProjectItems,
+      descriptionItems: [1, 2, 5, 8],
 
       // Pop
       title: null,
@@ -125,25 +132,13 @@ export default {
     };
   },
   computed: {},
+  created() {
+    let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    this.searchInfo.mecID = userInfo.mecID;
+
+    this.getTableData();
+  },
   methods: {
-    loadData() {
-      let userInfo = JSON.parse(localStorage.getItem("userInfo"));
-
-      let para = {
-        pageIndex: this.$refs.table.currentPage,
-        pageSize: this.$refs.table.itemsPerPage,
-        mecid: userInfo.mecID,
-        singleName: this.singleNameInput,
-      };
-
-      getProjectItems(para).then((res) => {
-        if (res.resultType == 0) {
-          const data = JSON.parse(res.message);
-          this.items = data.Items;
-          this.totalItems = data.TotalItems;
-        }
-      });
-    },
     loadSelectedData(data) {
       if (!Array.isArray(data) || !data.length > 0) return;
       this.selected = data;
@@ -172,14 +167,8 @@ export default {
     },
     //#endregion
   },
-  mounted() {
-    this.loadData();
-  },
-  watch: {
-    currentPage() {
-      this.loadData();
-    },
-  },
+  mounted() {},
+  watch: {},
 };
 </script>
 

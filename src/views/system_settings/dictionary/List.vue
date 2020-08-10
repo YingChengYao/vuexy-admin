@@ -22,10 +22,10 @@
 
     <vx-card ref="filterCard" title class="user-list-filters mb-8">
       <vs-row vs-align="center">
-        <label class="vx-col label-name px-2">项目类型名称</label>
+        <label class="vx-col label-name px-2">字典名称</label>
         <vs-input
           placeholder
-          v-model="singleNameInput"
+          v-model="nameInput"
           class="vx-col md:w-1/6 sm:w-1/2 w-full px-2"
         />
         <vs-button class="vx-col" color="primary" type="border" @click="loadData">查询</vs-button>
@@ -106,7 +106,7 @@ export default {
     return {
       //Page
       dictionarys: [],
-      singleNameInput: null,
+      nameInput: null,
       totalItems: 0,
 
       // Pop
@@ -121,6 +121,9 @@ export default {
   computed: {},
   methods: {
     loadData() {
+      // let para={
+      //   nameInput
+      // }
       getSysDictionarys().then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);

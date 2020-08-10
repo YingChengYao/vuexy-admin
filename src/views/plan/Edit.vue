@@ -9,7 +9,7 @@
       :startIndex="step"
     >
       <!-- tab 1 content -->
-      <tab-content title="Cart" icon="feather icon-shopping-cart">
+      <tab-content title="制定计划" icon="iconfont icon-tianxiexinxi">
         <form data-vv-scope="step-base">
           <div class="vx-row">
             <div class="vx-col md:w-1/4 w-full">
@@ -91,7 +91,7 @@
       </tab-content>
 
       <!-- tab 2 content -->
-      <tab-content title="Address" icon="feather icon-home" backButtonText>
+      <tab-content title="职工" icon="iconfont icon-xinzengyuangong1" backButtonText>
         <staff-employee-list
           ref="employee"
           :isPop="true"
@@ -114,7 +114,7 @@
       </tab-content>
 
       <!-- tab 3 content -->
-      <tab-content title="Payment" icon="feather icon-credit-card">
+      <tab-content title="体检级别" icon="iconfont icon-tianjiabiaozhun1">
         <plan-standard-list ref="standard" :planID="planID_local"></plan-standard-list>
         <div class="text-right mt-5">
           <span>

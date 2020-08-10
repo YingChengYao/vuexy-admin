@@ -214,24 +214,30 @@ export default {
           path: "-",
           icon: "FileIcon",
           name: "基础设置",
-          isHide: true,
+          isHide: false,
           children: [
             {
-              path: "/permission",
-              url: "/permission",
-              slug: "permission",
-              name: "个人中心",
-              component: "views/BasicSettings/Permission",
-              meta: {
-                title: "Permission"
-              }
+              path: "/user-settings",
+              url: "/user-settings",
+              slug: "user-settings",
+              name: "用户设置",
+              component: "views/basic_settings/user_settings/UserSettings",
+              isHide: true
+            },
+            {
+              path: "/user_management",
+              url: "/user_management",
+              slug: "user_management",
+              name: "用户管理",
+              component: "views/basic_settings/user_management/List",
             },
             {
               path: "/permission",
               url: "/permission",
               slug: "permission",
               name: "权限管理",
-              component: "views/BasicSettings/Permission",
+              component: "views/basic_settings/Permission",
+              isHide: true,
               meta: {
                 title: "Permission"
               }
@@ -241,7 +247,8 @@ export default {
               url: "/menu",
               slug: "menu",
               name: "菜单管理",
-              component: "views/BasicSettings/Menu",
+              component: "views/basic_settings/Menu",
+              isHide: true,
               meta: {
                 title: "menu"
               }
@@ -255,19 +262,11 @@ export default {
           isHide: false,
           children: [
             {
-              path: "/user-settings",
-              url: "/user-settings",
-              slug: "user-settings",
-              name: "用户设置",
-              component: "views/system_settings/user_settings/UserSettings",
-              isHide: true,
-            },
-            {
               path: "/dictionary",
               url: "/dictionary",
               slug: "dictionary",
               name: "字典管理",
-              component: "views/system_settings/dictionary/List",
+              component: "views/system_settings/dictionary/List"
             }
           ]
         }

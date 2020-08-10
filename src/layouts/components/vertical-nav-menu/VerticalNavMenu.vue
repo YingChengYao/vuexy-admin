@@ -216,7 +216,6 @@ export default {
           }
         }
       }
-      console.log("clone:", clone);
       return clone;
     },
     isVerticalNavMenuActive: {

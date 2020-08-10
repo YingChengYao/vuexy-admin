@@ -11,7 +11,7 @@
       />
     </vs-popup>
 
-    <vx-card ref="filterCard" title class="user-list-filters mb-8">
+    <!-- <vx-card ref="filterCard" title class="user-list-filters mb-8">
       <vs-row vs-align="center">
         <label class="vx-col label-name px-2">项目类型名称</label>
         <vs-input
@@ -21,7 +21,7 @@
         />
         <vs-button class="vx-col" color="primary" type="border" @click="loadData">查询</vs-button>
       </vs-row>
-    </vx-card>
+    </vx-card> -->
 
     <div class="vx-card p-6">
       <vx-table
@@ -48,7 +48,7 @@
             <p>{{ item.tr.Name }}</p>
           </vs-td>
           <vs-td>
-            <p>{{ item.tr.Name }}</p>
+            <p>{{ item.tr.Code }}</p>
           </vs-td>
           <vs-td>
             <p>{{ item.tr.IsLocked?'是':'否' }}</p>
@@ -70,7 +70,7 @@
               @click.stop="editData(item.tr.ID)"
             >编辑</span>
             <span
-              class="text-primary"
+              class="text-primary ml-2"
               size="small"
               type="border"
               @click.stop="editData(item.tr.ID)"
@@ -107,7 +107,6 @@ export default {
       // Pop
       title: null,
       popupActive: false,
-      dictionaryID: null,
       timer: "",
       mark: null,
     };
