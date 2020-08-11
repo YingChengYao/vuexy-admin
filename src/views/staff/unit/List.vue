@@ -42,6 +42,7 @@
           <vs-th>编号</vs-th>
           <vs-th>单位名称</vs-th>
           <vs-th>单位编码</vs-th>
+          <vs-th>辖区</vs-th>
           <vs-th>联系人</vs-th>
           <vs-th>排序</vs-th>
           <vs-th>是否锁定</vs-th>
@@ -68,6 +69,9 @@
               </vs-td>
               <vs-td>
                 <p>{{ tr.CompanyCode }}</p>
+              </vs-td>
+              <vs-td>
+                <p>{{ tr.CountyName }}</p>
               </vs-td>
               <vs-td>
                 <p>{{ tr.Contact }}</p>
@@ -169,6 +173,7 @@ export default {
           this.units = [];
           let d = composeTree(data.Items, "ID", "ParentID");
           this.initData(d, 0, null);
+          console.log('单位:',this.units)
         }
       });
     },

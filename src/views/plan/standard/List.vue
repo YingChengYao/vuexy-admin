@@ -27,12 +27,21 @@
         <template slot="thead-header">
           <vs-th>套餐级别</vs-th>
           <vs-th>限定职位</vs-th>
+          <vs-th>修改人</vs-th>
           <vs-th>修改时间</vs-th>
           <vs-th>操作</vs-th>
         </template>
         <template slot="thead-content" slot-scope="item">
           <vs-td>
             <p>{{ item.tr.Standard }}</p>
+          </vs-td>
+          <vs-td>
+            <vs-chip
+              v-for="(td, index) in item.tr.Aggregate"
+              :key="index"
+              transparent
+              color="success"
+            >{{ td.Name}}</vs-chip>
           </vs-td>
           <vs-td>
             <p>{{ item.tr.ModifyName }}</p>
@@ -101,6 +110,7 @@ export default {
       getStandards(para).then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
+          console.log("标准：", data);
           this.standards = data.Items;
           this.totalItems = data.TotalItems;
         }

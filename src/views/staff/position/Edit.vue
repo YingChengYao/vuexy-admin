@@ -30,7 +30,7 @@
           <vs-input label="备注" v-model="data_local.Remark" class="w-full" />
         </div>
 
-        <div class="vx-col md:w-1/2 w-full mt-6" v-if="positionData.ID">
+        <div class="vx-col md:w-1/2 w-full mt-6" v-if="positionData">
           <label class="vs-input--label">是否锁定</label>
           <vs-switch v-model="data_local.IsLocked" />
         </div>
@@ -58,42 +58,55 @@ export default {
   props: {
     mark: {
       type: String,
-      default: null
+      default: null,
     },
     positionData: {
       type: Object,
-      default: {}
-    }
+      default: {},
+    },
   },
   data() {
     return {
-      data_local: {}
+      data_local: {},
     };
   },
   computed: {},
   created() {
-    this.data_local = this.positionData;
+    if (this.positionData) this.data_local = this.positionData;
   },
   mounted() {},
   methods: {
+    loadData() {
+      if (!this.unitId) return;
+
+      let para = {
+        companyid: this.unitId,
+      };
+      getEmployeeUnitDetail(para).then((res) => {
+        if (res.resultType == 0) {
+          const data = JSON.parse(res.message);
+          this.data_local = data;
+        }
+      });
+    },
     save_changes() {
-      this.$validator.validateAll().then(result => {
+      this.$validator.validateAll().then((result) => {
         if (result) {
           let para = {
             positionName: this.data_local.PositionName,
             sort: this.data_local.Sort,
-            remark: this.data_local.Remark
+            remark: this.data_local.Remark,
           };
 
           if (this.mark === "add") {
             let userInfo = JSON.parse(localStorage.getItem("userInfo"));
             para.companyID = userInfo.companyID;
-            addPosition(para).then(res => {
+            addPosition(para).then((res) => {
               if (res.resultType == 0) {
                 this.$vs.notify({
                   title: "Success",
                   text: res.message,
-                  color: "success"
+                  color: "success",
                 });
                 this.$emit("loadData");
                 this.cancel();
@@ -103,12 +116,12 @@ export default {
             para.ID = this.data_local.ID;
             para.isLocked = this.data_local.IsLocked;
 
-            editPosition(para).then(res => {
+            editPosition(para).then((res) => {
               if (res.resultType == 0) {
                 this.$vs.notify({
                   title: "Success",
                   text: res.message,
-                  color: "success"
+                  color: "success",
                 });
                 this.$emit("loadData");
                 this.cancel();
@@ -120,8 +133,8 @@ export default {
     },
     cancel() {
       this.$emit("closePop", false);
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang='sass' scoped>

@@ -54,7 +54,28 @@
           >{{ errors.first('体检中心等级') }}</span>
         </div>
         <!-- 体检中心性质 -->
-        <div class="vx-col md:w-1/2 w-full mt-4">
+         <div class="vx-col md:w-1/2 w-full mt-4">
+          <vs-select
+            label="体检中心性质"
+            v-model="data_local.MecGrade"
+            class="w-full select-large"
+            name="体检中心性质"
+            v-validate="'required'"
+          >
+            <vs-select-item
+              v-for="(item,index) in natureOptions"
+              :key="index"
+              :value="item.Value"
+              :text="item.Name"
+              class="w-full"
+            />
+          </vs-select>
+          <span
+            class="text-danger text-sm"
+            v-show="errors.has('体检中心性质')"
+          >{{ errors.first('体检中心性质') }}</span>
+        </div>
+        <!-- <div class="vx-col md:w-1/2 w-full mt-4">
           <vs-select
             label="体检中心性质"
             v-model="data_local.MecNature"
@@ -74,7 +95,7 @@
             class="text-danger text-sm"
             v-show="errors.has('体检中心性质')"
           >{{ errors.first('体检中心性质') }}</span>
-        </div>
+        </div> -->
         <!-- 联系人 -->
         <div class="vx-col md:w-1/2 w-full mt-4">
           <vs-input
@@ -124,8 +145,8 @@
         <div class="vx-col md:w-1/2 w-full mt-4">
           <label class="vs-select--label">所在省</label>
           <v-select
-            label="ProvinceName"
-            value="ProvinceCode"
+            label="Name"
+            value="Code"
             v-model="data_local.Province"
             :options="provinceOptions"
             @input="loadCityData"
@@ -140,10 +161,10 @@
           <label class="vs-select--label">所在市</label>
           <v-select
             ref="city"
-            label="CityName"
-            value="CityCode"
+            label="Name"
+            value="Code"
             v-model="data_local.City"
-            @input="loadCountyData(data_local.City)"
+            @input="loadCountyData()"
             :options="cityOptions"
             :clearable="false"
             name="所在市"
@@ -155,8 +176,8 @@
           <label class="vs-select--label">所在区</label>
           <v-select
             ref="county"
-            label="CountyName"
-            value="CountyCode"
+            label="Name"
+            value="Code"
             v-model="data_local.County"
             :options="countyOptions"
             :clearable="false"
@@ -271,28 +292,32 @@ export default {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.provinceOptions = data;
+          console.log("省:", data);
         }
       });
     },
     loadCityData() {
       debugger;
-      let data = this.data_local.City;
-      // this.cityOptions = [];
       this.$refs.city.clearSelection();
-      // this.countyOptions = [];
       this.$refs.county.clearSelection();
-      getCityDataSource(data).then((res) => {
+      let para = {
+        code: this.data_local.Province.Code,
+      };
+      getCityDataSource(para).then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.cityOptions = data;
         }
       });
     },
-    loadCountyData(data) {
-      if (!data) return;
+    loadCountyData() {
+      if (!this.data_local.City) return;
       this.countyOptions = [];
       this.$refs.county.clearSelection();
-      getCountyDataSource(data).then((res) => {
+      let para = {
+        code: this.data_local.City.Code,
+      };
+      getCountyDataSource(para).then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.countyOptions = data;
@@ -305,14 +330,18 @@ export default {
           let userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
           let para = {
-            MecName: this.data_local.MecName,
-            MecGrade: this.data_local.MecGrade,
-            MecNature: this.data_local.MecNature,
-            Contact: this.data_local.Contact,
-            Tel: this.data_local.Tel,
-            Mobile: this.data_local.Mobile,
+            mecName: this.data_local.MecName,
+            mecGrade: this.data_local.MecGrade,
+            mecNature: this.data_local.MecNature,
+            contact: this.data_local.Contact,
+            tel: this.data_local.Tel,
+            mobile: this.data_local.Mobile,
             sort: this.data_local.Sort,
             remark: this.data_local.Remark,
+            province: this.data_local.Province.Code,
+            city: this.data_local.City.Code,
+            county: this.data_local.County.Code,
+            street: this.data_local.Street,
           };
 
           if (this.mark === "add") {
@@ -364,7 +393,9 @@ export default {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.natureOptions = data;
+          console.log("natureOptions:", this.natureOptions);
           if (this.natureOptions.length > 0) {
+            console.log(this.natureOptions[0].Value)
             this.data_local.MecNature = this.natureOptions[0].Value;
           }
         }

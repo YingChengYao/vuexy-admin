@@ -56,7 +56,7 @@
           <vs-th>排序</vs-th>
           <vs-th>修改人</vs-th>
           <vs-th>创建时间</vs-th>
-          <vs-th>操作</vs-th>
+          <vs-th v-if="!isPlanPop">操作</vs-th>
         </template>
         <template slot="thead-content" slot-scope="item">
           <vs-td>
@@ -72,7 +72,7 @@
             <p>{{ item.tr.MecnNatureName }}</p>
           </vs-td>
           <vs-td>
-            <p>{{ item.tr.County }}</p>
+            <p>{{ item.tr.CountyName }}</p>
           </vs-td>
           <vs-td>
             <p>{{ item.tr.Contact }}</p>
@@ -92,7 +92,7 @@
           <vs-td>
             <p>{{ item.tr.ModifyTime | formatDate }}</p>
           </vs-td>
-          <vs-td class="whitespace-no-wrap">
+          <vs-td class="whitespace-no-wrap" v-if="!isPlanPop">
             <span class="text-primary" size="small" type="border" @click.stop="editData(item.tr)">编辑</span>
           </vs-td>
         </template>

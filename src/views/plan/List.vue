@@ -87,28 +87,28 @@
               type="border"
               style="display:display"
               @click.stop="editData(item.tr)"
-              v-if="[0,1].indexOf(item.tr.Status)!=-1"
+              v-if="[0,1].indexOf(item.tr.PlanStatus)!=-1"
             >编辑</span>
             <span
               class="text-primary px-2"
               size="small"
               type="border"
               @click.stop="confirmSubmitPlan(item.tr.ID)"
-              v-if="[1].indexOf(item.tr.Status)!=-1"
+              v-if="[1].indexOf(item.tr.PlanStatus)!=-1"
             >提交</span>
             <span
               class="text-primary px-2"
               size="small"
               type="border"
               @click.stop="confirmAuditPlan(item.tr)"
-              v-if="[2].indexOf(item.tr.Status)!=-1"
+              v-if="[2].indexOf(item.tr.PlanStatus)!=-1"
             >审核</span>
             <span
               class="text-primary px-2"
               size="small"
               type="border"
               @click.stop="abortPlan(item.tr)"
-              v-if="[2].indexOf(item.tr.Status)!=-1"
+              v-if="[2].indexOf(item.tr.PlanStatus)!=-1"
             >中止</span>
             <span
               class="text-primary px-2"
@@ -247,9 +247,9 @@ export default {
       this.handleLoad();
     },
     editData(tr) {
-      debugger;
       this.planID = tr.ID;
-      this.step = tr.PlanStep + 1;
+      this.step = tr.PlanStep =
+        tr.PlanStep == 2 ? tr.PlanStep : tr.PlanStep + 1;
       this.popupActive = true;
       this.title = "修改体检计划信息";
       this.mark = "edit";

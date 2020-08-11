@@ -89,9 +89,12 @@ export default {
     save() {
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
-      let positions = this.data_local.Positions.map((obj) => {
-        return obj.Value;
-      }).join(",");
+      let positions = "";
+      if (this.data_local.Positions && this.data_local.Positions.length > 0) {
+        positions = this.data_local.Positions.map((obj) => {
+          return obj.Value;
+        }).join(",");
+      }
       let para = {
         planID: this.planID,
         standard: this.data_local.Standard,
