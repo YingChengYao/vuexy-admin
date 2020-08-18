@@ -95,7 +95,6 @@ import ProjectItemEdit from "./Edit";
 import { getProjectItems } from "@/http/package.js";
 import infoList from "@/components/mixins/infoList";
 export default {
-  name: "ProjectItem",
   mixins: [infoList],
   components: {
     ProjectItemEdit,
@@ -117,7 +116,6 @@ export default {
   data() {
     return {
       //Page
-      //items: [],
       searchInfo: {},
       selected: [],
       listApi: getProjectItems,

@@ -19,7 +19,7 @@
 
       <template slot-scope="{data}">
         <tbody>
-          <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data" v-show="!tr.isHide">
+          <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data" v-show="tr.isShow">
             <vs-td v-if="multipleCheck" class="td-check">
               <vs-checkbox
                 v-if="!tr.noUseTrCheckBox"

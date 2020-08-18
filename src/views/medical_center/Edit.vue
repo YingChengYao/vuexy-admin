@@ -54,7 +54,7 @@
           >{{ errors.first('体检中心等级') }}</span>
         </div>
         <!-- 体检中心性质 -->
-         <div class="vx-col md:w-1/2 w-full mt-4">
+        <div class="vx-col md:w-1/2 w-full mt-4">
           <vs-select
             label="体检中心性质"
             v-model="data_local.MecGrade"
@@ -95,7 +95,7 @@
             class="text-danger text-sm"
             v-show="errors.has('体检中心性质')"
           >{{ errors.first('体检中心性质') }}</span>
-        </div> -->
+        </div>-->
         <!-- 联系人 -->
         <div class="vx-col md:w-1/2 w-full mt-4">
           <vs-input
@@ -395,7 +395,7 @@ export default {
           this.natureOptions = data;
           console.log("natureOptions:", this.natureOptions);
           if (this.natureOptions.length > 0) {
-            console.log(this.natureOptions[0].Value)
+            console.log(this.natureOptions[0].Value);
             this.data_local.MecNature = this.natureOptions[0].Value;
           }
         }

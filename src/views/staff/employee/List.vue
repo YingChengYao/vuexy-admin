@@ -291,9 +291,6 @@ export default {
     handleClick(e) {
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
-      let para = {
-        companyID: userInfo.companyID,
-      };
       let formData = new FormData();
       formData.append("Files", e.target.files[0]);
       formData.append("CompanyID", userInfo.companyID);

@@ -20,97 +20,82 @@
           class="vx-col md:w-1/6 sm:w-1/2 w-full px-2"
         />
 
-        <vs-button class="vx-col" color="primary" type="border" @click="loadData">查询</vs-button>
+        <vs-button class="vx-col" color="primary" type="border" @click="getTableData">查询</vs-button>
       </vs-row>
     </vx-card>
 
     <div class="vx-card p-6">
-      <vs-table ref="table" stripe :data="units">
-        <div slot="header" class="flex flex-wrap-reverse items-center flex-grow justify-between">
-          <div class="flex flex-wrap-reverse items-center data-list-btn-container header-left">
-            <vs-button color="primary" type="border" class="mb-4 mr-4" @click="addNewData">添加</vs-button>
-            <vs-button
-              color="primary"
-              type="border"
-              class="mb-4 mr-4"
-              @click.stop="$refs.fileInput.click()"
-            >批量导入</vs-button>
-          </div>
-        </div>
-
-        <template slot="thead">
-          <vs-th>编号</vs-th>
+      <qr-table ref="table" v-model="selected" :items="tableData" :multipleCheck="multipleCheck">
+        <template slot="header">
+          <vs-button color="primary" type="border" class="mb-4 mr-4" @click="addNewData">添加</vs-button>
+          <vs-button
+            color="primary"
+            type="border"
+            class="mb-4 mr-4"
+            @click.stop="$refs.fileInput.click()"
+          >批量导入</vs-button>
+          <vs-button color="primary" type="border" class="mb-4 mr-4" @click="addNewData">删除</vs-button>
+        </template>
+        <template slot="thead-header">
           <vs-th>单位名称</vs-th>
           <vs-th>单位编码</vs-th>
           <vs-th>辖区</vs-th>
           <vs-th>联系人</vs-th>
           <vs-th>排序</vs-th>
-          <vs-th>是否锁定</vs-th>
           <vs-th>修改人</vs-th>
-          <vs-th>创建时间</vs-th>
+          <vs-th>修改时间</vs-th>
           <vs-th>操作</vs-th>
         </template>
-
-        <template slot-scope="{data}">
-          <tbody>
-            <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data" v-show="tr.isShow">
-              <vs-td>
-                <p>{{ indextr+1 }}</p>
-              </vs-td>
-              <vs-td class="wrap">
-                <span :style="'margin-left:'+ (tr.level)*20 +'px'">
-                  <span @click.stop="toggle(tr)" v-if="tr.children">
-                    <vs-icon
-                      :icon-pack="tr.isExpand?'iconfont icon-shangxiazuoyouTriangle11':'iconfont icon-shangxiazuoyouTriangle12'"
-                    ></vs-icon>
-                  </span>
-                  {{tr.CompanyName}}
-                </span>
-              </vs-td>
-              <vs-td>
-                <p>{{ tr.CompanyCode }}</p>
-              </vs-td>
-              <vs-td>
-                <p>{{ tr.CountyName }}</p>
-              </vs-td>
-              <vs-td>
-                <p>{{ tr.Contact }}</p>
-              </vs-td>
-              <vs-td>
-                <p>{{ tr.Sort }}</p>
-              </vs-td>
-              <vs-td>
-                <p>{{ tr.IsLocked?'是':'否' }}</p>
-              </vs-td>
-              <vs-td>
-                <p class="product-category">{{ tr.ModifyName}}</p>
-              </vs-td>
-              <vs-td>
-                <p>{{ tr.ModifyTime | formatDate }}</p>
-              </vs-td>
-              <vs-td class="whitespace-no-wrap">
-                <span
-                  class="text-primary"
-                  size="small"
-                  type="border"
-                  @click.stop="editData(tr.ID)"
-                >编辑</span>
-              </vs-td>
-            </vs-tr>
-          </tbody>
+        <template slot="thead-content" slot-scope="item">
+          <vs-td class="wrap">
+            <span :style="'margin-left:'+ (item.tr.level)*20 +'px'">
+              <span @click.stop="toggle(item.tr)" v-if="item.tr.children">
+                <vs-icon
+                  :icon-pack="item.tr.isExpand?'iconfont icon-shangxiazuoyouTriangle11':'iconfont icon-shangxiazuoyouTriangle12'"
+                ></vs-icon>
+              </span>
+              {{item.tr.CompanyName}}
+            </span>
+          </vs-td>
+          <vs-td>
+            <p>{{ item.tr.CompanyCode }}</p>
+          </vs-td>
+          <vs-td>
+            <p>{{ item.tr.CountyName }}</p>
+          </vs-td>
+          <vs-td>
+            <p>{{ item.tr.Contact }}</p>
+          </vs-td>
+          <vs-td>
+            <p>{{ item.tr.Sort }}</p>
+          </vs-td>
+          <vs-td>
+            <p class="product-category">{{ item.tr.ModifyName}}</p>
+          </vs-td>
+          <vs-td>
+            <p>{{ item.tr.ModifyTime | formatDate }}</p>
+          </vs-td>
+          <vs-td class="whitespace-no-wrap">
+            <span
+              class="text-primary"
+              size="small"
+              type="border"
+              @click.stop="editData(item.tr.ID)"
+            >编辑</span>
+          </vs-td>
         </template>
-      </vs-table>
-    </div>
-    <div class="con-pagination-table vs-table--pagination">
-      <vs-pagination
-        :total="totalPage"
-        v-model="currentPage"
-        :pagedown="true"
-        :totalItems="totalItems"
-        @changePageMaxItems="changePageMaxItems"
-        :pagedownItems="descriptionItems"
-        :size="itemsPerPage"
-      ></vs-pagination>
+      </qr-table>
+      <div class="flex mt-4">
+        <vs-pagination
+          :total="totalPage"
+          v-model="currentPage"
+          :pagedown="true"
+          :totalItems="totalItems"
+          @changePageMaxItems="changePageMaxItems"
+          :pagedownItems="descriptionItems"
+          :size="itemsPerPage"
+        ></vs-pagination>
+      </div>
     </div>
 
     <div class="excel-import" style="display:none">
@@ -130,19 +115,30 @@
 import UnitEdit from "./Edit";
 import { composeTree } from "@/common/utils/data/array.js";
 import { getEmployeeUnits, batchAddEmployeeUnit } from "@/http/staff.js";
+import infoList from "@/components/mixins/infoList";
 export default {
+  mixins: [infoList],
   components: {
     UnitEdit,
+  },
+  props: {
+    multipleCheck: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
       //Page
-      units: [],
-      itemsPerPage: 10,
-      currentPage: 1,
-      totalPage: 0,
-      descriptionItems: [10, 20, 50, 100],
-      totalItems: 0,
+      searchInfo: {},
+      selected: [],
+      listApi: getEmployeeUnits,
+
+      // units: [],
+      // itemsPerPage: 10,
+      // currentPage: 1,
+      // descriptionItems: [10, 20, 50, 100],
+      // totalItems: 0,
 
       //filter
       unitNameInput: null,
@@ -156,24 +152,52 @@ export default {
     };
   },
   computed: {},
-  methods: {
-    loadData() {
-      let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  mounted() {
+    let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    this.searchInfo.id = userInfo.companyID;
 
+    this.getTableData();
+  },
+  watch: {},
+  methods: {
+    // loadData() {
+    //   let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+
+    //   let para = {
+    //     pageIndex: this.currentPage,
+    //     pageSize: this.itemsPerPage,
+    //     id: userInfo.companyID,
+    //   };
+    //   getEmployeeUnits(para).then((res) => {
+    //     if (res.resultType == 0) {
+    //       const data = JSON.parse(res.message);
+    //       this.totalPage = data.TotalPages;
+    //       this.totalItems = data.TotalItems;
+    //       this.units = [];
+    //       let d = composeTree(data.Items, "ID", "ParentID");
+    //       this.initData(d, 0, null);
+    //       console.log("单位:", this.units);
+    //     }
+    //   });
+    // },
+    async getTableData(
+      pageIndex = this.currentPage,
+      pageSize = this.itemsPerPage
+    ) {
       let para = {
         pageIndex: this.currentPage,
         pageSize: this.itemsPerPage,
-        id: "6750305733891072000", //userInfo.uid
+        ...this.searchInfo,
       };
       getEmployeeUnits(para).then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
-          this.totalPage = data.TotalPages;
+          //this.tableData = data.Items;
           this.totalItems = data.TotalItems;
-          this.units = [];
+          this.tableData = [];
           let d = composeTree(data.Items, "ID", "ParentID");
           this.initData(d, 0, null);
-          console.log('单位:',this.units)
+          console.log("单位:", this.tableData);
         }
       });
     },
@@ -201,7 +225,7 @@ export default {
             isShow: true,
           });
         }
-        this.units.push(item);
+        this.tableData.push(item);
 
         this.initData(item.children, level + 1, item.ID);
       });
@@ -214,13 +238,12 @@ export default {
     },
     toggleExpand(ID, isShow) {
       debugger;
-      this.units.map((i) => {
+      this.tableData.map((i) => {
         if (i.parent == ID) {
           i.isShow = isShow;
           if (i.children) {
             if (isShow) {
               if (i.isExpand) this.toggleExpand(i.ID, isShow);
-              // i.isExpand = isShow;
             } else {
               if (i.isExpand) {
                 this.toggleExpand(i.ID, isShow);
@@ -233,9 +256,6 @@ export default {
     handleClick(e) {
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
-      let para = {
-        companyID: userInfo.companyID,
-      };
       let formData = new FormData();
       formData.append("Files", e.target.files[0]);
       formData.append("CompanyID", userInfo.companyID);
@@ -277,20 +297,6 @@ export default {
       this.popupActive = false;
     },
     //#endregion
-
-    changePageMaxItems(index) {
-      this.itemsPerPage = this.descriptionItems[index];
-      this.currentPage = 1;
-      this.loadData();
-    },
-  },
-  mounted() {
-    this.loadData();
-  },
-  watch: {
-    currentPage() {
-      this.loadData();
-    },
   },
 };
 </script>

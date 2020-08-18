@@ -2,11 +2,13 @@ export default {
   data() {
     return {
       currentPage: 1,
-      totalItems: 10,
-      itemsPerPage: 3,
+      totalItems: 0,
+      itemsPerPage: 10,
       descriptionItems: [10, 20, 50, 200],
       tableData: [],
-      searchInfo: {}
+      searchInfo: {},
+
+      isUseExpand: false
     };
   },
   computed: {
@@ -28,12 +30,22 @@ export default {
       this.currentPage = val;
       this.getTableData();
     },
-    async getTableData(pageIndex = this.currentPage, pageSize = this.itemsPerPage) {
-      const table = await this.listApi({ pageIndex, pageSize, ...this.searchInfo });
+    async getTableData(
+      pageIndex = this.currentPage,
+      pageSize = this.itemsPerPage
+    ) {
+      const table = await this.listApi({
+        pageIndex,
+        pageSize,
+        ...this.searchInfo
+      });
       const data = JSON.parse(table.message);
-      console.log("data:", data);
+      console.log("list:", data);
       this.tableData = data.Items;
       this.totalItems = data.TotalItems;
-    }
+      if(isUseExpand){
+
+      }
+    },
   }
 };
