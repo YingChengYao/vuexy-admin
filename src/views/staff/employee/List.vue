@@ -31,7 +31,7 @@
           v-model="employeeNameInput"
           class="vx-col md:w-1/6 sm:w-1/2 w-full px-2"
         />
-        <label class="vx-col label-name px-2" v-if="isShowWorkingStatus">在职状态</label>
+        <label class="vx-col label-name px-2" v-if="isShowWorkingStatus">状态</label>
         <vs-select
           v-model="workingStatusSelect"
           v-if="isShowWorkingStatus"
@@ -217,8 +217,8 @@ export default {
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
       let para = {
-        pageIndex: this.currentPage,
-        pageSize: this.itemsPerPage,
+        pageIndex: this.$refs.table.currentPage,
+        pageSize: this.$refs.table.itemsPerPage,
         companyId: userInfo.companyID,
         employeeName: this.employeeNameInput,
         workingStatus: this.workingStatusSelect,

@@ -14,16 +14,12 @@
           </span>
         </th>
         <vs-th v-if="showIndex">编号</vs-th>
-        <!-- <slot name="thead-header"></slot> -->
-
-        <vs-th :key="index" v-for="(item, index) in cloumns">{{item.headerName}}</vs-th>
-
-        <vs-th v-if="operates.list.filter(x=>x.show).length>0">操作</vs-th>
+        <slot name="thead-header"></slot>
       </template>
 
       <template slot-scope="{data}">
         <tbody>
-          <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data" v-show="!tr.isHide">
+          <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data" v-show="tr.isShow">
             <vs-td v-if="multipleCheck" class="td-check">
               <vs-checkbox
                 v-if="!tr.noUseTrCheckBox"
@@ -36,31 +32,7 @@
             <vs-td v-if="showIndex">
               <p>{{ indextr+1 }}</p>
             </vs-td>
-
-            <vs-td :key="index" v-for="(item, index) in cloumns">
-              <span v-if="item.expand" :style="'margin-left:'+ (tr.level)*20 +'px'">
-                <span @click.stop="toggle(tr)" v-if="tr.children">
-                  <vs-icon
-                    :icon-pack="tr.isExpand?'iconfont icon-shangxiazuoyouTriangle11':'iconfont icon-shangxiazuoyouTriangle12'"
-                  ></vs-icon>
-                </span>
-                {{item.formatter?item.formatter(tr[item.field]):tr[item.field]}}
-              </span>
-
-              <span v-else>{{item.formatter?item.formatter(tr[item.field]):tr[item.field]}}</span>
-            </vs-td>
-
-            <vs-td v-if="operates.list.filter(x=>x.show).length>0" class="whitespace-no-wrap">
-              <span
-                :key="key"
-                v-for="(btn, key) in operates.list"
-                v-show="btn.show"
-                class="text-primary mr-2"
-                size="small"
-                type="border"
-                @click.stop="btn.method(key,tr)"
-              >{{btn.name}}</span>
-            </vs-td>
+            <slot name="thead-content" :tr="tr"></slot>
           </vs-tr>
         </tbody>
       </template>
@@ -87,16 +59,6 @@ export default {
     showIndex: {
       type: Boolean,
       default: true,
-    },
-    cloumns: {
-      type: Array,
-      required: true,
-    },
-    operates: {
-      type: Object,
-      default: {
-        list: [],
-      },
     },
   },
   data: () => ({
@@ -182,26 +144,6 @@ export default {
         });
         this.handleCheckboxAll();
       }
-    },
-    //#endregion
-
-    //#region expand
-    toggle: function (m) {
-      debugger;
-      if (m.children) {
-        this.toggleExpand(m.ID, m.isExpand);
-        m.isExpand = !m.isExpand;
-      }
-    },
-    toggleExpand(ID, isHide) {
-      this.items.map((i) => {
-        if (i.parent == ID) {
-          i.isHide = isHide;
-          if (i.children) {
-            this.toggleExpand(i.ID, isHide);
-          }
-        }
-      });
     },
     //#endregion
   },

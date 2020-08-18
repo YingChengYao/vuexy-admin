@@ -27,7 +27,14 @@
       <vs-row v-if="tableTitle">
         <span class="mb-4">{{tableTitle}}</span>
       </vs-row>
-      <qr-table ref="table" v-model="selected" :items="tableData" :multipleCheck="multipleCheck">
+      <qr-table
+        ref="table"
+        v-model="selected"
+        :items="tableData"
+        :multipleCheck="multipleCheck"
+        :cloumns="cloumns"
+        :operates="operates"
+      >
         <template slot="header">
           <vs-button
             v-if="!isPop"
@@ -36,43 +43,6 @@
             class="mb-4 mr-4"
             @click="addNewData"
           >添加</vs-button>
-        </template>
-        <template slot="thead-header">
-          <vs-th>项目单项名称</vs-th>
-          <vs-th>是否作为项目使用</vs-th>
-          <vs-th>排序</vs-th>
-          <vs-th>是否锁定</vs-th>
-          <vs-th>修改人</vs-th>
-          <vs-th>创建时间</vs-th>
-          <vs-th>操作</vs-th>
-        </template>
-        <template slot="thead-content" slot-scope="item">
-          <vs-td>
-            <p>{{ item.tr.SingleName }}</p>
-          </vs-td>
-          <vs-td>
-            <p>{{ item.tr.IsOptional?'是':'否' }}</p>
-          </vs-td>
-          <vs-td>
-            <p>{{ item.tr.Sort }}</p>
-          </vs-td>
-          <vs-td>
-            <p>{{ item.tr.IsLocked?'是':'否' }}</p>
-          </vs-td>
-          <vs-td>
-            <p>{{ item.tr.ModifyName}}</p>
-          </vs-td>
-          <vs-td>
-            <p>{{ item.tr.ModifyTime | formatDate }}</p>
-          </vs-td>
-          <vs-td class="whitespace-no-wrap">
-            <span
-              class="text-primary"
-              size="small"
-              type="border"
-              @click.stop="editData(item.tr.ID)"
-            >编辑</span>
-          </vs-td>
         </template>
       </qr-table>
       <div class="flex mt-4">
@@ -94,6 +64,7 @@
 import ProjectItemEdit from "./Edit";
 import { getProjectItems } from "@/http/package.js";
 import infoList from "@/components/mixins/infoList";
+import { formatTimeToStr } from "@/common/utils/data/date";
 export default {
   mixins: [infoList],
   components: {
@@ -119,6 +90,36 @@ export default {
       searchInfo: {},
       selected: [],
       listApi: getProjectItems,
+      cloumns: [
+        { headerName: "项目单项名称", field: "SingleName" },
+        {
+          headerName: "是否作为项目使用",
+          field: "IsOptional",
+          formatter: (value) => {
+            return value ? "是" : "否";
+          },
+        },
+        { headerName: "排序", field: "Sort" },
+        { headerName: "修改人", field: "ModifyName" },
+        {
+          headerName: "修改时间",
+          field: "ModifyTime",
+          formatter: (value) => {
+            if (value) return formatTimeToStr(value);
+          },
+        },
+      ],
+      operates: {
+        list: [
+          {
+            name: "编辑",
+            show: true,
+            method: (index, row) => {
+              this.editData(row.ID);
+            },
+          },
+        ],
+      },
 
       // Pop
       title: null,

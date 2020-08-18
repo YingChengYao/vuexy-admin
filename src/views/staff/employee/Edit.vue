@@ -71,7 +71,7 @@
           <span class="text-danger text-sm" v-show="errors.has('手机号')">{{ errors.first('手机号') }}</span>
         </div>
         <div class="vx-col md:w-1/2 w-full mt-4" v-if="mark=='edit'">
-          <vs-select label="在职状态" v-model="data_local.WorkingStatus" class="w-full select-large">
+          <vs-select label="状态" v-model="data_local.WorkingStatus" class="w-full select-large">
             <vs-select-item
               v-for="(item,index) in workingStatusOptions"
               :key="index"

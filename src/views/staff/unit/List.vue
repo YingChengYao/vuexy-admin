@@ -25,7 +25,14 @@
     </vx-card>
 
     <div class="vx-card p-6">
-      <qr-table ref="table" v-model="selected" :items="tableData" :multipleCheck="multipleCheck">
+      <qr-table
+        ref="table"
+        v-model="selected"
+        :items="tableData"
+        :multipleCheck="multipleCheck"
+        :cloumns="cloumns"
+        :operates="operates"
+      >
         <template slot="header">
           <vs-button color="primary" type="border" class="mb-4 mr-4" @click="addNewData">添加</vs-button>
           <vs-button
@@ -34,9 +41,9 @@
             class="mb-4 mr-4"
             @click.stop="$refs.fileInput.click()"
           >批量导入</vs-button>
-          <vs-button color="primary" type="border" class="mb-4 mr-4" @click="addNewData">删除</vs-button>
+          <!-- <vs-button color="primary" type="border" class="mb-4 mr-4" @click="addNewData">删除</vs-button> -->
         </template>
-        <template slot="thead-header">
+        <!-- <template slot="thead-header">
           <vs-th>单位名称</vs-th>
           <vs-th>单位编码</vs-th>
           <vs-th>辖区</vs-th>
@@ -83,7 +90,7 @@
               @click.stop="editData(item.tr.ID)"
             >编辑</span>
           </vs-td>
-        </template>
+        </template>-->
       </qr-table>
       <div class="flex mt-4">
         <vs-pagination
@@ -133,12 +140,32 @@ export default {
       searchInfo: {},
       selected: [],
       listApi: getEmployeeUnits,
-
-      // units: [],
-      // itemsPerPage: 10,
-      // currentPage: 1,
-      // descriptionItems: [10, 20, 50, 100],
-      // totalItems: 0,
+      cloumns: [
+        { headerName: "单位名称", field: "CompanyName", expand: true },
+        { headerName: "单位编码", field: "CompanyCode" },
+        { headerName: "辖区", field: "CountyName" },
+        { headerName: "联系人", field: "Contact" },
+        { headerName: "排序", field: "Sort" },
+        { headerName: "修改人", field: "ModifyName" },
+        {
+          headerName: "修改时间",
+          field: "ModifyTime",
+          formatter: (value) => {
+            if (value) return formatTimeToStr(value);
+          },
+        },
+      ],
+      operates: {
+        list: [
+          {
+            name: "编辑",
+            show: true,
+            method: (index, row) => {
+              this.editData(row.ID);
+            },
+          },
+        ],
+      },
 
       //filter
       unitNameInput: null,
@@ -160,26 +187,6 @@ export default {
   },
   watch: {},
   methods: {
-    // loadData() {
-    //   let userInfo = JSON.parse(localStorage.getItem("userInfo"));
-
-    //   let para = {
-    //     pageIndex: this.currentPage,
-    //     pageSize: this.itemsPerPage,
-    //     id: userInfo.companyID,
-    //   };
-    //   getEmployeeUnits(para).then((res) => {
-    //     if (res.resultType == 0) {
-    //       const data = JSON.parse(res.message);
-    //       this.totalPage = data.TotalPages;
-    //       this.totalItems = data.TotalItems;
-    //       this.units = [];
-    //       let d = composeTree(data.Items, "ID", "ParentID");
-    //       this.initData(d, 0, null);
-    //       console.log("单位:", this.units);
-    //     }
-    //   });
-    // },
     async getTableData(
       pageIndex = this.currentPage,
       pageSize = this.itemsPerPage
@@ -237,7 +244,6 @@ export default {
       }
     },
     toggleExpand(ID, isShow) {
-      debugger;
       this.tableData.map((i) => {
         if (i.parent == ID) {
           i.isShow = isShow;

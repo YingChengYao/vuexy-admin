@@ -7,8 +7,6 @@ export default {
       descriptionItems: [10, 20, 50, 200],
       tableData: [],
       searchInfo: {},
-
-      isUseExpand: false
     };
   },
   computed: {
@@ -43,9 +41,6 @@ export default {
       console.log("list:", data);
       this.tableData = data.Items;
       this.totalItems = data.TotalItems;
-      if(isUseExpand){
-
-      }
     },
   }
 };
