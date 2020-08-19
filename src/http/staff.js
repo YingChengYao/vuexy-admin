@@ -68,7 +68,7 @@ export const addPosition = params => {
   });
 };
 
-//获取职位信息详情
+//修改职位信息详情
 export const editPosition = params => {
   return request({
     url: "/api/company/position/update",
@@ -76,6 +76,17 @@ export const editPosition = params => {
     params: params
   });
 };
+
+
+//获取职位信息详情
+export const getPositionDetail = params => {
+  return request({
+    url: "/api/company/position/details",
+    method: "get",
+    params: params
+  });
+};
+
 
 //#endregion
 

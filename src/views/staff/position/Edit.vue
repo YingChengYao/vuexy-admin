@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import { addPosition, editPosition } from "@/http/staff.js";
+import { addPosition, editPosition, getPositionDetail } from "@/http/staff.js";
 
 export default {
   name: "",
@@ -64,6 +64,10 @@ export default {
       type: Object,
       default: {},
     },
+    positionID: {
+      type: String,
+      default: "",
+    },
   },
   data() {
     return {
@@ -72,17 +76,17 @@ export default {
   },
   computed: {},
   created() {
-    if (this.positionData) this.data_local = this.positionData;
+    this.loadData();
   },
   mounted() {},
   methods: {
     loadData() {
-      if (!this.unitId) return;
+      if (!this.positionID) return;
 
       let para = {
-        companyid: this.unitId,
+        positionID: this.positionID,
       };
-      getEmployeeUnitDetail(para).then((res) => {
+      getPositionDetail(para).then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.data_local = data;

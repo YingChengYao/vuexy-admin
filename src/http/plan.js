@@ -46,6 +46,15 @@ export const submitPlan = params => {
   });
 };
 
+//提交体检计划
+export const submitPlanAfterSave = params => {
+  return request({
+    url: "/api/plan/submitexamine",
+    method: "post",
+    params: params
+  });
+};
+
 //完成体检计划
 export const savePlan = params => {
   return request({

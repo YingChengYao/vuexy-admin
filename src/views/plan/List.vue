@@ -20,19 +20,19 @@
       <vs-row vs-align="center">
         <label class="vx-col label-name px-2">计划名称名称</label>
         <vs-input placeholder v-model="planNameInput" class="vx-col md:w-1/6 sm:w-1/2 w-full px-2" />
-        <!-- <label class="vx-col label-name px-2">是否锁定</label>
+        <label class="vx-col label-name px-2">状态</label>
         <vs-select
-          v-model="isLockedSelect"
+          v-model="searchInfo.status"
           class="vx-col md:w-1/6 sm:w-1/2 w-full px-2 select-large"
         >
           <vs-select-item
-            v-for="(item,index) in isLockedSelectOptions"
+            v-for="(item,index) in planStatusOptions"
             :key="index"
             :value="item.value"
             :text="item.name"
             class="w-full"
           />
-        </vs-select>-->
+        </vs-select>
         <vs-button class="vx-col" color="primary" type="border" @click="loadData">查询</vs-button>
       </vs-row>
     </vx-card>
@@ -129,7 +129,7 @@
 <script>
 import PlanEdit from "./Edit";
 import PlanShow from "./Show";
-import { getPlans, submitPlan, abortPlan, auditPlan } from "@/http/plan.js";
+import { getPlans, submitPlanAfterSave, abortPlan, auditPlan } from "@/http/plan.js";
 export default {
   components: {
     PlanEdit,
@@ -142,7 +142,9 @@ export default {
       totalItems: 0,
 
       //filter
+      searchInfo: {},
       planNameInput: null,
+      planStatusOptions: [],
 
       // Pop
       title: null,
@@ -194,7 +196,7 @@ export default {
           let para = {
             planID: id,
           };
-          submitPlan(para).then((res) => {
+          submitPlanAfterSave(para).then((res) => {
             if (res.resultType == 0) {
               this.$vs.notify({
                 title: "Success",
@@ -248,8 +250,7 @@ export default {
     },
     editData(tr) {
       this.planID = tr.ID;
-      this.step = tr.PlanStep =
-        tr.PlanStep == 2 ? tr.PlanStep : tr.PlanStep + 1;
+      this.step = tr.PlanStep;
       this.popupActive = true;
       this.title = "修改体检计划信息";
       this.mark = "edit";

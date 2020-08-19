@@ -287,7 +287,8 @@ export default {
         this.$validator.validateAll("step-base").then((result) => {
           if (result) {
             let checkedGroup = this.$refs.medicalCenter.selected;
-            if (!this.validBaseinfo) return;
+            debugger;
+            if (!this.validBaseinfo()) return;
 
             let mecIDs = checkedGroup
               .map((obj) => {
@@ -346,13 +347,13 @@ export default {
     },
     validBaseinfo() {
       let message = null;
-
       if (!this.data_local.StartTime || !this.data_local.EndTime) {
         message = "请选择本次计划体检时间";
       } else if (this.data_local.StartTime > this.data_local.EndTime) {
         message = "计划体检开始时间不能大于计划体检结束时间";
       } else {
         let checkedGroup = this.$refs.medicalCenter.selected;
+        console.log("checkedGroup:", checkedGroup);
         if (checkedGroup.length <= 0) {
           message = "请至少选择一家体检中心机构";
         }

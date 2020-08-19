@@ -5,8 +5,7 @@
         v-if="popupActive"
         @closePop="closePop"
         @loadData="loadData"
-        :positionId="positionId"
-        :positionData="positionData"
+        :positionID="positionID"
         :key="timer"
         :mark="mark"
       />
@@ -138,10 +137,9 @@ export default {
       // Pop
       title: null,
       popupActive: false,
-      positionId: null,
+      positionID: null,
       timer: "",
       mark: null,
-      positionData: null,
     };
   },
   computed: {},
@@ -176,15 +174,14 @@ export default {
     },
     //#region 弹窗
     addNewData() {
-      this.positionId = null;
+      this.positionID = null;
       this.popupActive = true;
       this.title = "添加职位信息";
       this.mark = "add";
       this.handleLoad();
     },
     editData(tr) {
-      this.positionId = tr.ID;
-      this.positionData = tr;
+      this.positionID = tr.ID;
       this.popupActive = true;
       this.title = "修改职位信息";
       this.mark = "edit";
