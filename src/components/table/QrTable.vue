@@ -44,10 +44,9 @@
                     :icon-pack="tr.isExpand?'iconfont icon-shangxiazuoyouTriangle11':'iconfont icon-shangxiazuoyouTriangle12'"
                   ></vs-icon>
                 </span>
-                {{item.formatter?item.formatter(tr[item.field]):tr[item.field]}}
+                {{item.formatter?item.formatter(tr[item.field],tr):tr[item.field]}}
               </span>
-
-              <span v-else>{{item.formatter?item.formatter(tr[item.field]):tr[item.field]}}</span>
+              <span v-else>{{item.formatter?item.formatter(tr[item.field],tr):tr[item.field]}}</span>
             </vs-td>
 
             <vs-td v-if="operates.list.filter(x=>x.show).length>0" class="whitespace-no-wrap">

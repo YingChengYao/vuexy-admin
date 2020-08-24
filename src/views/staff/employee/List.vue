@@ -74,6 +74,13 @@
             class="mb-4 mr-4"
             @click.stop="$refs.fileInput.click()"
           >批量导入</vs-button>
+          <vs-button
+            v-if="!isPop"
+            color="primary"
+            type="border"
+            class="mb-4 mr-4"
+            @click="resign"
+          >离职</vs-button>
         </template>
         <template slot="thead-header">
           <vs-th>姓名</vs-th>
@@ -81,7 +88,7 @@
           <vs-th>婚姻状态</vs-th>
           <vs-th>性别</vs-th>
           <vs-th>手机号</vs-th>
-          <vs-th>在职状态</vs-th>
+          <vs-th>状态</vs-th>
           <vs-th v-if="!isPop">修改人</vs-th>
           <vs-th v-if="!isPop">修改时间</vs-th>
           <vs-th v-if="!isPop">操作</vs-th>
@@ -157,6 +164,7 @@ import {
   deployPositionForEmployee,
   getPositionForEmployee,
   batchAddEmployee,
+  resign,
 } from "@/http/staff.js";
 export default {
   components: {
@@ -167,7 +175,7 @@ export default {
   props: {
     multipleCheck: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     isPop: {
       type: Boolean,
@@ -255,6 +263,24 @@ export default {
         isSelect: true,
       };
       getWorkingStatusDataSource(para).then((res) => {
+        if (res.resultType == 0) {
+          const data = JSON.parse(res.message);
+          this.workingStatusOptions = data;
+          if (data.length > 0) {
+            this.workingStatusSelect = data[1].Value;
+          }
+          this.loadData();
+        }
+      });
+    },
+    resign() {
+      let ids = this.selected.map((n) => n.ID);
+      console.log("ids:", ids);
+
+      let para = {
+        ids: ids,
+      };
+      resign(para).then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.workingStatusOptions = data;

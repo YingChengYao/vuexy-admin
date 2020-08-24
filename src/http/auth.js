@@ -6,3 +6,12 @@ export const requestLogin = (name, pwd) => {
     password: pwd,
   });
 };
+
+//获取登录Code
+export const loginCode = params => {
+  return request({
+    url: "/api/mix/code",
+    method: "get",
+    params: params
+  });
+};

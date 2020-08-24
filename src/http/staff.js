@@ -77,7 +77,6 @@ export const editPosition = params => {
   });
 };
 
-
 //获取职位信息详情
 export const getPositionDetail = params => {
   return request({
@@ -86,7 +85,6 @@ export const getPositionDetail = params => {
     params: params
   });
 };
-
 
 //#endregion
 
@@ -152,6 +150,18 @@ export const batchAddEmployee = (data, config) => {
     method: "post",
     data: data,
     config: config
+  });
+};
+
+//离职
+export const resign = params => {
+  return request({
+    url: "/api/employee/quit",
+    method: "post",
+    params: params,
+    // paramsSerializer: params => {
+    //   return qs.stringify(params, { indices: false })
+    // }
   });
 };
 
