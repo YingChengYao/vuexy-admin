@@ -35,7 +35,6 @@
     </vx-card>
 
     <div class="vx-card p-6">
-      <!-- <grid-table :cloumns="cloumns" :rowData="types"></grid-table> -->
       <vs-table ref="table" stripe :data="types">
         <div slot="header" class="flex flex-wrap-reverse items-center flex-grow justify-between">
           <div class="flex flex-wrap-reverse items-center data-list-btn-container header-left">
@@ -93,18 +92,15 @@
         :size="itemsPerPage"
       ></vs-pagination>
     </div>
-
   </div>
 </template>
 
 <script>
 import PackageTypeDataViewSidebar from "./PackageTypeDataViewSidebar";
-import GridTable from "components/grid-table/GridTable";
 import { getPackageTypes } from "@/http/package.js";
 export default {
   components: {
     PackageTypeDataViewSidebar,
-    GridTable
   },
   data() {
     return {

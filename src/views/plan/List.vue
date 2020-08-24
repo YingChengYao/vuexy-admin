@@ -15,6 +15,9 @@
     <vs-popup fullscreen :title="title" :active.sync="popupViewPlan">
       <plan-show v-if="popupViewPlan" @closePop="closeViewPlanPop" :planID="planID" />
     </vs-popup>
+    <vs-popup fullscreen :title="title" :active.sync="popupViewPackage">
+      <plan-show-package v-if="popupViewPackage" @closePop="closeViewPackagePop" :planID="planID" />
+    </vs-popup>
 
     <vx-card ref="filterCard" title class="user-list-filters mb-8">
       <vs-row vs-align="center">
@@ -116,6 +119,13 @@
               type="border"
               @click.stop="viewPlan(item.tr.ID)"
             >查看计划</span>
+            <span
+              class="text-primary px-2"
+              size="small"
+              type="border"
+              v-if="item.tr.PlanType==1"
+              @click.stop="viewPackage(item.tr.ID)"
+            >查看套餐</span>
           </vs-td>
         </template>
         <template slot="paginationright">
@@ -129,11 +139,13 @@
 <script>
 import PlanEdit from "./Edit";
 import PlanShow from "./Show";
-import { getPlans, submitPlanAfterSave, abortPlan, auditPlan } from "@/http/plan.js";
+import PlanShowPackage from "./ShowPackage";
+import { getPlans, submitPlan, abortPlan, auditPlan } from "@/http/plan.js";
 export default {
   components: {
     PlanEdit,
     PlanShow,
+    PlanShowPackage,
   },
   data() {
     return {
@@ -158,6 +170,8 @@ export default {
       step: 0,
       //查看计划弹窗
       popupViewPlan: false,
+      //查看套餐
+      popupViewPackage: false,
     };
   },
   computed: {},
@@ -196,7 +210,7 @@ export default {
           let para = {
             planID: id,
           };
-          submitPlanAfterSave(para).then((res) => {
+          submitPlan(para).then((res) => {
             if (res.resultType == 0) {
               this.$vs.notify({
                 title: "Success",
@@ -273,6 +287,18 @@ export default {
     },
     closeViewPlanPop() {
       this.popupViewPlan = false;
+    },
+    //#endregion
+    //#region 查看套餐
+    viewPackage(id) {
+      this.planID = id;
+      this.popupViewPackage = true;
+      this.title = "查看体检计划";
+      this.mark = "add";
+      this.handleLoad();
+    },
+    closeViewPackagePop() {
+      this.popupViewPackage = false;
     },
     //#endregion
   },

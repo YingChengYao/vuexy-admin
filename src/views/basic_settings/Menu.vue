@@ -138,7 +138,7 @@ export default {
     },
     toggle(data) {
       if (data.children) {
-        alert(0);
+        
       }
     }
   },

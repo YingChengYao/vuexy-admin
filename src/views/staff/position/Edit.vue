@@ -30,7 +30,7 @@
           <vs-input label="备注" v-model="data_local.Remark" class="w-full" />
         </div>
 
-        <div class="vx-col md:w-1/2 w-full mt-6" v-if="positionData">
+        <div class="vx-col md:w-1/2 w-full mt-6" v-if="positionID">
           <label class="vs-input--label">是否锁定</label>
           <vs-switch v-model="data_local.IsLocked" />
         </div>
@@ -59,10 +59,6 @@ export default {
     mark: {
       type: String,
       default: null,
-    },
-    positionData: {
-      type: Object,
-      default: {},
     },
     positionID: {
       type: String,

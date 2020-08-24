@@ -1,6 +1,6 @@
 <template>
   <div id class="data-list-container">
-    <vs-popup :title="title" :active.sync="popupActive">
+    <vs-popup :title="title" :active.sync="popupActive" v-if="popupActive">
       <employee-edit
         @closePop="closePop"
         @loadData="loadData"
@@ -12,7 +12,7 @@
     </vs-popup>
 
     <vs-popup fullscreen title :active.sync="popupActivePosition">
-      <position-list ref="position" v-if="popupActivePosition" :isPop="true" :multipleCheck="true"></position-list>
+      <position-list ref="position" :isPop="true" :multipleCheck="true"></position-list>
       <div class="text-right mt-5">
         <span>
           <vs-button class="vx-col" color="primary" type="border" @click="savePosition">保存</vs-button>

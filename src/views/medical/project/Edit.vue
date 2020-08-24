@@ -3,7 +3,13 @@
     <vx-card>
       <div class="vx-row">
         <div class="vx-col md:w-1/2 w-full mt-4">
-          <vs-select label="项目分类" v-model="data_local.ItemTypeID" class="w-full select-large">
+          <vs-select
+            label="项目分类"
+            v-model="data_local.ItemTypeID"
+            class="w-full select-large"
+            name="项目分类"
+            v-validate="'required'"
+          >
             <vs-select-item
               v-for="(item,index) in projectTypeOptions"
               :key="index"
@@ -12,7 +18,7 @@
               class="w-full"
             />
           </vs-select>
-          <!-- <span class="text-danger text-sm" v-show="errors.has('项目分类')">{{ errors.first('项目分类') }}</span> -->
+          <span class="text-danger text-sm" v-show="errors.has('项目分类')">{{ errors.first('项目分类') }}</span>
         </div>
         <div class="vx-col md:w-1/2 w-full mt-4">
           <!-- 项目名称 -->
@@ -114,11 +120,7 @@ import {
   getGenderDataSource,
   getProjectItemDataSource,
 } from "@/http/data_source.js";
-import {
-  addProject,
-  editProject,
-  getProjectDetail,
-} from "@/http/package.js";
+import { addProject, editProject, getProjectDetail } from "@/http/package.js";
 
 export default {
   name: "",

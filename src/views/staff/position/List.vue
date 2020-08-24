@@ -1,8 +1,7 @@
 <template>
   <div class="data-list-container">
-    <vs-popup :title="title" :active.sync="popupActive">
+    <vs-popup :title="title" :active.sync="popupActive" v-if="popupActive">
       <unit-edit
-        v-if="popupActive"
         @closePop="closePop"
         @loadData="loadData"
         :positionID="positionID"

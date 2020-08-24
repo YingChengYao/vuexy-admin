@@ -218,6 +218,7 @@ export default {
   mounted() {},
   methods: {
     loadData() {
+      console.log(this.unitId);
       if (!this.unitId) return;
 
       let para = {
@@ -383,5 +384,6 @@ export default {
   },
 };
 </script>
-<style lang='sass' scoped>
+<style lang="scss" scoped>
+
 </style>

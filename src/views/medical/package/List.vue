@@ -1,8 +1,7 @@
 <template>
   <div id class="data-list-container">
-    <vs-popup :title="title" :active.sync="popupActive">
+    <vs-popup :title="title" :active.sync="popupActive" v-if="popupActive">
       <package-edit
-        v-if="popupActive"
         @closePop="closePop"
         @loadData="loadData"
         :packageID="packageID"
@@ -227,7 +226,7 @@ export default {
       });
     },
     addNewData() {
-      this.packageID = null;
+      this.packageID = "";
       this.popupActive = true;
       this.title = "添加套餐信息";
       this.mark = "add";

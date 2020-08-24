@@ -1,10 +1,9 @@
 <template>
   <div class="data-list-container">
-    <vs-popup :title="title" :active.sync="popupActive">
+    <vs-popup :title="title" :active.sync="popupActive" v-if="popupActive" width="60%">
       <unit-edit
-        v-if="popupActive"
         @closePop="closePop"
-        @loadData="loadData"
+        @loadData="getTableData"
         :unitId="unitId"
         :key="timer"
         :mark="mark"
@@ -123,6 +122,8 @@ import UnitEdit from "./Edit";
 import { composeTree } from "@/common/utils/data/array.js";
 import { getEmployeeUnits, batchAddEmployeeUnit } from "@/http/staff.js";
 import infoList from "@/components/mixins/infoList";
+import { formatTimeToStr } from "@/common/utils/data/date";
+
 export default {
   mixins: [infoList],
   components: {
@@ -277,7 +278,7 @@ export default {
             text: "名单导入成功",
             color: "success",
           });
-          this.loadData();
+          this.getTableData();
         }
       });
     },
@@ -307,5 +308,6 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+
 </style>

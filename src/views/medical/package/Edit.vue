@@ -1,6 +1,6 @@
 <template>
   <div id="user-edit-tab-info">
-    <vx-card title="">
+    <vx-card title>
       <div class="vx-row">
         <div class="vx-col md:w-1/2 w-full">
           <vs-input
@@ -63,8 +63,8 @@
       <div class="vx-row">
         <div class="vx-col w-full">
           <div class="mt-8 flex flex-wrap items-center justify-end">
-            <vs-button class="ml-auto mt-2" @click="save_changes">保存</vs-button>
-            <vs-button class="ml-4 mt-2" type="border" color="warning" @click="cancel">取消</vs-button>
+            <vs-button class="ml-auto mt-2" @click.stop="save_changes">保存</vs-button>
+            <vs-button class="ml-4 mt-2" type="border" color="warning" @click.stop="cancel">取消</vs-button>
           </div>
         </div>
       </div>
@@ -90,7 +90,7 @@ export default {
   props: {
     packageID: {
       type: String,
-      default: null,
+      default: "",
     },
     mark: {
       type: String,
@@ -135,6 +135,7 @@ export default {
     },
   },
   created() {
+    console.log(1)
     //this.initData();
     this.loadMaritalStatus();
     this.loadGender();
@@ -143,11 +144,11 @@ export default {
   },
   mounted() {},
   methods: {
-    initData() {
-      let params = this.$route.params;
-      this.packageId = params.id;
-      this.mark = params.mark;
-    },
+    // initData() {
+    //   let params = this.$route.params;
+    //   this.packageId = params.id;
+    //   this.mark = params.mark;
+    // },
     loadData() {
       if (!this.packageID) return;
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
@@ -193,6 +194,7 @@ export default {
                   text: res.message,
                   color: "success",
                 });
+                this.$emit("loadData");
                 this.cancel();
               }
             });
@@ -205,6 +207,7 @@ export default {
                   text: res.message,
                   color: "success",
                 });
+                this.$emit("loadData");
                 this.cancel();
               }
             });
@@ -213,7 +216,7 @@ export default {
       });
     },
     cancel() {
-      this.$router.push("/package").catch(() => {});
+      this.$emit("closePop", false);
     },
     loadMaritalStatus() {
       getMaritalDataSource().then((res) => {

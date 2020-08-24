@@ -46,15 +46,6 @@ export const submitPlan = params => {
   });
 };
 
-//提交体检计划
-export const submitPlanAfterSave = params => {
-  return request({
-    url: "/api/plan/submitexamine",
-    method: "post",
-    params: params
-  });
-};
-
 //完成体检计划
 export const savePlan = params => {
   return request({
@@ -199,4 +190,15 @@ export const getExclusivePackageProject = params => {
   });
 };
 
+//#endregion
+
+//#region 体检动态
+// 获取体检计划信息列表
+export const getPhysicalExaminations = params => {
+  return request({
+    url: "/api/plan/examination/trends",
+    method: "get",
+    params: params
+  });
+};
 //#endregion

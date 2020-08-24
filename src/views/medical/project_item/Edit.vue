@@ -82,8 +82,14 @@
             </vs-select>
           </div>
 
-          <div class="mt-4" v-show="data_local.IsOptional">
-            <vs-select label="项目分类" v-model="data_local.ItemTypeID" class="w-full select-large">
+          <div class="mt-4" v-if="data_local.IsOptional">
+            <vs-select
+              label="项目分类"
+              v-model="data_local.ItemTypeID"
+              class="w-full select-large"
+              name="项目分类"
+              v-validate="'required'"
+            >
               <vs-select-item
                 v-for="(item,index) in projectTypeStatus"
                 :key="index"
@@ -116,7 +122,7 @@ import vSelect from "vue-select";
 import {
   getProjectTypeDataSource,
   getMaritalDataSource,
-  getGenderDataSource
+  getGenderDataSource,
 } from "@/http/data_source.js";
 import {
   addProjectItem,
@@ -127,28 +133,29 @@ import {
 export default {
   name: "",
   components: {
-    vSelect
+    vSelect,
   },
   props: {
     projectItemId: {
       type: String,
-      default: null
+      default: null,
     },
     mark: {
       type: String,
-      default: null
-    }
+      default: null,
+    },
   },
   data() {
     return {
       data_local: {},
       marriageOptions: [],
       genderOptions: [],
-      projectTypeStatus: []
+      projectTypeStatus: [],
     };
   },
   computed: {},
   created() {
+    console.log(0)
     //this.initData();
     this.loadMaritalStatus();
     this.loadGender();
@@ -158,23 +165,23 @@ export default {
   mounted() {},
   methods: {
     loadData() {
-      console.log(this.projectItemId);
       if (!this.projectItemId) return;
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
       let para = {
         mecid: userInfo.mecID,
-        id: this.projectItemId
+        id: this.projectItemId,
       };
-      getProjectItemDetails(para).then(res => {
+      getProjectItemDetails(para).then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.data_local = data;
+          console.log("单项详情：", data);
         }
       });
     },
     save_changes() {
-      this.$validator.validateAll().then(result => {
+      this.$validator.validateAll().then((result) => {
         if (result) {
           let userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
@@ -183,25 +190,22 @@ export default {
             sort: this.data_local.Sort,
             remark: this.data_local.Remark,
             mecid: userInfo.mecID,
-            isOptional: this.data_local.IsOptional
+            isOptional: this.data_local.IsOptional,
           };
 
           if (this.data_local.IsOptional) {
             para.singlePrice = this.data_local.SinglePrice;
             para.marriage = this.data_local.Marriage;
             para.gender = this.data_local.Gender;
-            para.itemTypeID =
-              this.data_local.ItemTypeID != null
-                ? this.data_local.ItemTypeID.Value
-                : null;
+            para.itemTypeID = this.data_local.ItemTypeID;
           }
           if (this.mark === "add") {
-            addProjectItem(para).then(res => {
+            addProjectItem(para).then((res) => {
               if (res.resultType == 0) {
                 this.$vs.notify({
                   title: "Success",
                   text: res.message,
-                  color: "success"
+                  color: "success",
                 });
                 this.$emit("loadData");
                 this.cancel();
@@ -210,12 +214,15 @@ export default {
           } else if (this.mark == "edit") {
             para.ID = this.projectItemId;
             para.isLocked = this.data_local.IsLocked;
-            editProjectItem(para).then(res => {
+              debugger
+
+            editProjectItem(para).then((res) => {
+              debugger
               if (res.resultType == 0) {
                 this.$vs.notify({
                   title: "Success",
                   text: res.message,
-                  color: "success"
+                  color: "success",
                 });
                 this.$emit("loadData");
                 this.cancel();
@@ -230,7 +237,7 @@ export default {
       this.$emit("closePop", false);
     },
     loadMaritalStatus() {
-      getMaritalDataSource().then(res => {
+      getMaritalDataSource().then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.marriageOptions = data;
@@ -238,7 +245,7 @@ export default {
       });
     },
     loadGender() {
-      getGenderDataSource().then(res => {
+      getGenderDataSource().then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.genderOptions = data;
@@ -249,16 +256,16 @@ export default {
     loadItemTypeData() {
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
       let para = {
-        mecid: userInfo.mecID
+        mecid: userInfo.mecID,
       };
-      getProjectTypeDataSource(para).then(res => {
+      getProjectTypeDataSource(para).then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.projectTypeStatus = data;
         }
       });
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang='sass' scoped>

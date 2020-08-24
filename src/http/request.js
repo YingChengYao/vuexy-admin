@@ -26,7 +26,7 @@ request.interceptors.request.use(
     if (token && curTime > accesstime && curTime < refreshtime) {
       //重新请求token  TODO
     } else if (token && curTime > accesstime && curTime > refreshtime) {
-      //跳转到登录页 TODO this无$router
+      //跳转到登录页 TODO
       router.push({
         path: "/pages/login"
         //query: { redirect: router.currentRoute.fullPath }
@@ -46,7 +46,6 @@ request.interceptors.request.use(
     return config;
   },
   error => {
-    debugger;
     vue.$vs.notify({
       title: "Error",
       text: error.message,

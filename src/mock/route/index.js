@@ -69,10 +69,10 @@ export default {
               }
             },
             {
-              path: "/package-packagetype",
-              url: "/package-packagetype",
+              path: "/package_type",
+              url: "/package_type",
               name: "套餐类型管理",
-              slug: "package-itemtype",
+              slug: "package_type",
               component: "views/medical/package_type/List",
               meta: {
                 title: "套餐类型管理"
@@ -125,7 +125,7 @@ export default {
           path: "-",
           icon: "FileIcon",
           iconPack: "iconfont icon-w_zhiyuan",
-          name: "职工管理",
+          name: "基本信息管理",
           children: [
             {
               path: "/unit",
@@ -172,6 +172,16 @@ export default {
               component: "views/plan/List",
               meta: {
                 title: "体检计划"
+              }
+            },
+            {
+              path: "/physical_examination",
+              url: "/physical_examination",
+              name: "体检动态",
+              slug: "unit",
+              component: "views/plan/physical_examination/List",
+              meta: {
+                title: "体检动态"
               }
             }
           ]
@@ -229,7 +239,7 @@ export default {
               url: "/user_management",
               slug: "user_management",
               name: "用户管理",
-              component: "views/basic_settings/user_management/List",
+              component: "views/basic_settings/user_management/List"
             },
             {
               path: "/permission",

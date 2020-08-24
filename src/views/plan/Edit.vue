@@ -419,7 +419,6 @@ export default {
     },
     validEmployee() {
       let checkedGroup = this.$refs.employee.selected;
-      alert(checkedGroup.length);
 
       if (checkedGroup.length > 0) return true;
       console.log(1);
