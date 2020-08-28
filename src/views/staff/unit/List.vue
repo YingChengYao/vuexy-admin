@@ -266,12 +266,7 @@ export default {
       let formData = new FormData();
       formData.append("Files", e.target.files[0]);
       formData.append("CompanyID", userInfo.companyID);
-      let config = {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      };
-      batchAddEmployeeUnit(formData, config).then((res) => {
+      batchAddEmployeeUnit(formData).then((res) => {
         if (res.resultType == 0) {
           this.$vs.notify({
             title: "Success",

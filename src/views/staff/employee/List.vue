@@ -79,8 +79,8 @@
             color="primary"
             type="border"
             class="mb-4 mr-4"
-            @click="resign"
-          >离职</vs-button>
+            @click="batchFire"
+          >解雇</vs-button>
         </template>
         <template slot="thead-header">
           <vs-th>姓名</vs-th>
@@ -157,6 +157,8 @@
 import EmployeeEdit from "./Edit";
 import PositionList from "views/staff/position/List";
 import { AgGridVue } from "ag-grid-vue";
+import axios from "axios";
+import qs from "qs";
 
 import { getWorkingStatusDataSource } from "@/http/data_source.js";
 import {
@@ -164,7 +166,7 @@ import {
   deployPositionForEmployee,
   getPositionForEmployee,
   batchAddEmployee,
-  resign,
+  batchFire,
 } from "@/http/staff.js";
 export default {
   components: {
@@ -273,20 +275,29 @@ export default {
         }
       });
     },
-    resign() {
+    batchFire() {
+      if (!this.selected.length > 0) {
+        this.$vs.notify({
+          title: "Error",
+          text: "请选择要离职的员工",
+          color: "danger",
+        });
+        return;
+      }
       let ids = this.selected.map((n) => n.ID);
-      console.log("ids:", ids);
 
-      let para = {
+      let data = {
         ids: ids,
       };
-      resign(para).then((res) => {
+
+      batchFire(data).then((res) => {
+        console.log("res:", res);
         if (res.resultType == 0) {
-          const data = JSON.parse(res.message);
-          this.workingStatusOptions = data;
-          if (data.length > 0) {
-            this.workingStatusSelect = data[1].Value;
-          }
+           this.$vs.notify({
+            title: "Success",
+            text: "离职成功",
+            color: "success",
+          });
           this.loadData();
         }
       });
@@ -320,12 +331,7 @@ export default {
       let formData = new FormData();
       formData.append("Files", e.target.files[0]);
       formData.append("CompanyID", userInfo.companyID);
-      let config = {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      };
-      batchAddEmployee(formData, config).then((res) => {
+      batchAddEmployee(formData).then((res) => {
         if (res.resultType == 0) {
           this.$vs.notify({
             title: "Success",

@@ -36,13 +36,6 @@ request.interceptors.request.use(
       config.headers.Authorization = "Bearer " + token;
     }
 
-    config.headers["Content-Type"] =
-      config.config &&
-      config.config.headers &&
-      config.config.headers["Content-Type"]
-        ? config.config.headers["Content-Type"]
-        : "application/json; charset=UTF-8";
-
     return config;
   },
   error => {

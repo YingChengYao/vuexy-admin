@@ -1,4 +1,5 @@
 import request from "./request";
+import qs from "qs";
 
 //#region 职工单位
 // 获取职工单位信息列表
@@ -20,12 +21,11 @@ export const addEmployeeUnit = params => {
 };
 
 //批量添加职工单位
-export const batchAddEmployeeUnit = (data, config) => {
+export const batchAddEmployeeUnit = (data) => {
   return request({
     url: "/api/company/inserts",
     method: "post",
     data: data,
-    config: config
   });
 };
 
@@ -73,7 +73,7 @@ export const editPosition = params => {
   return request({
     url: "/api/company/position/update",
     method: "post",
-    params: params
+    data: params
   });
 };
 
@@ -144,24 +144,23 @@ export const getPositionForEmployee = params => {
 };
 
 //批量插入职工信息
-export const batchAddEmployee = (data, config) => {
+export const batchAddEmployee = (data) => {
   return request({
     url: "/api/employee/inserts",
     method: "post",
     data: data,
-    config: config
   });
 };
 
 //离职
-export const resign = params => {
+export const batchFire = params => {
   return request({
-    url: "/api/employee/quit",
+    url: "/api/employee/fire",
     method: "post",
     params: params,
-    // paramsSerializer: params => {
-    //   return qs.stringify(params, { indices: false })
-    // }
+    paramsSerializer: params => {
+      return qs.stringify(params, { indices: false });
+    }
   });
 };
 
