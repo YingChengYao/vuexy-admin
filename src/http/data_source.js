@@ -1,5 +1,13 @@
 import request from "./request";
 
+export const getDataStatusDataSource = params => {
+  return request({
+    url: "api/status/select",
+    method: "get",
+    params: params
+  });
+};
+
 //#region 体检套餐相关
 //获取项目分类数据源
 export const getProjectTypeDataSource = params => {
@@ -126,7 +134,7 @@ export const getSubordinateUnitDataSource = params => {
 //获取体检中心等级数据源
 export const getMedicalCenterGradeDataSource = params => {
   return request({
-    url: "/api/physical/grade/list",
+    url: "/api/physical/grade/select",
     method: "get",
     params: params
   });
@@ -134,7 +142,7 @@ export const getMedicalCenterGradeDataSource = params => {
 //获取体检中心性质数据源
 export const getMedicalCenterNatureDataSource = params => {
   return request({
-    url: "/api/physical/nature/list",
+    url: "/api/physical/nature/select",
     method: "get",
     params: params
   });

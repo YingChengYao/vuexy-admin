@@ -40,101 +40,29 @@
           <vs-select-item
             v-for="(item,index) in statusOptions"
             :key="index"
-            :value="item.value"
-            :text="item.name"
+            :value="item.Value"
+            :text="item.Name"
             class="w-full"
           />
         </vs-select>
 
-        <vs-button class="vx-col" color="primary" type="border" @click="loadData">查询</vs-button>
+        <vs-button class="vx-col" color="primary" type="border" @click="getTableData">查询</vs-button>
       </vs-row>
     </vx-card>
 
     <div class="vx-card p-6">
-      <vs-table ref="table" :data="items" stripe>
-        <div slot="header" class="flex flex-wrap-reverse items-center flex-grow justify-between">
-          <div class="flex flex-wrap-reverse items-center data-list-btn-container header-left">
-            <vs-button color="primary" type="border" class="mb-4 mr-4" @click="addNewData">添加</vs-button>
-          </div>
-        </div>
-
-        <template slot="thead">
-          <vs-th>编号</vs-th>
-          <vs-th>套餐名称</vs-th>
-          <vs-th>套餐价格</vs-th>
-          <vs-th>折扣</vs-th>
-          <vs-th>折扣价</vs-th>
-          <vs-th>婚姻状态</vs-th>
-          <vs-th>性别</vs-th>
-          <vs-th>排序</vs-th>
-          <vs-th>状态</vs-th>
-          <vs-th>修改人</vs-th>
-          <vs-th>修改时间</vs-th>
-          <vs-th>操作</vs-th>
+      <qr-table
+        ref="table"
+        v-model="selected"
+        :items="tableData"
+        :multipleCheck="multipleCheck"
+        :cloumns="cloumns"
+        :operates="operates"
+      >
+        <template slot="header">
+          <vs-button color="primary" type="border" class="mb-4 mr-4" @click="addNewData">添加</vs-button>
         </template>
-
-        <template slot-scope="{data}">
-          <tbody>
-            <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data">
-              <vs-td>
-                <p>{{ indextr+1 }}</p>
-              </vs-td>
-              <vs-td>
-                <p>{{ tr.PackageName }}</p>
-              </vs-td>
-              <vs-td>
-                <p>{{ tr.PackagePrice }}</p>
-              </vs-td>
-              <vs-td>
-                <p>{{ tr.Discount }}</p>
-              </vs-td>
-              <vs-td>
-                <p>{{ tr.DiscountPrice }}</p>
-              </vs-td>
-              <vs-td>
-                <vs-chip
-                  transparent
-                  :color="tr.Marriage | getMarriageColor"
-                  v-if="!tr.Children"
-                >{{ tr.MarriageName}}</vs-chip>
-              </vs-td>
-              <vs-td>
-                <vs-chip
-                  transparent
-                  :color="tr.Gender | getGenderColor"
-                  v-if="!tr.Children"
-                >{{ tr.GenderName}}</vs-chip>
-              </vs-td>
-              <vs-td>
-                <p>{{ tr.Sort }}</p>
-              </vs-td>
-              <vs-td>
-                <p>{{ tr.status!=1?'正常':'作废' }}</p>
-              </vs-td>
-              <vs-td>
-                <p>{{ tr.ModifyName }}</p>
-              </vs-td>
-              <vs-td>
-                <p>{{ tr.ModifyTime | formatDate }}</p>
-              </vs-td>
-              <vs-td class="whitespace-no-wrap">
-                <span
-                  class="text-primary"
-                  size="small"
-                  type="border"
-                  @click.stop="editData(tr.ID)"
-                >编辑</span>
-                <span
-                  class="text-primary px-2"
-                  size="small"
-                  type="border"
-                  @click.stop="deployProject(tr.ID)"
-                >项目配置</span>
-              </vs-td>
-            </vs-tr>
-          </tbody>
-        </template>
-      </vs-table>
+      </qr-table>
 
       <vs-pagination
         :total="totalPage"
@@ -144,50 +72,89 @@
         @changePageMaxItems="changePageMaxItems"
         :pagedownItems="descriptionItems"
         :size="itemsPerPage"
-        class="the-footer flex-wrap justify-between"
       ></vs-pagination>
     </div>
   </div>
 </template>
 
 <script>
-import { getPackages } from "@/http/package.js";
 import PackageEdit from "./Edit";
 import PackageDeployProject from "./DeployProject";
+
+import { getPackages } from "@/http/package.js";
+import { getDataStatusDataSource } from "@/http/data_source.js";
+import infoList from "@/components/mixins/infoList";
+import { formatTimeToStr } from "@/common/utils/data/date";
+
 export default {
+  mixins: [infoList],
   components: {
     PackageEdit,
     PackageDeployProject,
   },
+  props: {
+    multipleCheck: {
+      type: Boolean,
+      default: false,
+    },
+  },
   data() {
     return {
-      items: [],
-      statusOptions: [
+      searchInfo: {},
+      selected: [],
+      listApi: getPackages,
+      cloumns: [
+        { headerName: "套餐名称", field: "PackageName" },
+        { headerName: "套餐价格", field: "PackagePrice" },
+        { headerName: "折扣", field: "Discount" },
+        { headerName: "折扣价", field: "DiscountPrice" },
         {
-          name: "请选择",
-          value: null,
+          headerName: "婚姻状态",
+          field: "MarriageName",
+          template: () => {
+            return (
+              <vs-chip transparent color="sucess">
+                0
+              </vs-chip>
+            );
+          },
+          render(row, column, index) {
+            return `<vs-chip transparent color="sucess">${row.Marriage}</vs-chip>`;
+          },
         },
+        { headerName: "性别", field: "GenderName" },
+        { headerName: "排序", field: "Sort" },
+        { headerName: "状态", field: "StatusName" },
+        { headerName: "修改人", field: "ModifyName" },
         {
-          name: "正常",
-          value: 0,
-        },
-        {
-          name: "作废",
-          value: 1,
+          headerName: "修改时间",
+          field: "ModifyTime",
+          formatter: (value) => {
+            if (value) return formatTimeToStr(value);
+          },
         },
       ],
-      searchInfo: {},
+      operates: {
+        list: [
+          {
+            name: "编辑",
+            show: true,
+            method: (index, row) => {
+              this.editData(row.ID);
+            },
+          },
+          {
+            name: "项目配置",
+            show: true,
+            method: (index, row) => {
+              this.deployProject(row.ID);
+            },
+          },
+        ],
+      },
 
       //filter
-      packageNameInput: "",
-      isLockedSelect: false,
-
-      //Page
-      itemsPerPage: 10,
-      currentPage: 1,
-      totalPage: 0,
-      descriptionItems: [10, 20, 50, 100],
-      totalItems: 0,
+      statusOptions: [],
 
       // Pop
       title: null,
@@ -204,8 +171,17 @@ export default {
     };
   },
   computed: {},
+  created() {},
+  mounted() {
+    this.loadDataStatus().then((val) => {
+      let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+      this.searchInfo.mecId = userInfo.mecID;
+      this.getTableData();
+    });
+  },
+  watch: {},
   methods: {
-    loadData() {
+    async loadData() {
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
       let para = {
@@ -216,13 +192,24 @@ export default {
         status: this.searchInfo.status,
       };
 
-      getPackages(para).then((res) => {
+      await getPackages(para).then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.items = data.Items;
           this.totalPage = data.TotalPages;
           this.totalItems = data.TotalItems;
           console.log("套餐列表：", this.items);
+        }
+      });
+    },
+    async loadDataStatus() {
+      await getDataStatusDataSource().then((res) => {
+        if (res.resultType == 0) {
+          const data = JSON.parse(res.message);
+          this.statusOptions = data;
+          if (data.length > 0) {
+            this.searchInfo.status = data[0].Value;
+          }
         }
       });
     },
@@ -254,19 +241,6 @@ export default {
     },
     closePackageDeployProjectPop() {
       this.popupActivePackageDeployProject = false;
-    },
-    changePageMaxItems(index) {
-      this.itemsPerPage = this.descriptionItems[index];
-      this.loadData();
-    },
-  },
-  created() {},
-  mounted() {
-    this.loadData();
-  },
-  watch: {
-    currentPage() {
-      this.loadData();
     },
   },
 };

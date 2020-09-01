@@ -156,9 +156,6 @@
 <script>
 import EmployeeEdit from "./Edit";
 import PositionList from "views/staff/position/List";
-import { AgGridVue } from "ag-grid-vue";
-import axios from "axios";
-import qs from "qs";
 
 import { getWorkingStatusDataSource } from "@/http/data_source.js";
 import {
@@ -170,7 +167,6 @@ import {
 } from "@/http/staff.js";
 export default {
   components: {
-    AgGridVue,
     EmployeeEdit,
     PositionList,
   },

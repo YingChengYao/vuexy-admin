@@ -73,7 +73,6 @@ export const auditPlan = params => {
   });
 };
 
-
 //添加体检计划的职工名单
 export const addEmployeeForPlan = params => {
   return request({
@@ -116,6 +115,7 @@ export const addStandard = params => {
     params: params
   });
 };
+
 //修改体检计划的标准
 export const editStandard = params => {
   return request({
@@ -133,6 +133,35 @@ export const getStandardDetail = params => {
     params: params
   });
 };
+
+//获取体检计划的体检中心
+export const getPlanPhysicals = params => {
+  return request({
+    url: "/api/plan/physical/list",
+    method: "get",
+    params: params
+  });
+};
+
+//获取体检计划的专属套餐
+export const getPlanPackages = params => {
+  return request({
+    url: "/api/plan/package/list",
+    method: "get",
+    params: params
+  });
+};
+
+
+//获取体检计划的专属套餐的项目信息
+export const getProjectsForPlan = params => {
+  return request({
+    url: "/api/plan/package/item/list",
+    method: "get",
+    params: params
+  });
+};
+
 //#endregion
 
 //#region 体检计划(体检中心)
@@ -197,6 +226,14 @@ export const getExclusivePackageProject = params => {
 export const getPhysicalExaminations = params => {
   return request({
     url: "/api/plan/examination/trends",
+    method: "get",
+    params: params
+  });
+};
+// 获取体检计划信息详情
+export const getPhysicalExaminationDetail = params => {
+  return request({
+    url: "/api/plan/employee/examination/trends",
     method: "get",
     params: params
   });

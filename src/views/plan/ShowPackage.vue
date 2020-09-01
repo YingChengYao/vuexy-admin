@@ -10,14 +10,9 @@
               :key="index"
               class="p-2 font-medium flex items-center"
               style="border-bottom: 1px solid rgba(0,0,0,.08)"
+              @click="loadPlanPackages(item.ID)"
             >
               <span class="cursor-pointer">{{ item.MecName }}</span>
-              <!-- <span
-                class="text-primary px-4 cursor-pointer"
-                size="small"
-                type="border"
-                @click="delProject(tr)"
-              >删除</span>-->
             </li>
           </ul>
           <div v-else class="mb-5">No Data</div>
@@ -26,53 +21,38 @@
       <div class="vx-col w-full md:w-2/5 lg:w-1/5">
         <vx-card>
           <div>专属套餐</div>
-          <ul class="faq-topics mt-4 mb-5" v-if="medicalCenters.length>0">
+          <ul class="faq-topics mt-4 mb-5" v-if="packages.length>0">
             <li
-              v-for="(item,index) in medicalCenters"
+              v-for="(item,index) in packages"
               :key="index"
               class="p-2 font-medium flex items-center"
               style="border-bottom: 1px solid rgba(0,0,0,.08)"
+              @click="loadProjects(item.ID)"
             >
-              <span class="cursor-pointer">{{ item.MecName }}</span>
-              <!-- <span
-                class="text-primary px-4 cursor-pointer"
-                size="small"
-                type="border"
-                @click="delProject(tr)"
-              >删除</span>-->
+              <span class="cursor-pointer">{{ item.PackageName }}</span>
             </li>
           </ul>
           <div v-else class="mb-5">No Data</div>
         </vx-card>
       </div>
       <div class="vx-col w-full md:w-3/5 lg:w-3/5">
-        <vx-card title="体检中心信息">
-          <vx-table ref="table" :items="medicalCenters" @loadData="loadData" :pagination="false">
-            <template slot="thead-header">
-              <vs-th>体检中心名称</vs-th>
-              <vs-th>体检中心编号</vs-th>
-              <vs-th>联系人</vs-th>
-              <vs-th>手机号</vs-th>
-              <vs-th>电话</vs-th>
-            </template>
-            <template slot="thead-content" slot-scope="item">
-              <vs-td>
-                <p>{{ item.tr.MecName }}</p>
-              </vs-td>
-              <vs-td>
-                <p>{{ item.tr.MecCode }}</p>
-              </vs-td>
-              <vs-td>
-                <p>{{ item.tr.Contact }}</p>
-              </vs-td>
-              <vs-td>
-                <p>{{ item.tr.Mobile }}</p>
-              </vs-td>
-              <vs-td>
-                <p>{{ item.tr.Tel }}</p>
-              </vs-td>
-            </template>
-          </vx-table>
+        <vx-card title="项目明细">
+          <qr-table ref="table" :items="projects" :cloumns="cloumns"></qr-table>
+
+          <div class="flex">
+            <div
+              class="mt-5"
+            >合计：共{{totalItems}}条，总价：{{packagePrice}}，折扣价：{{discount}}，优惠价：{{discountPrice}}</div>
+            <vs-pagination
+              :total="totalPage"
+              v-model="currentPage"
+              :pagedown="true"
+              :totalItems="totalItems"
+              @changePageMaxItems="changePageMaxItems"
+              :pagedownItems="descriptionItems"
+              :size="itemsPerPage"
+            ></vs-pagination>
+          </div>
         </vx-card>
       </div>
     </div>
@@ -80,10 +60,17 @@
 </template>
 
 <script>
-import { getPlanDetail } from "@/http/plan.js";
+import {
+  getPlanDetail,
+  getPlanPhysicals,
+  getPlanPackages,
+  getProjectsForPlan,
+} from "@/http/plan.js";
 import { formatTimeToStr } from "@/common/utils/data/date";
+import infoList from "@/components/mixins/infoList";
 export default {
   name: "",
+  mixins: [infoList],
   props: {
     planID: {
       type: String,
@@ -92,45 +79,131 @@ export default {
   },
   data() {
     return {
-      data_local: {},
-
       medicalCenters: [],
-      clickNotClose: true,
-      isChatSidebarActive: true,
+      packages: [],
+
+      projects: [],
+      listApi: getProjectsForPlan,
+      cloumns: [
+        { headerName: "项目名称", field: "ItemName", expand: true },
+        { headerName: "项目价格", field: "ItemPrice" },
+        {
+          headerName: "婚姻状态",
+          field: "MarriageName",
+        },
+        { headerName: "性别", field: "GenderName" },
+      ],
+      totalProjects: 0,
+      packagePrice: 0,
+      discount: 0,
+      discountPrice: 0,
     };
   },
   components: {},
   created() {},
   mounted() {
-    this.loadData();
+    this.loadPlanPhysicals();
   },
   methods: {
     loadData() {
+      this.loadPlanPhysicals();
+    },
+    loadPlanPhysicals() {
       let para = {
         planID: this.planID,
       };
-      getPlanDetail(para).then((res) => {
+      getPlanPhysicals(para).then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
-          this.data_local = data.Model;
-          console.log("计划详情：", data);
-          this.data_local.StartTime = formatTimeToStr(
-            this.data_local.StartTime,
-            "yyyy-MM-dd"
-          );
-          this.data_local.EndTime = formatTimeToStr(
-            this.data_local.EndTime,
-            "yyyy-MM-dd"
-          );
+          console.log(data);
+          this.medicalCenters = data.Items;
+        }
+      });
+    },
+    loadPlanPackages(mecId) {
+      let para = {
+        planId: this.planID,
+        mecId: mecId,
+      };
+      getPlanPackages(para).then((res) => {
+        if (res.resultType == 0) {
+          const data = JSON.parse(res.message);
+          console.log(data);
+          this.packages = data.Items;
+        }
+      });
+    },
+    async getTableData(
+      pageIndex = this.currentPage,
+      pageSize = this.itemsPerPage
+    ) {
+      let para = {
+        pageIndex: this.currentPage,
+        pageSize: this.itemsPerPage,
+        ...this.searchInfo,
+      };
+      getProjectsForPlan(para).then((res) => {
+        if (res.resultType == 0) {
+          const data = JSON.parse(res.message);
+          if (!data.Item.Items > 0) {
+            this.projects = [];
+            return;
+          }
+          this.discount = data.Discount;
+          this.discountPrice = data.DiscountPrice;
+          this.packagePrice = data.PackagePrice;
+          this.totalItems = data.Item.TotalItems;
+          this.initProjectsData(data.Item.Items, 0, null);
+        }
+      });
+    },
+    loadProjects(packageId) {
+      let para = {
+        packageId: packageId,
+      };
+      this.searchInfo.packageId = packageId;
+      this.getTableData();
+    },
+    initProjectsData(items, level, parent) {
+      this.projects = [];
+      this.initProjectData(items, level, parent);
+      console.log("projects:", this.projects);
+    },
+    initProjectData(items, level, parent) {
+      if (!items) {
+        return;
+      }
+      items.map((item, index) => {
+        item = Object.assign({}, item, {
+          parent: parent,
+          level: level,
+        });
+        if (item.Children != undefined && item.Children.length > 0) {
+          item = Object.assign({}, item, {
+            isExpand: true,
+            hasChildren: true,
+          });
+        }
+        if (typeof item.isShow == "undefined") {
+          item = Object.assign({}, item, {
+            isShow: true,
+          });
+        }
+        if (item.TypeName) {
+          item = Object.assign({}, item, {
+            ItemName: item.TypeName,
+          });
+        }
 
-          this.medicalCenters = data.Physical;
-          this.employees = data.Employee;
-          this.standards = data.PlanStandard;
+        this.projects.push(item);
+
+        if (item.Children) {
+          this.initProjectData(item.Children, level + 1, item.ID);
         }
       });
     },
   },
 };
 </script>
-<style lang='sass' scoped>
+<style lang='scss' scoped>
 </style>

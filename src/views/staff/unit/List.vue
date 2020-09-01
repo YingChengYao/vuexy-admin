@@ -40,56 +40,7 @@
             class="mb-4 mr-4"
             @click.stop="$refs.fileInput.click()"
           >批量导入</vs-button>
-          <!-- <vs-button color="primary" type="border" class="mb-4 mr-4" @click="addNewData">删除</vs-button> -->
         </template>
-        <!-- <template slot="thead-header">
-          <vs-th>单位名称</vs-th>
-          <vs-th>单位编码</vs-th>
-          <vs-th>辖区</vs-th>
-          <vs-th>联系人</vs-th>
-          <vs-th>排序</vs-th>
-          <vs-th>修改人</vs-th>
-          <vs-th>修改时间</vs-th>
-          <vs-th>操作</vs-th>
-        </template>
-        <template slot="thead-content" slot-scope="item">
-          <vs-td class="wrap">
-            <span :style="'margin-left:'+ (item.tr.level)*20 +'px'">
-              <span @click.stop="toggle(item.tr)" v-if="item.tr.children">
-                <vs-icon
-                  :icon-pack="item.tr.isExpand?'iconfont icon-shangxiazuoyouTriangle11':'iconfont icon-shangxiazuoyouTriangle12'"
-                ></vs-icon>
-              </span>
-              {{item.tr.CompanyName}}
-            </span>
-          </vs-td>
-          <vs-td>
-            <p>{{ item.tr.CompanyCode }}</p>
-          </vs-td>
-          <vs-td>
-            <p>{{ item.tr.CountyName }}</p>
-          </vs-td>
-          <vs-td>
-            <p>{{ item.tr.Contact }}</p>
-          </vs-td>
-          <vs-td>
-            <p>{{ item.tr.Sort }}</p>
-          </vs-td>
-          <vs-td>
-            <p class="product-category">{{ item.tr.ModifyName}}</p>
-          </vs-td>
-          <vs-td>
-            <p>{{ item.tr.ModifyTime | formatDate }}</p>
-          </vs-td>
-          <vs-td class="whitespace-no-wrap">
-            <span
-              class="text-primary"
-              size="small"
-              type="border"
-              @click.stop="editData(item.tr.ID)"
-            >编辑</span>
-          </vs-td>
-        </template>-->
       </qr-table>
       <div class="flex mt-4">
         <vs-pagination

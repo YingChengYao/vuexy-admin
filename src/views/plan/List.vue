@@ -123,7 +123,7 @@
               class="text-primary px-2"
               size="small"
               type="border"
-              v-if="item.tr.PlanType==1"
+              v-if="item.tr.PlanType==1 && [2,3].indexOf(item.tr.PlanStatus)!=-1"
               @click.stop="viewPackage(item.tr.ID)"
             >查看套餐</span>
           </vs-td>
@@ -282,7 +282,7 @@ export default {
       this.planID = id;
       this.popupViewPlan = true;
       this.title = "查看体检计划";
-      this.mark = "add";
+      this.mark = "view_plan";
       this.handleLoad();
     },
     closeViewPlanPop() {
@@ -293,8 +293,8 @@ export default {
     viewPackage(id) {
       this.planID = id;
       this.popupViewPackage = true;
-      this.title = "查看体检计划";
-      this.mark = "add";
+      this.title = "查看套餐";
+      this.mark = "view_package";
       this.handleLoad();
     },
     closeViewPackagePop() {

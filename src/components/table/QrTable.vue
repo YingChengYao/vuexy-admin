@@ -14,7 +14,6 @@
           </span>
         </th>
         <vs-th v-if="showIndex">编号</vs-th>
-        <!-- <slot name="thead-header"></slot> -->
 
         <vs-th :key="index" v-for="(item, index) in cloumns">{{item.headerName}}</vs-th>
 
@@ -33,13 +32,15 @@
               />
             </vs-td>
 
-            <vs-td v-if="showIndex">
+            <vs-td v-if="showIndex" style="width:60px">
               <p>{{ indextr+1 }}</p>
             </vs-td>
 
             <vs-td :key="index" v-for="(item, index) in cloumns">
-              <span v-if="item.expand" :style="'margin-left:'+ (tr.level)*20 +'px'">
-                <span @click.stop="toggle(tr)" v-if="tr.children">
+              <table-cell v-if="item.render" :row="tr" :column="item" :index="index"></table-cell>
+
+              <span v-else-if="item.expand" :style="'margin-left:'+ (tr.level)*20 +'px'">
+                <span @click.stop="toggle(tr)" v-if="tr.children || tr.hasChildren">
                   <vs-icon
                     :icon-pack="tr.isExpand?'iconfont icon-shangxiazuoyouTriangle11':'iconfont icon-shangxiazuoyouTriangle12'"
                   ></vs-icon>
@@ -93,8 +94,10 @@ export default {
     },
     operates: {
       type: Object,
-      default: {
-        list: [],
+      default: () => {
+        return {
+          list: [],
+        };
       },
     },
   },
@@ -187,7 +190,7 @@ export default {
     //#region expand
     toggle: function (m) {
       debugger;
-      if (m.children) {
+      if (m.children || m.hasChildren) {
         this.toggleExpand(m.ID, m.isExpand);
         m.isExpand = !m.isExpand;
       }
@@ -196,7 +199,7 @@ export default {
       this.items.map((i) => {
         if (i.parent == ID) {
           i.isHide = isHide;
-          if (i.children) {
+          if (i.children || i.hasChildren) {
             this.toggleExpand(i.ID, isHide);
           }
         }
