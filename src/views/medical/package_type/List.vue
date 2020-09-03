@@ -3,7 +3,7 @@
     <package-type-data-view-sidebar
       :isSidebarActive="addNewDataSidebar"
       @closeSidebar="toggleDataSidebar"
-      @loadData="loadData"
+      @loadData="getTableData"
       :data="sidebarData"
     />
 
@@ -12,85 +12,45 @@
         <label class="vx-col label-name px-2">套餐类型名称</label>
         <vs-input
           placeholder="Placeholder"
-          v-model="typeNameInput"
+          v-model="searchInfo.typeName"
           class="vx-col md:w-1/6 sm:w-1/2 w-full px-2"
         />
 
-        <label class="vx-col label-name px-2">是否锁定</label>
+        <label class="vx-col label-name px-2">状态</label>
         <vs-select
-          v-model="isLockedSelect"
+          v-model="searchInfo.status"
           class="vx-col md:w-1/6 sm:w-1/2 w-full px-2 select-large"
         >
           <vs-select-item
-            v-for="(item,index) in isLockedSelectOptions"
+            v-for="(item,index) in statusOptions"
             :key="index"
-            :value="item.value"
-            :text="item.name"
+            :value="item.Value"
+            :text="item.Name"
             class="w-full"
           />
         </vs-select>
 
-        <vs-button class="vx-col" color="primary" type="border" @click="loadData">查询</vs-button>
+        <vs-button class="vx-col" color="primary" type="border" @click="getTableData">查询</vs-button>
       </vs-row>
     </vx-card>
 
     <div class="vx-card p-6">
-      <vs-table ref="table" stripe :data="types">
-        <div slot="header" class="flex flex-wrap-reverse items-center flex-grow justify-between">
-          <div class="flex flex-wrap-reverse items-center data-list-btn-container header-left">
-            <vs-button color="primary" type="border" class="mb-4 mr-4" @click="addNewData">添加</vs-button>
-          </div>
-        </div>
-
-        <template slot="thead">
-          <vs-th>编号</vs-th>
-          <vs-th>套餐类型名称</vs-th>
-          <vs-th>排序</vs-th>
-          <vs-th>是否锁定</vs-th>
-          <vs-th>修改人</vs-th>
-          <vs-th>创建时间</vs-th>
-          <vs-th>操作</vs-th>
+      <qr-table ref="table" :items="tableData" :cloumns="cloumns" :operates="operates">
+        <template slot="header">
+          <vs-button color="primary" type="border" class="mb-4 mr-4" @click="addNewData">添加</vs-button>
         </template>
-
-        <template slot-scope="{data}">
-          <tbody>
-            <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data">
-              <vs-td>
-                <p>{{ indextr+1 }}</p>
-              </vs-td>
-              <vs-td>
-                <p>{{ tr.TypeName }}</p>
-              </vs-td>
-              <vs-td>
-                <p>{{ tr.Sort }}</p>
-              </vs-td>
-              <vs-td>
-                <p>{{ tr.IsLocked?'是':'否' }}</p>
-              </vs-td>
-              <vs-td>
-                <p class="product-category">{{ tr.ModifyName}}</p>
-              </vs-td>
-              <vs-td>
-                <p>{{ tr.ModifyTime | formatDate }}</p>
-              </vs-td>
-              <vs-td class="whitespace-no-wrap">
-                <span class="text-primary" size="small" type="border" @click.stop="editData(tr)">编辑</span>
-              </vs-td>
-            </vs-tr>
-          </tbody>
-        </template>
-      </vs-table>
-    </div>
-    <div class="con-pagination-table vs-table--pagination">
-      <vs-pagination
-        :total="totalPage"
-        v-model="currentPage"
-        :pagedown="true"
-        :totalItems="totalItems"
-        @changePageMaxItems="changePageMaxItems"
-        :pagedownItems="descriptionItems"
-        :size="itemsPerPage"
-      ></vs-pagination>
+      </qr-table>
+      <div class="con-pagination-table vs-table--pagination">
+        <vs-pagination
+          :total="totalPage"
+          v-model="currentPage"
+          :pagedown="true"
+          :totalItems="totalItems"
+          @changePageMaxItems="changePageMaxItems"
+          :pagedownItems="descriptionItems"
+          :size="itemsPerPage"
+        ></vs-pagination>
+      </div>
     </div>
   </div>
 </template>
@@ -98,94 +58,66 @@
 <script>
 import PackageTypeDataViewSidebar from "./PackageTypeDataViewSidebar";
 import { getPackageTypes } from "@/http/package.js";
+import { getDataStatusDataSource } from "@/http/data_source.js";
+import infoList from "@/components/mixins/infoList";
+import { formatTimeToStr } from "@/common/utils/data/date";
 export default {
+  mixins: [infoList],
   components: {
     PackageTypeDataViewSidebar,
   },
   data() {
     return {
       types: [],
+      listApi: getPackageTypes,
       cloumns: [
+        { headerName: "套餐类型名称", field: "TypeName" },
+        { headerName: "排序", field: "Sort" },
+        { headerName: "状态", field: "StatusName" },
+        { headerName: "修改人", field: "ModifyName" },
         {
-          title: "套餐类型名称",
-          field: "TypeName"
+          headerName: "修改时间",
+          field: "ModifyTime",
+          formatter: (value) => {
+            if (value) return formatTimeToStr(value);
+          },
         },
-        {
-          title: "排序",
-          field: "Sort"
-        },
-        {
-          title: "是否锁定",
-          field: "IsLocked",
-        },
-        {
-          title: "修改人",
-          field: "ModifyName"
-        },
-        {
-          title: "修改时间",
-          field: "ModifyTime"
-        }
       ],
-
-      isLockedSelectOptions: [
-        {
-          name: "请选择",
-          value: null
-        },
-        {
-          name: "否",
-          value: false
-        },
-        {
-          name: "是",
-          value: true
-        }
-      ],
-
-      //filter
-      typeNameInput: "",
-      isLockedSelect: false,
-
-      //Page
-      itemsPerPage: 10,
-      currentPage: 1,
-      totalPage: 0,
-      descriptionItems: [10, 20, 50, 100],
-      totalItems: 0,
+      operates: {
+        list: [
+          {
+            title: "编辑",
+            show: true,
+            method: (index, row) => {
+              this.editData(row);
+            },
+          },
+        ],
+      },
+      statusOptions: [],
 
       // Data Sidebar
       addNewDataSidebar: false,
-      sidebarData: {}
+      sidebarData: {},
     };
   },
   computed: {},
   methods: {
-    loadData() {
-      let userInfo = JSON.parse(localStorage.getItem("userInfo"));
-
-      let para = {
-        pageIndex: this.currentPage,
-        pageSize: this.itemsPerPage,
-        mecID: userInfo.mecID,
-        typeName: this.typeNameInput,
-        isLocked: this.isLockedSelect
-      };
-
-      getPackageTypes(para).then(res => {
+    async loadDataStatus() {
+      await getDataStatusDataSource().then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
-          console.log("套餐类型：", data);
-          this.types = data.Items;
-          this.totalPage = data.TotalPages;
-          this.totalItems = data.TotalItems;
+          this.statusOptions = data;
+          if (data.length > 0) {
+            this.searchInfo.status = data[0].Value;
+          }
         }
       });
     },
     addNewData() {
       this.sidebarData = {
         title: "添加套餐分类",
-        mark: "add"
+        mark: "add",
       };
       this.toggleDataSidebar(true);
     },
@@ -198,20 +130,15 @@ export default {
     toggleDataSidebar(val = false) {
       this.addNewDataSidebar = val;
     },
-    changePageMaxItems(index) {
-      this.itemsPerPage = this.descriptionItems[index];
-      this.currentPage = 1;
-      this.loadData();
-    }
   },
   mounted() {
-    this.loadData();
+    this.loadDataStatus().then((val) => {
+      let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+      this.searchInfo.mecId = userInfo.mecID;
+      this.getTableData();
+    });
   },
-  watch: {
-    currentPage() {
-      this.loadData();
-    }
-  }
+  watch: {},
 };
 </script>
 

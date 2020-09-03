@@ -19,7 +19,7 @@
       </div>
 
       <template slot="thead">
-        <vs-th>编号</vs-th>
+        <vs-th>序号</vs-th>
         <vs-th v-show="false">ID</vs-th>
         <vs-th>积分</vs-th>
         <vs-th v-show="false">积分类型</vs-th>

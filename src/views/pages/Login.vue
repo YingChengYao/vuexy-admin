@@ -168,6 +168,7 @@ export default {
         userDetails: {
           username: this.username,
           password: this.password,
+          code: this.captcha,
         },
       };
 
@@ -177,9 +178,10 @@ export default {
           this.$vs.loading.close();
         })
         .catch((error) => {
+          debugger;
           this.$vs.loading.close();
           this.$vs.notify({
-            title: "Error",
+            title: "错误提示",
             text: error.message,
             iconPack: "feather",
             icon: "icon-alert-circle",
@@ -189,8 +191,8 @@ export default {
     },
     codeImg() {
       let timestamp = new Date().getTime();
-      this.loginCode =
-        "http://manage.qrtj.cn/api/mix/code?timestamp=" + timestamp;
+      this.loginCode ="http://localhost:5000/api/mix/code?timestamp=" + timestamp;
+        //"http://manage.qrtj.cn/api/mix/code?timestamp=" + timestamp;
     },
   },
 };

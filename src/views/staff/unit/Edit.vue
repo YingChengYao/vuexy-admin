@@ -352,7 +352,7 @@ export default {
             addEmployeeUnit(para).then((res) => {
               if (res.resultType == 0) {
                 this.$vs.notify({
-                  title: "Success",
+                  title: "成功",
                   text: res.message,
                   color: "success",
                 });
@@ -366,7 +366,7 @@ export default {
             editEmployeeUnit(para).then((res) => {
               if (res.resultType == 0) {
                 this.$vs.notify({
-                  title: "Success",
+                  title: "成功",
                   text: res.message,
                   color: "success",
                 });

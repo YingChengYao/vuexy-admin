@@ -53,8 +53,15 @@
         <span class="text-danger text-sm" v-show="errors.has('排序')">{{ errors.first('排序') }}</span>
 
         <div class="mt-4" v-show="data.ID">
-          <label class="vs-input--label">是否锁定</label>
-          <vs-switch v-model="data.IsLocked" />
+          <vs-select label="状态" v-model="data.Status" class="w-full select-large">
+            <vs-select-item
+              v-for="(item,index) in statusOptions"
+              :key="index"
+              :value="item.Value"
+              :text="item.Name"
+              class="w-full"
+            />
+          </vs-select>
         </div>
       </div>
     </component>
@@ -70,20 +77,21 @@
 import VuePerfectScrollbar from "vue-perfect-scrollbar";
 
 import { addItemType, editItemType } from "@/http/package.js";
+import { getDataStatusDataSource } from "@/http/data_source.js";
 
 export default {
   props: {
     isSidebarActive: {
       type: Boolean,
-      required: true
+      required: true,
     },
     data: {
       type: Object,
-      default: () => {}
-    }
+      default: () => {},
+    },
   },
   components: {
-    VuePerfectScrollbar
+    VuePerfectScrollbar,
   },
   data() {
     return {
@@ -94,8 +102,9 @@ export default {
       settings: {
         // perfectscrollbar settings
         maxScrollbarLength: 60,
-        wheelSpeed: 0.6
-      }
+        wheelSpeed: 0.6,
+      },
+      statusOptions: [],
     };
   },
   watch: {
@@ -109,7 +118,7 @@ export default {
         this.initValues();
         this.$validator.reset();
       }
-    }
+    },
   },
   computed: {
     isSidebarActiveLocal: {
@@ -122,14 +131,14 @@ export default {
           this.$validator.reset();
           this.initValues();
         }
-      }
+      },
     },
     isFormValid() {
       return !this.errors.any() && this.dataTypeName;
     },
     scrollbarTag() {
       return this.$store.getters.scrollbarTag;
-    }
+    },
   },
   methods: {
     initValues() {
@@ -137,8 +146,19 @@ export default {
       this.dataRemark = null;
       this.dataSort = null;
     },
+    async loadDataStatus() {
+      await getDataStatusDataSource().then((res) => {
+        if (res.resultType == 0) {
+          const data = JSON.parse(res.message);
+          this.statusOptions = data;
+          if (data.length > 0) {
+            this.searchInfo.status = data[0].Value;
+          }
+        }
+      });
+    },
     submitData() {
-      this.$validator.validateAll().then(result => {
+      this.$validator.validateAll().then((result) => {
         if (result) {
           let userInfo = JSON.parse(localStorage.getItem("userInfo"));
           if (this.data.mark == "add") {
@@ -146,14 +166,14 @@ export default {
               typeName: this.dataTypeName,
               remark: this.dataRemark,
               sort: this.dataSort,
-              mecid: userInfo.mecID
+              mecid: userInfo.mecID,
             };
-            addItemType(para).then(res => {
+            addItemType(para).then((res) => {
               if (res.resultType == 0) {
                 this.$vs.notify({
-                  title: "Success",
+                  title: "成功",
                   text: res.message,
-                  color: "success"
+                  color: "success",
                 });
                 this.$emit("closeSidebar");
                 this.$emit("loadData");
@@ -167,15 +187,15 @@ export default {
               remark: this.dataRemark,
               sort: this.dataSort,
               mecid: userInfo.mecID,
-              isLocked: this.data.IsLocked
+              status: this.data.Status,
             };
             console.log("para:", para);
-            editItemType(para).then(res => {
+            editItemType(para).then((res) => {
               if (res.resultType == 0) {
                 this.$vs.notify({
-                  title: "Success",
+                  title: "成功",
                   text: res.message,
-                  color: "success"
+                  color: "success",
                 });
                 this.$emit("loadData");
                 this.$emit("closeSidebar");
@@ -185,11 +205,11 @@ export default {
           }
         }
       });
-    }
+    },
   },
   created() {
-    console.log("数据：", this.data_local);
-  }
+    this.loadDataStatus();
+  },
 };
 </script>
 

@@ -4,4 +4,4 @@ import auth from "./auth";
 //import package1 from "./package";
 
 Mock.mock(/\/route\/getRoutes/, "get", route.getRoutes);
-Mock.mock(/\/auth\/login/, "get", auth.requestLogin);
+Mock.mock(/\/api\/login/, "post", auth.requestLogin);

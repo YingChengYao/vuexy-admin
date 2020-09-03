@@ -79,7 +79,7 @@ export default {
       operates: {
         list: [
           {
-            name: "查看",
+            title: "查看",
             show: true,
             method: (index, row) => {
               this.viewData(row.ID);

@@ -103,7 +103,7 @@ export default {
 
       if (!this.planID) {
         this.$vs.notify({
-          title: "Error",
+          title: "错误提示",
           text: "未找到该体检计划",
           color: "Error",
         });
@@ -113,7 +113,7 @@ export default {
         addStandard(para).then((res) => {
           if (res.resultType == 0) {
             this.$vs.notify({
-              title: "Success",
+              title: "成功",
               text: res.message,
               color: "success",
             });
@@ -126,7 +126,7 @@ export default {
         editStandard(para).then((res) => {
           if (res.resultType == 0) {
             this.$vs.notify({
-              title: "Success",
+              title: "成功",
               text: res.message,
               color: "success",
             });

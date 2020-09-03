@@ -73,7 +73,7 @@ export const editPosition = params => {
   return request({
     url: "/api/company/position/update",
     method: "post",
-    data: params
+    params: params
   });
 };
 

@@ -59,7 +59,7 @@
         </div>
 
         <template slot="thead">
-          <vs-th>编号</vs-th>
+          <vs-th>序号</vs-th>
           <vs-th>套餐名称</vs-th>
           <vs-th>套餐价格</vs-th>
           <vs-th>折扣</vs-th>
@@ -204,7 +204,7 @@ export default {
       operates: {
         list: [
           {
-            name: "编辑",
+            title: "编辑",
             show: true,
             method: (index, row) => {
               this.editData(row.ID);

@@ -110,7 +110,7 @@ export default {
       operates: {
         list: [
           {
-            name: "编辑",
+            title: "编辑",
             show: true,
             method: (index, row) => {
               this.editData(row.ID);
@@ -220,7 +220,7 @@ export default {
       batchAddEmployeeUnit(formData).then((res) => {
         if (res.resultType == 0) {
           this.$vs.notify({
-            title: "Success",
+            title: "成功",
             text: "名单导入成功",
             color: "success",
           });

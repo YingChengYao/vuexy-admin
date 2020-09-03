@@ -19,6 +19,19 @@
           v-model="searchInfo.SingleName"
           class="vx-col md:w-1/6 sm:w-1/2 w-full px-2"
         />
+        <label class="vx-col label-name px-2">状态</label>
+        <vs-select
+          v-model="searchInfo.status"
+          class="vx-col md:w-1/6 sm:w-1/2 w-full px-2 select-large"
+        >
+          <vs-select-item
+            v-for="(item,index) in statusOptions"
+            :key="index"
+            :value="item.Value"
+            :text="item.Name"
+            class="w-full"
+          />
+        </vs-select>
         <vs-button class="vx-col" color="primary" type="border" @click="getTableData">查询</vs-button>
       </vs-row>
     </vx-card>
@@ -65,6 +78,7 @@ import ProjectItemEdit from "./Edit";
 import { getProjectItems } from "@/http/package.js";
 import infoList from "@/components/mixins/infoList";
 import { formatTimeToStr } from "@/common/utils/data/date";
+import { getDataStatusDataSource } from "@/http/data_source.js";
 export default {
   mixins: [infoList],
   components: {
@@ -100,6 +114,7 @@ export default {
           },
         },
         { headerName: "排序", field: "Sort" },
+        { headerName: "状态", field: "StatusName" },
         { headerName: "修改人", field: "ModifyName" },
         {
           headerName: "修改时间",
@@ -112,7 +127,7 @@ export default {
       operates: {
         list: [
           {
-            name: "编辑",
+            title: "编辑",
             show: true,
             method: (index, row) => {
               this.editData(row.ID);
@@ -120,6 +135,7 @@ export default {
           },
         ],
       },
+      statusOptions: [],
 
       // Pop
       title: null,
@@ -134,13 +150,26 @@ export default {
     let userInfo = JSON.parse(localStorage.getItem("userInfo"));
     this.searchInfo.mecID = userInfo.mecID;
 
-    this.getTableData();
+    this.loadDataStatus().then((val) => {
+      this.getTableData();
+    });
   },
   methods: {
     loadSelectedData(data) {
       if (!Array.isArray(data) || !data.length > 0) return;
       this.selected = data;
       this.$refs.table.initCheckedItems(this.selected);
+    },
+    async loadDataStatus() {
+      await getDataStatusDataSource().then((res) => {
+        if (res.resultType == 0) {
+          const data = JSON.parse(res.message);
+          this.statusOptions = data;
+          if (data.length > 0) {
+            this.searchInfo.status = data[0].Value;
+          }
+        }
+      });
     },
     //#region 弹窗
     addNewData() {

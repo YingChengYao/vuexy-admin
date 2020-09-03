@@ -127,7 +127,7 @@ export default {
             addIntegra(para).then(res => {
               if (res.resultType == 0) {
                 this.$vs.notify({
-                  title: "Success",
+                  title: "成功",
                   text: res.message,
                   color: "success"
                 });
@@ -140,7 +140,7 @@ export default {
             spendIntegra(para).then(res => {
               if (res.resultType == 0) {
                 this.$vs.notify({
-                  title: "Success",
+                  title: "成功",
                   text: res.message,
                   color: "success"
                 });

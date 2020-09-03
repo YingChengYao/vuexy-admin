@@ -45,7 +45,7 @@
             </div>
 
             <template slot="thead">
-              <vs-th>编号</vs-th>
+              <vs-th>序号</vs-th>
               <vs-th>套餐名称</vs-th>
               <vs-th>价格</vs-th>
               <vs-th>标准</vs-th>
@@ -92,7 +92,7 @@
               <div class="p-6">
                 <vs-table :data="initProjects" stripe>
                   <template slot="thead">
-                    <vs-th>编号</vs-th>
+                    <vs-th>序号</vs-th>
                     <vs-th style="width:20rem;">项目名称</vs-th>
                     <vs-th>项目价格</vs-th>
                     <vs-th>婚姻状态</vs-th>
@@ -291,7 +291,7 @@ export default {
     editPackageData() {
       if (!this.packageID) {
         this.$vs.notify({
-          title: "Error",
+          title: "错误提示",
           text: "请选择专属套餐！",
           color: "danger",
         });

@@ -54,10 +54,15 @@
           </div>
 
           <div class="mt-4" v-if="mark==='edit'">
-            <label class="vs-input--label">是否锁定</label>
-            <div class="mt-2">
-              <vs-switch v-model="data_local.IsLocked" />
-            </div>
+            <vs-select label="状态" v-model="data_local.Status" class="w-full select-large">
+              <vs-select-item
+                v-for="(item,index) in statusOptions"
+                :key="index"
+                :value="item.Value"
+                :text="item.Name"
+                class="w-full"
+              />
+            </vs-select>
           </div>
         </div>
         <div class="vx-col md:w-1/2 w-full">
@@ -123,6 +128,7 @@ import {
   getProjectTypeDataSource,
   getMaritalDataSource,
   getGenderDataSource,
+  getDataStatusDataSource,
 } from "@/http/data_source.js";
 import {
   addProjectItem,
@@ -151,16 +157,18 @@ export default {
       marriageOptions: [],
       genderOptions: [],
       projectTypeStatus: [],
+      statusOptions: [],
     };
   },
   computed: {},
   created() {
-    console.log(0)
+    console.log(0);
     //this.initData();
     this.loadMaritalStatus();
     this.loadGender();
     this.loadItemTypeData();
     this.loadData();
+    this.loadDataStatus();
   },
   mounted() {},
   methods: {
@@ -177,6 +185,14 @@ export default {
           const data = JSON.parse(res.message);
           this.data_local = data;
           console.log("单项详情：", data);
+        }
+      });
+    },
+    loadDataStatus() {
+      getDataStatusDataSource().then((res) => {
+        if (res.resultType == 0) {
+          const data = JSON.parse(res.message);
+          this.statusOptions = data;
         }
       });
     },
@@ -203,7 +219,7 @@ export default {
             addProjectItem(para).then((res) => {
               if (res.resultType == 0) {
                 this.$vs.notify({
-                  title: "Success",
+                  title: "成功",
                   text: res.message,
                   color: "success",
                 });
@@ -213,14 +229,13 @@ export default {
             });
           } else if (this.mark == "edit") {
             para.ID = this.projectItemId;
-            para.isLocked = this.data_local.IsLocked;
-              debugger
+            para.status = this.data_local.Status;
 
             editProjectItem(para).then((res) => {
-              debugger
+              debugger;
               if (res.resultType == 0) {
                 this.$vs.notify({
-                  title: "Success",
+                  title: "成功",
                   text: res.message,
                   color: "success",
                 });

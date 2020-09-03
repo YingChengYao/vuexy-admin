@@ -16,7 +16,7 @@
           <span class="text-danger text-sm" v-show="errors.has('备注')">{{ errors.first('备注') }}</span>
 
           <div class="mt-4">
-            <label class="vs-input--label">标识</label>
+            <label class="vs-input--label">类型</label>
             <v-select
               multiple
               :closeOnSelect="false"
@@ -25,6 +25,20 @@
               :options="packageTypeOptions"
               :dir="$vs.rtl ? 'rtl' : 'ltr'"
             />
+          </div>
+
+          <div class="mt-4"></div>
+
+          <div class="mt-4" v-if="packageID">
+            <vs-select label="状态" v-model="data_local.Status" class="w-full select-large">
+              <vs-select-item
+                v-for="(item,index) in statusOptions"
+                :key="index"
+                :value="item.Value"
+                :text="item.Name"
+                class="w-full"
+              />
+            </vs-select>
           </div>
         </div>
         <div class="vx-col md:w-1/2 w-full">
@@ -52,9 +66,16 @@
             </vs-select>
           </div>
 
-          <div class="mt-4" v-if="packageID">
-            <label class="vs-input--label">是否锁定</label>
-            <vs-switch v-model="data_local.IsLocked" />
+          <div class="mt-4">
+            <!-- 排序 -->
+            <vs-input
+              label="排序"
+              v-model="data_local.Sort"
+              class="w-full"
+              name="排序"
+              v-validate="'numeric'"
+            />
+            <span class="text-danger text-sm" v-show="errors.has('排序')">{{ errors.first('排序') }}</span>
           </div>
         </div>
       </div>
@@ -79,6 +100,7 @@ import {
   getPackageTypeDataSource,
   getMaritalDataSource,
   getGenderDataSource,
+  getDataStatusDataSource,
 } from "@/http/data_source.js";
 import { addPackage, editPackage, getPackageDetails } from "@/http/package.js";
 
@@ -106,6 +128,7 @@ export default {
       marriageOptions: [],
       genderOptions: [],
       packageTypeOptions: [],
+      statusOptions: [],
     };
   },
   computed: {
@@ -135,8 +158,7 @@ export default {
     },
   },
   created() {
-    console.log(1)
-    //this.initData();
+    this.loadDataStatus();
     this.loadMaritalStatus();
     this.loadGender();
     this.loadPackageTypes();
@@ -184,13 +206,13 @@ export default {
             sort: this.data_local.Sort,
             mecid: userInfo.mecID,
             packageType: packageTypes,
-            isLocked: this.data_local.IsLocked,
+            status: this.data_local.Status,
           };
           if (this.mark == "add") {
             addPackage(para).then((res) => {
               if (res.resultType == 0) {
                 this.$vs.notify({
-                  title: "Success",
+                  title: "成功",
                   text: res.message,
                   color: "success",
                 });
@@ -203,7 +225,7 @@ export default {
             editPackage(para).then((res) => {
               if (res.resultType == 0) {
                 this.$vs.notify({
-                  title: "Success",
+                  title: "成功",
                   text: res.message,
                   color: "success",
                 });
@@ -231,13 +253,11 @@ export default {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.genderOptions = data;
-          console.log("性别：", data);
         }
       });
     },
     loadPackageTypes() {
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
-
       let para = {
         mecid: userInfo.mecID,
       };
@@ -245,7 +265,14 @@ export default {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.packageTypeOptions = data;
-          console.log("标识data:", data);
+        }
+      });
+    },
+    loadDataStatus() {
+      getDataStatusDataSource().then((res) => {
+        if (res.resultType == 0) {
+          const data = JSON.parse(res.message);
+          this.statusOptions = data;
         }
       });
     },

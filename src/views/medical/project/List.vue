@@ -9,21 +9,21 @@
         <label class="vx-col label-name px-2">项目名称</label>
         <vs-input
           placeholder="Placeholder"
-          v-model="itemNameInput"
+          v-model="searchInfo.itemName"
           class="vx-col md:w-1/6 sm:w-1/2 w-full px-2"
         />
 
-        <label class="vx-col label-name px-2" v-if="!isComponent">是否锁定</label>
+        <label class="vx-col label-name px-2" v-if="!isComponent">状态</label>
         <vs-select
-          v-model="isLockedSelect"
+          v-model="searchInfo.status"
           v-if="!isComponent"
           class="vx-col md:w-1/6 sm:w-1/2 w-full px-2 select-large"
         >
           <vs-select-item
-            v-for="(item,index) in isLockedSelectOptions"
+            v-for="(item,index) in statusOptions"
             :key="index"
-            :value="item.value"
-            :text="item.name"
+            :value="item.Value"
+            :text="item.Name"
             class="w-full"
           />
         </vs-select>
@@ -56,7 +56,7 @@
           <vs-th>婚姻状态</vs-th>
           <vs-th>性别</vs-th>
           <vs-th>排序</vs-th>
-          <vs-th>是否锁定</vs-th>
+          <vs-th>状态</vs-th>
           <vs-th>修改人</vs-th>
           <vs-th>修改时间</vs-th>
           <vs-th v-if="!isPop">操作</vs-th>
@@ -96,7 +96,7 @@
             <p v-if="!item.tr.Children">{{item.tr.Sort }}</p>
           </vs-td>
           <vs-td>
-            <p v-if="!item.tr.Children">{{ item.tr.IsLocked?'是':'否' }}</p>
+            <p v-if="!item.tr.Children">{{ item.tr.StatusName }}</p>
           </vs-td>
           <vs-td>
             <p v-if="!item.tr.Children">{{ item.tr.ModifyName }}</p>
@@ -139,6 +139,7 @@ import {
   accMul,
   accDivCoupon,
 } from "@/common/utils/data/calc";
+import { getDataStatusDataSource } from "@/http/data_source.js";
 
 export default {
   props: {
@@ -166,24 +167,8 @@ export default {
       title: null,
       timer: "",
 
-      isLockedSelectOptions: [
-        {
-          name: "请选择",
-          value: null,
-        },
-        {
-          name: "否",
-          value: false,
-        },
-        {
-          name: "是",
-          value: true,
-        },
-      ],
-
-      //filter
-      itemNameInput: "",
-      isLockedSelect: false,
+      statusOptions: [],
+      searchInfo: {},
 
       //Page
       totalItems: 0,
@@ -204,9 +189,8 @@ export default {
       let para = {
         pageIndex: this.$refs.table.currentPage,
         pageSize: this.$refs.table.itemsPerPage,
-        itemName: this.itemNameInput,
         mecid: userInfo.mecID,
-        isLocked: this.isComponent ? false : this.isLockedSelect,
+        ...this.searchInfo,
       };
 
       getItems(para).then((res) => {
@@ -277,6 +261,17 @@ export default {
       this.selected = data;
       this.$refs.table.initCheckedItems(this.selected);
     },
+    async loadDataStatus() {
+      await getDataStatusDataSource().then((res) => {
+        if (res.resultType == 0) {
+          const data = JSON.parse(res.message);
+          this.statusOptions = data;
+          if (data.length > 0) {
+            this.searchInfo.status = data[0].Value;
+          }
+        }
+      });
+    },
     //#region 弹窗
     addNewData() {
       this.projectID = null;
@@ -302,7 +297,9 @@ export default {
     this.isPop = this.packageID ? true : false;
   },
   mounted() {
-    this.loadData();
+    this.loadDataStatus().then((val) => {
+      this.loadData();
+    });
   },
   watch: {
     selected() {

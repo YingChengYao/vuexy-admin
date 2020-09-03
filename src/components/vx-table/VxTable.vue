@@ -16,7 +16,7 @@
             <vs-checkbox :checked="isCheckedAll" @change="handleCheckAll()" size="small" />
           </span>
         </th>
-        <vs-th v-if="showIndex">编号</vs-th>
+        <vs-th v-if="showIndex">序号</vs-th>
         <!-- <vs-th :key="index" v-for="(item,index) in cloumns">{{item.title}}</vs-th> -->
         <slot name="thead-header"></slot>
       </template>

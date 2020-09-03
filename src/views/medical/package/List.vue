@@ -3,7 +3,7 @@
     <vs-popup :title="title" :active.sync="popupActive" v-if="popupActive">
       <package-edit
         @closePop="closePop"
-        @loadData="loadData"
+        @loadData="getTableData"
         :packageID="packageID"
         :key="timer"
         :mark="mark"
@@ -17,7 +17,7 @@
       <package-deploy-project
         v-if="popupActivePackageDeployProject"
         @closePop="closePackageDeployProjectPop"
-        @loadData="loadData"
+        @loadData="getTableData"
         :packageID="packageID"
         :key="timer"
         :mark="mark"
@@ -64,15 +64,17 @@
         </template>
       </qr-table>
 
-      <vs-pagination
-        :total="totalPage"
-        v-model="currentPage"
-        :pagedown="true"
-        :totalItems="totalItems"
-        @changePageMaxItems="changePageMaxItems"
-        :pagedownItems="descriptionItems"
-        :size="itemsPerPage"
-      ></vs-pagination>
+      <div class="flex mt-4">
+        <vs-pagination
+          :total="totalPage"
+          v-model="currentPage"
+          :pagedown="true"
+          :totalItems="totalItems"
+          @changePageMaxItems="changePageMaxItems"
+          :pagedownItems="descriptionItems"
+          :size="itemsPerPage"
+        ></vs-pagination>
+      </div>
     </div>
   </div>
 </template>
@@ -137,14 +139,14 @@ export default {
       operates: {
         list: [
           {
-            name: "编辑",
+            title: "编辑",
             show: true,
             method: (index, row) => {
               this.editData(row.ID);
             },
           },
           {
-            name: "项目配置",
+            title: "项目配置",
             show: true,
             method: (index, row) => {
               this.deployProject(row.ID);
@@ -181,27 +183,6 @@ export default {
   },
   watch: {},
   methods: {
-    async loadData() {
-      let userInfo = JSON.parse(localStorage.getItem("userInfo"));
-
-      let para = {
-        pageIndex: this.currentPage,
-        pageSize: this.itemsPerPage,
-        mecid: userInfo.mecID,
-        packageName: this.searchInfo.packageName,
-        status: this.searchInfo.status,
-      };
-
-      await getPackages(para).then((res) => {
-        if (res.resultType == 0) {
-          const data = JSON.parse(res.message);
-          this.items = data.Items;
-          this.totalPage = data.TotalPages;
-          this.totalItems = data.TotalItems;
-          console.log("套餐列表：", this.items);
-        }
-      });
-    },
     async loadDataStatus() {
       await getDataStatusDataSource().then((res) => {
         if (res.resultType == 0) {

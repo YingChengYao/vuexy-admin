@@ -310,7 +310,7 @@ export default {
               editPlan(para).then((res) => {
                 if (res.resultType == 0) {
                   this.$vs.notify({
-                    title: "Success",
+                    title: "成功",
                     text: "修改体检计划成功",
                     color: "success",
                   });
@@ -322,7 +322,7 @@ export default {
               addPlan(para).then((res) => {
                 if (res.resultType == 0) {
                   this.$vs.notify({
-                    title: "Success",
+                    title: "成功",
                     text: "添加体检计划成功",
                     color: "success",
                   });
@@ -335,7 +335,7 @@ export default {
             }
           } else {
             this.$vs.notify({
-              title: "Error",
+              title: "错误提示",
               text: "请输入有效的信息",
               color: "warning",
               iconPack: "feather",
@@ -360,7 +360,7 @@ export default {
       }
       if (!message) return true;
       this.$vs.notify({
-        title: "Error",
+        title: "错误提示",
         text: message,
         color: "warning",
         iconPack: "feather",
@@ -373,7 +373,7 @@ export default {
         this.$validator.validateAll("step-base").then((result) => {
           if (!result) {
             this.$vs.notify({
-              title: "Error",
+              title: "错误提示",
               text: "请输入有效的信息",
               color: "warning",
               iconPack: "feather",
@@ -408,7 +408,7 @@ export default {
       addOrEditEmployeeForPlan(para).then((res) => {
         if (res.resultType == 0) {
           this.$vs.notify({
-            title: "Success",
+            title: "成功",
             text: res.message,
             color: "success",
           });
@@ -423,7 +423,7 @@ export default {
       if (checkedGroup.length > 0) return true;
       console.log(1);
       this.$vs.notify({
-        title: "Error",
+        title: "错误提示",
         text: "请选择职工名单",
         color: "danger",
       });
@@ -444,7 +444,7 @@ export default {
       let standards = this.$refs.standard.standards;
       if (standards.length > 0) return true;
       this.$vs.notify({
-        title: "Error",
+        title: "错误提示",
         text: "请添加标准",
         color: "danger",
       });
@@ -458,7 +458,7 @@ export default {
       savePlan(para).then((res) => {
         if (res.resultType == 0) {
           this.$vs.notify({
-            title: "Success",
+            title: "成功",
             text: res.message,
             color: "success",
           });
@@ -488,7 +488,7 @@ export default {
       submitPlan(para).then((res) => {
         if (res.resultType == 0) {
           this.$vs.notify({
-            title: "Success",
+            title: "成功",
             text: res.message,
             color: "success",
           });
@@ -508,7 +508,7 @@ export default {
 
       if (!this.planID_local) {
         this.$vs.notify({
-          title: "Error",
+          title: "错误提示",
           text: "未找到相对应的体检计划，请刷新后重新添加或修改",
           color: "danger",
         });

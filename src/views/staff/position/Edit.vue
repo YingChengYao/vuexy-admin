@@ -30,9 +30,16 @@
           <vs-input label="备注" v-model="data_local.Remark" class="w-full" />
         </div>
 
-        <div class="vx-col md:w-1/2 w-full mt-6" v-if="positionID">
-          <label class="vs-input--label">是否锁定</label>
-          <vs-switch v-model="data_local.IsLocked" />
+        <div class="vx-col md:w-1/2 w-full mt-4" v-if="positionID">
+          <vs-select label="状态" v-model="data_local.Status" class="w-full select-large">
+            <vs-select-item
+              v-for="(item,index) in statusOptions"
+              :key="index"
+              :value="item.Value"
+              :text="item.Name"
+              class="w-full"
+            />
+          </vs-select>
         </div>
       </div>
 
@@ -51,6 +58,7 @@
 
 <script>
 import { addPosition, editPosition, getPositionDetail } from "@/http/staff.js";
+import { getDataStatusDataSource } from "@/http/data_source.js";
 
 export default {
   name: "",
@@ -68,11 +76,13 @@ export default {
   data() {
     return {
       data_local: {},
+      statusOptions: [],
     };
   },
   computed: {},
   created() {
     this.loadData();
+    this.loadDataStatus();
   },
   mounted() {},
   methods: {
@@ -86,6 +96,14 @@ export default {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.data_local = data;
+        }
+      });
+    },
+    loadDataStatus() {
+      getDataStatusDataSource().then((res) => {
+        if (res.resultType == 0) {
+          const data = JSON.parse(res.message);
+          this.statusOptions = data;
         }
       });
     },
@@ -104,7 +122,7 @@ export default {
             addPosition(para).then((res) => {
               if (res.resultType == 0) {
                 this.$vs.notify({
-                  title: "Success",
+                  title: "成功",
                   text: res.message,
                   color: "success",
                 });
@@ -113,13 +131,13 @@ export default {
               }
             });
           } else if (this.mark === "edit") {
-            para.ID = this.data_local.ID;
-            para.isLocked = this.data_local.IsLocked;
+            para.id = this.data_local.ID;
+            para.status = this.data_local.Status;
 
             editPosition(para).then((res) => {
               if (res.resultType == 0) {
                 this.$vs.notify({
-                  title: "Success",
+                  title: "成功",
                   text: res.message,
                   color: "success",
                 });

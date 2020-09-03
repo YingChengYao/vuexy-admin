@@ -13,7 +13,7 @@
             <vs-checkbox :checked="isCheckedAll" @change="handleCheckAll()" size="small" />
           </span>
         </th>
-        <vs-th v-if="showIndex">编号</vs-th>
+        <vs-th v-if="showIndex">序号</vs-th>
 
         <vs-th :key="index" v-for="(item, index) in cloumns">{{item.headerName}}</vs-th>
 
@@ -37,9 +37,9 @@
             </vs-td>
 
             <vs-td :key="index" v-for="(item, index) in cloumns">
-              <table-cell v-if="item.render" :row="tr" :column="item" :index="index"></table-cell>
+              <!-- <table-cell v-if="item.render" :row="tr" :column="item" :index="index"></table-cell> -->
 
-              <span v-else-if="item.expand" :style="'margin-left:'+ (tr.level)*20 +'px'">
+              <span v-if="item.expand" :style="'margin-left:'+ (tr.level)*20 +'px'">
                 <span @click.stop="toggle(tr)" v-if="tr.children || tr.hasChildren">
                   <vs-icon
                     :icon-pack="tr.isExpand?'iconfont icon-shangxiazuoyouTriangle11':'iconfont icon-shangxiazuoyouTriangle12'"
@@ -59,7 +59,7 @@
                 size="small"
                 type="border"
                 @click.stop="btn.method(key,tr)"
-              >{{btn.name}}</span>
+              >{{btn.title}}</span>
             </vs-td>
           </vs-tr>
         </tbody>

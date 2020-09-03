@@ -213,7 +213,7 @@ export default {
           submitPlan(para).then((res) => {
             if (res.resultType == 0) {
               this.$vs.notify({
-                title: "Success",
+                title: "成功",
                 text: res.message,
                 color: "success",
               });
@@ -230,7 +230,7 @@ export default {
       auditPlan(para).then((res) => {
         if (res.resultType == 0) {
           this.$vs.notify({
-            title: "Success",
+            title: "成功",
             text: `${tr.PlanName}审核成功`,
             color: "success",
           });
@@ -245,7 +245,7 @@ export default {
       abortPlan(para).then((res) => {
         if (res.resultType == 0) {
           this.$vs.notify({
-            title: "Success",
+            title: "成功",
             text: `${tr.PlanName}中止成功`,
             color: "success",
           });

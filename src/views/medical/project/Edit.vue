@@ -82,9 +82,16 @@
           <vs-input class="w-full" label="备注" v-model="data_local.Remark" name="备注" />
           <span class="text-danger text-sm" v-show="errors.has('备注')">{{ errors.first('备注') }}</span>
         </div>
-        <div class="vx-col md:w-1/2 w-full mt-6" v-if="projectID">
-          <label class="vs-input--label">是否锁定</label>
-          <vs-switch v-model="data_local.IsLocked" />
+        <div class="vx-col md:w-1/2 w-full mt-4" v-if="projectID">
+          <vs-select label="状态" v-model="data_local.Status" class="w-full select-large">
+            <vs-select-item
+              v-for="(item,index) in statusOptions"
+              :key="index"
+              :value="item.Value"
+              :text="item.Name"
+              class="w-full"
+            />
+          </vs-select>
         </div>
 
         <div class="vx-col w-full mt-4">
@@ -119,6 +126,7 @@ import {
   getMaritalDataSource,
   getGenderDataSource,
   getProjectItemDataSource,
+  getDataStatusDataSource,
 } from "@/http/data_source.js";
 import { addProject, editProject, getProjectDetail } from "@/http/package.js";
 
@@ -144,6 +152,7 @@ export default {
       marriageOptions: [],
       genderOptions: [],
       projectItemOptions: [],
+      statusOptions: [],
 
       //单项
       singleNameInput: null,
@@ -165,6 +174,7 @@ export default {
     this.loadGender();
     this.loadProjectTypeData();
     this.loadProjectItemData();
+    this.loadDataStatus();
   },
   methods: {
     initValues() {
@@ -190,6 +200,14 @@ export default {
         }
       });
     },
+    loadDataStatus() {
+      getDataStatusDataSource().then((res) => {
+        if (res.resultType == 0) {
+          const data = JSON.parse(res.message);
+          this.statusOptions = data;
+        }
+      });
+    },
     save_changes() {
       this.$validator.validateAll().then((result) => {
         if (result) {
@@ -210,14 +228,14 @@ export default {
             remark: this.data_local.Remark,
             sort: this.data_local.Sort,
             mecid: userInfo.mecID,
-            isLocked: this.data_local.isLocked,
+            status: this.data_local.Status,
           };
 
           if (!this.projectID) {
             addProject(para).then((res) => {
               if (res.resultType == 0) {
                 this.$vs.notify({
-                  title: "Success",
+                  title: "成功",
                   text: res.message,
                   color: "success",
                 });
@@ -231,7 +249,7 @@ export default {
             editProject(para).then((res) => {
               if (res.resultType == 0) {
                 this.$vs.notify({
-                  title: "Success",
+                  title: "成功",
                   text: res.message,
                   color: "success",
                 });

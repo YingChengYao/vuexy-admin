@@ -182,7 +182,7 @@ export default {
       deployProjectForPackage(para).then((res) => {
         if (res.resultType == 0) {
           this.$vs.notify({
-            title: "Success",
+            title: "成功",
             text: res.message,
             color: "success",
           });

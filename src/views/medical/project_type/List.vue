@@ -3,7 +3,7 @@
     <data-view-sidebar
       :isSidebarActive="addNewDataSidebar"
       @closeSidebar="toggleDataSidebar"
-      @loadData="loadData"
+      @loadData="getTableData"
       :data="sidebarData"
     />
 
@@ -12,21 +12,33 @@
         <label class="vx-col label-name px-2">项目类型名称</label>
         <vs-input
           placeholder="Placeholder"
-          v-model="typeNameInput"
+          v-model="searchInfo.typeName"
           class="vx-col md:w-1/6 sm:w-1/2 w-full px-2"
         />
+        <label class="vx-col label-name px-2">状态</label>
+        <vs-select
+          v-model="searchInfo.status"
+          class="vx-col md:w-1/6 sm:w-1/2 w-full px-2 select-large"
+        >
+          <vs-select-item
+            v-for="(item,index) in statusOptions"
+            :key="index"
+            :value="item.Value"
+            :text="item.Name"
+            class="w-full"
+          />
+        </vs-select>
 
-        <vs-button class="vx-col" color="primary" type="border" @click="loadData">查询</vs-button>
+        <vs-button class="vx-col" color="primary" type="border" @click="getTableData">查询</vs-button>
       </vs-row>
     </vx-card>
 
     <div class="vx-card p-6">
-      <vx-table
+      <qr-table
         ref="table"
-        :items="types"
-        @loadData="loadData"
-        :totalItems="totalItems"
-        :pageSize="10"
+        :items="tableData"
+        :cloumns="cloumns"
+        :operates="operates"
       >
         <template slot="header">
           <vs-button
@@ -37,39 +49,18 @@
             @click="addNewData"
           >添加</vs-button>
         </template>
-        <template slot="thead-header">
-          <vs-th>项目类型名称</vs-th>
-          <vs-th>描述</vs-th>
-          <vs-th>排序</vs-th>
-          <vs-th>是否锁定</vs-th>
-          <vs-th>修改人</vs-th>
-          <vs-th>创建时间</vs-th>
-          <vs-th>操作</vs-th>
-        </template>
-        <template slot="thead-content" slot-scope="item">
-          <vs-td>
-            <p>{{ item.tr.TypeName }}</p>
-          </vs-td>
-          <vs-td>
-            <p>{{ item.tr.Remark }}</p>
-          </vs-td>
-          <vs-td>
-            <p>{{ item.tr.Sort }}</p>
-          </vs-td>
-          <vs-td>
-            <p>{{ item.tr.IsLocked?'是':'否' }}</p>
-          </vs-td>
-          <vs-td>
-            <p>{{ item.tr.ModifyName}}</p>
-          </vs-td>
-          <vs-td>
-            <p>{{ item.tr.ModifyTime | formatDate }}</p>
-          </vs-td>
-          <vs-td class="whitespace-no-wrap">
-            <span class="text-primary" size="small" type="border" @click.stop="editData(item.tr)">编辑</span>
-          </vs-td>
-        </template>
-      </vx-table>
+      </qr-table>
+      <div class="flex mt-4">
+        <vs-pagination
+          :total="totalPage"
+          v-model="currentPage"
+          :pagedown="true"
+          :totalItems="totalItems"
+          @changePageMaxItems="changePageMaxItems"
+          :pagedownItems="descriptionItems"
+          :size="itemsPerPage"
+        ></vs-pagination>
+      </div>
     </div>
   </div>
 </template>
@@ -77,92 +68,72 @@
 <script>
 import DataViewSidebar from "./DataViewSidebar";
 import { getItemTypes } from "@/http/package.js";
+import infoList from "@/components/mixins/infoList";
+import { formatTimeToStr } from "@/common/utils/data/date";
+import { getDataStatusDataSource } from "@/http/data_source.js";
 export default {
+  mixins: [infoList],
   components: {
-    DataViewSidebar
+    DataViewSidebar,
   },
   props: {
     isPop: {
       type: Boolean,
-      default: false
+      default: false,
     },
-    // cloumns: {
-    //   type: Array,
-    //   default: function() {
-    //     return [
-    //       {
-    //         title: "项目类型名称",
-    //         field: "TypeName"
-    //       },
-    //       {
-    //         title: "描述",
-    //         field: "Remark"
-    //       },
-    //       {
-    //         title: "排序",
-    //         field: "Sort"
-    //       },
-    //       {
-    //         title: "是否锁定",
-    //         field: "IsLocked"
-    //       },
-    //       {
-    //         title: "修改人",
-    //         field: "ModifyName"
-    //       },
-    //       {
-    //         title: "修改时间",
-    //         field: "ModifyTime"
-    //       },
-    //       {
-    //         title: "操作",
-    //         field: ""
-    //       }
-    //     ];
-    //   }
-    // }
   },
   data() {
     return {
-      selected: [],
-      types: [],
-      isMounted: false,
+      listApi: getItemTypes,
+      cloumns: [
+        { headerName: "项目类型名称", field: "TypeName" },
+        { headerName: "描述", field: "Remark" },
+        { headerName: "排序", field: "Sort" },
+        { headerName: "状态", field: "StatusName" },
+        { headerName: "修改人", field: "ModifyName" },
+        {
+          headerName: "修改时间",
+          field: "ModifyTime",
+          formatter: (value) => {
+            if (value) return formatTimeToStr(value);
+          },
+        },
+      ],
+      operates: {
+        list: [
+          {
+            title: "编辑",
+            show: true,
+            method: (index, row) => {
+              this.editData(row);
+            },
+          },
+        ],
+      },
 
-      //Page
-      totalItems: 0,
-
+      statusOptions: [],
       // Data Sidebar
       addNewDataSidebar: false,
       sidebarData: {},
-
-      typeNameInput: ""
     };
   },
   computed: {},
   methods: {
-    loadData() {
-      let userInfo = JSON.parse(localStorage.getItem("userInfo"));
-
-      let para = {
-        pageIndex: this.$refs.table.currentPage,
-        pageSize: this.$refs.table.itemsPerPage,
-        mecid: userInfo.mecID,
-        typename: this.typeNameInput
-      };
-
-      getItemTypes(para).then(res => {
+    async loadDataStatus() {
+      await getDataStatusDataSource().then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
-          console.log("类型：", data);
-          this.types = data.Items;
-          this.totalItems = data.TotalItems;
+          this.statusOptions = data;
+          if (data.length > 0) {
+            this.searchInfo.status = data[0].Value;
+          }
         }
       });
     },
     addNewData() {
       this.sidebarData = {
         title: "添加项目分类",
-        mark: "add"
+        mark: "add",
       };
       this.toggleDataSidebar(true);
     },
@@ -177,14 +148,13 @@ export default {
     },
   },
   mounted() {
-    this.isMounted = true;
-    this.loadData();
+    let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    this.searchInfo.mecId = userInfo.mecID;
+    this.loadDataStatus().then((val) => {
+      this.getTableData();
+    });
   },
-  watch: {
-    currentPage() {
-      this.loadData();
-    }
-  }
+  watch: {},
 };
 </script>
 

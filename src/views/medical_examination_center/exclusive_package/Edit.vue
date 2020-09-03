@@ -250,7 +250,7 @@ export default {
 
           if (!projects.length > 0) {
             this.$vs.notify({
-              title: "Error",
+              title: "错误提示",
               text: "请选择项目信息",
               color: "warning",
             });
@@ -287,7 +287,7 @@ export default {
             addExclusivePackage(para).then((res) => {
               if (res.resultType == 0) {
                 this.$vs.notify({
-                  title: "Success",
+                  title: "成功",
                   text: res.message,
                   color: "success",
                 });
@@ -300,7 +300,7 @@ export default {
             editExclusivePackage(para).then((res) => {
               if (res.resultType == 0) {
                 this.$vs.notify({
-                  title: "Success",
+                  title: "成功",
                   text: res.message,
                   color: "success",
                 });

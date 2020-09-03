@@ -20,8 +20,9 @@ const mutations = {
 const actions = {
   login({ commit }, payload) {
     return new Promise((resolve, reject) => {
-      requestLogin(payload.userDetails.username, payload.userDetails.password)
+      requestLogin(payload.userDetails)
         .then(res => {
+          debugger;
           // If there's user data in response
           if (res) {
             // Set accessToken
@@ -50,11 +51,10 @@ const actions = {
             // Update user details
 
             resolve(res);
-          } else {
-            reject({ message: "Wrong Email or Password" });
           }
         })
         .catch(error => {
+          console.log("error:", error);
           reject(error);
         });
     });

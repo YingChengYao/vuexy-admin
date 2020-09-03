@@ -46,7 +46,7 @@
         </template>
         <template slot="thead-header">
           <vs-th>体检中心名称</vs-th>
-          <vs-th>体检中心编号</vs-th>
+          <vs-th>体检中心编码</vs-th>
           <vs-th>级别</vs-th>
           <vs-th>性质</vs-th>
           <vs-th>辖区</vs-th>
@@ -197,7 +197,7 @@ export default {
       editPosition(para).then((res) => {
         if (res.resultType == 0) {
           this.$vs.notify({
-            title: "Success",
+            title: "成功",
             text: res.message,
             color: "success",
           });

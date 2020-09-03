@@ -125,7 +125,7 @@
             v-model="data_local.Tel"
             class="w-full"
             name="电话"
-            v-validate="'required|phone'"
+            v-validate="'phone'"
           />
           <span class="text-danger text-sm" v-show="errors.has('电话')">{{ errors.first('电话') }}</span>
         </div>
@@ -349,7 +349,7 @@ export default {
             addMedicalCenter(para).then((res) => {
               if (res.resultType == 0) {
                 this.$vs.notify({
-                  title: "Success",
+                  title: "成功",
                   text: res.message,
                   color: "success",
                 });
@@ -362,7 +362,7 @@ export default {
             editMedicalCenter(para).then((res) => {
               if (res.resultType == 0) {
                 this.$vs.notify({
-                  title: "Success",
+                  title: "成功",
                   text: res.message,
                   color: "success",
                 });

@@ -3,7 +3,7 @@
     <vs-popup :title="title" :active.sync="popupActive" v-if="popupActive">
       <unit-edit
         @closePop="closePop"
-        @loadData="getTableData"
+        @loadData="loadData"
         :positionID="positionID"
         :key="timer"
         :mark="mark"
@@ -32,7 +32,7 @@
           />
         </vs-select>
 
-        <vs-button class="vx-col" color="primary" type="border" @click="getTableData">查询</vs-button>
+        <vs-button class="vx-col" color="primary" type="border" @click="loadData">查询</vs-button>
       </vs-row>
     </vx-card>
 
@@ -55,17 +55,53 @@
           >添加</vs-button>
         </template>
       </qr-table>
-      <div class="flex mt-4">
-        <vs-pagination
-          :total="totalPage"
-          v-model="currentPage"
-          :pagedown="true"
-          :totalItems="totalItems"
-          @changePageMaxItems="changePageMaxItems"
-          :pagedownItems="descriptionItems"
-          :size="itemsPerPage"
-        ></vs-pagination>
-      </div>
+
+      <vx-table
+        ref="table"
+        v-model="selected"
+        :items="positions"
+        @loadData="loadData"
+        :totalItems="totalItems"
+        :pageSize="10"
+        :multipleCheck="multipleCheck"
+      >
+        <template slot="header">
+          <vs-button
+            v-if="!isPop"
+            color="primary"
+            type="border"
+            class="mb-4 mr-4"
+            @click="addNewData"
+          >添加</vs-button>
+        </template>
+        <template slot="thead-header">
+          <vs-th>职位名称</vs-th>
+          <vs-th>排序</vs-th>
+          <vs-th>修改人</vs-th>
+          <vs-th>创建时间</vs-th>
+          <vs-th v-if="!isPop">操作</vs-th>
+        </template>
+        <template slot="thead-content" slot-scope="item">
+          <vs-td>
+            <p>{{ item.tr.PositionName }}</p>
+          </vs-td>
+          <vs-td>
+            <p>{{ item.tr.Sort }}</p>
+          </vs-td>
+          <vs-td>
+            <p class="product-category">{{ item.tr.ModifyName}}</p>
+          </vs-td>
+          <vs-td>
+            <p>{{ item.tr.ModifyTime | formatDate }}</p>
+          </vs-td>
+          <vs-td v-if="!isPop">
+            <span class="text-primary" size="small" type="border" @click.stop="editData(item.tr)">编辑</span>
+          </vs-td>
+        </template>
+        <template slot="pagination">
+          <slot></slot>
+        </template>
+      </vx-table>
     </div>
   </div>
 </template>
@@ -94,21 +130,37 @@ export default {
       type: Boolean,
       default: false,
     },
-    operateName: {
-      type: Array,
-      default: () => ["edit"],
-    },
   },
   data() {
     return {
       //Page
       positions: [],
+      //totalItems: 2,
       selected: [],
       searchInfo: {},
-      listApi: getPositions,
+      listApi: getPackages,
       cloumns: [
-        { headerName: "职位名称", field: "PositionName" },
+        { headerName: "职位名称", field: "PackageName" },
+        { headerName: "套餐价格", field: "PackagePrice" },
+        { headerName: "折扣", field: "Discount" },
+        { headerName: "折扣价", field: "DiscountPrice" },
+        {
+          headerName: "婚姻状态",
+          field: "MarriageName",
+          template: () => {
+            return (
+              <vs-chip transparent color="sucess">
+                0
+              </vs-chip>
+            );
+          },
+          render(row, column, index) {
+            return `<vs-chip transparent color="sucess">${row.Marriage}</vs-chip>`;
+          },
+        },
+        { headerName: "性别", field: "GenderName" },
         { headerName: "排序", field: "Sort" },
+        { headerName: "状态", field: "StatusName" },
         { headerName: "修改人", field: "ModifyName" },
         {
           headerName: "修改时间",
@@ -121,11 +173,17 @@ export default {
       operates: {
         list: [
           {
-            name: "edit",
             title: "编辑",
-            show: this.operateName.indexOf("edit") !== -1,
+            show: true,
             method: (index, row) => {
               this.editData(row.ID);
+            },
+          },
+          {
+            title: "项目配置",
+            show: true,
+            method: (index, row) => {
+              this.deployProject(row.ID);
             },
           },
         ],
@@ -146,16 +204,16 @@ export default {
   created() {},
   mounted() {
     this.loadDataStatus().then((val) => {
-      this.getTableData();
+      this.loadData();
     });
   },
   methods: {
-    async getTableData() {
+    async loadData() {
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
       let para = {
-        pageIndex: this.currentPage,
-        pageSize: this.itemsPerPage,
+        pageIndex: this.$refs.table.currentPage,
+        pageSize: this.$refs.table.itemsPerPage,
         companyId: userInfo.companyID,
         ...this.searchInfo,
       };
@@ -191,8 +249,8 @@ export default {
       this.mark = "add";
       this.handleLoad();
     },
-    editData(id) {
-      this.positionID = id;
+    editData(tr) {
+      this.positionID = tr.ID;
       this.popupActive = true;
       this.title = "修改职位信息";
       this.mark = "edit";
