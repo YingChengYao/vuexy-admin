@@ -13,8 +13,8 @@
           />
           <span class="text-danger text-sm" v-show="errors.has('名称')">{{ errors.first('名称') }}</span>
         </div>
-        <div class="vx-col md:w-1/2 w-full mt-4">
-          <!-- 编码 -->
+        <!-- 编码 -->
+        <!-- <div class="vx-col md:w-1/2 w-full mt-4">
           <vs-input
             label="编码"
             v-model="data_local.Code"
@@ -23,7 +23,7 @@
             v-validate="'required'"
           />
           <span class="text-danger text-sm" v-show="errors.has('编码')">{{ errors.first('编码') }}</span>
-        </div>
+        </div>-->
 
         <!-- 描述 -->
         <div class="vx-col md:w-1/2 w-full mt-4">
@@ -33,9 +33,13 @@
         <!-- 状态 -->
         <div class="vx-col md:w-1/2 w-full mt-4">
           <label class="vs-input--label">状态</label>
-          <div class="mt-2">
-            <vs-switch v-model="data_local.IsLocked" />
-          </div>
+          <v-select
+            v-model="data_local.Status"
+            label="Name"
+            value="Value"
+            :options="statusOptions"
+            :reduce="m => m.Value"
+          />
         </div>
       </div>
 
@@ -58,12 +62,13 @@ import {
   addSysDictionary,
   editSysDictionary,
 } from "@/http/dictionary.js";
+import { getDataStatusDataSource } from "@/http/data_source.js";
 
 export default {
   name: "",
   components: {},
   props: {
-    dictionaryID: {
+    dictionaryId: {
       type: String,
       default: null,
     },
@@ -75,24 +80,35 @@ export default {
   data() {
     return {
       data_local: {},
+      statusOptions: [],
     };
   },
   computed: {},
   created() {
+    this.loadDataStatus();
     this.loadData();
   },
   mounted() {},
   methods: {
     loadData() {
-      if (!this.dictionaryID) return;
+      if (!this.dictionaryId) return;
 
       let para = {
-        id: this.dictionaryID,
+        id: this.dictionaryId,
       };
       getSysDictionary(para).then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.data_local = data;
+          console.log(this.data_local);
+        }
+      });
+    },
+    loadDataStatus() {
+      getDataStatusDataSource().then((res) => {
+        if (res.resultType == 0) {
+          const data = JSON.parse(res.message);
+          this.statusOptions = data;
         }
       });
     },
@@ -119,7 +135,7 @@ export default {
               }
             });
           } else if (this.mark == "edit") {
-            para.ID = this.dictionaryID;
+            para.ID = this.dictionaryId;
             editSysDictionary(para).then((res) => {
               if (res.resultType == 0) {
                 this.$vs.notify({

@@ -24,39 +24,29 @@
         </div>
 
         <div class="vx-col md:w-1/2 w-full mt-4">
-          <vs-select
-            label="婚姻状况"
+          <label class="vs-input--label">婚姻状况</label>
+          <v-select
             v-model="data_local.Marital"
-            class="w-full select-large"
+            label="Name"
+            value="Value"
+            :options="marriageOptions"
+            :reduce="m => m.Value"
             name="婚姻状况"
             v-validate="'required'"
-          >
-            <vs-select-item
-              v-for="(item,index) in marriageOptions"
-              :key="index"
-              :value="item.Value"
-              :text="item.Name"
-              class="w-full"
-            />
-          </vs-select>
+          />
           <span class="text-danger text-sm" v-show="errors.has('婚姻状况')">{{ errors.first('婚姻状况') }}</span>
         </div>
         <div class="vx-col md:w-1/2 w-full mt-4">
-          <vs-select
-            label="性别"
+          <label class="vs-input--label">性别</label>
+          <v-select
             v-model="data_local.Gender"
-            class="w-full select-large"
+            label="Name"
+            value="Value"
+            :options="genderOptions"
+            :reduce="m => m.Value"
             name="性别"
             v-validate="'required'"
-          >
-            <vs-select-item
-              v-for="(item,index) in genderOptions"
-              :key="index"
-              :value="item.Value"
-              :text="item.Name"
-              class="w-full"
-            />
-          </vs-select>
+          />
           <span class="text-danger text-sm" v-show="errors.has('性别')">{{ errors.first('性别') }}</span>
         </div>
 
@@ -71,15 +61,14 @@
           <span class="text-danger text-sm" v-show="errors.has('手机号')">{{ errors.first('手机号') }}</span>
         </div>
         <div class="vx-col md:w-1/2 w-full mt-4" v-if="mark=='edit'">
-          <vs-select label="状态" v-model="data_local.WorkingStatus" class="w-full select-large">
-            <vs-select-item
-              v-for="(item,index) in workingStatusOptions"
-              :key="index"
-              :value="item.Value"
-              :text="item.Name"
-              class="w-full"
-            />
-          </vs-select>
+          <label class="vs-input--label">状态</label>
+          <v-select
+            v-model="data_local.WorkingStatus"
+            label="Name"
+            value="Value"
+            :options="workingStatusOptions"
+            :reduce="m => m.Value"
+          />
         </div>
 
         <div class="vx-col md:w-1/2 w-full mt-4">

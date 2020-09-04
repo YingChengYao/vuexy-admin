@@ -2,6 +2,7 @@
   <div id class="data-list-container">
     <vs-popup :title="title" :active.sync="popupActive" v-if="popupActive">
       <package-edit
+        v-if="popupActive"
         @closePop="closePop"
         @loadData="getTableData"
         :packageID="packageID"

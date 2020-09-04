@@ -3,11 +3,11 @@
     <vx-card ref="filterCard" title class="user-list-filters mb-8">
       <vs-row vs-align="center">
         <label class="vx-col label-name px-2">职工名称</label>
-        <!-- <vs-input
+        <vs-input
           placeholder
-          v-model="searchInfo.SingleName"
+          v-model="searchInfo.employeeName"
           class="vx-col md:w-1/6 sm:w-1/2 w-full px-2"
-        /> -->
+        />
         <vs-button class="vx-col" color="primary" type="border" @click="getTableData">查询</vs-button>
       </vs-row>
     </vx-card>

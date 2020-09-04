@@ -3,7 +3,20 @@
     <vx-card title>
       <div class="vx-row">
         <div class="vx-col md:w-1/2 w-full mt-4">
-          <vs-select label="父级单位" v-model="data_local.ParentID" class="w-full select-large">
+          <label class="vs-select--label">父级单位</label>
+          <v-select
+            :options="unitOptions"
+            v-model="data_local.ParentID"
+            label="Name"
+            value="Value"
+            :reduce="m => m.Value"
+          >
+            <template v-slot:option="option">
+              <span :style="'margin-left:'+ (option.level)*10 +'px'"></span>
+              {{ option.Name }}
+            </template>
+          </v-select>
+          <!-- <vs-select label="父级单位" v-model="data_local.ParentID" class="w-full select-large">
             <vs-select-item
               :style="'margin-left:'+ (item.level)*10 +'px'"
               v-for="(item,index) in unitOptions"
@@ -12,7 +25,7 @@
               :text="item.Name"
               class="w-full"
             />
-          </vs-select>
+          </vs-select>-->
         </div>
         <div class="vx-col md:w-1/2 w-full mt-4">
           <!-- 组织机构代码 -->
@@ -141,15 +154,14 @@
 
         <!-- 所属行业 -->
         <div class="vx-col md:w-1/2 w-full mt-4">
-          <vs-select label="所属行业" v-model="data_local.Industry" class="w-full select-large">
-            <vs-select-item
-              v-for="(item,index) in industryOptions"
-              :key="index"
-              :value="item.Value"
-              :text="item.Name"
-              class="w-full"
-            />
-          </vs-select>
+          <label class="vs-select--label">所属行业</label>
+          <v-select
+            v-model="data_local.Industry"
+            label="Name"
+            value="Value"
+            :options="industryOptions"
+            :reduce="m => m.Value"
+          />
         </div>
       </div>
 
@@ -167,8 +179,7 @@
 </template>
 
 <script>
-import vSelect from "vue-select";
-
+import { VTree, VSelectTree } from "vue-tree-halower";
 import { composeTree } from "@/common/utils/data/array.js";
 import {
   getIndustryDataSource,
@@ -186,7 +197,8 @@ import {
 export default {
   name: "",
   components: {
-    vSelect,
+    VTree,
+    VSelectTree,
   },
   props: {
     unitId: {
@@ -206,6 +218,31 @@ export default {
       provinceOptions: [],
       cityOptions: [],
       countyOptions: [],
+
+      initSelected: ["node-1"],
+      treeData: [
+        {
+          title: "node1",
+          expanded: true,
+          children: [
+            {
+              title: "node 1-1",
+              expanded: true,
+              children: [
+                {
+                  title: "node 1-1-1",
+                },
+                {
+                  title: "node 1-1-2",
+                },
+                {
+                  title: "node 1-1-3",
+                },
+              ],
+            },
+          ],
+        },
+      ],
     };
   },
   computed: {},
@@ -384,6 +421,24 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
+@import "@/assets/scss/vuexy/extraComponents/tree.scss";
 
+.tree-box {
+  background: #fff;
+  position: relative;
+  z-index: 9;
+
+  .search-input {
+    margin-top: 10px;
+    width: 98%;
+    display: block;
+  }
+}
+
+.rmNode {
+  background-color: rgba(var(--vs-danger), 0.15);
+  color: rgba(var(--vs-danger), 1);
+  line-height: 13px;
+}
 </style>

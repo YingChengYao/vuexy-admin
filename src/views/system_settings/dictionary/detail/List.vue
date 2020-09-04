@@ -5,79 +5,31 @@
         v-if="popupActive"
         @closePop="closePop"
         @loadData="loadData"
-        :dictionaryID="dictionaryID"
+        :dictionaryId="dictionaryId"
+        :detailId="detailId"
         :key="timer"
         :mark="mark"
       />
     </vs-popup>
 
-    <!-- <vx-card ref="filterCard" title class="user-list-filters mb-8">
+    <vx-card ref="filterCard" title class="user-list-filters mb-8">
       <vs-row vs-align="center">
-        <label class="vx-col label-name px-2">项目类型名称</label>
+        <label class="vx-col label-name px-2">名称</label>
         <vs-input
           placeholder
-          v-model="singleNameInput"
+          v-model="searchInfo.Name"
           class="vx-col md:w-1/6 sm:w-1/2 w-full px-2"
         />
-        <vs-button class="vx-col" color="primary" type="border" @click="loadData">查询</vs-button>
+        <vs-button class="vx-col" color="primary" type="border" @click="getTableData">查询</vs-button>
       </vs-row>
-    </vx-card> -->
+    </vx-card>
 
     <div class="vx-card p-6">
-      <vx-table
-        ref="table"
-        :items="dictionaryDetails"
-        :totalItems="totalItems"
-        :pageSize="10"
-        @loadData="loadData"
-      >
+      <qr-table ref="table" :items="tableData" :cloumns="cloumns" :operates="operates">
         <template slot="header">
           <vs-button color="primary" type="border" class="mb-4 mr-4" @click="addNewData">添加</vs-button>
         </template>
-        <template slot="thead-header">
-          <vs-th>展示值</vs-th>
-          <vs-th>字典值</vs-th>
-          <vs-th>状态</vs-th>
-          <vs-th>排序</vs-th>
-          <vs-th>修改人</vs-th>
-          <vs-th>修改时间</vs-th>
-          <vs-th>操作</vs-th>
-        </template>
-        <template slot="thead-content" slot-scope="item">
-          <vs-td>
-            <p>{{ item.tr.Name }}</p>
-          </vs-td>
-          <vs-td>
-            <p>{{ item.tr.Code }}</p>
-          </vs-td>
-          <vs-td>
-            <p>{{ item.tr.IsLocked?'是':'否' }}</p>
-          </vs-td>
-          <vs-td>
-            <p>{{ item.tr.Remark }}</p>
-          </vs-td>
-          <vs-td>
-            <p>{{ item.tr.ModifyName}}</p>
-          </vs-td>
-          <vs-td>
-            <p>{{ item.tr.ModifyTime | formatDate }}</p>
-          </vs-td>
-          <vs-td class="whitespace-no-wrap">
-            <span
-              class="text-primary"
-              size="small"
-              type="border"
-              @click.stop="editData(item.tr.ID)"
-            >编辑</span>
-            <span
-              class="text-primary ml-2"
-              size="small"
-              type="border"
-              @click.stop="editData(item.tr.ID)"
-            >删除</span>
-          </vs-td>
-        </template>
-      </vx-table>
+      </qr-table>
     </div>
   </div>
 </template>
@@ -86,13 +38,16 @@
 import DictionaryEdit from "./Edit";
 
 import { getSysDictionaryDetails } from "@/http/dictionary.js";
+import infoList from "@/components/mixins/infoList";
+import { formatTimeToStr } from "@/common/utils/data/date";
 
 export default {
+  mixins: [infoList],
   components: {
     DictionaryEdit,
   },
   props: {
-    dictionaryID: {
+    dictionaryId: {
       type: String,
       default: "",
     },
@@ -100,42 +55,72 @@ export default {
   data() {
     return {
       //Page
-      dictionaryDetails: [],
-      singleNameInput: null,
-      totalItems: 0,
-
+      listApi: getSysDictionaryDetails,
+      cloumns: [
+        { headerName: "展示值", field: "Name" },
+        // { headerName: "字典值", field: "Code" },
+        { headerName: "状态", field: "StatusName" },
+        { headerName: "排序", field: "Sort" },
+        { headerName: "修改人", field: "ModifyName" },
+        {
+          headerName: "修改时间",
+          field: "ModifyTime",
+          formatter: (value) => {
+            if (value) return formatTimeToStr(value);
+          },
+        },
+      ],
+      operates: {
+        list: [
+          {
+            title: "编辑",
+            show: true,
+            method: (index, row) => {
+              this.editData(row.ID);
+            },
+          },
+          {
+            title: "详情",
+            show: true,
+            method: (index, row) => {
+              this.viewDetails(row.ID);
+            },
+          },
+        ],
+      },
       // Pop
       title: null,
       popupActive: false,
       timer: "",
       mark: null,
+      detailId: "",
     };
   },
   computed: {},
   methods: {
-    loadData() {
-      let para = {
-        id: this.dictionaryID,
-      };
-      getSysDictionaryDetails(para).then((res) => {
-        if (res.resultType == 0) {
-          const data = JSON.parse(res.message);
-          console.log("dics:", data);
-          this.dictionaryDetails = data;
-          this.totalItems = data.TotalItems;
-        }
-      });
-    },
+    // loadData() {
+    //   let para = {
+    //     id: this.dictionaryId,
+    //   };
+    //   getSysDictionaryDetails(para).then((res) => {
+    //     if (res.resultType == 0) {
+    //       const data = JSON.parse(res.message);
+    //       console.log("dics:", data);
+    //       this.dictionaryDetails = data;
+    //       this.totalItems = data.TotalItems;
+    //     }
+    //   });
+    // },
     //#region 弹窗
     addNewData() {
-      this.dictionaryID = null;
+      this.detailId = null;
       this.popupActive = true;
       this.title = "添加项目单项信息";
       this.mark = "add";
       this.handleLoad();
     },
     editData(id) {
-      this.dictionaryID = id;
+      this.detailId = id;
       this.popupActive = true;
       this.title = "修改项目单项信息";
       this.mark = "edit";
@@ -150,13 +135,10 @@ export default {
     //#endregion
   },
   mounted() {
-    this.loadData();
+    this.searchInfo.id = this.dictionaryId;
+    this.getTableData();
   },
-  watch: {
-    currentPage() {
-      this.loadData();
-    },
-  },
+  watch: {},
 };
 </script>
 

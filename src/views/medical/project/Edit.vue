@@ -3,21 +3,14 @@
     <vx-card>
       <div class="vx-row">
         <div class="vx-col md:w-1/2 w-full mt-4">
-          <vs-select
-            label="项目分类"
+          <label class="vs-input--label">项目分类</label>
+          <v-select
             v-model="data_local.ItemTypeID"
-            class="w-full select-large"
-            name="项目分类"
-            v-validate="'required'"
-          >
-            <vs-select-item
-              v-for="(item,index) in projectTypeOptions"
-              :key="index"
-              :value="item.Value"
-              :text="item.Name"
-              class="w-full"
-            />
-          </vs-select>
+            label="Name"
+            value="Value"
+            :options="projectTypeOptions"
+            :reduce="m => m.Value"
+          />
           <span class="text-danger text-sm" v-show="errors.has('项目分类')">{{ errors.first('项目分类') }}</span>
         </div>
         <div class="vx-col md:w-1/2 w-full mt-4">
@@ -56,26 +49,24 @@
         </div>
 
         <div class="vx-col md:w-1/2 w-full mt-4">
-          <vs-select label="婚姻状况" v-model="data_local.Marriage" class="w-full select-large">
-            <vs-select-item
-              v-for="(item,index) in marriageOptions"
-              :key="index"
-              :value="item.Value"
-              :text="item.Name"
-              class="w-full"
-            />
-          </vs-select>
+          <label class="vs-input--label">婚姻状况</label>
+          <v-select
+            v-model="data_local.Marriage"
+            label="Name"
+            value="Value"
+            :options="marriageOptions"
+            :reduce="m => m.Value"
+          />
         </div>
         <div class="vx-col md:w-1/2 w-full mt-4">
-          <vs-select label="性别" v-model="data_local.Gender" class="w-full select-large">
-            <vs-select-item
-              v-for="(item,index) in genderOptions"
-              :key="index"
-              :value="item.Value"
-              :text="item.Name"
-              class="w-full"
-            />
-          </vs-select>
+          <label class="vs-input--label">性别</label>
+          <v-select
+            v-model="data_local.Gender"
+            label="Name"
+            value="Value"
+            :options="genderOptions"
+            :reduce="m => m.Value"
+          />
         </div>
 
         <div class="vx-col md:w-1/2 w-full mt-4">
@@ -83,15 +74,14 @@
           <span class="text-danger text-sm" v-show="errors.has('备注')">{{ errors.first('备注') }}</span>
         </div>
         <div class="vx-col md:w-1/2 w-full mt-4" v-if="projectID">
-          <vs-select label="状态" v-model="data_local.Status" class="w-full select-large">
-            <vs-select-item
-              v-for="(item,index) in statusOptions"
-              :key="index"
-              :value="item.Value"
-              :text="item.Name"
-              class="w-full"
-            />
-          </vs-select>
+          <label class="vs-input--label">状态</label>
+          <v-select
+            v-model="data_local.Status"
+            label="Name"
+            value="Value"
+            :options="statusOptions"
+            :reduce="m => m.Value"
+          />
         </div>
 
         <div class="vx-col w-full mt-4">

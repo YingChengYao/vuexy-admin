@@ -40,6 +40,7 @@
             class="mb-4 mr-4"
             @click.stop="$refs.fileInput.click()"
           >批量导入</vs-button>
+          <vs-button color="primary" type="border" class="mb-4 mr-4" @click.stop="download()">模板下载</vs-button>
         </template>
       </qr-table>
       <div class="flex mt-4">
@@ -228,6 +229,13 @@ export default {
         }
       });
     },
+    download() {
+      const url = global.baseURL + "/Template/NewCompanyTemplate.xlsx";
+      var iframe = document.createElement("iframe");
+      iframe.style.display = "none";
+      iframe.src = url;
+      document.body.appendChild(iframe);
+    },
     //#region 弹窗
     addNewData() {
       this.unitId = null;
@@ -255,5 +263,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 </style>

@@ -22,20 +22,21 @@
     <vx-card ref="filterCard" title class="user-list-filters mb-8">
       <vs-row vs-align="center">
         <label class="vx-col label-name px-2">计划名称名称</label>
-        <vs-input placeholder v-model="planNameInput" class="vx-col md:w-1/6 sm:w-1/2 w-full px-2" />
+        <vs-input
+          placeholder
+          v-model="searchInfo.planName"
+          class="vx-col md:w-1/6 sm:w-1/2 w-full px-2"
+        />
+
         <label class="vx-col label-name px-2">状态</label>
-        <vs-select
+        <v-select
           v-model="searchInfo.status"
-          class="vx-col md:w-1/6 sm:w-1/2 w-full px-2 select-large"
-        >
-          <vs-select-item
-            v-for="(item,index) in planStatusOptions"
-            :key="index"
-            :value="item.value"
-            :text="item.name"
-            class="w-full"
-          />
-        </vs-select>
+          label="Name"
+          value="Value"
+          :options="planStatusOptions"
+          class="vx-col md:w-1/6 sm:w-1/2 w-full mx-2"
+          :reduce="m => m.Value"
+        />
         <vs-button class="vx-col" color="primary" type="border" @click="loadData">查询</vs-button>
       </vs-row>
     </vx-card>
@@ -141,6 +142,7 @@ import PlanEdit from "./Edit";
 import PlanShow from "./Show";
 import PlanShowPackage from "./ShowPackage";
 import { getPlans, submitPlan, abortPlan, auditPlan } from "@/http/plan.js";
+import { getPlanStatusDataSource } from "@/http/data_source.js";
 export default {
   components: {
     PlanEdit,
@@ -155,7 +157,6 @@ export default {
 
       //filter
       searchInfo: {},
-      planNameInput: null,
       planStatusOptions: [],
 
       // Pop
@@ -182,19 +183,26 @@ export default {
       let para = {
         pageIndex: this.$refs.table.currentPage,
         pageSize: this.$refs.table.itemsPerPage,
-        mecid: userInfo.mecID,
+        mecId: userInfo.mecID,
+        ...this.searchInfo,
       };
-
-      if (this.planNameInput) {
-        para.planName = this.planNameInput;
-      }
 
       getPlans(para).then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.plans = data.Items;
-          console.log("计划列表：", data);
           this.totalItems = data.TotalItems;
+        }
+      });
+    },
+    async loadPlanStatus() {
+      await getPlanStatusDataSource().then((res) => {
+        if (res.resultType == 0) {
+          const data = JSON.parse(res.message);
+          this.planStatusOptions = data;
+          // if (data.length > 0) {
+          //   this.searchInfo.status = data[0].Value;
+          // }
         }
       });
     },
@@ -224,33 +232,53 @@ export default {
       });
     },
     confirmAuditPlan(tr) {
-      let para = {
-        planID: tr.ID,
-      };
-      auditPlan(para).then((res) => {
-        if (res.resultType == 0) {
-          this.$vs.notify({
-            title: "成功",
-            text: `${tr.PlanName}审核成功`,
-            color: "success",
+      this.$vs.dialog({
+        type: "confirm",
+        color: "success",
+        title: `审核体检计划`,
+        text: "是否确认同意该体检计划",
+        acceptText: "确认",
+        cancelText: "取消",
+        accept: () => {
+          let para = {
+            planID: tr.ID,
+          };
+          auditPlan(para).then((res) => {
+            if (res.resultType == 0) {
+              this.$vs.notify({
+                title: "成功",
+                text: `${tr.PlanName}审核成功`,
+                color: "success",
+              });
+              this.loadData();
+            }
           });
-          this.loadData();
-        }
+        },
       });
     },
     abortPlan(tr) {
-      let para = {
-        planID: tr.ID,
-      };
-      abortPlan(para).then((res) => {
-        if (res.resultType == 0) {
-          this.$vs.notify({
-            title: "成功",
-            text: `${tr.PlanName}中止成功`,
-            color: "success",
+      this.$vs.dialog({
+        type: "confirm",
+        color: "success",
+        title: `中止体检计划`,
+        text: "是否确认中止该体检计划！",
+        acceptText: "确认",
+        cancelText: "取消",
+        accept: () => {
+          let para = {
+            planID: tr.ID,
+          };
+          abortPlan(para).then((res) => {
+            if (res.resultType == 0) {
+              this.$vs.notify({
+                title: "成功",
+                text: `${tr.PlanName}中止成功`,
+                color: "success",
+              });
+              this.loadData();
+            }
           });
-          this.loadData();
-        }
+        },
       });
     },
     //#region 弹窗
@@ -303,6 +331,7 @@ export default {
     //#endregion
   },
   mounted() {
+    this.loadPlanStatus();
     this.loadData();
   },
   watch: {},

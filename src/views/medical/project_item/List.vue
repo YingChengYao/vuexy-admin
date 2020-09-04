@@ -20,18 +20,14 @@
           class="vx-col md:w-1/6 sm:w-1/2 w-full px-2"
         />
         <label class="vx-col label-name px-2">状态</label>
-        <vs-select
+        <v-select
           v-model="searchInfo.status"
-          class="vx-col md:w-1/6 sm:w-1/2 w-full px-2 select-large"
-        >
-          <vs-select-item
-            v-for="(item,index) in statusOptions"
-            :key="index"
-            :value="item.Value"
-            :text="item.Name"
-            class="w-full"
-          />
-        </vs-select>
+          label="Name"
+          value="Value"
+          :options="statusOptions"
+          class="vx-col md:w-1/6 sm:w-1/2 w-full mx-2"
+          :reduce="m => m.Value"
+        />
         <vs-button class="vx-col" color="primary" type="border" @click="getTableData">查询</vs-button>
       </vs-row>
     </vx-card>

@@ -34,9 +34,13 @@
         <!-- 状态 -->
         <div class="vx-col md:w-1/2 w-full mt-4">
           <label class="vs-input--label">状态</label>
-          <div class="mt-2">
-            <vs-switch v-model="data_local.IsLocked" />
-          </div>
+          <v-select
+            v-model="data_local.Status"
+            label="Name"
+            value="Value"
+            :options="statusOptions"
+            :reduce="m => m.Value"
+          />
         </div>
       </div>
 
@@ -65,12 +69,17 @@ import {
   addSysDictionaryDetail,
   editSysDictionaryDetail,
 } from "@/http/dictionary.js";
+import { getDataStatusDataSource } from "@/http/data_source.js";
 
 export default {
   name: "",
   components: {},
   props: {
-    dictionaryID: {
+    dictionaryId: {
+      type: String,
+      default: null,
+    },
+    detailId: {
       type: String,
       default: null,
     },
@@ -82,24 +91,34 @@ export default {
   data() {
     return {
       data_local: {},
+      statusOptions: [],
     };
   },
   computed: {},
   created() {
+    this.loadDataStatus();
     this.loadData();
   },
   mounted() {},
   methods: {
     loadData() {
-      if (!this.dictionaryID) return;
+      if (!this.detailId) return;
 
       let para = {
-        id: this.dictionaryID,
+        id: this.detailId,
       };
       getSysDictionaryDetail(para).then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.data_local = data;
+        }
+      });
+    },
+    loadDataStatus() {
+      getDataStatusDataSource().then((res) => {
+        if (res.resultType == 0) {
+          const data = JSON.parse(res.message);
+          this.statusOptions = data;
         }
       });
     },
@@ -116,7 +135,7 @@ export default {
           };
 
           if (this.mark === "add") {
-            para.rootID = this.dictionaryID;
+            para.rootId = this.dictionaryId;
 
             addSysDictionaryDetail(para).then((res) => {
               if (res.resultType == 0) {
@@ -130,7 +149,7 @@ export default {
               }
             });
           } else if (this.mark == "edit") {
-            para.ID = this.data_local.ID;
+            para.Id = this.data_local.ID;
             editSysDictionaryDetail(para).then((res) => {
               if (res.resultType == 0) {
                 this.$vs.notify({

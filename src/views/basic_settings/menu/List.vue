@@ -1,21 +1,13 @@
 <template>
   <div class="data-list-container">
-    <data-view-sidebar
-      :isSidebarActive="addNewDataSidebar"
-      @closeSidebar="toggleDataSidebar"
-      @loadData="getTableData"
-      :data="sidebarData"
-    />
-
     <vx-card ref="filterCard" title class="user-list-filters mb-8">
       <vs-row vs-align="center">
-        <label class="vx-col label-name px-2">项目类型名称</label>
+        <label class="vx-col label-name px-2">套餐类型名称</label>
         <vs-input
           placeholder="Placeholder"
           v-model="searchInfo.typeName"
           class="vx-col md:w-1/6 sm:w-1/2 w-full px-2"
         />
-
         <label class="vx-col label-name px-2">状态</label>
         <v-select
           v-model="searchInfo.status"
@@ -25,7 +17,6 @@
           class="vx-col md:w-1/6 sm:w-1/2 w-full mx-2"
           :reduce="m => m.Value"
         />
-
         <vs-button class="vx-col" color="primary" type="border" @click="getTableData">查询</vs-button>
       </vs-row>
     </vx-card>
@@ -33,16 +24,10 @@
     <div class="vx-card p-6">
       <qr-table ref="table" :items="tableData" :cloumns="cloumns" :operates="operates">
         <template slot="header">
-          <vs-button
-            v-if="!isPop"
-            color="primary"
-            type="border"
-            class="mb-4 mr-4"
-            @click="addNewData"
-          >添加</vs-button>
+          <vs-button color="primary" type="border" class="mb-4 mr-4" @click="addNewData">添加</vs-button>
         </template>
       </qr-table>
-      <div class="flex mt-4">
+      <div class="con-pagination-table vs-table--pagination">
         <vs-pagination
           :total="totalPage"
           v-model="currentPage"
@@ -58,28 +43,19 @@
 </template>
 
 <script>
-import DataViewSidebar from "./DataViewSidebar";
-import { getItemTypes } from "@/http/package.js";
+import { getPackageTypes } from "@/http/package.js";
+import { getDataStatusDataSource } from "@/http/data_source.js";
 import infoList from "@/components/mixins/infoList";
 import { formatTimeToStr } from "@/common/utils/data/date";
-import { getDataStatusDataSource } from "@/http/data_source.js";
 export default {
   mixins: [infoList],
-  components: {
-    DataViewSidebar,
-  },
-  props: {
-    isPop: {
-      type: Boolean,
-      default: false,
-    },
-  },
+  components: {},
   data() {
     return {
-      listApi: getItemTypes,
+      types: [],
+      listApi: getPackageTypes,
       cloumns: [
-        { headerName: "项目类型名称", field: "TypeName" },
-        { headerName: "描述", field: "Remark" },
+        { headerName: "套餐类型名称", field: "TypeName" },
         { headerName: "排序", field: "Sort" },
         { headerName: "状态", field: "StatusName" },
         { headerName: "修改人", field: "ModifyName" },
@@ -102,8 +78,8 @@ export default {
           },
         ],
       },
-
       statusOptions: [],
+
       // Data Sidebar
       addNewDataSidebar: false,
       sidebarData: {},
@@ -124,14 +100,14 @@ export default {
     },
     addNewData() {
       this.sidebarData = {
-        title: "添加项目分类",
+        title: "添加套餐分类",
         mark: "add",
       };
       this.toggleDataSidebar(true);
     },
     editData(data) {
       this.sidebarData = data;
-      this.sidebarData.title = "修改项目分类";
+      this.sidebarData.title = "修改套餐分类";
       this.sidebarData.mark = "edit";
       this.toggleDataSidebar(true);
     },
@@ -140,9 +116,9 @@ export default {
     },
   },
   mounted() {
-    let userInfo = JSON.parse(localStorage.getItem("userInfo"));
-    this.searchInfo.mecId = userInfo.mecID;
     this.loadDataStatus().then((val) => {
+      let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+      this.searchInfo.mecId = userInfo.mecID;
       this.getTableData();
     });
   },

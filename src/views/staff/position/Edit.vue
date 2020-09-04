@@ -31,15 +31,14 @@
         </div>
 
         <div class="vx-col md:w-1/2 w-full mt-4" v-if="positionID">
-          <vs-select label="状态" v-model="data_local.Status" class="w-full select-large">
-            <vs-select-item
-              v-for="(item,index) in statusOptions"
-              :key="index"
-              :value="item.Value"
-              :text="item.Name"
-              class="w-full"
-            />
-          </vs-select>
+          <label class="vs-input--label">状态</label>
+          <v-select
+            v-model="data_local.Status"
+            label="Name"
+            value="Value"
+            :options="statusOptions"
+            :reduce="m => m.Value"
+          />
         </div>
       </div>
 

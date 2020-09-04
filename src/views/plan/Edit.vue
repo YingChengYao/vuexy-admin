@@ -51,15 +51,14 @@
               ></datepicker>
             </div>
             <div class="vx-col md:w-1/4 w-full">
-              <vs-select label="体检模式" v-model="data_local.PlanType" class="w-full select-large">
-                <vs-select-item
-                  v-for="(item,index) in planTypeOptions"
-                  :key="index"
-                  :value="item.Value"
-                  :text="item.Name"
-                  class="w-full"
-                />
-              </vs-select>
+              <label class="vs-select--label">体检模式</label>
+              <v-select
+                v-model="data_local.PlanType"
+                label="Name"
+                value="Value"
+                :options="planTypeOptions"
+                :reduce="m => m.Value"
+              />
             </div>
             <div class="vx-col w-full">
               <div class="mt-4">
@@ -82,7 +81,12 @@
         <medical-center-list ref="medicalCenter" :multipleCheck="true" :isPlanPop="true"></medical-center-list>
         <div class="text-right mt-5">
           <span>
-            <vs-button class="vx-col ml-auto" color="primary" @click="save_base_info" v-preventClick>保存</vs-button>
+            <vs-button
+              class="vx-col ml-auto"
+              color="primary"
+              @click="save_base_info"
+              v-preventClick
+            >保存</vs-button>
           </span>
           <span class="px-2">
             <vs-button class="vx-col ml-4" type="border" color="warning" @click="cancel">取消</vs-button>
@@ -126,7 +130,12 @@
             >上一步</vs-button>
           </span>
           <span class="px-4">
-            <vs-button class="vx-col ml-auto mt-2" color="primary" @click="savePlan" v-preventClick>保存</vs-button>
+            <vs-button
+              class="vx-col ml-auto mt-2"
+              color="primary"
+              @click="savePlan"
+              v-preventClick
+            >保存</vs-button>
           </span>
           <span class="px-4">
             <vs-button class="vx-col ml-auto mt-2" color="primary" @click="confirmSubmitPlan">提交</vs-button>

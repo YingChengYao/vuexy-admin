@@ -44,19 +44,16 @@
           class="vx-col md:w-1/6 sm:w-1/2 w-full px-2"
         />
         <label class="vx-col label-name px-2" v-if="isShowWorkingStatus">状态</label>
-        <vs-select
-          v-model="workingStatusSelect"
+        <v-select
           v-if="isShowWorkingStatus"
-          class="vx-col md:w-1/6 sm:w-1/2 w-full px-2 select-large"
-        >
-          <vs-select-item
-            v-for="(item,index) in workingStatusOptions"
-            :key="index"
-            :value="item.Value"
-            :text="item.Name"
-            class="w-full"
-          />
-        </vs-select>
+          v-model="workingStatusSelect"
+          label="Name"
+          value="Value"
+          :options="workingStatusOptions"
+          class="vx-col md:w-1/6 sm:w-1/2 w-full mx-2"
+          :reduce="m => m.Value"
+        />
+
         <vs-button class="vx-col flex" color="primary" type="border" @click="loadData">查询</vs-button>
       </vs-row>
     </vx-card>
@@ -255,7 +252,6 @@ export default {
           const data = JSON.parse(res.message);
           this.items = data.Items;
           this.totalItems = data.TotalItems;
-          console.log("职工:", data);
         }
       });
     },
@@ -318,8 +314,7 @@ export default {
       });
     },
     download() {
-      debugger
-      const url = "http://localhost:5000/Template/NewEmployeeTemplate.xlsx";
+      const url = global.baseURL + "/Template/NewEmployeeTemplate.xlsx";
       var iframe = document.createElement("iframe");
       iframe.style.display = "none";
       iframe.src = url;

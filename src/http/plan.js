@@ -152,7 +152,6 @@ export const getPlanPackages = params => {
   });
 };
 
-
 //获取体检计划的专属套餐的项目信息
 export const getProjectsForPlan = params => {
   return request({

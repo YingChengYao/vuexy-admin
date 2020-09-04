@@ -33,21 +33,16 @@
         </div>
         <!-- 体检中心等级 -->
         <div class="vx-col md:w-1/2 w-full mt-4">
-          <vs-select
-            label="体检中心等级"
+          <label class="vs-input--label">体检中心等级</label>
+          <v-select
             v-model="data_local.MecGrade"
-            class="w-full select-large"
+            label="Name"
+            value="Value"
+            :options="gradeOptions"
+            :reduce="m => m.Value"
             name="体检中心等级"
             v-validate="'required'"
-          >
-            <vs-select-item
-              v-for="(item,index) in gradeOptions"
-              :key="index"
-              :value="item.Value"
-              :text="item.Name"
-              class="w-full"
-            />
-          </vs-select>
+          />
           <span
             class="text-danger text-sm"
             v-show="errors.has('体检中心等级')"
@@ -55,47 +50,22 @@
         </div>
         <!-- 体检中心性质 -->
         <div class="vx-col md:w-1/2 w-full mt-4">
-          <vs-select
-            label="体检中心性质"
-            v-model="data_local.MecGrade"
-            class="w-full select-large"
+          <label class="vs-input--label">体检中心性质</label>
+          <v-select
+            v-model="data_local.MecNature"
+            label="Name"
+            value="Value"
+            :options="natureOptions"
+            :reduce="m => m.Value"
             name="体检中心性质"
             v-validate="'required'"
-          >
-            <vs-select-item
-              v-for="(item,index) in natureOptions"
-              :key="index"
-              :value="item.Value"
-              :text="item.Name"
-              class="w-full"
-            />
-          </vs-select>
+          />
+
           <span
             class="text-danger text-sm"
             v-show="errors.has('体检中心性质')"
           >{{ errors.first('体检中心性质') }}</span>
         </div>
-        <!-- <div class="vx-col md:w-1/2 w-full mt-4">
-          <vs-select
-            label="体检中心性质"
-            v-model="data_local.MecNature"
-            class="w-full select-large"
-            name="体检中心性质"
-            v-validate="'required'"
-          >
-            <vs-select-item
-              v-for="(item,index) in natureOptions"
-              :key="index"
-              :value="item.Value"
-              :text="item.Name"
-              class="w-full"
-            />
-          </vs-select>
-          <span
-            class="text-danger text-sm"
-            v-show="errors.has('体检中心性质')"
-          >{{ errors.first('体检中心性质') }}</span>
-        </div>-->
         <!-- 联系人 -->
         <div class="vx-col md:w-1/2 w-full mt-4">
           <vs-input
@@ -222,7 +192,6 @@ import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
 import "quill/dist/quill.bubble.css";
 import { quillEditor } from "vue-quill-editor";
-import vSelect from "vue-select";
 
 import {
   addMedicalCenter,
@@ -241,7 +210,6 @@ export default {
   name: "",
   components: {
     quillEditor,
-    vSelect,
   },
   props: {
     mark: {

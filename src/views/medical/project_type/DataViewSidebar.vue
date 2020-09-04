@@ -53,15 +53,14 @@
         <span class="text-danger text-sm" v-show="errors.has('排序')">{{ errors.first('排序') }}</span>
 
         <div class="mt-4" v-show="data.ID">
-          <vs-select label="状态" v-model="data.Status" class="w-full select-large">
-            <vs-select-item
-              v-for="(item,index) in statusOptions"
-              :key="index"
-              :value="item.Value"
-              :text="item.Name"
-              class="w-full"
-            />
-          </vs-select>
+          <label class="vs-input--label">状态</label>
+          <v-select
+            v-model="data.Status"
+            label="Name"
+            value="Value"
+            :options="statusOptions"
+            :reduce="m => m.Value"
+          />
         </div>
       </div>
     </component>

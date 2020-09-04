@@ -91,6 +91,15 @@ export const getPlanTypeDataSource = params => {
     params: params
   });
 };
+
+//获取计划状态数据源
+export const getPlanStatusDataSource = params => {
+  return request({
+    url: "/api/plan/status/select",
+    method: "get",
+    params: params
+  });
+};
 //#endregion
 
 //#region 职工相关

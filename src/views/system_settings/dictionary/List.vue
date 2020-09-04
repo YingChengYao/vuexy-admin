@@ -1,21 +1,21 @@
 <template>
   <div class="data-list-container">
-    <vs-popup :title="title" :active.sync="popupActive">
+    <vs-popup :title="title" :active.sync="popupActive" v-if="popupActive">
       <dictionary-edit
         v-if="popupActive"
         @closePop="closePop"
-        @loadData="loadData"
-        :dictionaryID="dictionaryID"
+        @loadData="getTableData"
+        :dictionaryId="dictionaryId"
         :key="timer"
         :mark="mark"
       />
     </vs-popup>
-    <vs-popup fullscreen :title="title" :active.sync="popupActiveDetail">
+    <vs-popup fullscreen :title="title" :active.sync="popupActiveDetail" v-if="popupActiveDetail">
       <dictionary-detail-list
         v-if="popupActiveDetail"
         @closePop="closePop"
-        @loadData="loadData"
-        :dictionaryID="dictionaryID"
+        @loadData="getTableData"
+        :dictionaryId="dictionaryId"
         :key="timer"
       />
     </vs-popup>
@@ -23,8 +23,21 @@
     <vx-card ref="filterCard" title class="user-list-filters mb-8">
       <vs-row vs-align="center">
         <label class="vx-col label-name px-2">字典名称</label>
-        <vs-input placeholder v-model="nameInput" class="vx-col md:w-1/6 sm:w-1/2 w-full px-2" />
-        <vs-button class="vx-col" color="primary" type="border" @click="loadData">查询</vs-button>
+        <vs-input
+          placeholder
+          v-model="searchInfo.name"
+          class="vx-col md:w-1/6 sm:w-1/2 w-full px-2"
+        />
+        <label class="vx-col label-name px-2">状态</label>
+        <v-select
+          v-model="searchInfo.status"
+          label="Name"
+          value="Value"
+          :options="statusOptions"
+          class="vx-col md:w-1/6 sm:w-1/2 w-full mx-2"
+          :reduce="m => m.Value"
+        />
+        <vs-button class="vx-col" color="primary" type="border" @click="getTableData">查询</vs-button>
       </vs-row>
     </vx-card>
 
@@ -34,61 +47,6 @@
           <vs-button color="primary" type="border" class="mb-4 mr-4" @click="addNewData">添加</vs-button>
         </template>
       </qr-table>
-
-      <vx-table
-        ref="table"
-        :items="dictionarys"
-        :totalItems="totalItems"
-        :pageSize="10"
-        @loadData="loadData"
-      >
-        <template slot="header">
-          <vs-button color="primary" type="border" class="mb-4 mr-4" @click="addNewData">添加</vs-button>
-        </template>
-        <template slot="thead-header">
-          <vs-th>字典名</vs-th>
-          <vs-th>字典编码</vs-th>
-          <vs-th>状态</vs-th>
-          <vs-th>描述</vs-th>
-          <vs-th>修改人</vs-th>
-          <vs-th>修改时间</vs-th>
-          <vs-th>操作</vs-th>
-        </template>
-        <template slot="thead-content" slot-scope="item">
-          <vs-td>
-            <p>{{ item.tr.Name }}</p>
-          </vs-td>
-          <vs-td>
-            <p>{{ item.tr.Name }}</p>
-          </vs-td>
-          <vs-td>
-            <p>{{ item.tr.IsLocked?'是':'否' }}</p>
-          </vs-td>
-          <vs-td>
-            <p>{{ item.tr.Remark }}</p>
-          </vs-td>
-          <vs-td>
-            <p>{{ item.tr.ModifyName}}</p>
-          </vs-td>
-          <vs-td>
-            <p>{{ item.tr.ModifyTime | formatDate }}</p>
-          </vs-td>
-          <vs-td class="whitespace-no-wrap">
-            <span
-              class="text-primary"
-              size="small"
-              type="border"
-              @click.stop="viewDetails(item.tr.ID)"
-            >详情</span>
-            <span
-              class="text-primary ml-2"
-              size="small"
-              type="border"
-              @click.stop="editData(item.tr.ID)"
-            >编辑</span>
-          </vs-td>
-        </template>
-      </vx-table>
     </div>
   </div>
 </template>
@@ -100,6 +58,7 @@ import DictionaryDetailList from "./detail/List";
 import { getSysDictionarys } from "@/http/dictionary.js";
 import infoList from "@/components/mixins/infoList";
 import { formatTimeToStr } from "@/common/utils/data/date";
+import { getDataStatusDataSource } from "@/http/data_source.js";
 
 export default {
   mixins: [infoList],
@@ -112,26 +71,8 @@ export default {
       //Page
       listApi: getSysDictionarys,
       cloumns: [
-        { headerName: "套餐名称", field: "PackageName" },
-        { headerName: "套餐价格", field: "PackagePrice" },
-        { headerName: "折扣", field: "Discount" },
-        { headerName: "折扣价", field: "DiscountPrice" },
-        {
-          headerName: "婚姻状态",
-          field: "MarriageName",
-          template: () => {
-            return (
-              <vs-chip transparent color="sucess">
-                0
-              </vs-chip>
-            );
-          },
-          render(row, column, index) {
-            return `<vs-chip transparent color="sucess">${row.Marriage}</vs-chip>`;
-          },
-        },
-        { headerName: "性别", field: "GenderName" },
-        { headerName: "排序", field: "Sort" },
+        { headerName: "字典名称", field: "Name" },
+        // { headerName: "字典编码", field: "Code" },
         { headerName: "状态", field: "StatusName" },
         { headerName: "修改人", field: "ModifyName" },
         {
@@ -152,19 +93,19 @@ export default {
             },
           },
           {
-            title: "项目配置",
+            title: "详情",
             show: true,
             method: (index, row) => {
-              this.deployProject(row.ID);
+              this.viewDetails(row.ID);
             },
           },
         ],
       },
-
+      statusOptions: [],
       // Pop
       title: null,
       popupActive: false,
-      dictionaryID: null,
+      dictionaryId: null,
       timer: "",
       mark: null,
       popupActiveDetail: null,
@@ -172,29 +113,27 @@ export default {
   },
   computed: {},
   methods: {
-    loadData() {
-      // let para={
-      //   nameInput
-      // }
-      getSysDictionarys().then((res) => {
+    async loadDataStatus() {
+      await getDataStatusDataSource().then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
-          console.log("dics:", data);
-          this.dictionarys = data;
-          this.totalItems = data.TotalItems;
+          this.statusOptions = data;
+          if (data.length > 0) {
+            this.searchInfo.status = data[0].Value;
+          }
         }
       });
     },
     //#region 弹窗
     addNewData() {
-      this.dictionaryID = null;
+      this.dictionaryId = null;
       this.popupActive = true;
       this.title = "添加项目单项信息";
       this.mark = "add";
       this.handleLoad();
     },
     editData(id) {
-      this.dictionaryID = id;
+      this.dictionaryId = id;
       this.popupActive = true;
       this.title = "修改项目单项信息";
       this.mark = "edit";
@@ -207,7 +146,7 @@ export default {
       this.popupActive = false;
     },
     viewDetails(id) {
-      this.dictionaryID = id;
+      this.dictionaryId = id;
       this.popupActiveDetail = true;
       this.title = "字典详情信息";
       this.handleLoad();
@@ -215,13 +154,11 @@ export default {
     //#endregion
   },
   mounted() {
-    this.loadData();
+    this.loadDataStatus().then(() => {
+      this.getTableData();
+    });
   },
-  watch: {
-    currentPage() {
-      this.loadData();
-    },
-  },
+  watch: {},
 };
 </script>
 

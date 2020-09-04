@@ -231,7 +231,7 @@ export default {
               url: "/user-settings",
               slug: "user-settings",
               name: "用户设置",
-              component: "views/basic_settings/user_settings/UserSettings",
+              component: "views/basic_settings/user_settings/UserSettings"
             },
             {
               path: "/user_management",
@@ -256,8 +256,7 @@ export default {
               url: "/menu",
               slug: "menu",
               name: "菜单管理",
-              component: "views/basic_settings/Menu",
-              isHide: true,
+              component: "views/basic_settings/menu/List",
               meta: {
                 title: "menu"
               }

@@ -42,27 +42,25 @@
 
           <!-- 性别 -->
           <div class="mt-4" v-show="data_local.IsOptional">
-            <vs-select label="性别" v-model="data_local.Gender" class="w-full select-large">
-              <vs-select-item
-                v-for="(item,index) in genderOptions"
-                :key="index"
-                :value="item.Value"
-                :text="item.Name"
-                class="w-full"
-              />
-            </vs-select>
+            <label class="vs-select--label">性别</label>
+            <v-select
+              v-model="data_local.Gender"
+              label="Name"
+              value="Value"
+              :options="genderOptions"
+              :reduce="m => m.Value"
+            />
           </div>
 
           <div class="mt-4" v-if="mark==='edit'">
-            <vs-select label="状态" v-model="data_local.Status" class="w-full select-large">
-              <vs-select-item
-                v-for="(item,index) in statusOptions"
-                :key="index"
-                :value="item.Value"
-                :text="item.Name"
-                class="w-full"
-              />
-            </vs-select>
+            <label class="vs-select--label">状态</label>
+            <v-select
+              v-model="data_local.Status"
+              label="Name"
+              value="Value"
+              :options="statusOptions"
+              :reduce="m => m.Value"
+            />
           </div>
         </div>
         <div class="vx-col md:w-1/2 w-full">
@@ -76,33 +74,27 @@
           </div>
 
           <div class="mt-6" v-show="data_local.IsOptional">
-            <vs-select label="婚姻状况" v-model="data_local.Marriage" class="w-full select-large">
-              <vs-select-item
-                v-for="(item,index) in marriageOptions"
-                :key="index"
-                :value="item.Value"
-                :text="item.Name"
-                class="w-full"
-              />
-            </vs-select>
+            <label class="vs-select--label">婚姻状况</label>
+            <v-select
+              v-model="data_local.Marriage"
+              label="Name"
+              value="Value"
+              :options="marriageOptions"
+              :reduce="m => m.Value"
+            />
           </div>
 
           <div class="mt-4" v-if="data_local.IsOptional">
-            <vs-select
-              label="项目分类"
+            <label class="vs-select--label">项目分类</label>
+            <v-select
               v-model="data_local.ItemTypeID"
-              class="w-full select-large"
+              label="Name"
+              value="Value"
+              :options="projectTypeStatus"
+              :reduce="m => m.Value"
               name="项目分类"
               v-validate="'required'"
-            >
-              <vs-select-item
-                v-for="(item,index) in projectTypeStatus"
-                :key="index"
-                :value="item.Value"
-                :text="item.Name"
-                class="w-full"
-              />
-            </vs-select>
+            />
             <span class="text-danger text-sm" v-show="errors.has('项目分类')">{{ errors.first('项目分类') }}</span>
           </div>
         </div>
