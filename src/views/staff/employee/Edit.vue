@@ -91,7 +91,7 @@
       <div class="vx-row">
         <div class="vx-col w-full">
           <div class="mt-8 flex flex-wrap items-center justify-end">
-            <vs-button class="ml-auto mt-2" @click="save_changes">保存</vs-button>
+            <vs-button class="ml-auto mt-2" @click="save_changes" v-preventClick>保存</vs-button>
             <vs-button class="ml-4 mt-2" type="border" color="warning" @click="cancel">取消</vs-button>
           </div>
         </div>
@@ -162,7 +162,7 @@ export default {
       getEmployeesDetails(para).then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
-          console.log(data)
+          console.log(data);
           this.data_local = data;
         }
       });
@@ -181,7 +181,7 @@ export default {
             WorkingStatus: this.data_local.WorkingStatus,
             Remark: this.data_local.Remark,
           };
-
+          debugger;
           if (this.mark === "add") {
             addEmployee(para).then((res) => {
               if (res.resultType == 0) {

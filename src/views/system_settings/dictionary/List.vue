@@ -23,16 +23,18 @@
     <vx-card ref="filterCard" title class="user-list-filters mb-8">
       <vs-row vs-align="center">
         <label class="vx-col label-name px-2">字典名称</label>
-        <vs-input
-          placeholder
-          v-model="nameInput"
-          class="vx-col md:w-1/6 sm:w-1/2 w-full px-2"
-        />
+        <vs-input placeholder v-model="nameInput" class="vx-col md:w-1/6 sm:w-1/2 w-full px-2" />
         <vs-button class="vx-col" color="primary" type="border" @click="loadData">查询</vs-button>
       </vs-row>
     </vx-card>
 
     <div class="vx-card p-6">
+      <qr-table ref="table" :items="tableData" :cloumns="cloumns" :operates="operates">
+        <template slot="header">
+          <vs-button color="primary" type="border" class="mb-4 mr-4" @click="addNewData">添加</vs-button>
+        </template>
+      </qr-table>
+
       <vx-table
         ref="table"
         :items="dictionarys"
@@ -96,8 +98,11 @@ import DictionaryEdit from "./Edit";
 import DictionaryDetailList from "./detail/List";
 
 import { getSysDictionarys } from "@/http/dictionary.js";
+import infoList from "@/components/mixins/infoList";
+import { formatTimeToStr } from "@/common/utils/data/date";
 
 export default {
+  mixins: [infoList],
   components: {
     DictionaryEdit,
     DictionaryDetailList,
@@ -105,9 +110,56 @@ export default {
   data() {
     return {
       //Page
-      dictionarys: [],
-      nameInput: null,
-      totalItems: 0,
+      listApi: getSysDictionarys,
+      cloumns: [
+        { headerName: "套餐名称", field: "PackageName" },
+        { headerName: "套餐价格", field: "PackagePrice" },
+        { headerName: "折扣", field: "Discount" },
+        { headerName: "折扣价", field: "DiscountPrice" },
+        {
+          headerName: "婚姻状态",
+          field: "MarriageName",
+          template: () => {
+            return (
+              <vs-chip transparent color="sucess">
+                0
+              </vs-chip>
+            );
+          },
+          render(row, column, index) {
+            return `<vs-chip transparent color="sucess">${row.Marriage}</vs-chip>`;
+          },
+        },
+        { headerName: "性别", field: "GenderName" },
+        { headerName: "排序", field: "Sort" },
+        { headerName: "状态", field: "StatusName" },
+        { headerName: "修改人", field: "ModifyName" },
+        {
+          headerName: "修改时间",
+          field: "ModifyTime",
+          formatter: (value) => {
+            if (value) return formatTimeToStr(value);
+          },
+        },
+      ],
+      operates: {
+        list: [
+          {
+            title: "编辑",
+            show: true,
+            method: (index, row) => {
+              this.editData(row.ID);
+            },
+          },
+          {
+            title: "项目配置",
+            show: true,
+            method: (index, row) => {
+              this.deployProject(row.ID);
+            },
+          },
+        ],
+      },
 
       // Pop
       title: null,

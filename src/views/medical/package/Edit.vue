@@ -43,19 +43,27 @@
         </div>
         <div class="vx-col md:w-1/2 w-full">
           <div class="mt-4">
-            <vs-select label="婚姻状况" v-model="data_local.Marriage" class="w-full select-large">
-              <vs-select-item
-                v-for="(item,index) in marriageOptions"
-                :key="index"
-                :value="item.Value"
-                :text="item.Name"
-                class="w-full"
-              />
-            </vs-select>
+            <label class="vs-select--label">婚姻状况</label>
+            <v-select
+              v-model="data_local.Marriage"
+              label="Name"
+              value="Value"
+              :options="marriageOptions"
+              :reduce="m => m.Value"
+            />
           </div>
 
           <div class="mt-4">
-            <vs-select label="性别" v-model="data_local.Gender" class="w-full select-large">
+            <label class="vs-select--label">性别</label>
+            <v-select
+              v-model="data_local.Gender"
+              label="Name"
+              value="Value"
+              :options="genderOptions"
+              :reduce="m => m.Value"
+            />
+
+            <!-- <vs-select label="性别" v-model="data_local.Gender" class="w-full select-large">
               <vs-select-item
                 v-for="(item,index) in genderOptions"
                 :key="index"
@@ -63,7 +71,7 @@
                 :text="item.Name"
                 class="w-full"
               />
-            </vs-select>
+            </vs-select> -->
           </div>
 
           <div class="mt-4">
@@ -84,7 +92,7 @@
       <div class="vx-row">
         <div class="vx-col w-full">
           <div class="mt-8 flex flex-wrap items-center justify-end">
-            <vs-button class="ml-auto mt-2" @click.stop="save_changes">保存</vs-button>
+            <vs-button class="ml-auto mt-2" @click.stop="save_changes" v-preventClick>保存</vs-button>
             <vs-button class="ml-4 mt-2" type="border" color="warning" @click.stop="cancel">取消</vs-button>
           </div>
         </div>
@@ -94,8 +102,6 @@
 </template>
 
 <script>
-import vSelect from "vue-select";
-
 import {
   getPackageTypeDataSource,
   getMaritalDataSource,
@@ -106,9 +112,7 @@ import { addPackage, editPackage, getPackageDetails } from "@/http/package.js";
 
 export default {
   name: "",
-  components: {
-    vSelect,
-  },
+  components: {},
   props: {
     packageID: {
       type: String,
@@ -132,18 +136,18 @@ export default {
     };
   },
   computed: {
-    marital_status: {
-      get() {
-        return {
-          Name: this.data_local.MarriageName,
-          Value: this.data_local.Marriage,
-        };
-      },
-      set(obj) {
-        this.data_local.Marriage = obj.Value;
-        this.data_local.MarriageName = obj.Name;
-      },
-    },
+    // marital_status: {
+    //   get() {
+    //     return {
+    //       Name: this.data_local.MarriageName,
+    //       Value: this.data_local.Marriage,
+    //     };
+    //   },
+    //   set(obj) {
+    //     this.data_local.Marriage = obj.Value;
+    //     this.data_local.MarriageName = obj.Name;
+    //   },
+    // },
     gender_local: {
       get() {
         return {

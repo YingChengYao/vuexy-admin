@@ -24,7 +24,7 @@
       />
     </vs-popup>
 
-    <vx-card ref="filterCard" title class="user-list-filters mb-8">
+    <vx-card ref="filterCard" title class="mb-8">
       <vs-row vs-align="center">
         <label class="vx-col label-name px-2">套餐名称</label>
         <vs-input
@@ -33,19 +33,14 @@
           class="vx-col md:w-1/6 sm:w-1/2 w-full px-2"
         />
         <label class="vx-col label-name px-2">状态</label>
-        <vs-select
+        <v-select
           v-model="searchInfo.status"
-          class="vx-col md:w-1/6 sm:w-1/2 w-full px-2 select-large"
-        >
-          <vs-select-item
-            v-for="(item,index) in statusOptions"
-            :key="index"
-            :value="item.Value"
-            :text="item.Name"
-            class="w-full"
-          />
-        </vs-select>
-
+          label="Name"
+          value="Value"
+          :options="statusOptions"
+          class="vx-col md:w-1/6 sm:w-1/2 w-full mx-2"
+          :reduce="m => m.Value"
+        />
         <vs-button class="vx-col" color="primary" type="border" @click="getTableData">查询</vs-button>
       </vs-row>
     </vx-card>
@@ -102,7 +97,6 @@ export default {
   },
   data() {
     return {
-      searchInfo: {},
       selected: [],
       listApi: getPackages,
       cloumns: [
@@ -157,6 +151,7 @@ export default {
 
       //filter
       statusOptions: [],
+      dataStatus: null,
 
       // Pop
       title: null,
@@ -181,16 +176,21 @@ export default {
       this.getTableData();
     });
   },
-  watch: {},
+  watch: {
+    dataStatus(val) {
+      this.searchInfo.status = val != null ? val.Value : val;
+    },
+  },
   methods: {
     async loadDataStatus() {
       await getDataStatusDataSource().then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.statusOptions = data;
-          if (data.length > 0) {
-            this.searchInfo.status = data[0].Value;
-          }
+          console.log("this.statusOptions:", this.statusOptions);
+          // if (data.length > 0) {
+          //   this.searchInfo.status = data[0].Value;
+          // }
         }
       });
     },

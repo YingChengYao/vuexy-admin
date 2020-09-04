@@ -69,7 +69,7 @@
             <p>{{ item.tr.MecGradeName }}</p>
           </vs-td>
           <vs-td>
-            <p>{{ item.tr.MecnNatureName }}</p>
+            <p>{{ item.tr.MecNatureName }}</p>
           </vs-td>
           <vs-td>
             <p>{{ item.tr.CountyName }}</p>

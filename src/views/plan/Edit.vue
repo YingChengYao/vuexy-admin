@@ -82,7 +82,7 @@
         <medical-center-list ref="medicalCenter" :multipleCheck="true" :isPlanPop="true"></medical-center-list>
         <div class="text-right mt-5">
           <span>
-            <vs-button class="vx-col ml-auto" color="primary" @click="save_base_info">保存</vs-button>
+            <vs-button class="vx-col ml-auto" color="primary" @click="save_base_info" v-preventClick>保存</vs-button>
           </span>
           <span class="px-2">
             <vs-button class="vx-col ml-4" type="border" color="warning" @click="cancel">取消</vs-button>
@@ -126,7 +126,7 @@
             >上一步</vs-button>
           </span>
           <span class="px-4">
-            <vs-button class="vx-col ml-auto mt-2" color="primary" @click="savePlan">保存</vs-button>
+            <vs-button class="vx-col ml-auto mt-2" color="primary" @click="savePlan" v-preventClick>保存</vs-button>
           </span>
           <span class="px-4">
             <vs-button class="vx-col ml-auto mt-2" color="primary" @click="confirmSubmitPlan">提交</vs-button>

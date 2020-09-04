@@ -83,7 +83,7 @@
         </project-list>
         <div v-if="isUseButton" class="text-right mt-5">
           <span>
-            <vs-button @click="save" class="mr-2">保存</vs-button>
+            <vs-button @click="save" class="mr-2" v-preventClick>保存</vs-button>
           </span>
           <span class="px-2">
             <vs-button type="border" color="warning" @click="cancel">取消</vs-button>
@@ -186,6 +186,7 @@ export default {
             text: res.message,
             color: "success",
           });
+          this.$emit("loadData");
           this.cancel();
         }
       });

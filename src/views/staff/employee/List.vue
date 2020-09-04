@@ -12,10 +12,22 @@
     </vs-popup>
 
     <vs-popup fullscreen title :active.sync="popupActivePosition">
-      <position-list ref="position" v-if="popupActivePosition" :isPop="true" :multipleCheck="true" :operateName="[]"></position-list>
+      <position-list
+        ref="position"
+        v-if="popupActivePosition"
+        :isPop="true"
+        :multipleCheck="true"
+        :operateName="[]"
+      ></position-list>
       <div class="text-right mt-5">
         <span>
-          <vs-button class="vx-col" color="primary" type="border" @click="savePosition">保存</vs-button>
+          <vs-button
+            class="vx-col"
+            color="primary"
+            type="border"
+            @click="savePosition"
+            v-preventClick
+          >保存</vs-button>
         </span>
         <span class="px-2">
           <vs-button class="vx-col" color="primary" type="border" @click="cancelPosition">取消</vs-button>
@@ -74,6 +86,13 @@
             class="mb-4 mr-4"
             @click.stop="$refs.fileInput.click()"
           >批量导入</vs-button>
+          <vs-button
+            v-if="!isPop"
+            color="primary"
+            type="border"
+            class="mb-4 mr-4"
+            @click.stop="download()"
+          >模板下载</vs-button>
           <vs-button
             v-if="!isPop"
             color="primary"
@@ -157,6 +176,7 @@
 import EmployeeEdit from "./Edit";
 import PositionList from "views/staff/position/List";
 
+import "@/common/global";
 import { getWorkingStatusDataSource } from "@/http/data_source.js";
 import {
   getEmployees,
@@ -287,9 +307,8 @@ export default {
       };
 
       batchFire(data).then((res) => {
-        console.log("res:", res);
         if (res.resultType == 0) {
-           this.$vs.notify({
+          this.$vs.notify({
             title: "Success",
             text: "离职成功",
             color: "success",
@@ -297,6 +316,14 @@ export default {
           this.loadData();
         }
       });
+    },
+    download() {
+      debugger
+      const url = "http://localhost:5000/Template/NewEmployeeTemplate.xlsx";
+      var iframe = document.createElement("iframe");
+      iframe.style.display = "none";
+      iframe.src = url;
+      document.body.appendChild(iframe);
     },
     //#region 职工
     addNewData() {

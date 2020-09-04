@@ -78,13 +78,13 @@ export default {
       ],
       operates: {
         list: [
-          {
-            title: "查看",
-            show: true,
-            method: (index, row) => {
-              this.viewData(row.ID);
-            },
-          },
+          // {
+          //   title: "查看",
+          //   show: true,
+          //   method: (index, row) => {
+          //     this.viewData(row.ID);
+          //   },
+          // },
         ],
       },
     };

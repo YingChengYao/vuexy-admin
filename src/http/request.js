@@ -1,13 +1,14 @@
 import axios from "axios";
-import qs from "qs";
 import router from "@/router/router";
 import { getToken } from "@/common/utils/auth/token";
 import vue from "@/main.js";
+import '@/common/global'
 
 const request = axios.create({
   //baseURL: "http://manage.qrtj.cn",
-  baseURL: "http://localhost:5000",
+  //baseURL: "http://localhost:5000",
   //baseURL: "http://managea.tijian.cn",
+  baseURL: global.baseURL,
   timeout: 5000
 });
 
@@ -54,7 +55,7 @@ request.interceptors.request.use(
 //#region http response 拦截器
 request.interceptors.response.use(
   response => {
-    debugger
+    debugger;
     const data = response.data;
     if (!data.resultType && data.resultType != 0) {
       return data; //TODO 路由MOCK使用，后期拿掉
@@ -73,8 +74,8 @@ request.interceptors.response.use(
     //TODO 401处理
   },
   error => {
-    debugger
-    console.log('err:',error.message)
+    debugger;
+    console.log("err:", error.message);
     // this.$vs.loading.close();
     vue.$vs.notify({
       title: "Error",

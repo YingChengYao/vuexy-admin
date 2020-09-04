@@ -151,9 +151,6 @@ export default {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.statusOptions = data;
-          if (data.length > 0) {
-            this.searchInfo.status = data[0].Value;
-          }
         }
       });
     },

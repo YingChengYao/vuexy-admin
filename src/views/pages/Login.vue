@@ -73,7 +73,7 @@
                     <!-- <img style="height:38px" src="@/assets/images/logo/logo.png" alt="vuexy-logo" /> -->
                     <img
                       class="right"
-                      style="height:38px;width:100px"
+                      style="height:38px;width:160px"
                       :src="loginCode"
                       alt="vuexy-logo"
                       @click="codeImg"
@@ -127,6 +127,8 @@
 </template>
 
 <script>
+import "@/common/global";
+import md5 from "@/common/utils/data/md5";
 export default {
   data() {
     return {
@@ -167,7 +169,7 @@ export default {
       const payload = {
         userDetails: {
           username: this.username,
-          password: this.password,
+          password: md5(this.password),
           code: this.captcha,
         },
       };
@@ -191,8 +193,7 @@ export default {
     },
     codeImg() {
       let timestamp = new Date().getTime();
-      this.loginCode ="http://localhost:5000/api/mix/code?timestamp=" + timestamp;
-        //"http://manage.qrtj.cn/api/mix/code?timestamp=" + timestamp;
+      this.loginCode = global.baseURL + "/api/mix/code?width=160&timestamp=" + timestamp;
     },
   },
 };

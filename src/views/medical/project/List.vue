@@ -27,6 +27,20 @@
             class="w-full"
           />
         </vs-select>
+        <label class="vx-col label-name px-2" v-if="!isComponent">项目类型</label>
+        <vs-select
+          v-model="searchInfo.itemTypeId"
+          v-if="!isComponent"
+          class="vx-col md:w-1/6 sm:w-1/2 w-full px-2 select-large"
+        >
+          <vs-select-item
+            v-for="(item,index) in projectTypeOptions"
+            :key="index"
+            :value="item.Value"
+            :text="item.Name"
+            class="w-full"
+          />
+        </vs-select>
         <vs-button class="vx-col" color="primary" type="border" @click="loadData">查询</vs-button>
       </vs-row>
     </vx-card>
@@ -139,7 +153,10 @@ import {
   accMul,
   accDivCoupon,
 } from "@/common/utils/data/calc";
-import { getDataStatusDataSource } from "@/http/data_source.js";
+import {
+  getDataStatusDataSource,
+  getProjectTypeDataSource,
+} from "@/http/data_source.js";
 
 export default {
   props: {
@@ -169,6 +186,7 @@ export default {
 
       statusOptions: [],
       searchInfo: {},
+      projectTypeOptions: [],
 
       //Page
       totalItems: 0,
@@ -272,6 +290,22 @@ export default {
         }
       });
     },
+    async loadProjectTypeDataStatus() {
+      let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+      let para = {
+        isSelect: true,
+        mecId: userInfo.mecID,
+      };
+      await getProjectTypeDataSource(para).then((res) => {
+        if (res.resultType == 0) {
+          const data = JSON.parse(res.message);
+          this.projectTypeOptions = data;
+          // if (data.length > 0) {
+          //   this.searchInfo.projectType = data[0].Value;
+          // }
+        }
+      });
+    },
     //#region 弹窗
     addNewData() {
       this.projectID = null;
@@ -300,6 +334,7 @@ export default {
     this.loadDataStatus().then((val) => {
       this.loadData();
     });
+    this.loadProjectTypeDataStatus();
   },
   watch: {
     selected() {

@@ -11,6 +11,7 @@
               class="p-2 font-medium flex items-center"
               style="border-bottom: 1px solid rgba(0,0,0,.08)"
               @click="loadPlanPackages(item.ID)"
+              v-clickDown="index"
             >
               <span class="cursor-pointer">{{ item.MecName }}</span>
             </li>
@@ -103,6 +104,15 @@ export default {
   created() {},
   mounted() {
     this.loadPlanPhysicals();
+  },
+  directives: {
+    clickDown: {
+      inserted(el, binding, index) {
+        if (binding.value === 0) {
+          el.click();
+        }
+      },
+    },
   },
   methods: {
     loadData() {

@@ -232,7 +232,6 @@ export default {
               slug: "user-settings",
               name: "用户设置",
               component: "views/basic_settings/user_settings/UserSettings",
-              isHide: true
             },
             {
               path: "/user_management",

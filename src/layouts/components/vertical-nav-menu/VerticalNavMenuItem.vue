@@ -53,7 +53,7 @@ export default {
     featherIcon: { type: Boolean, default: true },
     target: { type: String, default: "_self" },
     isDisabled: { type: Boolean, default: false },
-    isHide: { type: Boolean, default: false }
+    isHide: { type: Boolean, default: false },
   },
   computed: {
     activeLink() {
@@ -61,8 +61,8 @@ export default {
         (this.$route.meta.parent == this.slug && this.to)
         ? true
         : false;
-    }
-  }
+    },
+  },
 };
 </script>
 

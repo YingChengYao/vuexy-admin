@@ -39,7 +39,7 @@
       <div class="vx-row">
         <div class="vx-col w-full">
           <div class="mt-8 flex flex-wrap items-center justify-end">
-            <vs-button class="ml-auto mt-2" @click="save">保存</vs-button>
+            <vs-button class="ml-auto mt-2" @click="save" v-preventClick>保存</vs-button>
             <vs-button class="ml-4 mt-2" type="border" color="warning" @click="cancel">取消</vs-button>
           </div>
         </div>

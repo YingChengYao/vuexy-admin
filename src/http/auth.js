@@ -9,7 +9,7 @@ export const requestLogin = params => {
 };
 
 //获取登录Code
-export const loginCode = params => {
+export const getLoginCode = params => {
   return request({
     url: "/api/mix/code",
     method: "get",

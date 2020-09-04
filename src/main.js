@@ -74,6 +74,13 @@ Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key]);
 });
 
+//重复点击控制
+import preventClick from "@/common/plugins/plugins.js";
+Vue.use(preventClick);
+
+//全局变量
+import '@/common/global'//全局
+
 Vue.prototype.$event = new Vue();
 
 var vue = new Vue({
