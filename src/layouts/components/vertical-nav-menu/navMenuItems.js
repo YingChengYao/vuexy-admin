@@ -21,9 +21,10 @@ export function filterAsyncRrouter(routes) {
       tmp.url = null;
     } else {
       tmp.url = path;
-      tmp.slug = route.slug;
+      tmp.slug = path.replace("/","");
     }
     tmp.name = route.name;
+    tmp.displayName = route.displayName;
     tmp.icon = route.icon;
     tmp.iconPack = route.iconPack;
     tmp.isHide = route.isHide;

@@ -1,23 +1,40 @@
 <template>
   <div class>
     <vs-popup :title="title" :active.sync="popupActive" v-if="popupActive">
-      <menu-detail
+      <role-detail
         v-if="popupActive"
         @closePop="closePop"
         @loadData="getTableData"
-        :menuId="menuId"
+        :roleId="roleId"
         :key="timer"
         :mark="mark"
       />
     </vs-popup>
 
+    <permissions-view-sidebar
+      v-if="addNewDataSidebar"
+      :isSidebarActive="addNewDataSidebar"
+      @closeSidebar="toggleDataSidebar"
+      @loadData="getTableData"
+      :data="sidebarData"
+    />
+
     <vx-card ref="filterCard" title class="user-list-filters mb-8">
       <vs-row vs-align="center">
-        <label class="vx-col label-name px-2">套餐类型名称</label>
+        <label class="vx-col label-name px-2">名称</label>
         <vs-input
           placeholder="Placeholder"
-          v-model="searchInfo.typeName"
+          v-model="searchInfo.roleName"
           class="vx-col md:w-1/6 sm:w-1/2 w-full px-2"
+        />
+        <label class="vx-col label-name px-2">状态</label>
+        <v-select
+          v-model="searchInfo.status"
+          label="Name"
+          value="Value"
+          :options="statusOptions"
+          class="vx-col md:w-1/6 sm:w-1/2 w-full mx-2"
+          :reduce="m => m.Value"
         />
         <vs-button class="vx-col" color="primary" type="border" @click="getTableData">查询</vs-button>
       </vs-row>
@@ -45,30 +62,32 @@
 </template>
 
 <script>
-import MenuDetail from "./Detail";
-import { getMenus } from "@/http/basic_setting.js";
+import RoleDetail from "./Detail";
+import PermissionsViewSidebar from "./PermissionsViewSidebar";
+
+import { getRoles } from "@/http/basic_setting.js";
 import { getDataStatusDataSource } from "@/http/data_source.js";
 import infoList from "@/components/mixins/infoList";
 import { formatTimeToStr } from "@/common/utils/data/date";
 export default {
   mixins: [infoList],
-  components: { MenuDetail },
+  components: { RoleDetail, PermissionsViewSidebar },
   data() {
     return {
       types: [],
-      listApi: getMenus,
+      listApi: getRoles,
       cloumns: [
-        { headerName: "菜单名称", field: "DisplayName" },
-        { headerName: "路由", field: "Path" },
+        { headerName: "套餐类型名称", field: "RoleName" },
+        { headerName: "排序", field: "Sort" },
+        { headerName: "状态", field: "StatusName" },
+        { headerName: "修改人", field: "ModifyName" },
         {
-          headerName: "是否隐藏",
-          field: "IsHide",
+          headerName: "修改时间",
+          field: "ModifyTime",
           formatter: (value) => {
-            if (value) return "是";
-            else return "否";
+            if (value) return formatTimeToStr(value);
           },
         },
-        { headerName: "排序", field: "Sort" },
       ],
       operates: {
         list: [
@@ -77,6 +96,13 @@ export default {
             show: true,
             method: (index, row) => {
               this.editData(row);
+            },
+          },
+          {
+            title: "设置权限",
+            show: true,
+            method: (index, row) => {
+              this.setPermissions(row);
             },
           },
         ],
@@ -90,7 +116,7 @@ export default {
       //pop
       title: null,
       popupActive: false,
-      menuId: null,
+      roleId: null,
       timer: "",
       mark: null,
     };
@@ -109,14 +135,14 @@ export default {
       });
     },
     addNewData() {
-      this.menuId = null;
+      this.roleId = null;
       this.popupActive = true;
       this.title = "添加角色信息";
       this.mark = "add";
       this.handleLoad();
     },
     editData(id) {
-      this.menuId = id;
+      this.roleId = id;
       this.popupActive = true;
       this.title = "修改角色信息";
       this.mark = "edit";
@@ -128,9 +154,22 @@ export default {
     closePop() {
       this.popupActive = false;
     },
+    setPermissions(data) {
+      this.sidebarData = data;
+      this.sidebarData.title = "权限设置";
+      this.sidebarData.mark = "permission";
+      this.toggleDataSidebar(true);
+    },
+    toggleDataSidebar(val = false) {
+      this.addNewDataSidebar = val;
+    },
   },
   mounted() {
-    this.getTableData();
+    this.loadDataStatus().then((val) => {
+      let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+      this.searchInfo.mecId = userInfo.mecID;
+      this.getTableData();
+    });
   },
   watch: {},
 };

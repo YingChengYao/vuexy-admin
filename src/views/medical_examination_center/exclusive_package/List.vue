@@ -324,10 +324,10 @@ export default {
       if (status === 1) return "success";
       return "primary";
     },
-    changeProjectPageMaxItems() {
+    changeProjectPageMaxItems(index) {
       this.projectsPerPage = this.descriptionProjects[index];
       this.currentProjectPage = 1;
-      this.loadData();
+      this.loadExclusivePackageProject();
     },
     initProjectsData(items, level, parent) {
       this.initProjects = [];

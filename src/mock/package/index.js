@@ -3,7 +3,7 @@ export default {
   getItemTypes: () => ({
     resultType: 0,
     message: {
-      Items:[
+      Items: [
         {
           ID: 1,
           TypeName: "一般检查项目",
@@ -111,10 +111,10 @@ export default {
           Remark: "优生优育检测系列",
           ModifyName: "y",
           ModifyTime: "2020-06-19 09:33:35"
-        },
+        }
       ],
-      TotalPages:1,
-      TotalItems:11
+      TotalPages: 1,
+      TotalItems: 11
     }
   })
 };

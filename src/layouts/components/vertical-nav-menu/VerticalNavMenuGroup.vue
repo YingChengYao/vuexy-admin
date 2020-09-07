@@ -34,7 +34,7 @@
         />
 
         <!-- Group Name -->
-        <span v-show="!verticalNavMenuItemsMin" class="truncate mr-3 select-none">{{ group.name }}</span>
+        <span v-show="!verticalNavMenuItemsMin" class="truncate mr-3 select-none">{{ group.displayName }}</span>
 
         <!-- Group Tag -->
         <vs-chip
@@ -53,7 +53,7 @@
       />
 
       <!-- Group Tooltip -->
-      <span class="vs-sidebar--tooltip">{{ group.name }}</span>
+      <span class="vs-sidebar--tooltip">{{ group.displayName }}</span>
     </div>
     <!-- /Group Label -->
 
@@ -82,7 +82,7 @@
           :target="groupItem.target"
           :isHide="groupItem.isHide"
         >
-          <span class="truncate">{{ groupItem.name }}</span>
+          <span class="truncate">{{ groupItem.displayName }}</span>
           <vs-chip
             class="ml-auto"
             :color="groupItem.tagColor"

@@ -3,14 +3,17 @@
     <vx-card title>
       <div class="vx-row">
         <div class="vx-col md:w-1/2 w-full">
-          <vs-input
-            class="w-full mt-4"
-            label="套餐名称"
-            v-model="data_local.PackageName"
-            v-validate="'required'"
-            name="套餐名称"
-          />
-          <span class="text-danger text-sm" v-show="errors.has('套餐名称')">{{ errors.first('套餐名称') }}</span>
+          <div class="mt-4">
+            <label class="vs-input--label">类型</label>
+            <span class="required" style="color:red">*</span>
+            <vs-input
+              class="w-full"
+              v-model="data_local.PackageName"
+              v-validate="'required'"
+              name="套餐名称"
+            />
+            <span class="text-danger text-sm" v-show="errors.has('套餐名称')">{{ errors.first('套餐名称') }}</span>
+          </div>
 
           <vs-input class="w-full mt-4" label="备注" v-model="data_local.Remark" name="备注" />
           <span class="text-danger text-sm" v-show="errors.has('备注')">{{ errors.first('备注') }}</span>

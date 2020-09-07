@@ -104,7 +104,7 @@
                 :slug="item.slug"
                 :isHide="item.isHide"
               >
-                <span v-show="!verticalNavMenuItemsMin" class="truncate">{{ item.name }}</span>
+                <span v-show="!verticalNavMenuItemsMin" class="truncate">{{ item.displayName }}</span>
                 <vs-chip
                   class="ml-auto"
                   :color="item.tagColor"

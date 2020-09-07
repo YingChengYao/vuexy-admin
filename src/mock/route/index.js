@@ -46,11 +46,12 @@ export default {
           path: "-",
           iconPack: "iconfont icon-taocan",
           name: "套餐管理",
+          displayName: "套餐管理",
           children: [
             {
               path: "/package",
-              url: "/package",
-              name: "套餐列表",
+              name: "package",
+              displayName: "套餐列表",
               slug: "package",
               component: "views/medical/package/List",
               meta: {
@@ -59,7 +60,6 @@ export default {
             },
             {
               path: "/package_edit",
-              url: "/package_edit",
               name: "package_edit",
               slug: "package_edit",
               component: "views/medical/package/Edit",
@@ -70,8 +70,8 @@ export default {
             },
             {
               path: "/package_type",
-              url: "/package_type",
               name: "套餐类型管理",
+              displayName: "套餐类型管理",
               slug: "package_type",
               component: "views/medical/package_type/List",
               meta: {
@@ -80,8 +80,8 @@ export default {
             },
             {
               path: "/projects",
-              url: "/projects",
               name: "项目配置",
+              displayName: "项目配置",
               slug: "projects",
               component: "views/medical/project/List",
               meta: {
@@ -92,6 +92,7 @@ export default {
               path: "/project_type",
               url: "/project_type",
               name: "项目类型管理",
+              displayName: "项目类型管理",
               slug: "project_type",
               component: "views/medical/project_type/List",
               meta: {
@@ -102,6 +103,7 @@ export default {
               path: "/project_item",
               url: "/project_item",
               name: "项目单项管理",
+              displayName: "项目单项管理",
               slug: "project_item",
               component: "views/medical/project_item/List",
               meta: {
@@ -112,6 +114,7 @@ export default {
               path: "/project_item_edit/:id/:mark",
               url: "/project_item_edit/:id",
               name: "project_item_edit",
+              displayName: "项目单项管理",
               slug: "project_item_edit",
               component: "views/medical/project_item/Edit",
               isHide: true,
@@ -126,11 +129,13 @@ export default {
           icon: "FileIcon",
           iconPack: "iconfont icon-w_zhiyuan",
           name: "基本信息管理",
+          displayName: "基本信息管理",
           children: [
             {
               path: "/unit",
               url: "/unit",
               name: "分支机构管理",
+              displayName: "分支机构管理",
               slug: "unit",
               component: "views/staff/unit/List",
               meta: {
@@ -141,6 +146,7 @@ export default {
               path: "/position",
               url: "/position",
               name: "职位管理",
+              displayName: "职位管理",
               slug: "position",
               component: "views/staff/position/List",
               meta: {
@@ -151,6 +157,7 @@ export default {
               path: "/employee",
               url: "/employee",
               name: "员工管理",
+              displayName: "员工管理",
               slug: "employee",
               component: "views/staff/employee/List",
               meta: {
@@ -163,11 +170,13 @@ export default {
           path: "-",
           iconPack: "iconfont icon-tijianjihua",
           name: "体检计划",
+          displayName: "体检计划",
           children: [
             {
               path: "/plan",
               url: "/plan",
               name: "体检计划",
+              displayName: "体检计划",
               slug: "unit",
               component: "views/plan/List",
               meta: {
@@ -178,6 +187,7 @@ export default {
               path: "/physical_examination",
               url: "/physical_examination",
               name: "体检动态",
+              displayName: "体检动态",
               slug: "unit",
               component: "views/plan/physical_examination/List",
               meta: {
@@ -190,11 +200,13 @@ export default {
           path: "-",
           iconPack: "iconfont icon-tijianjihua",
           name: "体检计划",
+          displayName: "体检计划",
           children: [
             {
               path: "/physical_plan",
               url: "/physical_plan",
               name: "体检计划",
+              displayName: "体检计划",
               slug: "unit",
               component: "views/medical_examination_center/physical_plan/List",
               meta: {
@@ -207,11 +219,13 @@ export default {
           path: "-",
           iconPack: "iconfont icon-tijianzhongxin",
           name: "体检中心管理",
+          displayName: "体检中心管理",
           children: [
             {
               path: "/medical_center",
               url: "/medical_center",
               name: "体检中心",
+              displayName: "体检中心",
               slug: "unit",
               component: "views/medical_center/List",
               meta: {
@@ -224,6 +238,7 @@ export default {
           path: "-",
           icon: "FileIcon",
           name: "基础设置",
+          displayName: "基础设置",
           isHide: false,
           children: [
             {
@@ -231,6 +246,7 @@ export default {
               url: "/user-settings",
               slug: "user-settings",
               name: "用户设置",
+              displayName: "用户设置",
               component: "views/basic_settings/user_settings/UserSettings"
             },
             {
@@ -238,6 +254,7 @@ export default {
               url: "/user_management",
               slug: "user_management",
               name: "用户管理",
+              displayName: "用户管理",
               component: "views/basic_settings/user_management/List"
             },
             {
@@ -245,6 +262,7 @@ export default {
               url: "/permission",
               slug: "permission",
               name: "权限管理",
+              displayName: "权限管理",
               component: "views/basic_settings/Permission",
               isHide: true,
               meta: {
@@ -256,9 +274,21 @@ export default {
               url: "/menu",
               slug: "menu",
               name: "菜单管理",
+              displayName: "菜单管理",
               component: "views/basic_settings/menu/List",
               meta: {
                 title: "menu"
+              }
+            },
+            {
+              path: "/role",
+              url: "/role",
+              slug: "role",
+              name: "角色管理",
+              displayName: "角色管理",
+              component: "views/basic_settings/role/List",
+              meta: {
+                title: "角色管理"
               }
             }
           ]
@@ -267,6 +297,7 @@ export default {
           path: "-",
           icon: "FileIcon",
           name: "系统设置",
+          displayName: "系统设置",
           isHide: false,
           children: [
             {
@@ -274,6 +305,7 @@ export default {
               url: "/dictionary",
               slug: "dictionary",
               name: "字典管理",
+              displayName: "字典管理",
               component: "views/system_settings/dictionary/List"
             }
           ]

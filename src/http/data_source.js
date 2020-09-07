@@ -187,3 +187,14 @@ export const getCountyDataSource = params => {
   });
 };
 //#endregion
+
+//#region 菜单
+//获取计划状态数据源
+export const getMenusDataSource = params => {
+  return request({
+    url: "/api/menu/select",
+    method: "get",
+    params: params
+  });
+};
+//#endregion
