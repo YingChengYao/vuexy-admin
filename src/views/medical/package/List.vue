@@ -108,13 +108,6 @@ export default {
         {
           headerName: "婚姻状态",
           field: "MarriageName",
-          template: () => {
-            return (
-              <vs-chip transparent color="sucess">
-                0
-              </vs-chip>
-            );
-          },
           render(row, column, index) {
             return `<vs-chip transparent color="sucess">${row.Marriage}</vs-chip>`;
           },

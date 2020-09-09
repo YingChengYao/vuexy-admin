@@ -25,16 +25,21 @@
     <div @click="clickGroup" class="group-header w-full">
       <span class="flex items-center w-full">
         <!-- Group Icon -->
-        
-        <vs-icon v-if="group.iconPack" class="pr-4" :icon-pack="group.iconPack" />
-        <feather-icon
-          v-else-if="group.icon  || (this.groupIndex > Math.floor(this.groupIndex))"
+
+        <vs-icon v-if="group.icon.indexOf('iconfont ')!=-1" class="pr-4" :icon-pack="group.icon" />
+        <vs-icon v-else class="pr-4" :icon="group.icon" />
+
+        <!-- <feather-icon
+          v-if="group.icon  || (this.groupIndex > Math.floor(this.groupIndex))"
           :icon="group.icon  || 'CircleIcon'"
           :svgClasses="{ 'w-3 h-3' : this.groupIndex % 1 != 0 }"
-        />
+        /> -->
 
         <!-- Group Name -->
-        <span v-show="!verticalNavMenuItemsMin" class="truncate mr-3 select-none">{{ group.displayName }}</span>
+        <span
+          v-show="!verticalNavMenuItemsMin"
+          class="truncate mr-3 select-none"
+        >{{ group.displayName }}</span>
 
         <!-- Group Tag -->
         <vs-chip
@@ -105,14 +110,14 @@ export default {
     openHover: { type: Boolean, default: false },
     open: { type: Boolean, default: false },
     group: { type: Object },
-    groupIndex: { type: Number }
+    groupIndex: { type: Number },
   },
   components: {
-    VNavMenuItem
+    VNavMenuItem,
   },
   data: () => ({
     maxHeight: "0px",
-    openItems: false
+    openItems: false,
   }),
   computed: {
     verticalNavMenuItemsMin() {
@@ -122,21 +127,21 @@ export default {
       return { maxHeight: this.maxHeight };
     },
     itemIcon() {
-      return index => {
+      return (index) => {
         if (!((index.match(/\./g) || []).length > 1)) return "CircleIcon";
       };
     },
     isGroupActive() {
-      return item => {
+      return (item) => {
         const path = this.$route.fullPath;
         let open = false;
         const routeParent = this.$route.meta
           ? this.$route.meta.parent
           : undefined;
 
-        let func = item => {
+        let func = (item) => {
           if (item.submenu) {
-            item.submenu.forEach(item => {
+            item.submenu.forEach((item) => {
               if ((path == item.url || routeParent == item.slug) && item.url) {
                 open = true;
               } else if (item.submenu) {
@@ -149,7 +154,7 @@ export default {
         func(item);
         return open;
       };
-    }
+    },
   },
   watch: {
     // OPEN & CLOSES DROPDOWN ON ROUTE CHANGE
@@ -197,7 +202,7 @@ export default {
           this.maxHeight = "0px";
         }, 250);
       }
-    }
+    },
   },
   methods: {
     clickGroup() {
@@ -216,7 +221,7 @@ export default {
           }, 50);
         }
 
-        this.$parent.$children.map(child => {
+        this.$parent.$children.map((child) => {
           if (child.isGroupActive) {
             if (child !== this && !child.open && child.maxHeight != "0px") {
               setTimeout(() => {
@@ -238,14 +243,14 @@ export default {
         let scrollHeight = 0;
         this.maxHeight = `${scrollHeight}px`;
       }
-    }
+    },
   },
   mounted() {
     this.openItems = this.open;
     if (this.open) {
       this.maxHeight = "none";
     }
-  }
+  },
 };
 </script>
 

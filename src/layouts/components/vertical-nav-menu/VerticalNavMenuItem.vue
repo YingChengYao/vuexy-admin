@@ -25,7 +25,8 @@
       :to="to"
       :target="target"
     >
-      <vs-icon v-if="iconPack!='material-icons'" class="pr-2" :icon-pack="iconPack" />
+      <!-- <vs-icon v-if="iconPack!='material-icons'" class="pr-2" :icon-pack="iconPack" /> -->
+      <vs-icon v-if="iconPack!='material-icons'" class="pr-2" :icon="iconPack" />
       <vs-icon v-else-if="!featherIcon" :icon-pack="iconPack" :icon="icon" />
       <feather-icon v-else :class="{'w-3 h-3': iconSmall}" :icon="icon" />
       <slot />

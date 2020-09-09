@@ -43,39 +43,35 @@
         <span class="text-danger text-sm" v-show="errors.has('身份证')">{{ errors.first('身份证') }}</span>
 
         <!-- 手机号 -->
-        <vs-input label="手机号" v-model="mobile" class="mt-5 w-full" name="手机号" v-validate="'mobile'" />
+        <vs-input
+          label="手机号"
+          v-model="mobile"
+          class="mt-5 w-full"
+          name="手机号"
+          v-validate="'mobile'"
+        />
         <span class="text-danger text-sm" v-show="errors.has('手机号')">{{ errors.first('手机号') }}</span>
 
         <!-- 婚姻状况 -->
-        <vs-select
+        <label class="vs-select--label">婚姻状况</label>
+        <v-select
           v-model="dataMarital"
-          label="婚姻状况"
-          class="mt-5 w-full"
-          name="婚姻状况"
-        >
-          <vs-select-item
-            :key="item.value"
-            :value="item.value"
-            :text="item.text"
-            v-for="item in maritalStatus"
-          />
-        </vs-select>
+          label="Name"
+          value="Value"
+          :options="marriageOptions"
+          :reduce="m => m.Value"
+        />
         <span class="text-danger text-sm" v-show="errors.has('婚姻状况')">{{ errors.first('婚姻状况') }}</span>
 
         <!-- 性别 -->
-        <vs-select
+        <label class="vs-select--label">婚姻状况</label>
+        <v-select
           v-model="dataGender"
-          label="性别"
-          class="mt-5 w-full"
-          name="性别"
-        >
-          <vs-select-item
-            :key="item.value"
-            :value="item.value"
-            :text="item.text"
-            v-for="item in genders"
-          />
-        </vs-select>
+          label="Name"
+          value="Value"
+          :options="genders"
+          :reduce="m => m.Value"
+        />
         <span class="text-danger text-sm" v-show="errors.has('性别')">{{ errors.first('性别') }}</span>
 
         <!-- 备注 -->
@@ -99,16 +95,16 @@ export default {
   props: {
     isSidebarActive: {
       type: Boolean,
-      required: true
+      required: true,
     },
     data: {
       type: Object,
-      default: () => {}
-    }
+      default: () => {},
+    },
   },
 
   components: {
-    VuePerfectScrollbar
+    VuePerfectScrollbar,
   },
   data() {
     return {
@@ -120,7 +116,7 @@ export default {
       genders: [
         { text: "请选择", value: null },
         { text: "男", value: "1" },
-        { text: "女", value: "2" }
+        { text: "女", value: "2" },
       ],
       dataMarital: null,
       maritalStatus: [
@@ -128,13 +124,13 @@ export default {
         { text: "已婚", value: "1" },
         { text: "未婚", value: "2" },
         { text: "离异", value: "3" },
-        { text: "丧偶", value: "4" }
+        { text: "丧偶", value: "4" },
       ],
       settings: {
         // perfectscrollbar settings
         maxScrollbarLength: 60,
-        wheelSpeed: 0.6
-      }
+        wheelSpeed: 0.6,
+      },
     };
   },
   watch: {
@@ -156,7 +152,7 @@ export default {
         this.initValues();
       }
       // Object.entries(this.data).length === 0 ? this.initValues() : { this.dataId, this.dataName, this.dataCategory, this.dataOrder_status, this.dataPrice } = JSON.parse(JSON.stringify(this.data))
-    }
+    },
   },
   computed: {
     isSidebarActiveLocal: {
@@ -169,7 +165,7 @@ export default {
           this.$validator.reset();
           this.initValues();
         }
-      }
+      },
     },
     isFormValid() {
       return (
@@ -178,7 +174,7 @@ export default {
     },
     scrollbarTag() {
       return this.$store.getters.scrollbarTag;
-    }
+    },
   },
   methods: {
     initValues() {
@@ -191,7 +187,7 @@ export default {
       this.dataMarital = "";
     },
     submitData() {
-      this.$validator.validateAll().then(result => {
+      this.$validator.validateAll().then((result) => {
         if (result) {
           // if (this.dataId !== null && this.dataId >= 0) {
           //   this.$store.dispatch("dataList/updateItem", obj).catch(err => {
@@ -211,14 +207,14 @@ export default {
             mobile: this.mobile,
             maritalStatus: this.dataMarital,
             gender: this.dataGender,
-            remark: this.remark
+            remark: this.remark,
           };
-          addUser(para).then(res => {
+          addUser(para).then((res) => {
             if (res.resultType == 0) {
               this.$vs.notify({
                 title: "成功",
                 text: res.message,
-                color: "success"
+                color: "success",
               });
               this.$emit("closeSidebar");
               this.initValues();
@@ -226,8 +222,8 @@ export default {
           });
         }
       });
-    }
-  }
+    },
+  },
 };
 </script>
 

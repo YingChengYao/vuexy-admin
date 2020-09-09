@@ -16,7 +16,7 @@
               >删除</span>
             </li>
           </ul>
-          <div v-else class="mb-5">No Data</div>
+          <div v-else class="mb-5">暂无数据</div>
           <vs-row class="mb-6" vs-align="center">
             <vs-col class="sm:w-1/6">
               <span>合计</span>

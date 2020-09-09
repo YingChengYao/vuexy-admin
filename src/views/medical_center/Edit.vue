@@ -139,7 +139,7 @@
             :clearable="false"
             name="所在市"
             v-validate="'required'"
-          />
+          ></v-select>
           <span class="text-danger text-sm" v-show="errors.has('所在市')">{{ errors.first('所在市') }}</span>
         </div>
         <div class="vx-col md:w-1/2 w-full mt-4">
@@ -170,7 +170,7 @@
         <!-- 描述 -->
         <div class="vx-col w-full mt-4" style="height:40rem">
           <label class="vx-col label-name vs-input--label">描述</label>
-          <quill-editor v-model="data_local.Remark" style="height:35rem;"></quill-editor>
+          <quill-editor v-model="data_local.Remark" style="height:35rem;" :options="quillOption"></quill-editor>
         </div>
       </div>
 
@@ -192,6 +192,7 @@ import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
 import "quill/dist/quill.bubble.css";
 import { quillEditor } from "vue-quill-editor";
+import quillConfig from '@/common/plugins/quill-config.js'
 
 import {
   addMedicalCenter,
@@ -223,6 +224,8 @@ export default {
   },
   data() {
     return {
+      quillOption: quillConfig,
+
       data_local: {},
       gradeOptions: [],
       natureOptions: [],

@@ -24,6 +24,6 @@
   </svg>-->
   <vs-icon
     style="width:2.5rem;height:2.5rem;font-size:1.9rem"
-    icon-pack="iconfont icon-quanrenlogo"
+    icon-pack="iconfont icon-quanrenlogo1"
   ></vs-icon>
 </template>

@@ -15,10 +15,18 @@
         <label class="vx-col label-name px-2">单位名称</label>
         <vs-input
           placeholder="Placeholder"
-          v-model="unitNameInput"
+          v-model="searchInfo.unitName"
           class="vx-col md:w-1/6 sm:w-1/2 w-full px-2"
         />
-
+        <label class="vx-col label-name px-2">状态</label>
+        <v-select
+          v-model="searchInfo.status"
+          label="Name"
+          value="Value"
+          :options="statusOptions"
+          class="vx-col md:w-1/6 sm:w-1/2 w-full mx-2"
+          :reduce="m => m.Value"
+        />
         <vs-button class="vx-col" color="primary" type="border" @click="getTableData">查询</vs-button>
       </vs-row>
     </vx-card>
@@ -73,6 +81,8 @@
 import UnitEdit from "./Edit";
 import { composeTree } from "@/common/utils/data/array.js";
 import { getEmployeeUnits, batchAddEmployeeUnit } from "@/http/staff.js";
+import { getDataStatusDataSource } from "@/http/data_source.js";
+
 import infoList from "@/components/mixins/infoList";
 import { formatTimeToStr } from "@/common/utils/data/date";
 
@@ -121,7 +131,7 @@ export default {
       },
 
       //filter
-      unitNameInput: null,
+      statusOptions: [],
 
       // Pop
       title: null,
@@ -133,10 +143,11 @@ export default {
   },
   computed: {},
   mounted() {
-    let userInfo = JSON.parse(localStorage.getItem("userInfo"));
-    this.searchInfo.id = userInfo.companyID;
-
-    this.getTableData();
+    this.loadDataStatus().then((val) => {
+      let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+      this.searchInfo.id = userInfo.companyID;
+      this.getTableData();
+    });
   },
   watch: {},
   methods: {
@@ -188,6 +199,17 @@ export default {
         this.tableData.push(item);
 
         this.initData(item.children, level + 1, item.ID);
+      });
+    },
+    async loadDataStatus() {
+      await getDataStatusDataSource().then((res) => {
+        if (res.resultType == 0) {
+          const data = JSON.parse(res.message);
+          this.statusOptions = data;
+          if (data.length > 0) {
+            this.searchInfo.status = data[0].Value;
+          }
+        }
       });
     },
     toggle: function (m) {

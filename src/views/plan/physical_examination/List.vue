@@ -16,7 +16,7 @@
         <label class="vx-col label-name px-2">计划名称</label>
         <vs-input
           placeholder
-          v-model="searchInfo.SingleName"
+          v-model="searchInfo.planName"
           class="vx-col md:w-1/6 sm:w-1/2 w-full px-2"
         />
         <vs-button class="vx-col" color="primary" type="border" @click="getTableData">查询</vs-button>
@@ -68,6 +68,9 @@ export default {
         { headerName: "计划名称", field: "PlanName" },
         { headerName: "单位名称", field: "CompanyName" },
         { headerName: "联系人", field: "Contact" },
+        { headerName: "参与人数", field: "Count" },
+        { headerName: "已预约数量", field: "ReservedCount" },
+        { headerName: "已体检数量", field: "ExaminationCount" },
         { headerName: "排序", field: "Sort" },
         { headerName: "修改人", field: "ModifyName" },
         {

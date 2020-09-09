@@ -14,15 +14,14 @@
         </div>
         <div class="vx-col md:w-1/2 w-full">
           <div class="mt-4">
-            <vs-select label="婚姻状况" v-model="data_local.Marriage" class="w-full select-large">
-              <vs-select-item
-                v-for="(item,index) in marriageOptions"
-                :key="index"
-                :value="item.Value"
-                :text="item.Name"
-                class="w-full"
-              />
-            </vs-select>
+            <label class="vs-select--label">婚姻状况</label>
+            <v-select
+              v-model="data_local.Marriage"
+              label="Name"
+              value="Value"
+              :options="marriageOptions"
+              :reduce="m => m.Value"
+            />
           </div>
         </div>
 
@@ -31,15 +30,14 @@
         </div>
         <div class="vx-col md:w-1/2 w-full">
           <div class="mt-4">
-            <vs-select label="性别" v-model="data_local.Gender" class="w-full select-large">
-              <vs-select-item
-                v-for="(item,index) in genderOptions"
-                :key="index"
-                :value="item.Value"
-                :text="item.Name"
-                class="w-full"
-              />
-            </vs-select>
+            <label class="vs-select--label">性别</label>
+            <v-select
+              v-model="data_local.Gender"
+              label="Name"
+              value="Value"
+              :options="genderOptions"
+              :reduce="m => m.Value"
+            />
           </div>
         </div>
 
@@ -58,21 +56,16 @@
         </div>
         <div class="vx-col md:w-1/2 w-full">
           <div class="mt-4">
-            <vs-select
-              label="套餐级别"
+            <label class="vs-select--label">套餐级别</label>
+            <v-select
               v-model="data_local.Standard"
-              class="w-full select-large"
+              label="Name"
+              value="Value"
+              :options="standardOptions"
+              :reduce="m => m.Value"
               v-validate="'required'"
               name="套餐级别"
-            >
-              <vs-select-item
-                v-for="(item,index) in standardOptions"
-                :key="index"
-                :value="item.Value"
-                :text="item.Name"
-                class="w-full"
-              />
-            </vs-select>
+            />
             <span class="text-danger text-sm" v-show="errors.has('套餐级别')">{{ errors.first('套餐级别') }}</span>
           </div>
         </div>
@@ -155,8 +148,6 @@ export default {
       //ProjectPage
       totalPage: 0,
       totalItems: 0,
-
-     
     };
   },
   computed: {

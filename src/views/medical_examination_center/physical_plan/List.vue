@@ -10,18 +10,6 @@
       />
     </vs-popup>
 
-    <!-- <vs-popup fullscreen :title="titlePackageEdit" :active.sync="popupActivePackageEdit">
-      <exclusive-package-edit
-        v-if="popupActivePackageEdit"
-        @closePackageEditPop="closePackageEditPop"
-        @loadData="loadData"
-        :packageId="packageId"
-        :planId="planId"
-        :key="timer"
-        :mark="markPackageEdit"
-      />
-    </vs-popup>-->
-
     <vx-card ref="filterCard" title class="user-list-filters mb-8">
       <vs-row vs-align="center">
         <label class="vx-col label-name px-2">计划名称名称</label>
@@ -56,7 +44,7 @@
             <p>{{ item.tr.PlanName }}</p>
           </vs-td>
           <vs-td>
-            <p>{{ item.tr.StatusName }}</p>
+            <p>{{ item.tr.PlanStatusName }}</p>
           </vs-td>
           <vs-td>
             <p>{{ item.tr.PlanEmployeeCount }}</p>

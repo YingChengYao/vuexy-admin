@@ -58,7 +58,7 @@ export default {
       types: [],
       listApi: getMenus,
       cloumns: [
-        { headerName: "菜单名称", field: "DisplayName" },
+        { headerName: "菜单名称", field: "DisplayName", expand: true },
         { headerName: "路由", field: "Path" },
         {
           headerName: "是否隐藏",
@@ -76,7 +76,7 @@ export default {
             title: "编辑",
             show: true,
             method: (index, row) => {
-              this.editData(row);
+              this.editData(row.ID);
             },
           },
         ],
@@ -97,15 +97,59 @@ export default {
   },
   computed: {},
   methods: {
-    async loadDataStatus() {
-      await getDataStatusDataSource().then((res) => {
+    async getTableData(
+      pageIndex = this.currentPage,
+      pageSize = this.itemsPerPage
+    ) {
+      let para = {
+        pageIndex: this.currentPage,
+        pageSize: this.itemsPerPage,
+        ...this.searchInfo,
+      };
+      getMenus(para).then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
-          this.statusOptions = data;
-          if (data.length > 0) {
-            this.searchInfo.status = data[0].Value;
-          }
+          this.totalItems = data.TotalItems;
+          this.tableData = [];
+          //let d = composeTree(data.Items, "ID", "ParentID");
+          this.initData(data.Items, 0, null);
+          console.log(" this.tableData:", this.tableData);
         }
+      });
+    },
+    initData(items, level, parent) {
+      if (!Array.isArray(items)) {
+        return;
+      }
+      items.map((item, index) => {
+        item = Object.assign({}, item, {
+          parent: parent,
+          level: level,
+        });
+        if (item.Children != undefined && item.Children.length > 0) {
+          item = Object.assign({}, item, {
+            children: item.Children,
+          });
+        }
+        if (item.children != undefined && item.children.length > 0) {
+          item = Object.assign({}, item, {
+            isExpand: true,
+          });
+        }
+        if (typeof item.isChecked == "undefined") {
+          item = Object.assign({}, item, {
+            isChecked: false,
+          });
+        }
+        if (typeof item.isShow == "undefined") {
+          item = Object.assign({}, item, {
+            isShow: true,
+          });
+        }
+
+        this.tableData.push(item);
+
+        this.initData(item.children, level + 1, item.ID);
       });
     },
     addNewData() {

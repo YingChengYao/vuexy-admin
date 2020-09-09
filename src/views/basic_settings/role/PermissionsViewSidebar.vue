@@ -45,7 +45,7 @@
 import VuePerfectScrollbar from "vue-perfect-scrollbar";
 import { VTree, VSelectTree } from "vue-tree-halower";
 
-import { getMenusForRole } from "@/http/basic_setting.js";
+import { getMenusForRole, deployMenuForRole } from "@/http/basic_setting.js";
 
 export default {
   props: {
@@ -75,57 +75,7 @@ export default {
         wheelSpeed: 0.6,
       },
 
-      treeData: [
-        {
-          id: "0",
-          title: "node1",
-          expanded: true,
-          children: [
-            {
-              id: "1",
-              title: "node 1-1",
-              expanded: true,
-              parent: "0",
-              children: [
-                {
-                  id: "2",
-                  title: "node 1-1-1",
-                  parent: "1",
-                  selected: true,
-                  checked: true,
-                },
-                {
-                  id: "3",
-                  title: "node 1-1-2",
-                  parent: "1",
-                },
-                {
-                  id: "4",
-                  parent: "1",
-                  title: "node 1-1-3",
-                },
-              ],
-            },
-            {
-              id: "5",
-              parent: "0",
-              title: "node 1-2",
-              children: [
-                {
-                  id: "6",
-                  parent: "5",
-                  title: "node 1-2-1",
-                },
-                {
-                  id: "7",
-                  parent: "5",
-                  title: "node 1-2-2",
-                },
-              ],
-            },
-          ],
-        },
-      ],
+      treeData: [],
     };
   },
   watch: {
@@ -165,57 +115,34 @@ export default {
       getMenusForRole(para).then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
+          this.treeData = data;
           console.log(data);
         }
       });
     },
     submitData() {
-      let s = this.$refs.tree.getCheckedNodes();
-      console.log(s);
-      return;
-      let userInfo = JSON.parse(localStorage.getItem("userInfo"));
-      if (this.data.mark == "add") {
-        let para = {
-          typeName: this.dataTypeName,
-          remark: this.dataRemark,
-          sort: this.dataSort,
-          mecid: userInfo.mecID,
-        };
-        addItemType(para).then((res) => {
-          if (res.resultType == 0) {
-            this.$vs.notify({
-              title: "成功",
-              text: res.message,
-              color: "success",
-            });
-            this.$emit("closeSidebar");
-            this.$emit("loadData");
-            this.initValues();
-          }
-        });
-      } else if (this.data.mark == "edit") {
-        let para = {
-          ID: this.data.ID,
-          typeName: this.dataTypeName,
-          remark: this.dataRemark,
-          sort: this.dataSort,
-          mecid: userInfo.mecID,
-          status: this.data.Status,
-        };
-        console.log("para:", para);
-        editItemType(para).then((res) => {
-          if (res.resultType == 0) {
-            this.$vs.notify({
-              title: "成功",
-              text: res.message,
-              color: "success",
-            });
-            this.$emit("loadData");
-            this.$emit("closeSidebar");
-            this.initValues();
-          }
-        });
-      }
+      let checked = this.$refs.tree.getCheckedNodes();
+      let menus = checked
+        .map((obj) => {
+          return obj.id;
+        })
+        .join(",");
+
+      let para = {
+        id: this.data.ID,
+        menus: menus,
+      };
+      deployMenuForRole(para).then((res) => {
+        if (res.resultType == 0) {
+          this.$vs.notify({
+            title: "成功",
+            text: res.message,
+            color: "success",
+          });
+          this.$emit("closeSidebar");
+          this.$emit("loadData");
+        }
+      });
     },
     tpl(...args) {
       let { 0: node, 2: parent, 3: index } = args;

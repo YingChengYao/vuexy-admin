@@ -16,16 +16,6 @@
               {{ option.Name }}
             </template>
           </v-select>
-          <!-- <vs-select label="父级单位" v-model="data_local.ParentID" class="w-full select-large">
-            <vs-select-item
-              :style="'margin-left:'+ (item.level)*10 +'px'"
-              v-for="(item,index) in unitOptions"
-              :key="index"
-              :value="item.Value"
-              :text="item.Name"
-              class="w-full"
-            />
-          </vs-select>-->
         </div>
         <div class="vx-col md:w-1/2 w-full mt-4">
           <!-- 组织机构代码 -->
@@ -163,6 +153,17 @@
             :reduce="m => m.Value"
           />
         </div>
+
+        <div class="vx-col md:w-1/2 w-full mt-4">
+          <label class="vs-input--label">状态</label>
+          <v-select
+            v-model="data_local.Status"
+            label="Name"
+            value="Value"
+            :options="statusOptions"
+            :reduce="m => m.Value"
+          />
+        </div>
       </div>
 
       <!-- Save & Reset Button -->
@@ -187,6 +188,7 @@ import {
   getProvinceDataSource,
   getCityDataSource,
   getCountyDataSource,
+  getDataStatusDataSource,
 } from "@/http/data_source.js";
 import {
   addEmployeeUnit,
@@ -218,31 +220,7 @@ export default {
       provinceOptions: [],
       cityOptions: [],
       countyOptions: [],
-
-      initSelected: ["node-1"],
-      treeData: [
-        {
-          title: "node1",
-          expanded: true,
-          children: [
-            {
-              title: "node 1-1",
-              expanded: true,
-              children: [
-                {
-                  title: "node 1-1-1",
-                },
-                {
-                  title: "node 1-1-2",
-                },
-                {
-                  title: "node 1-1-3",
-                },
-              ],
-            },
-          ],
-        },
-      ],
+      statusOptions: [],
     };
   },
   computed: {},
@@ -251,6 +229,7 @@ export default {
     this.loadSubordinateUnitData();
     this.loadProvinceData();
     this.loadData();
+    this.loadDataStatus();
   },
   mounted() {},
   methods: {
@@ -364,6 +343,14 @@ export default {
         }
       });
     },
+    loadDataStatus() {
+      getDataStatusDataSource().then((res) => {
+        if (res.resultType == 0) {
+          const data = JSON.parse(res.message);
+          this.statusOptions = data;
+        }
+      });
+    },
     save_changes() {
       this.$validator.validateAll().then((result) => {
         if (result) {
@@ -399,7 +386,7 @@ export default {
             });
           } else if (this.mark == "edit") {
             para.ID = this.unitId;
-            para.isLocked = this.data_local.IsLocked;
+            para.status = this.data_local.Status;
             editEmployeeUnit(para).then((res) => {
               if (res.resultType == 0) {
                 this.$vs.notify({

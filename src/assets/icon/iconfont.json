@@ -6,6 +6,20 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "17071519",
+      "name": "logo文字",
+      "font_class": "logowenzi",
+      "unicode": "e605",
+      "unicode_decimal": 58885
+    },
+    {
+      "icon_id": "16969716",
+      "name": "全人logo",
+      "font_class": "quanrenlogo1",
+      "unicode": "e604",
+      "unicode_decimal": 58884
+    },
+    {
       "icon_id": "15901458",
       "name": "填写信息",
       "font_class": "tianxiexinxi",
@@ -57,7 +71,7 @@
     {
       "icon_id": "13332705",
       "name": "系统-1",
-      "font_class": "xitong-",
+      "font_class": "xitong",
       "unicode": "e60f",
       "unicode_decimal": 58895
     },

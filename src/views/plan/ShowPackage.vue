@@ -13,10 +13,13 @@
               @click="loadPlanPackages(item.ID)"
               v-clickDown="index"
             >
-              <span class="cursor-pointer">{{ item.MecName }}</span>
+              <span
+                class="cursor-pointer"
+                :class="{'text-primary':medicalCenterSelected==item.ID}"
+              >{{ item.MecName }}</span>
             </li>
           </ul>
-          <div v-else class="mb-5">No Data</div>
+          <div v-else class="p-2 mt-4 mb-5">暂无数据</div>
         </vx-card>
       </div>
       <div class="vx-col w-full md:w-2/5 lg:w-1/5">
@@ -29,11 +32,15 @@
               class="p-2 font-medium flex items-center"
               style="border-bottom: 1px solid rgba(0,0,0,.08)"
               @click="loadProjects(item.ID)"
+              v-clickDown="index"
             >
-              <span class="cursor-pointer">{{ item.PackageName }}</span>
+              <span
+                class="cursor-pointer"
+                :class="{'text-primary':packageSelected==item.ID}"
+              >{{ item.PackageName }}</span>
             </li>
           </ul>
-          <div v-else class="mb-5">No Data</div>
+          <div v-else class="p-2 mt-4 mb-5">暂无数据</div>
         </vx-card>
       </div>
       <div class="vx-col w-full md:w-3/5 lg:w-3/5">
@@ -98,6 +105,9 @@ export default {
       packagePrice: 0,
       discount: 0,
       discountPrice: 0,
+
+      medicalCenterSelected: "",
+      packageSelected: "",
     };
   },
   components: {},
@@ -131,6 +141,7 @@ export default {
       });
     },
     loadPlanPackages(mecId) {
+      this.medicalCenterSelected = mecId;
       let para = {
         planId: this.planID,
         mecId: mecId,
@@ -168,6 +179,7 @@ export default {
       });
     },
     loadProjects(packageId) {
+      this.packageSelected = packageId;
       let para = {
         packageId: packageId,
       };

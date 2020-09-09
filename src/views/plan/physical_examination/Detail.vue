@@ -66,6 +66,8 @@ export default {
         { headerName: "性别", field: "GenderName" },
         { headerName: "身份证", field: "IdNo" },
         { headerName: "手机号", field: "Mobile" },
+        { headerName: "预约状态", field: "AppointmentName" },
+        { headerName: "体检状态", field: "ExaminationName" },
         { headerName: "排序", field: "Sort" },
         { headerName: "修改人", field: "ModifyName" },
         {

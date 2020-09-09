@@ -44,7 +44,7 @@ export default {
         },
         {
           path: "-",
-          iconPack: "iconfont icon-taocan",
+          icon: "iconfont icon-taocan",
           name: "套餐管理",
           displayName: "套餐管理",
           children: [
@@ -126,8 +126,7 @@ export default {
         },
         {
           path: "-",
-          icon: "FileIcon",
-          iconPack: "iconfont icon-w_zhiyuan",
+          icon: "iconfont icon-w_zhiyuan",
           name: "基本信息管理",
           displayName: "基本信息管理",
           children: [
@@ -168,7 +167,7 @@ export default {
         },
         {
           path: "-",
-          iconPack: "iconfont icon-tijianjihua",
+          icon: "iconfont icon-tijianjihua",
           name: "体检计划",
           displayName: "体检计划",
           children: [
@@ -198,7 +197,7 @@ export default {
         },
         {
           path: "-",
-          iconPack: "iconfont icon-tijianjihua",
+          icon: "iconfont icon-tijianjihua",
           name: "体检计划",
           displayName: "体检计划",
           children: [
@@ -217,7 +216,7 @@ export default {
         },
         {
           path: "-",
-          iconPack: "iconfont icon-tijianzhongxin",
+          icon: "iconfont icon-tijianzhongxin",
           name: "体检中心管理",
           displayName: "体检中心管理",
           children: [
@@ -236,7 +235,7 @@ export default {
         },
         {
           path: "-",
-          icon: "FileIcon",
+          icon: "iconfont icon-jichushezhi",
           name: "基础设置",
           displayName: "基础设置",
           isHide: false,
@@ -295,7 +294,7 @@ export default {
         },
         {
           path: "-",
-          icon: "FileIcon",
+          icon: "iconfont icon-xitong",
           name: "系统设置",
           displayName: "系统设置",
           isHide: false,
