@@ -252,7 +252,7 @@ export default {
       });
     },
     download() {
-      const url = global.baseURL + "/Template/NewCompanyTemplate.xlsx";
+      const url = global.baseURL + "/Template/机构模板.xlsx";
       var iframe = document.createElement("iframe");
       iframe.style.display = "none";
       iframe.src = url;

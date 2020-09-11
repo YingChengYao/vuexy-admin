@@ -4,7 +4,7 @@
       <div class="vx-row">
         <div class="vx-col md:w-1/2 w-full">
           <div class="mt-4">
-            <label class="vs-input--label">类型</label>
+            <label class="vs-input--label">套餐名称</label>
             <span class="required" style="color:red">*</span>
             <vs-input
               class="w-full"

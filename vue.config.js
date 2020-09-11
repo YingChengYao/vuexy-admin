@@ -12,7 +12,8 @@ module.exports = {
       splitChunks: {
         chunks: "all"
       }
-    }
+    },
+    devtool: "#eval-source-map"
   },
   chainWebpack: config => {
     config.resolve.alias
@@ -42,5 +43,5 @@ module.exports = {
         }
       }
     }
-  },
+  }
 };

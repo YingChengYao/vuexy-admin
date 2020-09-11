@@ -37,9 +37,9 @@
             </vs-td>
 
             <vs-td :key="index" v-for="(item, index) in cloumns">
-              <!-- <table-cell v-if="item.render" :row="tr" :column="item" :index="index"></table-cell> -->
+              <table-cell :row="tr" :column="item" :index="index"></table-cell>
 
-              <span v-if="item.expand" :style="'margin-left:'+ (tr.level)*20 +'px'">
+              <!-- <span v-if="item.expand" :style="'margin-left:'+ (tr.level)*20 +'px'">
                 <span @click.stop="toggle(tr)" v-if="tr.children || tr.hasChildren">
                   <vs-icon
                     :icon-pack="tr.isExpand?'iconfont icon-shangxiazuoyouTriangle11':'iconfont icon-shangxiazuoyouTriangle12'"
@@ -47,7 +47,7 @@
                 </span>
                 {{item.formatter?item.formatter(tr[item.field],tr):tr[item.field]}}
               </span>
-              <span v-else>{{item.formatter?item.formatter(tr[item.field],tr):tr[item.field]}}</span>
+              <span v-else>{{item.formatter?item.formatter(tr[item.field],tr):tr[item.field]}}</span>-->
             </vs-td>
 
             <vs-td v-if="operates.list.filter(x=>x.show).length>0" class="whitespace-no-wrap">
@@ -68,6 +68,9 @@
   </div>
 </template>
 <script>
+import TableCell from "./Cell";
+import TableRender from "./render";
+
 export default {
   name: "qr-table",
   props: {
@@ -100,6 +103,15 @@ export default {
         };
       },
     },
+  },
+  components: {
+    TableCell,
+    TableRender,
+  },
+  provide() {
+    return {
+      tableRoot: this,
+    };
   },
   data: () => ({
     //checked

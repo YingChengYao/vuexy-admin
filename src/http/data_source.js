@@ -198,3 +198,14 @@ export const getMenusDataSource = params => {
   });
 };
 //#endregion
+
+//#region 用户管理
+//配置用户角色
+export const getPlatformTypeDataSource = params => {
+  return request({
+    url: "/api/usertype/select",
+    method: "get",
+    params: params
+  });
+};
+//#endregion

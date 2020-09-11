@@ -58,7 +58,7 @@
           <div class="mt-4">
             <label class="vs-select--label">套餐级别</label>
             <v-select
-              v-model="data_local.Standard"
+              v-model="data_local.StandardID"
               label="Name"
               value="Value"
               :options="standardOptions"
@@ -270,7 +270,7 @@ export default {
             remark: this.data_local.Remark,
             sort: this.data_local.Sort,
             itemIDs: itemIDs,
-            standardID: this.data_local.Standard,
+            standardID: this.data_local.StandardID,
             packageType: packageTypes,
           };
 

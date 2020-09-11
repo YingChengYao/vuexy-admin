@@ -9,7 +9,7 @@ const request = axios.create({
   //baseURL: "http://localhost:5000",
   //baseURL: "http://managea.tijian.cn",
   baseURL: global.baseURL,
-  timeout: 5000
+  timeout: 20000
 });
 
 //#region http request 拦截器
@@ -55,7 +55,6 @@ request.interceptors.request.use(
 //#region http response 拦截器
 request.interceptors.response.use(
   response => {
-    debugger;
     const data = response.data;
     if (!data.resultType && data.resultType != 0) {
       return data; //TODO 路由MOCK使用，后期拿掉

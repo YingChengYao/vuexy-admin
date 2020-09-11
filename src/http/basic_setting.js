@@ -96,3 +96,59 @@ export const getMenusForUser = params => {
 };
 
 //#endregion
+
+//#region 用户管理
+//获取用户信息列表
+export const getUsers = params => {
+  return request({
+    url: "/api/user/unit/list",
+    method: "get",
+    params: params
+  });
+};
+
+//添加用户
+export const addUser = params => {
+  return request({
+    url: "/api/user/unit/insert",
+    method: "post",
+    params: params
+  });
+};
+
+//修改用户
+export const editUser = params => {
+  return request({
+    url: "/api/user/unit/update",
+    method: "post",
+    params: params
+  });
+};
+
+//获取用户详情信息
+export const getUser = params => {
+  return request({
+    url: "/api/user/details",
+    method: "get",
+    params: params
+  });
+};
+
+//配置用户角色
+export const deployRoleForUser = params => {
+  return request({
+    url: "/api/user/role/configure",
+    method: "post",
+    params: params
+  });
+};
+
+//设置用户密码
+export const setPasswordForUser = params => {
+  return request({
+    url: "/api/user/password",
+    method: "post",
+    params: params
+  });
+};
+//#endregion

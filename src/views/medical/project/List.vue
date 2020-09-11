@@ -323,13 +323,12 @@ export default {
   },
   created() {
     this.isPop = this.packageID ? true : false;
-  },
-  mounted() {
     this.loadDataStatus().then((val) => {
       this.loadData();
     });
     this.loadProjectTypeDataStatus();
   },
+  mounted() {},
   watch: {
     selected() {
       this.$emit("checkHandle", this.selected);

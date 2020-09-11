@@ -314,7 +314,7 @@ export default {
       });
     },
     download() {
-      const url = global.baseURL + "/Template/NewEmployeeTemplate.xlsx";
+      const url = global.baseURL + "/Template/职工模板.xlsx";
       var iframe = document.createElement("iframe");
       iframe.style.display = "none";
       iframe.src = url;

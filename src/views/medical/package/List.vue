@@ -83,6 +83,7 @@ import { getPackages } from "@/http/package.js";
 import { getDataStatusDataSource } from "@/http/data_source.js";
 import infoList from "@/components/mixins/infoList";
 import { formatTimeToStr } from "@/common/utils/data/date";
+import { getMarriageColor, getGenderColor } from "@/common/utils/data/chip";
 
 export default {
   mixins: [infoList],
@@ -108,11 +109,35 @@ export default {
         {
           headerName: "婚姻状态",
           field: "MarriageName",
-          render(row, column, index) {
-            return `<vs-chip transparent color="sucess">${row.Marriage}</vs-chip>`;
+          render: (h, params) => {
+            return h(
+              "vs-chip",
+              {
+                props: {
+                  transparent: true,
+                  color: getMarriageColor(params.row.Marriage),
+                },
+              },
+              params.row.MarriageName
+            );
           },
         },
-        { headerName: "性别", field: "GenderName" },
+        {
+          headerName: "性别",
+          field: "GenderName",
+          render: (h, params) => {
+            return h(
+              "vs-chip",
+              {
+                props: {
+                  transparent: true,
+                  color: getMarriageColor(params.row.Marriage),
+                },
+              },
+              params.row.MarriageName
+            );
+          },
+        },
         { headerName: "排序", field: "Sort" },
         { headerName: "状态", field: "StatusName" },
         { headerName: "修改人", field: "ModifyName" },
@@ -145,7 +170,6 @@ export default {
 
       //filter
       statusOptions: [],
-      dataStatus: null,
 
       // Pop
       title: null,
@@ -162,19 +186,15 @@ export default {
     };
   },
   computed: {},
-  created() {},
-  mounted() {
+  created() {
     this.loadDataStatus().then((val) => {
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
       this.searchInfo.mecId = userInfo.mecID;
       this.getTableData();
     });
   },
-  watch: {
-    dataStatus(val) {
-      this.searchInfo.status = val != null ? val.Value : val;
-    },
-  },
+  mounted() {},
+  watch: {},
   methods: {
     async loadDataStatus() {
       await getDataStatusDataSource().then((res) => {
@@ -182,9 +202,9 @@ export default {
           const data = JSON.parse(res.message);
           this.statusOptions = data;
           console.log("this.statusOptions:", this.statusOptions);
-          // if (data.length > 0) {
-          //   this.searchInfo.status = data[0].Value;
-          // }
+          if (data.length > 0) {
+            this.searchInfo.status = data[0].Value;
+          }
         }
       });
     },

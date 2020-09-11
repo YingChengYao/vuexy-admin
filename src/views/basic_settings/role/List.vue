@@ -41,7 +41,14 @@
     </vx-card>
 
     <div class="vx-card p-6">
-      <qr-table ref="table" :items="tableData" :cloumns="cloumns" :operates="operates">
+      <qr-table
+        ref="table"
+        :multipleCheck="multipleCheck"
+        :items="tableData"
+        :cloumns="cloumns"
+        :operates="operates"
+        v-model="selected"
+      >
         <template slot="header">
           <vs-button color="primary" type="border" class="mb-4 mr-4" @click="addNewData">添加</vs-button>
         </template>
@@ -72,9 +79,17 @@ import { formatTimeToStr } from "@/common/utils/data/date";
 export default {
   mixins: [infoList],
   components: { RoleDetail, PermissionsViewSidebar },
+  props: {
+    multipleCheck: false,
+    operateName: {
+      type: Array,
+      default: () => ["edit", "permission"],
+    },
+  },
   data() {
     return {
       types: [],
+      selected: [],
       listApi: getRoles,
       cloumns: [
         { headerName: "套餐类型名称", field: "RoleName" },
@@ -93,14 +108,14 @@ export default {
         list: [
           {
             title: "编辑",
-            show: true,
+            show: this.operateName.indexOf("edit") !== -1,
             method: (index, row) => {
               this.editData(row);
             },
           },
           {
             title: "设置权限",
-            show: true,
+            show: this.operateName.indexOf("permission") !== -1,
             method: (index, row) => {
               this.setPermissions(row);
             },

@@ -4804,8 +4804,8 @@ var vsRadio_component = normalizeComponent(
 /* harmony default export */ var components_vsRadio = (function (Vue) {
   Vue.component(vsRadio.name, vsRadio);
 });
-// CONCATENATED MODULE: C:/Users/ycy/AppData/Roaming/npm/node_modules/@vue/cli-service-global/node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"26bbbe1a-vue-loader-template"}!C:/Users/ycy/AppData/Roaming/npm/node_modules/@vue/cli-service-global/node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!C:/Users/ycy/AppData/Roaming/npm/node_modules/@vue/cli-service-global/node_modules/cache-loader/dist/cjs.js??ref--0-0!C:/Users/ycy/AppData/Roaming/npm/node_modules/@vue/cli-service-global/node_modules/vue-loader/lib??vue-loader-options!./src/components/vsInput/vsInput.vue?vue&type=template&id=15c044a5&lang=html&
-var vsInputvue_type_template_id_15c044a5_lang_html_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{ref:"coninput",staticClass:"vs-component vs-con-input-label vs-input",class:[("vs-input-" + _vm.color),{
+// CONCATENATED MODULE: C:/Users/ycy/AppData/Roaming/npm/node_modules/@vue/cli-service-global/node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"26bbbe1a-vue-loader-template"}!C:/Users/ycy/AppData/Roaming/npm/node_modules/@vue/cli-service-global/node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!C:/Users/ycy/AppData/Roaming/npm/node_modules/@vue/cli-service-global/node_modules/cache-loader/dist/cjs.js??ref--0-0!C:/Users/ycy/AppData/Roaming/npm/node_modules/@vue/cli-service-global/node_modules/vue-loader/lib??vue-loader-options!./src/components/vsInput/vsInput.vue?vue&type=template&id=6664d5f5&lang=html&
+var vsInputvue_type_template_id_6664d5f5_lang_html_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{ref:"coninput",staticClass:"vs-component vs-con-input-label vs-input",class:[("vs-input-" + _vm.color),{
     'isFocus':_vm.isFocus,
     'input-icon-validate-success':_vm.success,
     'input-icon-validate-danger':_vm.danger,
@@ -4821,18 +4821,15 @@ var vsInputvue_type_template_id_15c044a5_lang_html_render = function () {var _vm
           {
             'vs-placeholder-label': _vm.labelPlaceholder,
         }],style:(_vm.styleLabel),on:{"click":_vm.focusInput}},[_vm._v(" "+_vm._s(_vm.$attrs.placeholder || _vm.labelPlaceholder)+" ")]):_vm._e()]),(_vm.icon)?_c('vs-icon',{staticClass:"icon-inputx notranslate vs-input--icon",class:{'icon-after':_vm.iconAfter, 'icon-no-border':_vm.iconNoBorder},attrs:{"iconPack":_vm.iconPack,"icon":_vm.icon},on:{"click":_vm.focusInput}}):_vm._e(),_c('transition',{attrs:{"name":"icon-validate"}},[(_vm.success || _vm.danger || _vm.warning)?_c('span',{staticClass:"input-icon-validate vs-input--icon-validate",class:{'icon-before':_vm.iconAfter}},[_c('vs-icon',{class:{'icon-before':_vm.iconAfter},attrs:{"iconPack":_vm.valIconPack,"icon":_vm.getIcon}})],1):_vm._e()])],1),_c('transition-group',{on:{"before-enter":_vm.beforeEnter,"enter":_vm.enter,"leave":_vm.leave}},[(_vm.success)?_c('div',{key:"success",staticClass:"con-text-validation vs-input--text-validation"},[_c('span',{staticClass:"span-text-validation span-text-validation-success vs-input--text-validation-span"},[_vm._v(" "+_vm._s(_vm.successText)+" ")])]):(_vm.danger)?_c('div',{key:"danger",staticClass:"con-text-validation span-text-validation-danger vs-input--text-validation-span"},[_c('span',{staticClass:"span-text-validation"},[_vm._v(" "+_vm._s(_vm.dangerText)+" ")])]):(_vm.warning)?_c('div',{key:"warning",staticClass:"con-text-validation span-text-validation-warning vs-input--text-validation-span"},[_c('span',{staticClass:"span-text-validation"},[_vm._v(" "+_vm._s(_vm.warningText)+" ")])]):_vm._e(),(_vm.descriptionText)?_c('div',{key:"description",staticClass:"con-text-validation span-text-validation vs-input--text-validation-span"},[_c('span',{staticClass:"span-text-validation"},[_vm._v(" "+_vm._s(_vm.descriptionText)+" ")])]):_vm._e()])],1)}
-var vsInputvue_type_template_id_15c044a5_lang_html_staticRenderFns = []
+var vsInputvue_type_template_id_6664d5f5_lang_html_staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/components/vsInput/vsInput.vue?vue&type=template&id=15c044a5&lang=html&
+// CONCATENATED MODULE: ./src/components/vsInput/vsInput.vue?vue&type=template&id=6664d5f5&lang=html&
 
 // CONCATENATED MODULE: C:/Users/ycy/AppData/Roaming/npm/node_modules/@vue/cli-service-global/node_modules/thread-loader/dist/cjs.js!C:/Users/ycy/AppData/Roaming/npm/node_modules/@vue/cli-service-global/node_modules/babel-loader/lib??ref--12-1!C:/Users/ycy/AppData/Roaming/npm/node_modules/@vue/cli-service-global/node_modules/cache-loader/dist/cjs.js??ref--0-0!C:/Users/ycy/AppData/Roaming/npm/node_modules/@vue/cli-service-global/node_modules/vue-loader/lib??vue-loader-options!./src/components/vsInput/vsInput.vue?vue&type=script&lang=js&
 
 
 
-//
-//
-//
 //
 //
 //
@@ -5128,8 +5125,8 @@ var vsInputvue_type_template_id_15c044a5_lang_html_staticRenderFns = []
 
 var vsInput_component = normalizeComponent(
   vsInput_vsInputvue_type_script_lang_js_,
-  vsInputvue_type_template_id_15c044a5_lang_html_render,
-  vsInputvue_type_template_id_15c044a5_lang_html_staticRenderFns,
+  vsInputvue_type_template_id_6664d5f5_lang_html_render,
+  vsInputvue_type_template_id_6664d5f5_lang_html_staticRenderFns,
   false,
   null,
   null,
@@ -11096,12 +11093,12 @@ var vsDropDownGroup_component = normalizeComponent(
   Vue.component(vsDropDownItem.name, vsDropDownItem);
   Vue.component(vsDropDownGroup.name, vsDropDownGroup);
 });
-// CONCATENATED MODULE: C:/Users/ycy/AppData/Roaming/npm/node_modules/@vue/cli-service-global/node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"26bbbe1a-vue-loader-template"}!C:/Users/ycy/AppData/Roaming/npm/node_modules/@vue/cli-service-global/node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!C:/Users/ycy/AppData/Roaming/npm/node_modules/@vue/cli-service-global/node_modules/cache-loader/dist/cjs.js??ref--0-0!C:/Users/ycy/AppData/Roaming/npm/node_modules/@vue/cli-service-global/node_modules/vue-loader/lib??vue-loader-options!./src/components/vsTable/vsTable.vue?vue&type=template&id=101463b6&
-var vsTablevue_type_template_id_101463b6_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"vs-component vs-con-table",class:[{'stripe': _vm.stripe, 'hoverFlat': _vm.hoverFlat}, ("vs-table-" + _vm.color)]},[_c('header',{staticClass:"header-table vs-table--header"},[_vm._t("header"),(_vm.search)?_c('div',{staticClass:"con-input-search vs-table--search"},[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.searchx),expression:"searchx"}],staticClass:"input-search vs-table--search-input",attrs:{"type":"text"},domProps:{"value":(_vm.searchx)},on:{"input":function($event){if($event.target.composing){ return; }_vm.searchx=$event.target.value}}}),_c('vs-icon',{attrs:{"icon":"search"}})],1):_vm._e()],2),_c('div',{staticClass:"con-tablex vs-table--content"},[_c('div',{staticClass:"vs-con-tbody vs-table--tbody ",style:(_vm.styleConTbody)},[_c('table',{ref:"table",staticClass:"vs-table vs-table--tbody-table"},[_c('thead',{ref:"thead",staticClass:"vs-table--thead"},[_c('tr',[(_vm.multiple || _vm.hasExpadableData)?_c('th',{staticClass:"td-check"},[(_vm.multiple)?_c('span',{staticClass:"con-td-check"},[_c('vs-checkbox',{key:_vm.isCheckedLine ? 'remove' : 'check',attrs:{"icon":_vm.isCheckedLine ? 'remove' : 'check',"checked":_vm.isCheckedMultiple,"size":"small"},on:{"change":_vm.changeCheckedMultiple}})],1):_vm._e()]):_vm._e(),_vm._t("thead")],2)]),_vm._t("default",null,{"data":_vm.datax})],2)]),(_vm.isNoData)?_c('div',{staticClass:"not-data-table vs-table--not-data"},[_vm._v(" "+_vm._s(_vm.noDataText)+" ")]):_vm._e(),(_vm.pagination)?_c('div',{staticClass:"con-pagination-table vs-table--pagination"},[_c('vs-pagination',{attrs:{"total":_vm.searchx && !_vm.sst ? _vm.getTotalPagesSearch : _vm.getTotalPages,"description-items":_vm.descriptionItems,"max-items":_vm.maxItemsx,"size-array":_vm.queriedResults.length,"description":_vm.description},on:{"changeMaxItems":_vm.changeMaxItems},model:{value:(_vm.currentx),callback:function ($$v) {_vm.currentx=$$v},expression:"currentx"}})],1):_vm._e()])])}
-var vsTablevue_type_template_id_101463b6_staticRenderFns = []
+// CONCATENATED MODULE: C:/Users/ycy/AppData/Roaming/npm/node_modules/@vue/cli-service-global/node_modules/cache-loader/dist/cjs.js?{"cacheDirectory":"node_modules/.cache/vue-loader","cacheIdentifier":"26bbbe1a-vue-loader-template"}!C:/Users/ycy/AppData/Roaming/npm/node_modules/@vue/cli-service-global/node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!C:/Users/ycy/AppData/Roaming/npm/node_modules/@vue/cli-service-global/node_modules/cache-loader/dist/cjs.js??ref--0-0!C:/Users/ycy/AppData/Roaming/npm/node_modules/@vue/cli-service-global/node_modules/vue-loader/lib??vue-loader-options!./src/components/vsTable/vsTable.vue?vue&type=template&id=8ac19a7a&
+var vsTablevue_type_template_id_8ac19a7a_render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"vs-component vs-con-table",class:[{'stripe': _vm.stripe, 'hoverFlat': _vm.hoverFlat}, ("vs-table-" + _vm.color)]},[_c('header',{staticClass:"header-table vs-table--header"},[_vm._t("header"),(_vm.search)?_c('div',{staticClass:"con-input-search vs-table--search"},[_c('input',{directives:[{name:"model",rawName:"v-model",value:(_vm.searchx),expression:"searchx"}],staticClass:"input-search vs-table--search-input",attrs:{"type":"text"},domProps:{"value":(_vm.searchx)},on:{"input":function($event){if($event.target.composing){ return; }_vm.searchx=$event.target.value}}}),_c('vs-icon',{attrs:{"icon":"search"}})],1):_vm._e()],2),_c('div',{staticClass:"con-tablex vs-table--content"},[_c('div',{staticClass:"vs-con-tbody vs-table--tbody",style:(_vm.styleConTbody)},[_c('table',{ref:"table",staticClass:"vs-table vs-table--tbody-table"},[_c('thead',{ref:"thead",staticClass:"vs-table--thead"},[_c('tr',[(_vm.multiple || _vm.hasExpadableData)?_c('th',{staticClass:"td-check"},[(_vm.multiple)?_c('span',{staticClass:"con-td-check"},[_c('vs-checkbox',{key:_vm.isCheckedLine ? 'remove' : 'check',attrs:{"icon":_vm.isCheckedLine ? 'remove' : 'check',"checked":_vm.isCheckedMultiple,"size":"small"},on:{"change":_vm.changeCheckedMultiple}})],1):_vm._e()]):_vm._e(),_vm._t("thead")],2)]),_vm._t("default",null,{"data":_vm.datax})],2)]),(_vm.isNoData)?_c('div',{staticClass:"not-data-table vs-table--not-data"},[_vm._v(" "+_vm._s(_vm.noDataText)+" ")]):_vm._e(),(_vm.pagination)?_c('div',{staticClass:"con-pagination-table vs-table--pagination"},[_c('vs-pagination',{attrs:{"total":_vm.searchx && !_vm.sst ? _vm.getTotalPagesSearch : _vm.getTotalPages,"description-items":_vm.descriptionItems,"max-items":_vm.maxItemsx,"size-array":_vm.queriedResults.length,"description":_vm.description},on:{"changeMaxItems":_vm.changeMaxItems},model:{value:(_vm.currentx),callback:function ($$v) {_vm.currentx=$$v},expression:"currentx"}})],1):_vm._e()])])}
+var vsTablevue_type_template_id_8ac19a7a_staticRenderFns = []
 
 
-// CONCATENATED MODULE: ./src/components/vsTable/vsTable.vue?vue&type=template&id=101463b6&
+// CONCATENATED MODULE: ./src/components/vsTable/vsTable.vue?vue&type=template&id=8ac19a7a&
 
 // EXTERNAL MODULE: C:/Users/ycy/AppData/Roaming/npm/node_modules/@vue/cli-service-global/node_modules/core-js/modules/es.array.reduce.js
 var es_array_reduce = __webpack_require__("4e38");
@@ -11235,17 +11232,16 @@ function _typeof(obj) {
 //
 //
 //
-//
 /* harmony default export */ var vsTablevue_type_script_lang_js_ = ({
   name: "VsTable",
   props: {
     value: {},
     color: {
-      default: 'primary',
+      default: "primary",
       type: String
     },
     noDataText: {
-      default: 'No data Available',
+      default: "No data Available",
       type: String
     },
     stripe: {
@@ -11257,7 +11253,7 @@ function _typeof(obj) {
       type: Boolean
     },
     maxHeight: {
-      default: 'auto',
+      default: "auto",
       type: String
     },
     multiple: {
@@ -11312,7 +11308,7 @@ function _typeof(obj) {
   },
   data: function data() {
     return {
-      headerWidth: '100%',
+      headerWidth: "100%",
       trs: [],
       datax: [],
       searchx: null,
@@ -11320,7 +11316,8 @@ function _typeof(obj) {
       maxItemsx: 5,
       hasExpadableData: false,
       currentSortKey: null,
-      currentSortType: null
+      currentSortType: null,
+      isNoData: false
     };
   },
   computed: {
@@ -11346,13 +11343,15 @@ function _typeof(obj) {
 
       return queriedResults;
     },
-    isNoData: function isNoData() {
-      if (_typeof(this.datax) == Object) {
-        return this.datax ? Object.keys(this.datax).length == 0 :  false && false;
-      } else {
-        return this.datax ? this.datax.length == 0 :  false && false;
-      }
-    },
+    // isNoData() {
+    //   if (typeof this.datax == Object) {
+    //     return this.datax
+    //       ? Object.keys(this.datax).length == 0
+    //       : false && this.search;
+    //   } else {
+    //     return this.datax ? this.datax.length == 0 : false && this.search;
+    //   }
+    // },
     isCheckedLine: function isCheckedLine() {
       var lengthx = this.data.length;
       var lengthSelected = this.value.length;
@@ -11364,7 +11363,7 @@ function _typeof(obj) {
     styleConTbody: function styleConTbody() {
       return {
         maxHeight: this.maxHeight,
-        overflow: this.maxHeight != 'auto' ? 'auto' : null
+        overflow: this.maxHeight != "auto" ? "auto" : null
       };
     },
     getThs: function getThs() {
@@ -11385,7 +11384,7 @@ function _typeof(obj) {
     },
     currentx: function currentx() {
       if (this.sst) {
-        this.$emit('change-page', this.currentx);
+        this.$emit("change-page", this.currentx);
       } else {
         this.loadData();
       }
@@ -11409,15 +11408,31 @@ function _typeof(obj) {
     },
     searchx: function searchx() {
       if (this.sst) {
-        this.$emit('search', this.searchx);
+        this.$emit("search", this.searchx);
       } else {
         this.loadData();
         this.currentx = 1;
       }
+    },
+    datax: function datax(val, newval) {
+      // window.console.log("datax-val:", val);
+      // window.console.log("datax-val-json:", JSON.stringify(val));
+      // window.console.log("datax-newval:", newval);
+      // window.console.log("datax-newval:", JSON.stringify(newval));
+      // window.console.log("this.datax:", this.datax);
+      var valJson = JSON.stringify(val);
+      var newvalJson = JSON.stringify(newval);
+      if (valJson === newvalJson) return; // window.console.log("this.datax1:end");
+
+      if (_typeof(this.datax) == Object) {
+        this.isNoData = this.datax ? Object.keys(this.datax).length == 0 :  false && false;
+      } else {
+        this.isNoData = this.datax ? this.datax.length == 0 :  false && false;
+      }
     }
   },
   mounted: function mounted() {
-    window.addEventListener('resize', this.listenerChangeWidth);
+    window.addEventListener("resize", this.listenerChangeWidth);
     this.maxItemsx = this.maxItems;
     this.loadData(); // this.$nextTick(() => {
     //   if(this.datax.length > 0) {
@@ -11426,7 +11441,7 @@ function _typeof(obj) {
     // })
   },
   destroyed: function destroyed() {
-    window.removeEventListener('resize', this.listenerChangeWidth);
+    window.removeEventListener("resize", this.listenerChangeWidth);
   },
   methods: {
     loadData: function loadData() {
@@ -11454,8 +11469,8 @@ function _typeof(obj) {
           currentSortType = this.currentSortType;
 
       function compare(a, b) {
-        if (a[currentSortKey] < b[currentSortKey]) return currentSortType == 'desc' ? 1 : -1;
-        if (a[currentSortKey] > b[currentSortKey]) return currentSortType == 'desc' ? -1 : 1;
+        if (a[currentSortKey] < b[currentSortKey]) return currentSortType == "desc" ? 1 : -1;
+        if (a[currentSortKey] > b[currentSortKey]) return currentSortType == "desc" ? -1 : 1;
         return 0;
       }
 
@@ -11476,24 +11491,24 @@ function _typeof(obj) {
       this.currentSortType = sortType;
 
       if (this.sst) {
-        this.$emit('sort', key, sortType);
+        this.$emit("sort", key, sortType);
         return;
       }
 
       this.loadData();
     },
     normalize: function normalize(string) {
-      return string.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
+      return string.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
     },
     getValues: function getValues(obj) {
       function flattenDeep(val) {
         return Object.values(val || []).reduce(function (acc, val) {
-          return _typeof(val) === 'object' ? acc.concat(flattenDeep(val)) : acc.concat(val);
+          return _typeof(val) === "object" ? acc.concat(flattenDeep(val)) : acc.concat(val);
         }, []);
       }
 
       return flattenDeep(obj).filter(function (item) {
-        return typeof item === 'string' || typeof item === 'number';
+        return typeof item === "string" || typeof item === "number";
       });
     },
     changeCheckedMultiple: function changeCheckedMultiple() {
@@ -11502,9 +11517,9 @@ function _typeof(obj) {
       var selectedx = lengthx - lengthSelected;
 
       if (selectedx == 0) {
-        this.$emit('input', []);
+        this.$emit("input", []);
       } else {
-        this.$emit('input', this.data);
+        this.$emit("input", this.data);
       }
     },
     handleCheckbox: function handleCheckbox(tr) {
@@ -11517,8 +11532,8 @@ function _typeof(obj) {
           val.push(tr);
         }
 
-        this.$emit('input', val);
-        this.$emit('selected', tr);
+        this.$emit("input", val);
+        this.$emit("selected", tr);
       }
     },
     clicktr: function clicktr(tr, isTr) {
@@ -11531,16 +11546,16 @@ function _typeof(obj) {
           val.push(tr);
         }
 
-        this.$emit('input', val);
-        this.$emit('selected', tr);
+        this.$emit("input", val);
+        this.$emit("selected", tr);
       } else if (isTr && !this.onlyClickCheckbox) {
-        this.$emit('input', tr);
-        this.$emit('selected', tr);
+        this.$emit("input", tr);
+        this.$emit("selected", tr);
       }
     },
     dblclicktr: function dblclicktr(tr, isTr) {
       if (isTr) {
-        this.$emit('dblSelection', tr);
+        this.$emit("dblSelection", tr);
       }
     },
     listenerChangeWidth: function listenerChangeWidth() {
@@ -11549,12 +11564,12 @@ function _typeof(obj) {
     },
     changeTdsWidth: function changeTdsWidth() {
       if (!this.value) return;
-      var tbody = this.$refs.table.querySelector('tbody'); // Adding condition removes querySelector none error - if tbody isnot present
+      var tbody = this.$refs.table.querySelector("tbody"); // Adding condition removes querySelector none error - if tbody isnot present
 
       if (tbody) {
-        var trvs = tbody.querySelector('.tr-values');
+        var trvs = tbody.querySelector(".tr-values");
         if (trvs === undefined || trvs === null) return;
-        var tds = trvs.querySelectorAll('.td');
+        var tds = trvs.querySelectorAll(".td");
         var tdsx = [];
         tds.forEach(function (td, index) {
           tdsx.push({
@@ -11565,9 +11580,9 @@ function _typeof(obj) {
         var colgrouptable = this.$refs.colgrouptable;
 
         if (colgrouptable !== undefined && colgrouptable !== null) {
-          var colsTable = colgrouptable.querySelectorAll('.col');
+          var colsTable = colgrouptable.querySelectorAll(".col");
           colsTable.forEach(function (col, index) {
-            col.setAttribute('width', tdsx[index].widthx);
+            col.setAttribute("width", tdsx[index].widthx);
           });
         }
       }
@@ -11589,8 +11604,8 @@ function _typeof(obj) {
 
 var vsTable_component = normalizeComponent(
   vsTable_vsTablevue_type_script_lang_js_,
-  vsTablevue_type_template_id_101463b6_render,
-  vsTablevue_type_template_id_101463b6_staticRenderFns,
+  vsTablevue_type_template_id_8ac19a7a_render,
+  vsTablevue_type_template_id_8ac19a7a_staticRenderFns,
   false,
   null,
   null,
