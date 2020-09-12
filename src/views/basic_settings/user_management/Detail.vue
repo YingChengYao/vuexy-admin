@@ -12,16 +12,16 @@
           />
           <span class="text-danger text-sm" v-show="errors.has('用户名')">{{ errors.first('用户名') }}</span>
         </div>
-        <!-- <div class="vx-col w-full">
+        <div class="vx-col w-full">
           <vs-input
             class="w-full mt-4"
-            label="密码"
-            v-model="data_local.RoleName"
+            label="登录名"
+            v-model="data_local.LoginName"
             v-validate="'required'"
-            name="密码"
+            name="登录名"
           />
-          <span class="text-danger text-sm" v-show="errors.has('密码')">{{ errors.first('密码') }}</span>
-        </div>-->
+          <span class="text-danger text-sm" v-show="errors.has('登录名')">{{ errors.first('登录名') }}</span>
+        </div>
         <div class="vx-col w-full">
           <vs-input
             class="w-full mt-4"
@@ -48,6 +48,7 @@
             value="Value"
             :options="platformTypeOptions"
             :reduce="m => m.Value"
+            @input="loadPlatformData"
             name="平台类型"
             v-validate="'required'"
           />
@@ -56,6 +57,7 @@
         <div class="vx-col w-full mt-4">
           <label class="vs-select--label">平台</label>
           <v-select
+            ref="platform"
             v-model="data_local.UnitID"
             label="Name"
             value="Value"
@@ -100,8 +102,10 @@ import vSelect from "vue-select";
 import {
   getDataStatusDataSource,
   getPlatformTypeDataSource,
+  getSubordinateUnitDataSource,
+  getMedicalCenterDataSource,
 } from "@/http/data_source.js";
-import { addRole, editRole } from "@/http/basic_setting.js";
+import { addUser, editUser, getUserDetail } from "@/http/basic_setting.js";
 
 export default {
   components: {
@@ -138,19 +142,16 @@ export default {
   methods: {
     loadData() {
       if (!this.userId) return;
-      // let userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
-      // let para = {
-      //   mecid: userInfo.mecID,
-      //   id: this.userId,
-      // };
-      // getProjectItemDetails(para).then((res) => {
-      //   if (res.resultType == 0) {
-      //     const data = JSON.parse(res.message);
-      //     this.data_local = data;
-      //     console.log("单项详情：", data);
-      //   }
-      // });
+      let para = {
+        id: this.userId,
+      };
+      getUserDetail(para).then((res) => {
+        if (res.resultType == 0) {
+          const data = JSON.parse(res.message);
+          this.data_local = data;
+        }
+      });
     },
     loadPlatformType() {
       getPlatformTypeDataSource().then((res) => {
@@ -162,18 +163,25 @@ export default {
       });
     },
     loadPlatformData() {
-      // getPlatformDataSource().then((res) => {
-      //   if (res.resultType == 0) {
-      //     const data = JSON.parse(res.message);
-      //     this.platformOptions = data;
-      //     console.log("平台：", data);
-      //   }
-      // });
+      this.$refs.platform.clearSelection();
       if (this.data_local.UserType == "2") {
         //"单位账户"
+        getSubordinateUnitDataSource().then((res) => {
+          if (res.resultType == 0) {
+            const data = JSON.parse(res.message);
+            this.platformOptions = data;
+          }
+        });
       } else if (this.data_local.UserType == "3") {
         //"体检中心账户"
+        getMedicalCenterDataSource().then((res) => {
+          if (res.resultType == 0) {
+            const data = JSON.parse(res.message);
+            this.platformOptions = data;
+          }
+        });
       } else if (this.data_local.UserType == "5") {
+        this.platformOptions = [];
         //"后台管理员"
       }
     },
@@ -189,13 +197,18 @@ export default {
       this.$validator.validateAll().then((result) => {
         if (result) {
           let para = {
-            roleName: this.data_local.RoleName,
-            sort: this.data_local.Sort,
+            userName: this.data_local.UserName,
+            userNickName: this.data_local.UserNickName,
+            loginName: this.data_local.LoginName,
+            idNumber: this.data_local.IdNumber,
+            mobile: this.data_local.Mobile,
             remark: this.data_local.Remark,
+            userType: this.data_local.UserType,
+            unitID: this.data_local.UnitID,
           };
 
           if (this.mark === "add") {
-            addRole(para).then((res) => {
+            addUser(para).then((res) => {
               if (res.resultType == 0) {
                 this.$vs.notify({
                   title: "成功",
@@ -210,7 +223,7 @@ export default {
             para.ID = this.userId;
             para.status = this.data_local.Status;
 
-            editRole(para).then((res) => {
+            editUser(para).then((res) => {
               debugger;
               if (res.resultType == 0) {
                 this.$vs.notify({

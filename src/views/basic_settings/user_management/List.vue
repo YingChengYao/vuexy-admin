@@ -32,6 +32,25 @@
       </div>
     </vs-popup>
 
+    <vs-popup :title="title" :active.sync="popupActivePwd" v-if="popupActivePwd">
+      <set-pwd
+        ref="pwd"
+        v-if="popupActivePwd"
+        @closePop="closePwdPop"
+        :userId="userId"
+        :key="timer"
+        :mark="mark"
+      ></set-pwd>
+      <!-- <div class="vx-row">
+        <div class="vx-col w-full">
+          <div class="mt-8 flex flex-wrap items-center justify-end">
+            <vs-button class="ml-auto mt-2" @click.stop="saveRole" v-preventClick>保存</vs-button>
+            <vs-button class="ml-4 mt-2" type="border" color="warning" @click.stop="closeRolePop">取消</vs-button>
+          </div>
+        </div>
+      </div>-->
+    </vs-popup>
+
     <vx-card ref="filterCard" title class="user-list-filters mb-8">
       <vs-row vs-align="center">
         <label class="vx-col label-name px-2">套餐类型名称</label>
@@ -64,6 +83,7 @@
 <script>
 import MenuDetail from "./Detail";
 import RoleList from "views/basic_settings/role/List";
+import SetPwd from "./SetPwd";
 
 import infoList from "@/components/mixins/infoList";
 import { formatTimeToStr } from "@/common/utils/data/date";
@@ -76,7 +96,7 @@ import {
 
 export default {
   mixins: [infoList],
-  components: { MenuDetail, RoleList },
+  components: { MenuDetail, RoleList, SetPwd },
   props: {},
   data() {
     return {
@@ -103,6 +123,13 @@ export default {
               this.setRole(row.ID);
             },
           },
+          {
+            title: "设置密码",
+            show: true,
+            method: (index, row) => {
+              this.setPassword(row.ID);
+            },
+          },
         ],
       },
       statusOptions: [],
@@ -118,27 +145,11 @@ export default {
       timer: "",
       mark: null,
       popupActiveRole: false,
+      popupActivePwd: false,
     };
   },
   computed: {},
   methods: {
-    // loadPlatformType() {
-    //   if (!this.packageID) return;
-    //   let userInfo = JSON.parse(localStorage.getItem("userInfo"));
-
-    //   let para = {
-    //     mecid: userInfo.mecID,
-    //     packageID: this.packageID,
-    //   };
-    //   getPlatformTypeDataSource(para).then((res) => {
-    //     if (res.resultType == 0) {
-    //       const data = JSON.parse(res.message);
-    //       this.data_local = data;
-    //       console.log("套餐详情：", data);
-    //     }
-    //   });
-    // },
-
     addNewData() {
       this.userId = null;
       this.popupActive = true;
@@ -199,6 +210,16 @@ export default {
           this.closeRolePop();
         }
       });
+    },
+    setPassword(id) {
+      this.userId = id;
+      this.popupActivePwd = true;
+      this.title = "设置用户密码";
+      this.mark = "pwd";
+      this.handleLoad();
+    },
+    closePwdPop() {
+      this.popupActivePwd = false;
     },
   },
   mounted() {

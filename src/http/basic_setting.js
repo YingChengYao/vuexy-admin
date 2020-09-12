@@ -126,7 +126,7 @@ export const editUser = params => {
 };
 
 //获取用户详情信息
-export const getUser = params => {
+export const getUserDetail = params => {
   return request({
     url: "/api/user/details",
     method: "get",

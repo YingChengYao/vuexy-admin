@@ -157,10 +157,18 @@ export const getMedicalCenterNatureDataSource = params => {
     params: params
   });
 };
+//获取体检中心数据源
+export const getMedicalCenterDataSource = params => {
+  return request({
+    url: "/api/physical/select",
+    method: "get",
+    params: params
+  });
+};
 //#endregion
 
 //#region 省市区
-//获取体检中心等级数据源
+//获取省数据源
 export const getProvinceDataSource = params => {
   return request({
     url: "/api/province/select",
@@ -169,7 +177,7 @@ export const getProvinceDataSource = params => {
   });
 };
 
-//获取体检中心性质数据源
+//获取市数据源
 export const getCityDataSource = params => {
   return request({
     url: "/api/city/select",
@@ -178,7 +186,7 @@ export const getCityDataSource = params => {
   });
 };
 
-//获取体检中心性质数据源
+//获取区数据源
 export const getCountyDataSource = params => {
   return request({
     url: "/api/county/select",
