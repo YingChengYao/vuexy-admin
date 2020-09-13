@@ -15,7 +15,7 @@
             <div class="vx-col md:w-1/4 w-full">
               <vs-input
                 label="计划名称"
-                class="w-full"
+                class="w-full xrequired"
                 v-model="data_local.PlanName"
                 v-validate="'required'"
                 name="计划名称"

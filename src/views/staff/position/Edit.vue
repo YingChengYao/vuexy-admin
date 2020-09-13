@@ -7,7 +7,7 @@
           <vs-input
             label="职位名称"
             v-model="data_local.PositionName"
-            class="w-full"
+            class="w-full xrequired"
             name="职位名称"
             v-validate="'required'"
           />

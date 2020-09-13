@@ -3,7 +3,7 @@
     <vx-card title>
       <div class="vx-row">
         <div class="vx-col md:w-1/2 w-full mt-4">
-          <label class="vs-select--label">父级单位</label>
+          <label class="vs-select--label xrequired">父级单位</label>
           <v-select
             :options="unitOptions"
             v-model="data_local.ParentID"
@@ -22,7 +22,7 @@
           <vs-input
             label="组织机构代码"
             v-model="data_local.CompanyCode"
-            class="w-full"
+            class="w-full xrequired"
             name="组织机构代码"
             v-validate="'required'"
             :disabled="mark=='edit'"
@@ -38,7 +38,7 @@
           <vs-input
             label="单位名称"
             v-model="data_local.CompanyName"
-            class="w-full"
+            class="w-full xrequired"
             name="单位名称"
             v-validate="'required'"
           />
@@ -49,7 +49,7 @@
           <vs-input
             label="联系人"
             v-model="data_local.Contact"
-            class="w-full"
+            class="w-full xrequired"
             name="联系人"
             v-validate="'required'"
           />
@@ -61,7 +61,7 @@
           <vs-input
             label="联系电话"
             v-model="data_local.Tel"
-            class="w-full"
+            class="w-full xrequired"
             name="联系电话"
             v-validate="'required|phone'"
           />
@@ -72,7 +72,7 @@
           <vs-input
             label="手机号"
             v-model="data_local.Mobile"
-            class="w-full"
+            class="w-full xrequired"
             name="手机号"
             v-validate="'required|mobile'"
           />
@@ -80,7 +80,7 @@
         </div>
 
         <div class="vx-col md:w-1/2 w-full mt-4">
-          <label class="vs-select--label">所在省</label>
+          <label class="vs-select--label xrequired">所在省</label>
           <v-select
             label="Name"
             value="Code"
@@ -94,7 +94,7 @@
           <span class="text-danger text-sm" v-show="errors.has('所在省')">{{ errors.first('所在省') }}</span>
         </div>
         <div class="vx-col md:w-1/2 w-full mt-4">
-          <label class="vs-select--label">所在市</label>
+          <label class="vs-select--label xrequired">所在市</label>
           <v-select
             ref="city"
             label="Name"
@@ -109,7 +109,7 @@
           <span class="text-danger text-sm" v-show="errors.has('所在市')">{{ errors.first('所在市') }}</span>
         </div>
         <div class="vx-col md:w-1/2 w-full mt-4">
-          <label class="vs-select--label">所在区</label>
+          <label class="vs-select--label xrequired">所在区</label>
           <v-select
             ref="county"
             label="Name"
@@ -126,7 +126,7 @@
           <vs-input
             label="街道"
             v-model="data_local.Street"
-            class="w-full"
+            class="w-full xrequired"
             name="街道"
             v-validate="'required'"
           />

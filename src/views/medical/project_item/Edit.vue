@@ -4,7 +4,7 @@
       <div class="vx-row">
         <div class="vx-col md:w-1/2 w-full">
           <vs-input
-            class="w-full mt-4"
+            class="w-full mt-4 xrequired"
             label="项目单项名称"
             v-model="data_local.SingleName"
             v-validate="'required'"
@@ -85,7 +85,7 @@
           </div>
 
           <div class="mt-4" v-if="data_local.IsOptional">
-            <label class="vs-select--label">项目分类</label>
+            <label class="vs-select--label xrequired">项目分类</label>
             <v-select
               v-model="data_local.ItemTypeID"
               label="Name"

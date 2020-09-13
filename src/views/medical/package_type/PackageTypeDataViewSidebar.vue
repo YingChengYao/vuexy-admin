@@ -26,7 +26,7 @@
         <vs-input
           label="套餐类型名称"
           v-model="dataTypeName"
-          class="mt-5 w-full"
+          class="mt-5 w-full xrequired"
           name="套餐类型名称"
           v-validate="'required'"
         />

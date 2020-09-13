@@ -7,7 +7,7 @@
           <vs-input
             label="名称"
             v-model="data_local.Name"
-            class="w-full"
+            class="w-full xrequired"
             name="名称"
             v-validate="'required'"
           />

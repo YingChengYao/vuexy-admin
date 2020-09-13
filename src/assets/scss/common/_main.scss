@@ -3,3 +3,15 @@
   text-overflow: ellipsis; //超出部分用....代替
   overflow: hidden; //超出隐藏
 }
+
+label.xrequired:before {
+  content: "* ";
+  color: red;
+}
+
+.xrequired {
+  .vs-input--label:before {
+    content: "* ";
+    color: red;
+  }
+}

@@ -4,7 +4,7 @@
       <div class="vx-row">
         <div class="vx-col md:w-1/2 w-full">
           <vs-input
-            class="w-full mt-4"
+            class="w-full mt-4 xrequired"
             label="姓名"
             v-model="data_local.EmployeeName"
             v-validate="'required'"
@@ -14,7 +14,7 @@
         </div>
         <div class="vx-col md:w-1/2 w-full">
           <vs-input
-            class="w-full mt-4"
+            class="w-full mt-4 xrequired"
             label="身份证号"
             v-model="data_local.IdNo"
             v-validate="'required|id_card_no'"
@@ -24,7 +24,7 @@
         </div>
 
         <div class="vx-col md:w-1/2 w-full mt-4">
-          <label class="vs-input--label">婚姻状况</label>
+          <label class="vs-input--label xrequired">婚姻状况</label>
           <v-select
             v-model="data_local.Marital"
             label="Name"
@@ -37,7 +37,7 @@
           <span class="text-danger text-sm" v-show="errors.has('婚姻状况')">{{ errors.first('婚姻状况') }}</span>
         </div>
         <div class="vx-col md:w-1/2 w-full mt-4">
-          <label class="vs-input--label">性别</label>
+          <label class="vs-input--label xrequired">性别</label>
           <v-select
             v-model="data_local.Gender"
             label="Name"
@@ -52,7 +52,7 @@
 
         <div class="vx-col md:w-1/2 w-full">
           <vs-input
-            class="w-full mt-4"
+            class="w-full mt-4 xrequired"
             label="手机号"
             v-model="data_local.Mobile"
             name="手机号"

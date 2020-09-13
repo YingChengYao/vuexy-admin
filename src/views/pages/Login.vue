@@ -54,9 +54,9 @@
                   />
                   <span class="text-danger text-sm">{{ errors.first('密码') }}</span>
                 </div>
-
-                <vs-row class="my-5">
-                  <vs-col class="w-2/3" vs-w="8">
+                <!-- sm:w-1/2 md:w-1/2 lg:w-3/4 xl:w-2/3 sm:m-0  -->
+                <vs-row class="my-5 flex">
+                  <vs-col class="flex-1 pr-4">
                     <vs-input
                       style="width:100%"
                       v-validate="'required'"
@@ -69,11 +69,11 @@
                     />
                     <span class="text-danger text-sm">{{ errors.first('验证码') }}</span>
                   </vs-col>
-                  <vs-col class="w-1/3" vs-type="flex" vs-justify="flex-end">
+                  <vs-col class="flex-1" vs-type="flex" vs-justify="flex-end">
                     <!-- <img style="height:38px" src="@/assets/images/logo/logo.png" alt="vuexy-logo" /> -->
                     <img
-                      class="right"
-                      style="height:38px;width:160px"
+                      class="flex-1"
+                      style="height:38px;"
                       :src="loginCode"
                       alt="vuexy-logo"
                       @click="codeImg"
@@ -168,7 +168,7 @@ export default {
 
       const payload = {
         userDetails: {
-          username: this.username,
+          loginName: this.username,
           password: md5(this.password),
           code: this.captcha,
         },
@@ -180,20 +180,21 @@ export default {
           this.$vs.loading.close();
         })
         .catch((error) => {
-          debugger;
           this.$vs.loading.close();
-          this.$vs.notify({
-            title: "错误提示",
-            text: error.message,
-            iconPack: "feather",
-            icon: "icon-alert-circle",
-            color: "danger",
-          });
+          this.codeImg();
+          // this.$vs.notify({
+          //   title: "错误提示",
+          //   text: error.message,
+          //   iconPack: "feather",
+          //   icon: "icon-alert-circle",
+          //   color: "danger",
+          // });
         });
     },
     codeImg() {
       let timestamp = new Date().getTime();
-      this.loginCode = global.baseURL + "/api/mix/code?width=160&timestamp=" + timestamp;
+      this.loginCode =
+        global.baseURL + "/api/mix/code?width=160&timestamp=" + timestamp;
     },
   },
 };

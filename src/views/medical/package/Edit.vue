@@ -4,8 +4,8 @@
       <div class="vx-row">
         <div class="vx-col md:w-1/2 w-full">
           <div class="mt-4">
-            <label class="vs-input--label">套餐名称</label>
-            <span class="required" style="color:red">*</span>
+            <label class="vs-input--label xrequired">套餐名称</label>
+            <!-- <span class="xrequired" style="color:red">*</span> -->
             <vs-input
               class="w-full"
               v-model="data_local.PackageName"
@@ -14,9 +14,6 @@
             />
             <span class="text-danger text-sm" v-show="errors.has('套餐名称')">{{ errors.first('套餐名称') }}</span>
           </div>
-
-          <vs-input class="w-full mt-4" label="备注" v-model="data_local.Remark" name="备注" />
-          <span class="text-danger text-sm" v-show="errors.has('备注')">{{ errors.first('备注') }}</span>
 
           <div class="mt-4">
             <label class="vs-input--label">类型</label>
@@ -30,6 +27,9 @@
             />
           </div>
 
+          <vs-input class="w-full mt-4" label="备注" v-model="data_local.Remark" name="备注" />
+          <span class="text-danger text-sm" v-show="errors.has('备注')">{{ errors.first('备注') }}</span>
+          
           <div class="mt-4"></div>
 
           <div class="mt-4" v-if="packageID">
@@ -275,5 +275,5 @@ export default {
   },
 };
 </script>
-<style lang='sass' scoped>
+<style lang='scss' scope>
 </style>

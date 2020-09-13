@@ -26,7 +26,7 @@
         <vs-input
           label="项目类型名称"
           v-model="dataTypeName"
-          class="mt-5 w-full"
+          class="mt-5 w-full xrequired"
           name="项目类型名称"
           v-validate="'required'"
         />
@@ -37,10 +37,7 @@
           label="描述"
           v-model="dataRemark"
           class="mt-5 w-full"
-          name="描述"
-          v-validate="'required'"
         />
-        <span class="text-danger text-sm" v-show="errors.has('描述')">{{ errors.first('描述') }}</span>
 
         <!-- 排序 -->
         <vs-input

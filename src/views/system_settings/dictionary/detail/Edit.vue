@@ -7,7 +7,7 @@
           <vs-input
             label="展示值"
             v-model="data_local.Name"
-            class="w-full"
+            class="w-full xrequired"
             name="展示值"
             v-validate="'required'"
           />
@@ -18,7 +18,7 @@
           <vs-input
             label="字典值"
             v-model="data_local.Code"
-            class="w-full"
+            class="w-full xrequired"
             name="字典值"
             v-validate="'required'"
           />

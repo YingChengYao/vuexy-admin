@@ -4,7 +4,7 @@
       <div class="vx-row">
         <div class="vx-col md:w-1/2 w-full">
           <vs-input
-            class="w-full mt-4"
+            class="w-full mt-4 xrequired"
             label="套餐名称"
             v-model="data_local.PackageName"
             v-validate="'required'"
@@ -14,7 +14,7 @@
         </div>
         <div class="vx-col md:w-1/2 w-full">
           <div class="mt-4">
-            <label class="vs-select--label">婚姻状况</label>
+            <label class="vs-select--label xrequired">婚姻状况</label>
             <v-select
               v-model="data_local.Marriage"
               label="Name"
@@ -56,7 +56,7 @@
         </div>
         <div class="vx-col md:w-1/2 w-full">
           <div class="mt-4">
-            <label class="vs-select--label">套餐级别</label>
+            <label class="vs-select--label xrequired">套餐级别</label>
             <v-select
               v-model="data_local.StandardID"
               label="Name"

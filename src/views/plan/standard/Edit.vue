@@ -7,7 +7,7 @@
           <vs-input
             label="套餐级别"
             v-model="data_local.Standard"
-            class="w-full"
+            class="w-full xrequired"
             name="套餐级别"
             v-validate="'required|numeric'"
           />

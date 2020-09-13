@@ -18,7 +18,7 @@
           <vs-input
             label="项目名称"
             v-model="data_local.ItemName"
-            class="w-full"
+            class="w-full xrequired"
             name="项目名称"
             v-validate="'required'"
           />
@@ -30,7 +30,7 @@
           <vs-input
             label="项目价格"
             v-model="data_local.ItemPrice"
-            class="w-full"
+            class="w-full xrequired"
             name="项目价格"
             v-validate="'required|decimal:2'"
           />
