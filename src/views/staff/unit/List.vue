@@ -104,7 +104,12 @@ export default {
       selected: [],
       listApi: getEmployeeUnits,
       cloumns: [
-        { headerName: "单位名称", field: "CompanyName", expand: true },
+        {
+          headerName: "单位名称",
+          field: "CompanyName",
+          expand: true,
+          type: "expand",
+        },
         { headerName: "单位编码", field: "CompanyCode" },
         { headerName: "辖区", field: "CountyName" },
         { headerName: "联系人", field: "Contact" },
@@ -186,6 +191,11 @@ export default {
             isExpand: true,
           });
         }
+        if (item.Children != undefined && item.Children.length > 0) {
+          item = Object.assign({}, item, {
+            hasChildren: true,
+          });
+        }
         if (typeof item.isChecked == "undefined") {
           item = Object.assign({}, item, {
             isChecked: false,
@@ -239,7 +249,7 @@ export default {
 
       let formData = new FormData();
       formData.append("Files", e.target.files[0]);
-      formData.append("CompanyID", userInfo.companyID);
+      formData.append("CompanyID", userInfo.unitId);
       batchAddEmployeeUnit(formData).then((res) => {
         if (res.resultType == 0) {
           this.$vs.notify({

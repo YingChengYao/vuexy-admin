@@ -53,7 +53,7 @@
 
     <vx-card ref="filterCard" title class="user-list-filters mb-8">
       <vs-row vs-align="center">
-        <label class="vx-col label-name px-2">套餐类型名称</label>
+        <label class="vx-col label-name px-2">用户名称</label>
         <vs-input v-model="searchInfo.userName" class="vx-col md:w-1/6 sm:w-1/2 w-full px-2" />
         <vs-button class="vx-col" color="primary" type="border" @click="getTableData">查询</vs-button>
       </vs-row>

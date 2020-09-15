@@ -131,10 +131,10 @@ export default {
               {
                 props: {
                   transparent: true,
-                  color: getMarriageColor(params.row.Marriage),
+                  color: getGenderColor(params.row.Gender),
                 },
               },
-              params.row.MarriageName
+              params.row.GenderName
             );
           },
         },
@@ -189,7 +189,7 @@ export default {
   created() {
     this.loadDataStatus().then((val) => {
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
-      this.searchInfo.mecId = userInfo.mecID;
+      this.searchInfo.mecId = userInfo.unitId;
       this.getTableData();
     });
   },

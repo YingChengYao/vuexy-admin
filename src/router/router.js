@@ -48,10 +48,10 @@ const router = new Router({
         //     authRequired:true
         //   }
         // },
-        {
-          path: '/',
-          redirect: '/package'
-        },
+        // {
+        //   path: "/",
+        //   redirect: "/package"
+        // }
       ]
     },
     // =============================================================================
@@ -68,23 +68,22 @@ const router = new Router({
           path: "/pages/login",
           name: "page-login",
           component: () => import("@/views/pages/Login.vue"),
-          meta:{
+          meta: {
             title: "后台管理"
           }
-        },
+        }
         // {
         //   path: "/pages/error-404",
         //   name: "page-error-404",
         //   component: () => import("@/views/pages/Error404.vue")
         // }
       ]
-    },
+    }
     //Redirect to 404 page, if no match found
     // {
     //   path: "*",
     //   redirect: "/pages/error-404"
     // },
- 
   ]
 });
 
@@ -96,8 +95,8 @@ router.afterEach(() => {
   }
 });
 
-router.$addRoutes = (params) => {
-  var f = (item) => {
+router.$addRoutes = params => {
+  var f = item => {
     if (item["children"]) {
       item["children"] = item["children"].filter(f);
       return true;
@@ -109,9 +108,10 @@ router.$addRoutes = (params) => {
   };
 
   var params = params.filter(f);
-
+  debugger;
+  console.log("params:", params);
   router.addRoutes(params);
+  console.log("router-params:", router);
 };
-
 
 export default router;

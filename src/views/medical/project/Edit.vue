@@ -177,7 +177,7 @@ export default {
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
       let para = {
-        mecid: userInfo.mecID,
+        mecid: userInfo.unitId,
         itemId: this.projectID,
       };
       getProjectDetail(para).then((res) => {
@@ -217,7 +217,7 @@ export default {
             gender: this.data_local.Gender,
             remark: this.data_local.Remark,
             sort: this.data_local.Sort,
-            mecid: userInfo.mecID,
+            mecid: userInfo.unitId,
             status: this.data_local.Status,
           };
 
@@ -276,7 +276,7 @@ export default {
     loadProjectTypeData() {
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
       let para = {
-        mecid: userInfo.mecID,
+        mecid: userInfo.unitId,
       };
       getProjectTypeDataSource(para).then((res) => {
         if (res.resultType == 0) {
@@ -288,7 +288,7 @@ export default {
     loadProjectItemData() {
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
       let para = {
-        mecid: userInfo.mecID,
+        mecid: userInfo.unitId,
       };
       getProjectItemDataSource(para).then((res) => {
         if (res.resultType == 0) {

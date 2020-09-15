@@ -147,7 +147,7 @@ export default {
               typeName: this.dataTypeName,
               remark: this.dataRemark,
               sort: this.dataSort,
-              mecid: userInfo.mecID,
+              mecid: userInfo.unitId,
             };
             addPackageType(para).then((res) => {
               if (res.resultType == 0) {
@@ -168,7 +168,7 @@ export default {
               typeName: this.dataTypeName,
               remark: this.dataRemark,
               sort: this.dataSort,
-              mecid: userInfo.mecID,
+              mecid: userInfo.unitId,
               status: this.data.Status,
             };
             editPackageType(para).then((res) => {

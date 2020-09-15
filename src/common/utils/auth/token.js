@@ -56,9 +56,9 @@ export function removeUserToken() {
 }
 
 export function isAuthenticated() {
-  return (
-    new Date(Date.now()) < new Date(localStorage.getItem("AccessExpiration")) &&
-    getToken()
-  );
+  // return (
+  //   new Date(Date.now()) < new Date(localStorage.getItem("AccessExpiration")) &&
+  //   getToken()
+  // );
+  return getToken();
 }
-

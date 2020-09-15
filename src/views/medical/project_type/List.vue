@@ -79,7 +79,6 @@ export default {
       listApi: getItemTypes,
       cloumns: [
         { headerName: "项目类型名称", field: "TypeName" },
-        { headerName: "描述", field: "Remark" },
         { headerName: "排序", field: "Sort" },
         { headerName: "状态", field: "StatusName" },
         { headerName: "修改人", field: "ModifyName" },
@@ -141,7 +140,7 @@ export default {
   },
   mounted() {
     let userInfo = JSON.parse(localStorage.getItem("userInfo"));
-    this.searchInfo.mecId = userInfo.mecID;
+    this.searchInfo.mecId = userInfo.unitId;
     this.loadDataStatus().then((val) => {
       this.getTableData();
     });

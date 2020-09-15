@@ -128,7 +128,7 @@ export default {
   mounted() {
     this.loadDataStatus().then((val) => {
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
-      this.searchInfo.mecId = userInfo.mecID;
+      this.searchInfo.mecId = userInfo.unitId;
       this.getTableData();
     });
   },

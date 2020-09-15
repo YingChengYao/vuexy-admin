@@ -13,18 +13,17 @@ let asyncRouterFlag = 0;
 router.beforeEach(async (to, from, next) => {
   NProgress.start();
   // document.title = to.meta.title;
-  document.title ="全人健康-职工健康管理"
+  document.title = "全人健康-职工健康管理";
 
   // if (!to.meta.authRequired) {
   //   return next();
   // }
-
+  debugger;
   if (isAuthenticated()) {
     if (to.path === "/pages/login") {
       // 已登录且要跳转的页面是登录页
       next({ path: "/" }); // 跳转到home页
     } else {
-
       if (!asyncRouterFlag) {
         asyncRouterFlag++;
         const asyncRouters = await store.dispatch("permission/generateRoutes");
@@ -46,8 +45,6 @@ router.beforeEach(async (to, from, next) => {
     }
   }
 });
-
-
 
 router.afterEach(() => {
   // finish progress bar

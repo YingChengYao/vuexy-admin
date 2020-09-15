@@ -201,7 +201,7 @@ export default {
       let para = {
         pageIndex: this.$refs.table.currentPage,
         pageSize: this.$refs.table.itemsPerPage,
-        mecid: userInfo.mecID,
+        mecid: userInfo.unitId,
         ...this.searchInfo,
       };
 
@@ -288,7 +288,7 @@ export default {
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
       let para = {
         isSelect: true,
-        mecId: userInfo.mecID,
+        mecId: userInfo.unitId,
       };
       await getProjectTypeDataSource(para).then((res) => {
         if (res.resultType == 0) {

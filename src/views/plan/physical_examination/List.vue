@@ -71,7 +71,6 @@ export default {
         { headerName: "参与人数", field: "Count" },
         { headerName: "已预约数量", field: "ReservedCount" },
         { headerName: "已体检数量", field: "ExaminationCount" },
-        { headerName: "排序", field: "Sort" },
         { headerName: "修改人", field: "ModifyName" },
         {
           headerName: "修改时间",

@@ -67,7 +67,7 @@
             <p>{{ item.tr.PlanName }}</p>
           </vs-td>
           <vs-td>
-            <p>{{ item.tr.StatusName }}</p>
+            <p>{{ item.tr.PlanStatusName }}</p>
           </vs-td>
           <vs-td>
             <p>{{ item.tr.PlanTypeName }}</p>
@@ -183,7 +183,7 @@ export default {
       let para = {
         pageIndex: this.$refs.table.currentPage,
         pageSize: this.$refs.table.itemsPerPage,
-        mecId: userInfo.mecID,
+        mecId: userInfo.unitId,
         ...this.searchInfo,
       };
 
@@ -192,6 +192,7 @@ export default {
           const data = JSON.parse(res.message);
           this.plans = data.Items;
           this.totalItems = data.TotalItems;
+          console.log("list:", this.plans);
         }
       });
     },

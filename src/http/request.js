@@ -2,7 +2,7 @@ import axios from "axios";
 import router from "@/router/router";
 import { getToken } from "@/common/utils/auth/token";
 import vue from "@/main.js";
-import '@/common/global'
+import "@/common/global";
 
 const request = axios.create({
   //baseURL: "http://manage.qrtj.cn",
@@ -42,11 +42,12 @@ request.interceptors.request.use(
   error => {
     vue.$vs.notify({
       title: "Error",
-      text: error.message,
+      text: "操作失败，请稍后再试或联系管理员！",
       iconPack: "feather",
       icon: "icon-alert-circle",
       color: "danger"
     });
+    console.log("error:", error.message);
     return Promise.reject(error);
   }
 );

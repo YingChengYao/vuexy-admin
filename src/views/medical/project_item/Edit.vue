@@ -32,7 +32,7 @@
               v-model="data_local.SinglePrice"
               class="w-full"
               name="项目单项价格"
-              v-validate="'decimal:2'"
+              v-validate="'required|decimal:2'"
             />
             <span
               class="text-danger text-sm"
@@ -169,7 +169,7 @@ export default {
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
       let para = {
-        mecid: userInfo.mecID,
+        mecid: userInfo.unitId,
         id: this.projectItemId,
       };
       getProjectItemDetails(para).then((res) => {
@@ -197,7 +197,7 @@ export default {
             singleName: this.data_local.SingleName,
             sort: this.data_local.Sort,
             remark: this.data_local.Remark,
-            mecid: userInfo.mecID,
+            mecid: userInfo.unitId,
             isOptional: this.data_local.IsOptional,
           };
 
@@ -263,7 +263,7 @@ export default {
     loadItemTypeData() {
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
       let para = {
-        mecid: userInfo.mecID,
+        mecid: userInfo.unitId,
       };
       getProjectTypeDataSource(para).then((res) => {
         if (res.resultType == 0) {

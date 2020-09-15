@@ -16,3 +16,12 @@ export const getLoginCode = params => {
     params: params
   });
 };
+
+//获取路由
+export function getRoutes(params) {
+  return request({
+    url: "/api/menu/list",
+    method: "get",
+    params: params
+  });
+}

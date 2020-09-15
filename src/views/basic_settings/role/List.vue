@@ -85,6 +85,10 @@ export default {
       type: Array,
       default: () => ["edit", "permission"],
     },
+    userId: {
+      type: String,
+      default: null,
+    },
   },
   data() {
     return {
@@ -92,7 +96,7 @@ export default {
       selected: [],
       listApi: getRoles,
       cloumns: [
-        { headerName: "套餐类型名称", field: "RoleName" },
+        { headerName: "角色名称", field: "RoleName" },
         { headerName: "排序", field: "Sort" },
         { headerName: "状态", field: "StatusName" },
         { headerName: "修改人", field: "ModifyName" },
@@ -138,6 +142,24 @@ export default {
   },
   computed: {},
   methods: {
+    loadCheckedGroup() {
+      // if (!this.packageID) return;
+      // let para = {
+      //   packageID: this.packageID,
+      // };
+      // getProjectsForPackage(para).then((res) => {
+      //   if (res.resultType == 0) {
+      //     const data = JSON.parse(res.message);
+
+      //     this.$refs.projectList.loadSelectedData(data.Item);
+
+      //     data.Discount = !data.Discount ? 1 : data.Discount;
+      //     this.discount = accMul(data.Discount, 10);
+      //     this.discountPrice =
+      //       data.DiscountPrice == null ? 0 : data.DiscountPrice;
+      //   }
+      // });
+    },
     async loadDataStatus() {
       await getDataStatusDataSource().then((res) => {
         if (res.resultType == 0) {
@@ -182,7 +204,7 @@ export default {
   mounted() {
     this.loadDataStatus().then((val) => {
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
-      this.searchInfo.mecId = userInfo.mecID;
+      this.searchInfo.mecId = userInfo.unitId;
       this.getTableData();
     });
   },

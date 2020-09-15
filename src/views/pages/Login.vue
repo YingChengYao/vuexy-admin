@@ -177,9 +177,11 @@ export default {
       this.$store
         .dispatch("auth/login", payload)
         .then(() => {
+          debugger
           this.$vs.loading.close();
         })
         .catch((error) => {
+          debugger
           this.$vs.loading.close();
           this.codeImg();
           // this.$vs.notify({

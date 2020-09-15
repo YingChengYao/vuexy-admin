@@ -144,7 +144,7 @@ export default {
   computed: {},
   created() {
     let userInfo = JSON.parse(localStorage.getItem("userInfo"));
-    this.searchInfo.mecID = userInfo.mecID;
+    this.searchInfo.mecID = userInfo.unitId;
 
     this.loadDataStatus().then((val) => {
       this.getTableData();

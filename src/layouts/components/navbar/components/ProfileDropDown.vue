@@ -1,8 +1,8 @@
 <template>
-  <div class="the-navbar__user-meta flex items-center" v-if="activeUserInfo.username">
+  <div class="the-navbar__user-meta flex items-center" v-if="activeUserInfo.userNickName">
     <div class="text-right leading-tight hidden sm:block">
-      <p class="font-semibold">{{ activeUserInfo.username }}</p>
-      <small>Available</small>
+      <p class="font-semibold">{{ activeUserInfo.userNickName }}</p>
+      <!-- <small>Available</small> -->
     </div>
 
     <vs-dropdown vs-custom-content vs-trigger-click class="cursor-pointer">
@@ -38,12 +38,12 @@
           <li class="flex py-2 px-4 cursor-pointer hover:bg-primary hover:text-white">
             <feather-icon icon="MessageSquareIcon" svgClasses="w-4 h-4" />
             <span class="ml-2">Chat</span>
-          </li> -->
+          </li>-->
 
           <!-- <li class="flex py-2 px-4 cursor-pointer hover:bg-primary hover:text-white">
             <feather-icon icon="HeartIcon" svgClasses="w-4 h-4" />
             <span class="ml-2">设置</span>
-          </li> -->
+          </li>-->
 
           <vs-divider class="m-1" />
 
@@ -68,15 +68,16 @@ export default {
   },
   computed: {
     activeUserInfo() {
+      console.log("userInfo:", JSON.parse(localStorage.getItem("userInfo")));
       return JSON.parse(localStorage.getItem("userInfo"));
-    }
+    },
   },
   methods: {
     logout() {
       removeToken();
-      localStorage.removeItem('userInfo')
+      localStorage.removeItem("userInfo");
       this.$router.push("/pages/login").catch(() => {});
-    }
+    },
   },
 };
 </script>

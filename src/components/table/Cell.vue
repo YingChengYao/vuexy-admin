@@ -21,6 +21,16 @@
       <span v-else>{{row[column.key]}}</span>-->
       <span>{{column.formatter?column.formatter(row[column.field],row):row[column.field]}}</span>
     </template>
+    <!-- <template v-if="renderType === 'expand'">
+      <span v-if="column.expand" :style="'margin-left:'+ (row.level)*20 +'px'">
+        <span @click.stop="toggle()" v-if="row.children || row.hasChildren">
+          <vs-icon
+            :icon-pack="row.isExpand?'iconfont icon-shangxiazuoyouTriangle11':'iconfont icon-shangxiazuoyouTriangle12'"
+          ></vs-icon>
+        </span>
+        {{column.formatter?item.formatter(row[column.field],row):row[column.field]}}
+      </span>
+    </template> -->
     <table-render
       v-if="renderType === 'render'"
       :row="row"
@@ -71,7 +81,11 @@ export default {
     }
   },
   mounted() {},
-  methods: {},
+  methods: {
+    toggle() {
+      this.$parent.$parent.$parent.$parent.toggle(this.index);
+    },
+  },
 };
 </script>
 <style lang='scss' scoped>

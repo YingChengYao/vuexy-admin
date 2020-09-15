@@ -106,7 +106,7 @@ export default {
       // let userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
       // let para = {
-      //   mecid: userInfo.mecID,
+      //   mecid: userInfo.unitId,
       //   id: this.roleId,
       // };
       // getProjectItemDetails(para).then((res) => {
@@ -190,7 +190,7 @@ export default {
     loadItemTypeData() {
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
       let para = {
-        mecid: userInfo.mecID,
+        mecid: userInfo.unitId,
       };
       getProjectTypeDataSource(para).then((res) => {
         if (res.resultType == 0) {

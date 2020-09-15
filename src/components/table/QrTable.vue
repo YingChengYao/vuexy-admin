@@ -37,9 +37,9 @@
             </vs-td>
 
             <vs-td :key="index" v-for="(item, index) in cloumns">
-              <table-cell :row="tr" :column="item" :index="index"></table-cell>
+              <!-- <table-cell :row="tr" :column="item" :index="indextr"></table-cell> -->
 
-              <!-- <span v-if="item.expand" :style="'margin-left:'+ (tr.level)*20 +'px'">
+              <span v-if="item.expand" :style="'margin-left:'+ (tr.level)*20 +'px'">
                 <span @click.stop="toggle(tr)" v-if="tr.children || tr.hasChildren">
                   <vs-icon
                     :icon-pack="tr.isExpand?'iconfont icon-shangxiazuoyouTriangle11':'iconfont icon-shangxiazuoyouTriangle12'"
@@ -47,7 +47,9 @@
                 </span>
                 {{item.formatter?item.formatter(tr[item.field],tr):tr[item.field]}}
               </span>
-              <span v-else>{{item.formatter?item.formatter(tr[item.field],tr):tr[item.field]}}</span>-->
+              <table-cell v-else :row="tr" :column="item" :index="indextr"></table-cell>
+
+              <!-- <span v-else>{{item.formatter?item.formatter(tr[item.field],tr):tr[item.field]}}</span> -->
             </vs-td>
 
             <vs-td v-if="operates.list.filter(x=>x.show).length>0" class="whitespace-no-wrap">
@@ -119,6 +121,7 @@ export default {
   }),
   computed: {},
   created() {},
+  mounted() {},
   watch: {
     items() {
       if (this.multipleCheck) {
@@ -200,6 +203,30 @@ export default {
     //#endregion
 
     //#region expand
+    // toggle: function (_index) {
+    //   debugger;
+    //   let m = this.items.filter((item, index) => {
+    //     return index === _index;
+    //   })[0];
+    //   if (m && (m.children || m.hasChildren)) {
+    //     this.toggleExpand(m.ID, m.isExpand);
+    //     m.isExpand = !m.isExpand;
+    //   }
+    // },
+    // toggleExpand(ID, isHide) {
+    //   this.items.map((i, index) => {
+    //     i.isHide = true;
+    //   });
+    //   console.log("this.items:", this.items);
+    //   // this.items.map((i) => {
+    //   //   if (i.parent == ID) {
+    //   //     i.isHide = isHide;
+    //   //     if (i.children || i.hasChildren) {
+    //   //       this.toggleExpand(i.ID, isHide);
+    //   //     }
+    //   //   }
+    //   // });
+    // },
     toggle: function (m) {
       debugger;
       if (m.children || m.hasChildren) {

@@ -5,7 +5,6 @@
         <div class="vx-col md:w-1/2 w-full">
           <div class="mt-4">
             <label class="vs-input--label xrequired">套餐名称</label>
-            <!-- <span class="xrequired" style="color:red">*</span> -->
             <vs-input
               class="w-full"
               v-model="data_local.PackageName"
@@ -172,7 +171,7 @@ export default {
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
       let para = {
-        mecid: userInfo.mecID,
+        mecid: userInfo.unitId,
         packageID: this.packageID,
       };
       getPackageDetails(para).then((res) => {
@@ -200,7 +199,7 @@ export default {
             gender: this.data_local.Gender,
             remark: this.data_local.Remark,
             sort: this.data_local.Sort,
-            mecid: userInfo.mecID,
+            mecid: userInfo.unitId,
             packageType: packageTypes,
             status: this.data_local.Status,
           };
@@ -255,7 +254,7 @@ export default {
     loadPackageTypes() {
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
       let para = {
-        mecid: userInfo.mecID,
+        mecid: userInfo.unitId,
       };
       getPackageTypeDataSource(para).then((res) => {
         if (res.resultType == 0) {

@@ -68,7 +68,6 @@ export default {
         { headerName: "手机号", field: "Mobile" },
         { headerName: "预约状态", field: "AppointmentName" },
         { headerName: "体检状态", field: "ExaminationName" },
-        { headerName: "排序", field: "Sort" },
         { headerName: "修改人", field: "ModifyName" },
         {
           headerName: "修改时间",

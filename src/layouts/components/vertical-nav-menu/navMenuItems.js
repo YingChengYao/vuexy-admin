@@ -10,6 +10,7 @@
 import store from "@/store/store.js";
 
 export function filterAsyncRrouter(routes) {
+  debugger;
   const res = [];
   routes.map(route => {
     const tmp = {};
@@ -17,16 +18,14 @@ export function filterAsyncRrouter(routes) {
     if (!path) {
       return false;
     }
-    if (path === "-") {
-      tmp.url = null;
-    } else {
+    if (path !== "-") {
       tmp.url = path;
-      tmp.slug = path.replace("/","");
+      tmp.slug = path.replace("/", "");
     }
     tmp.name = route.name;
     tmp.displayName = route.displayName;
     tmp.icon = route.icon;
-    tmp.iconPack = route.iconPack;
+    // tmp.iconPack = route.iconPack;
     tmp.isHide = route.isHide;
     if (route.children) {
       let children = filterAsyncRrouter(route.children);

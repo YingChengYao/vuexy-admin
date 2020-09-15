@@ -209,7 +209,7 @@ export default {
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
       let para = {
-        mecid: userInfo.mecID,
+        mecid: userInfo.unitId,
       };
       getPackageTypeDataSource(para).then((res) => {
         if (res.resultType == 0) {

@@ -216,4 +216,13 @@ export const getPlatformTypeDataSource = params => {
     params: params
   });
 };
+
+//配置用户角色
+export const getPlatformDataSource = params => {
+  return request({
+    url: "/api/unit/select",
+    method: "get",
+    params: params
+  });
+};
 //#endregion

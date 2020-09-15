@@ -4,7 +4,7 @@
       <div class="vx-row">
         <div class="vx-col w-full">
           <vs-input
-            class="w-full mt-4"
+            class="w-full mt-4 xrequired"
             label="用户名"
             v-model="data_local.UserName"
             v-validate="'required'"
@@ -14,7 +14,7 @@
         </div>
         <div class="vx-col w-full">
           <vs-input
-            class="w-full mt-4"
+            class="w-full mt-4 xrequired"
             label="登录名"
             v-model="data_local.LoginName"
             v-validate="'required'"
@@ -24,20 +24,27 @@
         </div>
         <div class="vx-col w-full">
           <vs-input
-            class="w-full mt-4"
+            class="w-full mt-4 xrequired"
             label="别名"
             v-model="data_local.UserNickName"
             v-validate="'required'"
             name="别名"
           />
-          <span class="text-danger text-sm" v-show="errors.has('别名')">{{ errors.first('别名') }}</span>
+          <span class="text-danger text-sm" v-show="errors.has('昵称')">{{ errors.first('昵称') }}</span>
         </div>
 
         <div class="vx-col w-full">
           <vs-input class="w-full mt-4" label="身份证" v-model="data_local.IdNumber" />
         </div>
-        <div class="vx-col w-full">
-          <vs-input class="w-full mt-4" label="手机号" v-model="data_local.Mobile" />
+        <div class="vx-col w-full xrequired">
+          <vs-input
+            class="w-full mt-4"
+            label="手机号"
+            v-model="data_local.Mobile"
+            v-validate="'required|mobile'"
+            name="手机号"
+          />
+          <span class="text-danger text-sm" v-show="errors.has('手机号')">{{ errors.first('手机号') }}</span>
         </div>
 
         <div class="vx-col w-full mt-4">
@@ -49,10 +56,7 @@
             :options="platformTypeOptions"
             :reduce="m => m.Value"
             @input="loadPlatformData"
-            name="平台类型"
-            v-validate="'required'"
           />
-          <span class="text-danger text-sm" v-show="errors.has('平台类型')">{{ errors.first('平台类型') }}</span>
         </div>
         <div class="vx-col w-full mt-4">
           <label class="vs-select--label">平台</label>
@@ -104,6 +108,7 @@ import {
   getPlatformTypeDataSource,
   getSubordinateUnitDataSource,
   getMedicalCenterDataSource,
+  getPlatformDataSource,
 } from "@/http/data_source.js";
 import { addUser, editUser, getUserDetail } from "@/http/basic_setting.js";
 
@@ -158,32 +163,41 @@ export default {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.platformTypeOptions = data;
-          console.log("平台类型：", data);
         }
       });
     },
     loadPlatformData() {
       this.$refs.platform.clearSelection();
-      if (this.data_local.UserType == "2") {
-        //"单位账户"
-        getSubordinateUnitDataSource().then((res) => {
-          if (res.resultType == 0) {
-            const data = JSON.parse(res.message);
-            this.platformOptions = data;
-          }
-        });
-      } else if (this.data_local.UserType == "3") {
-        //"体检中心账户"
-        getMedicalCenterDataSource().then((res) => {
-          if (res.resultType == 0) {
-            const data = JSON.parse(res.message);
-            this.platformOptions = data;
-          }
-        });
-      } else if (this.data_local.UserType == "5") {
-        this.platformOptions = [];
-        //"后台管理员"
-      }
+      let para = {
+        userType: this.data_local.UserType,
+      };
+      getPlatformDataSource(para).then((res) => {
+        if (res.resultType == 0) {
+          const data = JSON.parse(res.message);
+          this.platformOptions = data;
+          console.log("data:", data);
+        }
+      });
+      // if (this.data_local.UserType == "2") {
+      //   //"单位账户"
+      //   getSubordinateUnitDataSource().then((res) => {
+      //     if (res.resultType == 0) {
+      //       const data = JSON.parse(res.message);
+      //       this.platformOptions = data;
+      //     }
+      //   });
+      // } else if (this.data_local.UserType == "3") {
+      //   //"体检中心账户"
+      //   getMedicalCenterDataSource().then((res) => {
+      //     if (res.resultType == 0) {
+      //       const data = JSON.parse(res.message);
+      //       this.platformOptions = data;
+      //     }
+      //   });
+      // } else if (this.data_local.UserType == "5") {
+      //   this.platformOptions = [];
+      //   //"后台管理员"
+      // }
     },
     loadDataStatus() {
       getDataStatusDataSource().then((res) => {
