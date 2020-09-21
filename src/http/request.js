@@ -74,7 +74,6 @@ request.interceptors.response.use(
     //TODO 401处理
   },
   error => {
-    debugger;
     console.log("err:", error.message);
     // this.$vs.loading.close();
     vue.$vs.notify({

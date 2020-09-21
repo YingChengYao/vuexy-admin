@@ -114,7 +114,7 @@ export default {
             title: "编辑",
             show: this.operateName.indexOf("edit") !== -1,
             method: (index, row) => {
-              this.editData(row);
+              this.editData(row.ID);
             },
           },
           {

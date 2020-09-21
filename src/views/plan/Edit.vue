@@ -296,7 +296,6 @@ export default {
         this.$validator.validateAll("step-base").then((result) => {
           if (result) {
             let checkedGroup = this.$refs.medicalCenter.selected;
-            debugger;
             if (!this.validBaseinfo()) return;
 
             let mecIDs = checkedGroup
@@ -449,7 +448,6 @@ export default {
 
     //#region 标准
     validStandard() {
-      debugger;
       let standards = this.$refs.standard.standards;
       if (standards.length > 0) return true;
       this.$vs.notify({
@@ -478,7 +476,6 @@ export default {
     },
     confirmSubmitPlan() {
       if (!this.validPlan()) return;
-      debugger;
 
       this.$vs.dialog({
         type: "confirm",

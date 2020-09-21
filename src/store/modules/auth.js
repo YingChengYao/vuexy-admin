@@ -22,7 +22,6 @@ const actions = {
     return new Promise((resolve, reject) => {
       requestLogin(payload.userDetails)
         .then(res => {
-          debugger;
           // If there's user data in response
           if (res && res.resultType == 0) {
             const data = JSON.parse(res.message);

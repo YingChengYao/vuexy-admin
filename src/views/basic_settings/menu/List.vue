@@ -155,14 +155,14 @@ export default {
     addNewData() {
       this.menuId = null;
       this.popupActive = true;
-      this.title = "添加角色信息";
+      this.title = "添加菜单信息";
       this.mark = "add";
       this.handleLoad();
     },
     editData(id) {
       this.menuId = id;
       this.popupActive = true;
-      this.title = "修改角色信息";
+      this.title = "修改菜单信息";
       this.mark = "edit";
       this.handleLoad();
     },

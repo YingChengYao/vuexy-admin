@@ -10,6 +10,15 @@ export const getMedicalCenters = params => {
   });
 };
 
+//获取所有体检中心集合
+export const getAllMedicalCenters = params => {
+  return request({
+    url: "api/mec/alllist",
+    method: "get",
+    params: params
+  });
+};
+
 //获取体检中心详情
 export const getMedicalCenterDetail = params => {
   return request({

@@ -28,7 +28,7 @@
 
           <vs-input class="w-full mt-4" label="备注" v-model="data_local.Remark" name="备注" />
           <span class="text-danger text-sm" v-show="errors.has('备注')">{{ errors.first('备注') }}</span>
-          
+
           <div class="mt-4"></div>
 
           <div class="mt-4" v-if="packageID">
@@ -109,6 +109,10 @@ export default {
       type: String,
       default: "",
     },
+    mecId: {
+      type: String,
+      default: "",
+    },
     mark: {
       type: String,
       default: null,
@@ -168,10 +172,9 @@ export default {
     // },
     loadData() {
       if (!this.packageID) return;
-      let userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
       let para = {
-        mecid: userInfo.unitId,
+        mecid: this.mecId,
         packageID: this.packageID,
       };
       getPackageDetails(para).then((res) => {
@@ -252,9 +255,8 @@ export default {
       });
     },
     loadPackageTypes() {
-      let userInfo = JSON.parse(localStorage.getItem("userInfo"));
       let para = {
-        mecid: userInfo.unitId,
+        mecId: this.mecId,
       };
       getPackageTypeDataSource(para).then((res) => {
         if (res.resultType == 0) {

@@ -153,7 +153,6 @@ export const getProjectsForPackage = params => {
 };
 //#endregion
 
-
 //#region 体检项目单项
 //获取项目单项集合
 export const getProjectItems = params => {
@@ -175,7 +174,6 @@ export const getProjectItemDetails = params => {
 
 //添加体检项目
 export const addProjectItem = params => {
-  console.log(4)
   return request({
     url: "/api/item/single/insert",
     method: "post",
@@ -192,5 +190,3 @@ export const editProjectItem = params => {
   });
 };
 //#endregion
-
-

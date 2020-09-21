@@ -16,28 +16,36 @@
           >{{ errors.first('项目单项名称') }}</span>
 
           <!-- 排序 -->
-          <vs-input
+          <!-- <vs-input
             label="排序"
             v-model="data_local.Sort"
             class="mt-4 w-full"
             name="排序"
             v-validate="'numeric'"
           />
-          <span class="text-danger text-sm" v-show="errors.has('排序')">{{ errors.first('排序') }}</span>
+          <span class="text-danger text-sm" v-show="errors.has('排序')">{{ errors.first('排序') }}</span>-->
+          <div class="mt-4">
+            <label class="vs-input--label">排序</label>
+            <vs-input-number
+              v-model="data_local.Sort"
+              min="0"
+              size="large"
+              name="排序"
+              v-validate="'integer'"
+            />
+            <span class="text-danger text-sm" v-show="errors.has('排序')">{{ errors.first('排序') }}</span>
+          </div>
 
-          <!-- 项目单项价格 -->
-          <div class="mt-4" v-show="data_local.IsOptional">
+          <!-- 项目价格 -->
+          <div class="mt-4" v-if="data_local.IsOptional">
             <vs-input
-              label="项目单项价格"
+              label="项目价格"
               v-model="data_local.SinglePrice"
-              class="w-full"
-              name="项目单项价格"
+              class="w-full xrequired"
+              name="项目价格"
               v-validate="'required|decimal:2'"
             />
-            <span
-              class="text-danger text-sm"
-              v-show="errors.has('项目单项价格')"
-            >{{ errors.first('项目单项价格') }}</span>
+            <span class="text-danger text-sm" v-show="errors.has('项目价格')">{{ errors.first('项目价格') }}</span>
           </div>
 
           <!-- 性别 -->
@@ -138,6 +146,10 @@ export default {
       type: String,
       default: null,
     },
+    mecId: {
+      type: String,
+      default: null,
+    },
     mark: {
       type: String,
       default: null,
@@ -145,7 +157,9 @@ export default {
   },
   data() {
     return {
-      data_local: {},
+      data_local: {
+        Sort: 0,
+      },
       marriageOptions: [],
       genderOptions: [],
       projectTypeStatus: [],
@@ -154,8 +168,6 @@ export default {
   },
   computed: {},
   created() {
-    console.log(0);
-    //this.initData();
     this.loadMaritalStatus();
     this.loadGender();
     this.loadItemTypeData();
@@ -166,10 +178,8 @@ export default {
   methods: {
     loadData() {
       if (!this.projectItemId) return;
-      let userInfo = JSON.parse(localStorage.getItem("userInfo"));
-
       let para = {
-        mecid: userInfo.unitId,
+        mecid: this.mecId,
         id: this.projectItemId,
       };
       getProjectItemDetails(para).then((res) => {
@@ -189,15 +199,14 @@ export default {
       });
     },
     save_changes() {
+      debugger;
       this.$validator.validateAll().then((result) => {
         if (result) {
-          let userInfo = JSON.parse(localStorage.getItem("userInfo"));
-
+          debugger;
           let para = {
             singleName: this.data_local.SingleName,
             sort: this.data_local.Sort,
             remark: this.data_local.Remark,
-            mecid: userInfo.unitId,
             isOptional: this.data_local.IsOptional,
           };
 
@@ -208,33 +217,37 @@ export default {
             para.itemTypeID = this.data_local.ItemTypeID;
           }
           if (this.mark === "add") {
-            addProjectItem(para).then((res) => {
-              if (res.resultType == 0) {
-                this.$vs.notify({
-                  title: "成功",
-                  text: res.message,
-                  color: "success",
-                });
-                this.$emit("loadData");
-                this.cancel();
-              }
-            });
+            if (this.mecId) {
+              para.mecId = this.mecId;
+              addProjectItem(para).then((res) => {
+                if (res.resultType == 0) {
+                  this.$vs.notify({
+                    title: "成功",
+                    text: res.message,
+                    color: "success",
+                  });
+                  this.$emit("loadData");
+                  this.cancel();
+                }
+              });
+            }
           } else if (this.mark == "edit") {
             para.ID = this.projectItemId;
             para.status = this.data_local.Status;
-
-            editProjectItem(para).then((res) => {
-              debugger;
-              if (res.resultType == 0) {
-                this.$vs.notify({
-                  title: "成功",
-                  text: res.message,
-                  color: "success",
-                });
-                this.$emit("loadData");
-                this.cancel();
-              }
-            });
+            if (this.mecId) {
+              para.mecId = this.mecId;
+              editProjectItem(para).then((res) => {
+                if (res.resultType == 0) {
+                  this.$vs.notify({
+                    title: "成功",
+                    text: res.message,
+                    color: "success",
+                  });
+                  this.$emit("loadData");
+                  this.cancel();
+                }
+              });
+            }
           }
         }
       });
@@ -261,9 +274,8 @@ export default {
       });
     },
     loadItemTypeData() {
-      let userInfo = JSON.parse(localStorage.getItem("userInfo"));
       let para = {
-        mecid: userInfo.unitId,
+        mecid: this.mecId,
       };
       getProjectTypeDataSource(para).then((res) => {
         if (res.resultType == 0) {

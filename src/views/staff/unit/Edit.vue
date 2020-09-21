@@ -303,9 +303,7 @@ export default {
     },
     //省市区数据加载
     loadProvinceData() {
-      debugger;
       getProvinceDataSource().then((res) => {
-        debugger;
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.provinceOptions = data;

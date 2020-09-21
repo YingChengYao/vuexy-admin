@@ -2,7 +2,7 @@ import request from "./request";
 
 export const getDataStatusDataSource = params => {
   return request({
-    url: "api/status/select",
+    url: "/api/status/select",
     method: "get",
     params: params
   });

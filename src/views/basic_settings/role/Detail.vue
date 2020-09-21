@@ -64,7 +64,7 @@ import {
   getGenderDataSource,
   getDataStatusDataSource,
 } from "@/http/data_source.js";
-import { addRole, editRole } from "@/http/basic_setting.js";
+import { addRole, editRole, getRoleDeatil } from "@/http/basic_setting.js";
 
 export default {
   components: {
@@ -91,11 +91,6 @@ export default {
   },
   computed: {},
   created() {
-    console.log(0);
-    //this.initData();
-    this.loadMaritalStatus();
-    this.loadGender();
-    this.loadItemTypeData();
     this.loadData();
     this.loadDataStatus();
   },
@@ -103,19 +98,17 @@ export default {
   methods: {
     loadData() {
       if (!this.roleId) return;
-      // let userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
-      // let para = {
-      //   mecid: userInfo.unitId,
-      //   id: this.roleId,
-      // };
-      // getProjectItemDetails(para).then((res) => {
-      //   if (res.resultType == 0) {
-      //     const data = JSON.parse(res.message);
-      //     this.data_local = data;
-      //     console.log("单项详情：", data);
-      //   }
-      // });
+      let para = {
+        id: this.roleId,
+      };
+      getRoleDeatil(para).then((res) => {
+        if (res.resultType == 0) {
+          const data = JSON.parse(res.message);
+          this.data_local = data;
+          console.log("单项详情：", data);
+        }
+      });
     },
     loadDataStatus() {
       getDataStatusDataSource().then((res) => {
@@ -151,7 +144,6 @@ export default {
             para.status = this.data_local.Status;
 
             editRole(para).then((res) => {
-              debugger;
               if (res.resultType == 0) {
                 this.$vs.notify({
                   title: "成功",
@@ -167,37 +159,7 @@ export default {
       });
     },
     cancel() {
-      //this.$router.push("/project_item").catch(() => {});
       this.$emit("closePop", false);
-    },
-    loadMaritalStatus() {
-      getMaritalDataSource().then((res) => {
-        if (res.resultType == 0) {
-          const data = JSON.parse(res.message);
-          this.marriageOptions = data;
-        }
-      });
-    },
-    loadGender() {
-      getGenderDataSource().then((res) => {
-        if (res.resultType == 0) {
-          const data = JSON.parse(res.message);
-          this.genderOptions = data;
-          console.log("性别：", data);
-        }
-      });
-    },
-    loadItemTypeData() {
-      let userInfo = JSON.parse(localStorage.getItem("userInfo"));
-      let para = {
-        mecid: userInfo.unitId,
-      };
-      getProjectTypeDataSource(para).then((res) => {
-        if (res.resultType == 0) {
-          const data = JSON.parse(res.message);
-          this.projectTypeStatus = data;
-        }
-      });
     },
   },
 };

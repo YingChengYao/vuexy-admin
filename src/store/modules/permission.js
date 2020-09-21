@@ -18,16 +18,11 @@ const actions = {
       //const token = state.token;
       getRoutes()
         .then(res => {
-          debugger;
           let asyncRouter = [];
           if (res.resultType == 0) {
             const data = JSON.parse(res.message);
             asyncRouter = data;
           }
-          console.log("route:", asyncRouter);
-
-          // const { data } = res;
-          // const asyncRouter = data.router;
 
           const baseRouter = [
             {
@@ -36,9 +31,7 @@ const actions = {
               children: []
             }
           ];
-          console.log("asyncRouter:", asyncRouter);
           const router = filterAsyncRoutes(asyncRouter);
-          console.log("asyncRouter-router:", router);
 
           baseRouter[0].children = router;
 

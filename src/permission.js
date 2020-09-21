@@ -18,7 +18,6 @@ router.beforeEach(async (to, from, next) => {
   // if (!to.meta.authRequired) {
   //   return next();
   // }
-  debugger;
   if (isAuthenticated()) {
     if (to.path === "/pages/login") {
       // 已登录且要跳转的页面是登录页

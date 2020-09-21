@@ -268,7 +268,6 @@ export default {
       });
     },
     loadCityData() {
-      debugger;
       this.$refs.city.clearSelection();
       this.$refs.county.clearSelection();
       let para = {

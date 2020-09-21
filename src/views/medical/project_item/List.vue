@@ -1,11 +1,12 @@
 <template>
   <div class="data-list-container">
-    <vs-popup :title="title" :active.sync="popupActive">
+    <vs-popup :title="title" :active.sync="popupActive" v-if="popupActive">
       <project-item-edit
         v-if="popupActive"
         @closePop="closePop"
         @loadData="getTableData"
         :projectItemId="projectItemId"
+        :mecId="mecId"
         :key="timer"
         :mark="mark"
       />
@@ -13,7 +14,7 @@
 
     <vx-card ref="filterCard" title class="user-list-filters mb-8">
       <vs-row vs-align="center">
-        <label class="vx-col label-name px-2">项目类型名称</label>
+        <label class="vx-col label-name px-2">单项名称</label>
         <vs-input
           placeholder
           v-model="searchInfo.SingleName"
@@ -93,15 +94,18 @@ export default {
       type: String,
       default: null,
     },
+    isInitData: {
+      type: Boolean,
+      default: true,
+    },
   },
   data() {
     return {
       //Page
-      searchInfo: {},
       selected: [],
       listApi: getProjectItems,
       cloumns: [
-        { headerName: "项目单项名称", field: "SingleName" },
+        { headerName: "单项名称", field: "SingleName" },
         {
           headerName: "是否作为项目使用",
           field: "IsOptional",
@@ -132,7 +136,7 @@ export default {
         ],
       },
       statusOptions: [],
-
+      mecId: "",
       // Pop
       title: null,
       popupActive: false,
@@ -143,11 +147,8 @@ export default {
   },
   computed: {},
   created() {
-    let userInfo = JSON.parse(localStorage.getItem("userInfo"));
-    this.searchInfo.mecID = userInfo.unitId;
-
     this.loadDataStatus().then((val) => {
-      this.getTableData();
+      if (this.isInitData) this.getTableData();
     });
   },
   methods: {
@@ -166,6 +167,12 @@ export default {
           }
         }
       });
+    },
+    loadData(mecId) {
+      this.mecId = mecId;
+      this.searchInfo.mecId = mecId;
+      this.listApi = getProjectItems;
+      this.getTableData();
     },
     //#region 弹窗
     addNewData() {

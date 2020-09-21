@@ -73,7 +73,7 @@
           <vs-input class="w-full" label="备注" v-model="data_local.Remark" name="备注" />
           <span class="text-danger text-sm" v-show="errors.has('备注')">{{ errors.first('备注') }}</span>
         </div>
-        <div class="vx-col md:w-1/2 w-full mt-4" v-if="projectID">
+        <div class="vx-col md:w-1/2 w-full mt-4" v-if="projectId">
           <label class="vs-input--label">状态</label>
           <v-select
             v-model="data_local.Status"
@@ -127,8 +127,14 @@ export default {
     ProjectItemList,
   },
   props: {
-    projectID: String,
-    default: "",
+    projectId: {
+      type: String,
+      default: "",
+    },
+    mecId: {
+      type: String,
+      default: "",
+    },
   },
   data() {
     return {
@@ -156,7 +162,7 @@ export default {
   },
   computed: {},
   created() {
-    this.initValues();
+    // this.initValues();
     this.loadData();
   },
   mounted() {
@@ -167,18 +173,18 @@ export default {
     this.loadDataStatus();
   },
   methods: {
-    initValues() {
-      this.data_local = {
-        Singles: [],
-      };
-    },
+    // initValues() {
+    //   this.data_local = {
+    //     Singles: [],
+    //   };
+    // },
     loadData() {
-      if (!this.projectID) return;
+      if (!this.projectId) return;
       let userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
       let para = {
         mecid: userInfo.unitId,
-        itemId: this.projectID,
+        itemId: this.projectId,
       };
       getProjectDetail(para).then((res) => {
         if (res.resultType == 0) {
@@ -221,7 +227,7 @@ export default {
             status: this.data_local.Status,
           };
 
-          if (!this.projectID) {
+          if (!this.projectId) {
             addProject(para).then((res) => {
               if (res.resultType == 0) {
                 this.$vs.notify({
@@ -233,8 +239,8 @@ export default {
                 this.cancel();
               }
             });
-          } else if (this.projectID) {
-            para.ID = this.projectID;
+          } else if (this.projectId) {
+            para.ID = this.projectId;
             para.isLocked = this.data_local.IsLocked;
             editProject(para).then((res) => {
               if (res.resultType == 0) {

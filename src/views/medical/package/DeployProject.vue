@@ -68,19 +68,7 @@
           :isComponent="true"
           :multipleCheck="true"
           @checkHandle="checkHandle"
-        >
-          <!-- <template slot="paginationright">
-            <div class="pl-2 flex align-center">
-              <div
-                class="flex flex-wrap items-center align-center justify-end vs-pagination--mb"
-                style="width:13rem"
-              >
-                <vs-button @click="save" class="mr-2">保存</vs-button>
-                <vs-button type="border" color="warning" @click="cancel">取消</vs-button>
-              </div>
-            </div>
-          </template>-->
-        </project-list>
+        ></project-list>
         <div v-if="isUseButton" class="text-right mt-5">
           <span>
             <vs-button @click="save" class="mr-2" v-preventClick>保存</vs-button>

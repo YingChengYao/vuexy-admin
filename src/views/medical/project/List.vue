@@ -1,7 +1,14 @@
 <template>
   <div id class="data-list-container">
-    <vs-popup fullscreen :title="title" :active.sync="popupActive">
-      <project-edit @closePop="closePop" @loadData="loadData" :projectID="projectID" :key="timer" />
+    <vs-popup fullscreen :title="title" :active.sync="popupActive" v-if="popupActive">
+      <project-edit
+        v-if="popupActive"
+        @closePop="closePop"
+        @loadData="getTableData"
+        :projectId="projectId"
+        :key="timer"
+        :mecId="mecId"
+      />
     </vs-popup>
 
     <vx-card ref="filterCard" title class="user-list-filters mb-8">
@@ -35,19 +42,18 @@
           :reduce="m => m.Value"
         />
 
-        <vs-button class="vx-col" color="primary" type="border" @click="loadData">查询</vs-button>
+        <vs-button class="vx-col" color="primary" type="border" @click="getTableData">查询</vs-button>
       </vs-row>
     </vx-card>
 
     <div class="vx-card p-6">
-      <vx-table
+      <qr-table
         ref="table"
         v-model="selected"
-        :items="initItems"
-        @loadData="loadData"
-        :totalItems="totalItems"
-        :pageSize="10"
+        :items="tableData"
         :multipleCheck="multipleCheck"
+        :cloumns="cloumns"
+        :operates="operates"
       >
         <template slot="header">
           <vs-button
@@ -58,77 +64,18 @@
             @click="addNewData"
           >添加</vs-button>
         </template>
-        <template slot="thead-header">
-          <vs-th style="width:10rem;">项目名称</vs-th>
-          <vs-th>项目价格</vs-th>
-          <vs-th>婚姻状态</vs-th>
-          <vs-th>性别</vs-th>
-          <vs-th>排序</vs-th>
-          <vs-th>状态</vs-th>
-          <vs-th>修改人</vs-th>
-          <vs-th>修改时间</vs-th>
-          <vs-th v-if="!isPop">操作</vs-th>
-        </template>
-        <template slot="thead-content" slot-scope="item">
-          <vx-tooltip :text="item.tr.Children?item.tr.TypeName:item.tr.ItemName">
-            <vs-td style="width:10rem;display: block;" class="wrap">
-              <span :style="'margin-left:'+ (item.tr.level)*20 +'px'">
-                <span @click.stop="toggle(item.tr)" v-if="item.tr.Children">
-                  <vs-icon
-                    :icon-pack="item.tr.isExpand?'iconfont icon-shangxiazuoyouTriangle11':'iconfont icon-shangxiazuoyouTriangle12'"
-                  ></vs-icon>
-                </span>
-                {{item.tr.Children?item.tr.TypeName:item.tr.ItemName}}
-              </span>
-            </vs-td>
-          </vx-tooltip>
-
-          <vs-td>
-            <p v-if="!item.tr.Children">{{ item.tr.ItemPrice }}</p>
-          </vs-td>
-          <vs-td>
-            <vs-chip
-              transparent
-              :color="item.tr.Marriage | getMarriageColor"
-              v-if="!item.tr.Children"
-            >{{ item.tr.MarriageName}}</vs-chip>
-          </vs-td>
-          <vs-td>
-            <vs-chip
-              transparent
-              :color="item.tr.Gender | getGenderColor"
-              v-if="!item.tr.Children"
-            >{{ item.tr.GenderName}}</vs-chip>
-          </vs-td>
-          <vs-td>
-            <p v-if="!item.tr.Children">{{item.tr.Sort }}</p>
-          </vs-td>
-          <vs-td>
-            <p v-if="!item.tr.Children">{{ item.tr.StatusName }}</p>
-          </vs-td>
-          <vs-td>
-            <p v-if="!item.tr.Children">{{ item.tr.ModifyName }}</p>
-          </vs-td>
-          <vs-td>
-            <p v-if="!item.tr.Children">{{ item.tr.ModifyTime | formatDate }}</p>
-          </vs-td>
-          <vs-td class="whitespace-no-wrap" v-if="!isPop">
-            <span
-              v-if="!item.tr.Children"
-              class="text-primary"
-              size="small"
-              type="border"
-              @click.stop="editData(item.tr.ID)"
-            >编辑</span>
-          </vs-td>
-        </template>
-        <template slot="pagination">
-          <slot name="pagination"></slot>
-        </template>
-        <template slot="paginationright">
-          <slot name="paginationright"></slot>
-        </template>
-      </vx-table>
+      </qr-table>
+      <div class="flex mt-4">
+        <vs-pagination
+          :total="totalPage"
+          v-model="currentPage"
+          :pagedown="true"
+          :totalItems="totalItems"
+          @changePageMaxItems="changePageMaxItems"
+          :pagedownItems="descriptionItems"
+          :size="itemsPerPage"
+        ></vs-pagination>
+      </div>
     </div>
   </div>
 </template>
@@ -151,8 +98,11 @@ import {
   getDataStatusDataSource,
   getProjectTypeDataSource,
 } from "@/http/data_source.js";
+import infoList from "@/components/mixins/infoList";
+import { formatTimeToStr } from "@/common/utils/data/date";
 
 export default {
+  mixins: [infoList],
   props: {
     packageID: {
       type: String,
@@ -166,6 +116,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    isInitData: {
+      type: Boolean,
+      default: true,
+    },
   },
   components: {
     ProjectEdit,
@@ -174,7 +128,7 @@ export default {
     return {
       //Pop
       popupActive: false,
-      projectID: null,
+      projectId: null,
       title: null,
       timer: "",
 
@@ -183,47 +137,108 @@ export default {
       projectTypeOptions: [],
 
       //Page
-      totalItems: 0,
       selected: [],
-      items: [],
-      initItems: [],
+      listApi: getItems,
+      cloumns: [
+        {
+          headerName: "项目名称",
+          field: "ItemName",
+          expand: true,
+          type: "expand",
+          formatter: (value, row) => {
+            return row.Children ? row.TypeName : value;
+          },
+        },
+        { headerName: "项目价格", field: "ItemPrice" },
+        { headerName: "婚姻状态", field: "MarriageName" },
+        { headerName: "性别", field: "GenderName" },
+        {
+          headerName: "排序",
+          field: "Sort",
+          formatter: (value, row) => {
+            return row.Children ? "" : value;
+          },
+        },
+        { headerName: "状态", field: "StatusName" },
+        { headerName: "修改人", field: "ModifyName" },
+        {
+          headerName: "修改时间",
+          field: "ModifyTime",
+          formatter: (value, row) => {
+            if (value) return row.Children ? "" : formatTimeToStr(value);
+          },
+        },
+        {
+          headerName: "操作",
+          field: "Action",
+          isHide: this.isPop,
+          render: (h, params) => {
+            // v-if="!isPop"
+            if (params.row.Children) return;
+            return h(
+              "span",
+              {
+                class: {
+                  "text-primary": true,
+                  "mr-2": true,
+                  "cursor-pointer": true,
+                },
+                props: {
+                  type: "border",
+                  size: "small",
+                },
+                on: {
+                  click: () => {
+                    this.editData(params.row.ID);
+                  },
+                },
+              },
+              "编辑"
+            );
+          },
+        },
+      ],
+      operates: {
+        list: [],
+      },
 
       //pop
-      isPop: true,
+      isPop: false,
       checkedGroup: [],
     };
   },
   computed: {},
   methods: {
-    loadData() {
-      let userInfo = JSON.parse(localStorage.getItem("userInfo"));
-
+    loadData(mecId) {
+      this.mecId = mecId;
+      this.searchInfo.mecId = mecId;
+      this.listApi = getItems;
+      this.getTableData();
+    },
+    async getTableData(
+      pageIndex = this.currentPage,
+      pageSize = this.itemsPerPage
+    ) {
       let para = {
-        pageIndex: this.$refs.table.currentPage,
-        pageSize: this.$refs.table.itemsPerPage,
-        mecid: userInfo.unitId,
+        pageIndex: this.currentPage,
+        pageSize: this.itemsPerPage,
         ...this.searchInfo,
       };
-
-      getItems(para).then((res) => {
+      this.listApi(para).then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
-          this.items = data.Items;
+          console.log("list:", data);
           this.totalItems = data.TotalItems;
-          if (this.items) {
-            this.initItemsData(this.items, 0, null);
-          }
+          this.tableData = [];
+          this.initData(data.Items, 0, null);
         }
       });
-    },
-    initItemsData(items, level, parent) {
-      this.initItems = [];
-      this.initData(items, level, parent);
     },
     initData(items, level, parent) {
       if (!items) {
         return;
       }
+      debugger;
       items.map((item, index) => {
         item = Object.assign({}, item, {
           parent: parent,
@@ -233,6 +248,7 @@ export default {
           item = Object.assign({}, item, {
             isExpand: true,
             noUseTrCheckBox: true,
+            hasChildren: true,
           });
         }
         if (typeof item.isChecked == "undefined") {
@@ -245,22 +261,12 @@ export default {
             isHide: false,
           });
         }
-        this.initItems.push(item);
+        this.tableData.push(item);
 
         if (item.Children) {
           this.initData(item.Children, level + 1, item.ID);
         }
       });
-    },
-    toggle(m) {
-      if (m.Children) {
-        this.initItems.forEach((i) => {
-          if (i.parent == m.ID) {
-            i.isHide = !i.isHide;
-          }
-        });
-        m.isExpand = !m.isExpand;
-      }
     },
     delProject(data) {
       let index = this.selected.findIndex((i) => i.ID === data.ID);
@@ -302,13 +308,13 @@ export default {
     },
     //#region 弹窗
     addNewData() {
-      this.projectID = null;
+      this.projectId = null;
       this.popupActive = true;
       this.title = "添加项目信息";
       this.handleLoad();
     },
     editData(id) {
-      this.projectID = id;
+      this.projectId = id;
       this.title = "修改项目信息";
       this.popupActive = true;
       this.handleLoad();
@@ -324,9 +330,9 @@ export default {
   created() {
     this.isPop = this.packageID ? true : false;
     this.loadDataStatus().then((val) => {
-      this.loadData();
+      if (this.isInitData) this.getTableData();
     });
-    this.loadProjectTypeDataStatus();
+    // this.loadProjectTypeDataStatus();
   },
   mounted() {},
   watch: {

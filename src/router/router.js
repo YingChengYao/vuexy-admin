@@ -108,10 +108,7 @@ router.$addRoutes = params => {
   };
 
   var params = params.filter(f);
-  debugger;
-  console.log("params:", params);
   router.addRoutes(params);
-  console.log("router-params:", router);
 };
 
 export default router;

@@ -238,7 +238,6 @@ export default {
             para.status = this.data_local.Status;
 
             editUser(para).then((res) => {
-              debugger;
               if (res.resultType == 0) {
                 this.$vs.notify({
                   title: "成功",

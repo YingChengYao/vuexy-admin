@@ -267,7 +267,6 @@ export default {
     },
   },
   created() {
-    console.log("navMenuItems:", navMenuItems);
     const color =
       this.navbarColor == "#fff" && this.isThemeDark
         ? "#10163a"

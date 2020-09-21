@@ -28,12 +28,20 @@ export const editRole = params => {
   });
 };
 
-
 //配置角色所需菜单信息
 export const deployMenuForRole = params => {
   return request({
     url: "/api/role/menu/configure",
     method: "post",
+    params: params
+  });
+};
+
+//配置角色详情信息
+export const getRoleDeatil = params => {
+  return request({
+    url: "/api/role/details",
+    method: "get",
     params: params
   });
 };
@@ -81,15 +89,6 @@ export const editMenu = params => {
 export const getMenuDetail = params => {
   return request({
     url: "/api/menu/details",
-    method: "get",
-    params: params
-  });
-};
-
-//获取用户权限的菜单数据
-export const getMenusForUser = params => {
-  return request({
-    url: "/api/menu/list",
     method: "get",
     params: params
   });

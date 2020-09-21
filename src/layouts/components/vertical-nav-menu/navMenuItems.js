@@ -10,7 +10,6 @@
 import store from "@/store/store.js";
 
 export function filterAsyncRrouter(routes) {
-  debugger;
   const res = [];
   routes.map(route => {
     const tmp = {};

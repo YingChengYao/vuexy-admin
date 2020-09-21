@@ -25,7 +25,7 @@
         <!-- 项目类型名称 -->
         <vs-input
           label="项目类型名称"
-          v-model="dataTypeName"
+          v-model="data_local.TypeName"
           class="mt-5 w-full xrequired"
           name="项目类型名称"
           v-validate="'required'"
@@ -33,26 +33,22 @@
         <span class="text-danger text-sm" v-show="errors.has('项目类型名称')">{{ errors.first('项目类型名称') }}</span>
 
         <!-- 描述 -->
-        <vs-input
-          label="描述"
-          v-model="dataRemark"
-          class="mt-5 w-full"
-        />
+        <vs-input label="描述" v-model="data_local.Remark" class="mt-5 w-full" />
 
         <!-- 排序 -->
         <vs-input
           label="排序"
-          v-model="dataSort"
+          v-model="data_local.Sort"
           class="mt-5 w-full"
           name="排序"
           v-validate="'numeric'"
         />
         <span class="text-danger text-sm" v-show="errors.has('排序')">{{ errors.first('排序') }}</span>
 
-        <div class="mt-4" v-show="data.ID">
+        <div class="mt-4" v-show="data_local.ID">
           <label class="vs-input--label">状态</label>
           <v-select
-            v-model="data.Status"
+            v-model="data_local.Status"
             label="Name"
             value="Value"
             :options="statusOptions"
@@ -85,37 +81,24 @@ export default {
       type: Object,
       default: () => {},
     },
+    mecId: {
+      type: String,
+      default: null,
+    },
   },
   components: {
     VuePerfectScrollbar,
   },
   data() {
     return {
-      dataTypeName: null,
-      dataRemark: null,
-      dataSort: null,
-
       settings: {
-        // perfectscrollbar settings
         maxScrollbarLength: 60,
         wheelSpeed: 0.6,
       },
       statusOptions: [],
     };
   },
-  watch: {
-    isSidebarActive(val) {
-      if (!val) return;
-      if (this.data.ID) {
-        this.dataTypeName = this.data.TypeName;
-        this.dataRemark = this.data.Remark;
-        this.dataSort = this.data.Sort;
-      } else {
-        this.initValues();
-        this.$validator.reset();
-      }
-    },
-  },
+  watch: {},
   computed: {
     isSidebarActiveLocal: {
       get() {
@@ -124,26 +107,19 @@ export default {
       set(val) {
         if (!val) {
           this.$emit("closeSidebar");
-          this.$validator.reset();
-          this.initValues();
         }
       },
     },
     isFormValid() {
-      return !this.errors.any() && this.dataTypeName;
+      return !this.errors.any();
     },
     scrollbarTag() {
       return this.$store.getters.scrollbarTag;
     },
   },
   methods: {
-    initValues() {
-      this.dataTypeName = null;
-      this.dataRemark = null;
-      this.dataSort = null;
-    },
-    async loadDataStatus() {
-      await getDataStatusDataSource().then((res) => {
+    loadDataStatus() {
+      getDataStatusDataSource().then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.statusOptions = data;
@@ -153,55 +129,53 @@ export default {
     submitData() {
       this.$validator.validateAll().then((result) => {
         if (result) {
-          let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+          let para = {
+            typeName: this.data_local.TypeName,
+            remark: this.data_local.Remark,
+            sort: this.data_local.Sort,
+          };
           if (this.data.mark == "add") {
-            let para = {
-              typeName: this.dataTypeName,
-              remark: this.dataRemark,
-              sort: this.dataSort,
-              mecid: userInfo.unitId,
-            };
-            addItemType(para).then((res) => {
-              if (res.resultType == 0) {
-                this.$vs.notify({
-                  title: "成功",
-                  text: res.message,
-                  color: "success",
-                });
-                this.$emit("closeSidebar");
-                this.$emit("loadData");
-                this.initValues();
-              }
-            });
+            if (this.mecId) {
+              para.mecId = this.mecId;
+              addItemType(para).then((res) => {
+                if (res.resultType == 0) {
+                  this.$vs.notify({
+                    title: "成功",
+                    text: res.message,
+                    color: "success",
+                  });
+                  this.$emit("closeSidebar");
+                  this.$emit("loadData");
+                  this.initValues();
+                }
+              });
+            }
           } else if (this.data.mark == "edit") {
-            let para = {
-              ID: this.data.ID,
-              typeName: this.dataTypeName,
-              remark: this.dataRemark,
-              sort: this.dataSort,
-              mecid: userInfo.unitId,
-              status: this.data.Status,
-            };
-            console.log("para:", para);
-            editItemType(para).then((res) => {
-              if (res.resultType == 0) {
-                this.$vs.notify({
-                  title: "成功",
-                  text: res.message,
-                  color: "success",
-                });
-                this.$emit("loadData");
-                this.$emit("closeSidebar");
-                this.initValues();
-              }
-            });
+            if (this.mecId) {
+              para.mecId = this.mecId;
+              para.Id = this.data_local.ID;
+              para.status = this.data_local.Status;
+              editItemType(para).then((res) => {
+                if (res.resultType == 0) {
+                  this.$vs.notify({
+                    title: "成功",
+                    text: res.message,
+                    color: "success",
+                  });
+                  this.$emit("loadData");
+                  this.$emit("closeSidebar");
+                  this.initValues();
+                }
+              });
+            }
           }
         }
       });
     },
   },
   created() {
-    this.loadDataStatus();
+    if (this.data.mark === "edit") this.loadDataStatus();
+    this.data_local = this.data;
   },
 };
 </script>

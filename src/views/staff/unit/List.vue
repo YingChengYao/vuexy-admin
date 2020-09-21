@@ -100,7 +100,6 @@ export default {
   data() {
     return {
       //Page
-      searchInfo: {},
       selected: [],
       listApi: getEmployeeUnits,
       cloumns: [

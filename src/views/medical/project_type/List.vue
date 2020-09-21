@@ -1,10 +1,12 @@
 <template>
   <div class="data-list-container">
     <data-view-sidebar
+      v-if="addNewDataSidebar"
       :isSidebarActive="addNewDataSidebar"
       @closeSidebar="toggleDataSidebar"
       @loadData="getTableData"
       :data="sidebarData"
+      :mecId="mecId"
     />
 
     <vx-card ref="filterCard" title class="user-list-filters mb-8">
@@ -73,6 +75,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    isInitData: {
+      type: Boolean,
+      default: true,
+    },
   },
   data() {
     return {
@@ -103,6 +109,8 @@ export default {
       },
 
       statusOptions: [],
+      mecId: "",
+
       // Data Sidebar
       addNewDataSidebar: false,
       sidebarData: {},
@@ -120,6 +128,12 @@ export default {
           }
         }
       });
+    },
+    loadData(mecId) {
+      this.mecId = mecId;
+      this.searchInfo.mecId = mecId;
+      this.listApi = getItemTypes;
+      this.getTableData();
     },
     addNewData() {
       this.sidebarData = {
@@ -139,10 +153,8 @@ export default {
     },
   },
   mounted() {
-    let userInfo = JSON.parse(localStorage.getItem("userInfo"));
-    this.searchInfo.mecId = userInfo.unitId;
     this.loadDataStatus().then((val) => {
-      this.getTableData();
+      if (this.isInitData) this.getTableData();
     });
   },
   watch: {},

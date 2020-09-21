@@ -170,7 +170,6 @@ export default {
             WorkingStatus: this.data_local.WorkingStatus,
             Remark: this.data_local.Remark,
           };
-          debugger;
           if (this.mark === "add") {
             addEmployee(para).then((res) => {
               if (res.resultType == 0) {

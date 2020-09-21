@@ -34,14 +34,30 @@ module.exports = {
     https: false, //是否使用https协议
     hotOnly: false, //是否开启热更新
     proxy: {
+      // "/Aapi": {
+      //   //target: "http://manage.qrtj.cn", //API服务器的地址
+      //   target: "http://localhost:5000",
+      //   changeOrigin: true,
+      //   pathRewrite: {
+      //     "^/Aapi": ""
+      //   }
+      // },
       "/api": {
-        target: "http://manage.qrtj.cn", //API服务器的地址
-        //target: "http://localhost:8081",
+        //target: "http://manage.qrtj.cn", //API服务器的地址
+        target: "http://localhost:5000",
         changeOrigin: true,
         pathRewrite: {
-          "^/api": ""
+          "^/api": "/api"
         }
-      }
+      },
+      // "/Bapi": {
+      //   target: "http://manage.qrtj.cn", //API服务器的地址
+      //   //target: "http://localhost:5000",
+      //   changeOrigin: true,
+      //   pathRewrite: {
+      //     "^/Bapi": ""
+      //   }
+      // }
     }
   }
 };

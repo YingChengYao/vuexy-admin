@@ -6,6 +6,7 @@
         @closePop="closePop"
         @loadData="getTableData"
         :packageID="packageID"
+        :mecId="mecId"
         :key="timer"
         :mark="mark"
       />
@@ -14,6 +15,7 @@
       fullscreen
       :title="titlePackageDeployProject"
       :active.sync="popupActivePackageDeployProject"
+      v-if="popupActivePackageDeployProject"
     >
       <package-deploy-project
         v-if="popupActivePackageDeployProject"
@@ -79,7 +81,7 @@
 import PackageEdit from "./Edit";
 import PackageDeployProject from "./DeployProject";
 
-import { getPackages } from "@/http/package.js";
+import { getPackages, getItems } from "@/http/package.js";
 import { getDataStatusDataSource } from "@/http/data_source.js";
 import infoList from "@/components/mixins/infoList";
 import { formatTimeToStr } from "@/common/utils/data/date";
@@ -96,11 +98,15 @@ export default {
       type: Boolean,
       default: false,
     },
+    isInitData: {
+      type: Boolean,
+      default: true,
+    },
   },
   data() {
     return {
       selected: [],
-      listApi: getPackages,
+      listApi: getItems,
       cloumns: [
         { headerName: "套餐名称", field: "PackageName" },
         { headerName: "套餐价格", field: "PackagePrice" },
@@ -177,6 +183,7 @@ export default {
       packageID: null,
       timer: "",
       mark: null,
+      mecId: "",
 
       //配置项目窗口
       popupActivePackageDeployProject: false,
@@ -188,9 +195,7 @@ export default {
   computed: {},
   created() {
     this.loadDataStatus().then((val) => {
-      let userInfo = JSON.parse(localStorage.getItem("userInfo"));
-      this.searchInfo.mecId = userInfo.unitId;
-      this.getTableData();
+      if (this.isInitData) this.getTableData();
     });
   },
   mounted() {},
@@ -201,12 +206,17 @@ export default {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.statusOptions = data;
-          console.log("this.statusOptions:", this.statusOptions);
           if (data.length > 0) {
             this.searchInfo.status = data[0].Value;
           }
         }
       });
+    },
+    loadData(mecId) {
+      this.mecId = mecId;
+      this.searchInfo.mecId = mecId;
+      this.listApi = getPackages;
+      this.getTableData();
     },
     addNewData() {
       this.packageID = "";

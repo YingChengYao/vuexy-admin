@@ -15,7 +15,7 @@
         </th>
         <vs-th v-if="showIndex">序号</vs-th>
 
-        <vs-th :key="index" v-for="(item, index) in cloumns">{{item.headerName}}</vs-th>
+        <vs-th :key="index" v-for="(item, index) in cloumns.filter(x=>!x.isHide)">{{item.headerName}}</vs-th>
 
         <vs-th v-if="operates.list.filter(x=>x.show).length>0">操作</vs-th>
       </template>
@@ -36,7 +36,7 @@
               <p>{{ indextr+1 }}</p>
             </vs-td>
 
-            <vs-td :key="index" v-for="(item, index) in cloumns">
+            <vs-td :key="index" v-for="(item, index) in cloumns.filter(x=>!x.isHide)">
               <!-- <table-cell :row="tr" :column="item" :index="indextr"></table-cell> -->
 
               <span v-if="item.expand" :style="'margin-left:'+ (tr.level)*20 +'px'">
@@ -228,7 +228,6 @@ export default {
     //   // });
     // },
     toggle: function (m) {
-      debugger;
       if (m.children || m.hasChildren) {
         this.toggleExpand(m.ID, m.isExpand);
         m.isExpand = !m.isExpand;

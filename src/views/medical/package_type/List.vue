@@ -60,6 +60,12 @@ export default {
   components: {
     PackageTypeDataViewSidebar,
   },
+  props: {
+    isInitData: {
+      type: Boolean,
+      default: true,
+    },
+  },
   data() {
     return {
       types: [],
@@ -108,6 +114,12 @@ export default {
         }
       });
     },
+    loadData(mecId) {
+      this.mecId = mecId;
+      this.searchInfo.mecId = mecId;
+      this.listApi = getPackageTypes;
+      this.getTableData();
+    },
     addNewData() {
       this.sidebarData = {
         title: "添加套餐分类",
@@ -127,9 +139,7 @@ export default {
   },
   mounted() {
     this.loadDataStatus().then((val) => {
-      let userInfo = JSON.parse(localStorage.getItem("userInfo"));
-      this.searchInfo.mecId = userInfo.unitId;
-      this.getTableData();
+      if (this.isInitData) this.getTableData();
     });
   },
   watch: {},

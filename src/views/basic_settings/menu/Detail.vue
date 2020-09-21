@@ -18,7 +18,7 @@
         </div>
         <div class="vx-col md:w-1/2 w-full">
           <vs-input
-            class="w-full mt-4"
+            class="w-full mt-4 xrequired"
             label="菜单展示名称"
             v-model="data_local.DisplayName"
             v-validate="'required'"
@@ -33,8 +33,18 @@
         <div class="vx-col md:w-1/2 w-full">
           <vs-input class="w-full mt-4" label="路由name" v-model="data_local.Name" />
         </div>
-        <div class="vx-col md:w-1/2 w-full">
-          <vs-input class="w-full mt-4" label="路由path" v-model="data_local.Path" />
+        <div class="vx-col md:w-1/2 w-full xrequired">
+          <vs-input
+            class="w-full mt-4"
+            label="路由path"
+            v-model="data_local.Path"
+            v-validate="'required'"
+            name="路由path"
+          />
+          <span
+            class="text-danger text-sm"
+            v-show="errors.has('路由path')"
+          >{{ errors.first('路由path') }}</span>
         </div>
 
         <div class="vx-col md:w-1/2 w-full">
@@ -42,7 +52,14 @@
         </div>
 
         <div class="vx-col md:w-1/2 w-full">
-          <vs-input class="w-full mt-4" label="文件路径" v-model="data_local.Component" />
+          <vs-input
+            class="w-full mt-4 xrequired"
+            label="文件路径"
+            v-model="data_local.Component"
+            v-validate="'required'"
+            name="文件路径"
+          />
+          <span class="text-danger text-sm" v-show="errors.has('文件路径')">{{ errors.first('文件路径') }}</span>
         </div>
         <div class="vx-col md:w-1/2 w-full">
           <vs-input class="w-full mt-4" label="描述" v-model="data_local.Remark" />
@@ -161,7 +178,6 @@ export default {
             para.status = this.data_local.Status;
 
             editMenu(para).then((res) => {
-              debugger;
               if (res.resultType == 0) {
                 this.$vs.notify({
                   title: "成功",
