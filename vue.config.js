@@ -5,7 +5,7 @@ function resolve(dir) {
 }
 
 module.exports = {
-  publicPath: "/",
+  publicPath: "/", // 基本路径
   transpileDependencies: ["vue-echarts", "resize-detector"],
   configureWebpack: {
     optimization: {
@@ -24,7 +24,7 @@ module.exports = {
     //...可以继续自定义别名
     //set 第一个参数：设置的别名；第二个参数：原来默认的路径
   },
-  outputDir: "dist", //build输出目录
+  outputDir: process.env.outputDir, //"dist", //build输出目录
   assetsDir: "assets", //静态资源目录（js, css, img）
   lintOnSave: false, //是否开启eslint
   devServer: {
@@ -43,13 +43,13 @@ module.exports = {
       //   }
       // },
       "/api": {
-        //target: "http://manage.qrtj.cn", //API服务器的地址
-        target: "http://localhost:5000",
-        changeOrigin: true,
+        target: process.env.VUE_APP_API_URL, //API服务器的地址
+        changeOrigin: true, //设置是否跨域
         pathRewrite: {
           "^/api": "/api"
         }
-      },
+      }
+
       // "/Bapi": {
       //   target: "http://manage.qrtj.cn", //API服务器的地址
       //   //target: "http://localhost:5000",

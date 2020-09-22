@@ -24,6 +24,7 @@
         :packageID="packageID"
         :key="timer"
         :mark="mark"
+        :mecId="mecId"
       />
     </vs-popup>
 

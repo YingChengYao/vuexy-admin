@@ -68,6 +68,7 @@
           :isComponent="true"
           :multipleCheck="true"
           @checkHandle="checkHandle"
+          :isInitData="false"
         ></project-list>
         <div v-if="isUseButton" class="text-right mt-5">
           <span>
@@ -106,12 +107,15 @@ export default {
       type: Boolean,
       default: true,
     },
+    mecId: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
       discount: 10,
       discountPrice: 0,
-      //packagePrice: 0,
       projectList: [],
     };
   },
@@ -128,6 +132,7 @@ export default {
   created() {},
   mounted() {
     this.loadCheckedGroup();
+    this.$refs.projectList.loadData(this.mecId);
   },
   watch: {
     packagePrice() {

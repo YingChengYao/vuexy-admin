@@ -3,13 +3,15 @@
     <vx-card>
       <div class="vx-row">
         <div class="vx-col md:w-1/2 w-full mt-4">
-          <label class="vs-input--label">项目分类</label>
+          <label class="vs-input--label xrequired">项目分类</label>
           <v-select
             v-model="data_local.ItemTypeID"
             label="Name"
             value="Value"
             :options="projectTypeOptions"
             :reduce="m => m.Value"
+            name="项目分类"
+            v-validate="'required'"
           />
           <span class="text-danger text-sm" v-show="errors.has('项目分类')">{{ errors.first('项目分类') }}</span>
         </div>
@@ -86,10 +88,12 @@
 
         <div class="vx-col w-full mt-4">
           <project-item-list
-            ref="projectItem"
+            ref="project_item"
             :isPop="true"
             :multipleCheck="true"
             tableTitle="单项配置"
+            :isInitData="false"
+            :filter="['SingleName']"
           ></project-item-list>
         </div>
       </div>
@@ -162,37 +166,28 @@ export default {
   },
   computed: {},
   created() {
-    // this.initValues();
-    this.loadData();
-  },
-  mounted() {
     this.loadMaritalStatus();
     this.loadGender();
     this.loadProjectTypeData();
-    this.loadProjectItemData();
     this.loadDataStatus();
+    this.loadProjectItemData();
+  },
+  mounted() {
+    this.loadData();
   },
   methods: {
-    // initValues() {
-    //   this.data_local = {
-    //     Singles: [],
-    //   };
-    // },
     loadData() {
+      this.$refs.project_item.loadData(this.mecId);
       if (!this.projectId) return;
-      let userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
       let para = {
-        mecid: userInfo.unitId,
+        mecId: this.mecId,
         itemId: this.projectId,
       };
       getProjectDetail(para).then((res) => {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.data_local = data;
-          console.log("项目详情:", data.SingleList);
-          this.$refs.projectItem.loadSelectedData(data.SingleList);
-          console.log("项目详情:", data);
         }
       });
     },
@@ -207,9 +202,7 @@ export default {
     save_changes() {
       this.$validator.validateAll().then((result) => {
         if (result) {
-          let userInfo = JSON.parse(localStorage.getItem("userInfo"));
-
-          let singles = this.$refs.projectItem.selected
+          let singles = this.$refs.project_item.selected
             .map((r) => r.ID)
             .join(",");
 
@@ -223,36 +216,41 @@ export default {
             gender: this.data_local.Gender,
             remark: this.data_local.Remark,
             sort: this.data_local.Sort,
-            mecid: userInfo.unitId,
+
             status: this.data_local.Status,
           };
 
           if (!this.projectId) {
-            addProject(para).then((res) => {
-              if (res.resultType == 0) {
-                this.$vs.notify({
-                  title: "成功",
-                  text: res.message,
-                  color: "success",
-                });
-                this.$emit("loadData");
-                this.cancel();
-              }
-            });
+            if (this.mecId) {
+              para.mecId = this.mecId;
+              addProject(para).then((res) => {
+                if (res.resultType == 0) {
+                  this.$vs.notify({
+                    title: "成功",
+                    text: res.message,
+                    color: "success",
+                  });
+                  this.$emit("loadData");
+                  this.cancel();
+                }
+              });
+            }
           } else if (this.projectId) {
             para.ID = this.projectId;
             para.isLocked = this.data_local.IsLocked;
-            editProject(para).then((res) => {
-              if (res.resultType == 0) {
-                this.$vs.notify({
-                  title: "成功",
-                  text: res.message,
-                  color: "success",
-                });
-                this.$emit("loadData");
-                this.cancel();
-              }
-            });
+            if (this.mecId) {
+              editProject(para).then((res) => {
+                if (res.resultType == 0) {
+                  this.$vs.notify({
+                    title: "成功",
+                    text: res.message,
+                    color: "success",
+                  });
+                  this.$emit("loadData");
+                  this.cancel();
+                }
+              });
+            }
           }
         }
       });
@@ -280,9 +278,8 @@ export default {
       });
     },
     loadProjectTypeData() {
-      let userInfo = JSON.parse(localStorage.getItem("userInfo"));
       let para = {
-        mecid: userInfo.unitId,
+        mecId: this.mecId,
       };
       getProjectTypeDataSource(para).then((res) => {
         if (res.resultType == 0) {
@@ -292,9 +289,8 @@ export default {
       });
     },
     loadProjectItemData() {
-      let userInfo = JSON.parse(localStorage.getItem("userInfo"));
       let para = {
-        mecid: userInfo.unitId,
+        mecid: this.mecId,
       };
       getProjectItemDataSource(para).then((res) => {
         if (res.resultType == 0) {

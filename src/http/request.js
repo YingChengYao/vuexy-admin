@@ -8,7 +8,8 @@ const request = axios.create({
   //baseURL: "http://manage.qrtj.cn",
   //baseURL: "http://localhost:5000",
   //baseURL: "http://managea.tijian.cn",
-  baseURL: global.baseURL,
+  baseURL: process.env.VUE_APP_API_URL,
+  //baseURL: global.baseURL,
   timeout: 20000
 });
 

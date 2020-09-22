@@ -14,21 +14,25 @@
 
     <vx-card ref="filterCard" title class="user-list-filters mb-8">
       <vs-row vs-align="center">
-        <label class="vx-col label-name px-2">单项名称</label>
+        <label class="label-name px-2" v-show="useFilter.useSingleName">单项名称</label>
         <vs-input
           placeholder
           v-model="searchInfo.SingleName"
-          class="vx-col md:w-1/6 sm:w-1/2 w-full px-2"
+          class="md:w-1/6 sm:w-1/2 w-full px-2"
+          v-show="useFilter.useSingleName"
         />
-        <label class="vx-col label-name px-2">状态</label>
+
+        <label class="label-name px-2" v-show="useFilter.useStatus">状态</label>
         <v-select
           v-model="searchInfo.status"
           label="Name"
           value="Value"
           :options="statusOptions"
-          class="vx-col md:w-1/6 sm:w-1/2 w-full mx-2"
+          class="md:w-1/6 sm:w-1/2 w-full mx-2"
           :reduce="m => m.Value"
+          v-show="useFilter.useStatus"
         />
+
         <vs-button class="vx-col" color="primary" type="border" @click="getTableData">查询</vs-button>
       </vs-row>
     </vx-card>
@@ -98,6 +102,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    filter: {
+      type: Array,
+      default: () => ["SingleName", "Status"],
+    },
   },
   data() {
     return {
@@ -137,6 +145,13 @@ export default {
       },
       statusOptions: [],
       mecId: "",
+
+      //filter
+      useFilter: {
+        useSingleName: true,
+        useStatus: true,
+      },
+
       // Pop
       title: null,
       popupActive: false,
@@ -198,7 +213,12 @@ export default {
     //#endregion
   },
   mounted() {},
-  watch: {},
+  watch: {
+    filter(val) {
+      this.useFilter.useSingleName = val.indexOf("SingleName") != -1;
+      this.useFilter.useStatus = val.indexOf("Status") != -1;
+    },
+  },
 };
 </script>
 

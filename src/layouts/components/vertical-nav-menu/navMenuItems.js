@@ -26,6 +26,7 @@ export function filterAsyncRrouter(routes) {
     tmp.icon = route.icon;
     // tmp.iconPack = route.iconPack;
     tmp.isHide = route.isHide;
+    tmp.redirect = route.redirect;
     if (route.children) {
       let children = filterAsyncRrouter(route.children);
       if (children.length != 0) {

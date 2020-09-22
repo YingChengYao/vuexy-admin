@@ -202,35 +202,40 @@ export default {
             gender: this.data_local.Gender,
             remark: this.data_local.Remark,
             sort: this.data_local.Sort,
-            mecid: userInfo.unitId,
             packageType: packageTypes,
             status: this.data_local.Status,
           };
           if (this.mark == "add") {
-            addPackage(para).then((res) => {
-              if (res.resultType == 0) {
-                this.$vs.notify({
-                  title: "成功",
-                  text: res.message,
-                  color: "success",
-                });
-                this.$emit("loadData");
-                this.cancel();
-              }
-            });
+            if (this.mecId) {
+              para.mecId = this.mecId;
+              addPackage(para).then((res) => {
+                if (res.resultType == 0) {
+                  this.$vs.notify({
+                    title: "成功",
+                    text: res.message,
+                    color: "success",
+                  });
+                  this.$emit("loadData");
+                  this.cancel();
+                }
+              });
+            }
           } else if (this.mark == "edit") {
             para.ID = this.packageID;
-            editPackage(para).then((res) => {
-              if (res.resultType == 0) {
-                this.$vs.notify({
-                  title: "成功",
-                  text: res.message,
-                  color: "success",
-                });
-                this.$emit("loadData");
-                this.cancel();
-              }
-            });
+            if (this.mecId) {
+              para.mecId = this.mecId;
+              editPackage(para).then((res) => {
+                if (res.resultType == 0) {
+                  this.$vs.notify({
+                    title: "成功",
+                    text: res.message,
+                    color: "success",
+                  });
+                  this.$emit("loadData");
+                  this.cancel();
+                }
+              });
+            }
           }
         }
       });

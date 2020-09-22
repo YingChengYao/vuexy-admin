@@ -3,6 +3,7 @@
 *.orig
 bin/
 dist/
+test/
 # 但否定忽略 /src/lib/vuesax/dist
 !/src/lib/vuesax/dist
 node_modules/

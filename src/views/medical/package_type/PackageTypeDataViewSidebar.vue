@@ -82,6 +82,10 @@ export default {
       type: Object,
       default: () => {},
     },
+    mecId: {
+      type: String,
+      default: null,
+    },
   },
   components: {
     VuePerfectScrollbar,
@@ -147,21 +151,23 @@ export default {
               typeName: this.dataTypeName,
               remark: this.dataRemark,
               sort: this.dataSort,
-              mecid: userInfo.unitId,
             };
-            addPackageType(para).then((res) => {
-              if (res.resultType == 0) {
-                this.$vs.notify({
-                  title: "成功",
-                  text: res.message,
-                  color: "success",
-                });
-                this.$emit("closeSidebar");
-                this.$emit("loadData");
-                this.$validator.reset();
-                this.initValues();
-              }
-            });
+            if (this.mecId) {
+              para.mecId = this.mecId;
+              addPackageType(para).then((res) => {
+                if (res.resultType == 0) {
+                  this.$vs.notify({
+                    title: "成功",
+                    text: res.message,
+                    color: "success",
+                  });
+                  this.$emit("closeSidebar");
+                  this.$emit("loadData");
+                  this.$validator.reset();
+                  this.initValues();
+                }
+              });
+            }
           } else if (this.data.mark == "edit") {
             let para = {
               ID: this.data.ID,
@@ -171,19 +177,22 @@ export default {
               mecid: userInfo.unitId,
               status: this.data.Status,
             };
-            editPackageType(para).then((res) => {
-              if (res.resultType == 0) {
-                this.$vs.notify({
-                  title: "成功",
-                  text: res.message,
-                  color: "success",
-                });
-                this.$emit("loadData");
-                this.$emit("closeSidebar");
-                this.$validator.reset();
-                this.initValues();
-              }
-            });
+            if (this.mecId) {
+              para.mecId = this.mecId;
+              editPackageType(para).then((res) => {
+                if (res.resultType == 0) {
+                  this.$vs.notify({
+                    title: "成功",
+                    text: res.message,
+                    color: "success",
+                  });
+                  this.$emit("loadData");
+                  this.$emit("closeSidebar");
+                  this.$validator.reset();
+                  this.initValues();
+                }
+              });
+            }
           }
         }
       });

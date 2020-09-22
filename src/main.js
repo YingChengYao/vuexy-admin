@@ -83,6 +83,7 @@ import '@/common/global'//全局
 
 Vue.prototype.$event = new Vue();
 
+
 var vue = new Vue({
   router,
   store,

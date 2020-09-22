@@ -5,6 +5,7 @@
       @closeSidebar="toggleDataSidebar"
       @loadData="getTableData"
       :data="sidebarData"
+      :mecId="mecId"
     />
 
     <vx-card ref="filterCard" title class="user-list-filters mb-8">
@@ -95,6 +96,7 @@ export default {
         ],
       },
       statusOptions: [],
+      mecId: "",
 
       // Data Sidebar
       addNewDataSidebar: false,

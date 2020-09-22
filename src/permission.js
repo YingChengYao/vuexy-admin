@@ -28,6 +28,7 @@ router.beforeEach(async (to, from, next) => {
         const asyncRouters = await store.dispatch("permission/generateRoutes");
         //const asyncRouters = store.getters["ermission/SET_ROUTES"];
         router.$addRoutes(asyncRouters);
+
         next({ ...to, replace: true });
       } else {
         next();

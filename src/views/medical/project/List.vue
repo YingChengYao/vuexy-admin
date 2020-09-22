@@ -202,6 +202,7 @@ export default {
         list: [],
       },
 
+      mecId: "",
       //pop
       isPop: false,
       checkedGroup: [],
@@ -332,7 +333,6 @@ export default {
     this.loadDataStatus().then((val) => {
       if (this.isInitData) this.getTableData();
     });
-    // this.loadProjectTypeDataStatus();
   },
   mounted() {},
   watch: {
