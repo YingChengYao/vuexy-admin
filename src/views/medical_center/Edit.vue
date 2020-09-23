@@ -21,70 +21,47 @@
           <vs-input
             label="体检中心编码"
             v-model="data_local.MecCode"
-            class="w-full xrequired"
-            name="体检中心编码"
-            v-validate="'required'"
-            :disabled="mark=='edit'"
+            class="w-full"
           />
-          <span
-            class="text-danger text-sm"
-            v-show="errors.has('体检中心编码')"
-          >{{ errors.first('体检中心编码') }}</span>
         </div>
         <!-- 体检中心等级 -->
         <div class="vx-col md:w-1/2 w-full mt-4">
-          <label class="vs-input--label xrequired">体检中心等级</label>
+          <label class="vs-input--label">体检中心等级</label>
           <v-select
             v-model="data_local.MecGrade"
             label="Name"
             value="Value"
             :options="gradeOptions"
             :reduce="m => m.Value"
-            name="体检中心等级"
-            v-validate="'required'"
           />
-          <span
-            class="text-danger text-sm"
-            v-show="errors.has('体检中心等级')"
-          >{{ errors.first('体检中心等级') }}</span>
         </div>
         <!-- 体检中心性质 -->
         <div class="vx-col md:w-1/2 w-full mt-4">
-          <label class="vs-input--label xrequired">体检中心性质</label>
+          <label class="vs-input--label">体检中心性质</label>
           <v-select
             v-model="data_local.MecNature"
             label="Name"
             value="Value"
             :options="natureOptions"
             :reduce="m => m.Value"
-            name="体检中心性质"
-            v-validate="'required'"
           />
-
-          <span
-            class="text-danger text-sm"
-            v-show="errors.has('体检中心性质')"
-          >{{ errors.first('体检中心性质') }}</span>
         </div>
         <!-- 联系人 -->
         <div class="vx-col md:w-1/2 w-full mt-4">
           <vs-input
             label="联系人"
             v-model="data_local.Contact"
-            class="w-full xrequired"
-            name="联系人"
-            v-validate="'required'"
+            class="w-full"
           />
-          <span class="text-danger text-sm" v-show="errors.has('联系人')">{{ errors.first('联系人') }}</span>
         </div>
         <!-- 联系人手机 -->
         <div class="vx-col md:w-1/2 w-full mt-4">
           <vs-input
             label="联系人手机"
             v-model="data_local.Mobile"
-            class="w-full xrequired"
+            class="w-full"
             name="联系人手机"
-            v-validate="'required|mobile'"
+            v-validate="'mobile'"
           />
           <span class="text-danger text-sm" v-show="errors.has('联系人手机')">{{ errors.first('联系人手机') }}</span>
         </div>
@@ -113,7 +90,7 @@
 
         <!-- 所在省 -->
         <div class="vx-col md:w-1/2 w-full mt-4">
-          <label class="vs-select--label xrequired">所在省</label>
+          <label class="vs-select--label">所在省</label>
           <v-select
             label="Name"
             value="Code"
@@ -121,14 +98,12 @@
             :options="provinceOptions"
             @input="loadCityData"
             :clearable="false"
-            name="所在省"
-            v-validate="'required'"
+            :reduce="m => m.Code"
           />
-          <span class="text-danger text-sm" v-show="errors.has('所在省')">{{ errors.first('所在省') }}</span>
         </div>
         <!-- 所在市 -->
         <div class="vx-col md:w-1/2 w-full mt-4">
-          <label class="vs-select--label xrequired">所在市</label>
+          <label class="vs-select--label">所在市</label>
           <v-select
             ref="city"
             label="Name"
@@ -137,13 +112,11 @@
             @input="loadCountyData()"
             :options="cityOptions"
             :clearable="false"
-            name="所在市"
-            v-validate="'required'"
+            :reduce="m => m.Code"
           ></v-select>
-          <span class="text-danger text-sm" v-show="errors.has('所在市')">{{ errors.first('所在市') }}</span>
         </div>
         <div class="vx-col md:w-1/2 w-full mt-4">
-          <label class="vs-select--label xrequired">所在区</label>
+          <label class="vs-select--label">所在区</label>
           <v-select
             ref="county"
             label="Name"
@@ -151,20 +124,15 @@
             v-model="data_local.County"
             :options="countyOptions"
             :clearable="false"
-            name="所在区"
-            v-validate="'required'"
+            :reduce="m => m.Code"
           />
-          <span class="text-danger text-sm" v-show="errors.has('所在区')">{{ errors.first('所在区') }}</span>
         </div>
         <div class="vx-col md:w-1/2 w-full mt-4">
           <vs-input
             label="街道"
             v-model="data_local.Street"
-            class="w-full xrequired"
-            name="街道"
-            v-validate="'required'"
+            class="w-full"
           />
-          <span class="text-danger text-sm" v-show="errors.has('街道')">{{ errors.first('街道') }}</span>
         </div>
 
         <!-- 描述 -->
@@ -308,9 +276,9 @@ export default {
             mobile: this.data_local.Mobile,
             sort: this.data_local.Sort,
             remark: this.data_local.Remark,
-            province: this.data_local.Province.Code,
-            city: this.data_local.City.Code,
-            county: this.data_local.County.Code,
+            province: this.data_local.Province,
+            city: this.data_local.City,
+            county: this.data_local.County,
             street: this.data_local.Street,
           };
 
@@ -352,9 +320,9 @@ export default {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.gradeOptions = data;
-          if (this.gradeOptions.length > 0) {
-            this.data_local.MecGrade = this.gradeOptions[0].Value;
-          }
+          // if (this.gradeOptions.length > 0) {
+          //   this.data_local.MecGrade = this.gradeOptions[0].Value;
+          // }
         }
       });
     },
@@ -363,11 +331,9 @@ export default {
         if (res.resultType == 0) {
           const data = JSON.parse(res.message);
           this.natureOptions = data;
-          console.log("natureOptions:", this.natureOptions);
-          if (this.natureOptions.length > 0) {
-            console.log(this.natureOptions[0].Value);
-            this.data_local.MecNature = this.natureOptions[0].Value;
-          }
+          // if (this.natureOptions.length > 0) {
+          //   this.data_local.MecNature = this.natureOptions[0].Value;
+          // }
         }
       });
     },

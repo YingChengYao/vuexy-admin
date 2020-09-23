@@ -1,7 +1,6 @@
 <template>
-  <div>
-    <vs-row vs-align="center">
-      <!-- <label class="vx-col label-name px-2">名称</label> -->
+  <div class="no-scroll-content">
+    <vs-row vs-align="center" class="px-6 pt-6 mb-6 flex flex-row">
       <vs-input
         placeholder="名称"
         v-model="searchInfo.packageName"
@@ -9,27 +8,33 @@
       />
       <vs-button class="vx-col" color="primary" type="border" @click="loadData">查询</vs-button>
     </vs-row>
-    <ul class="faq-topics mt-4 mb-5" v-if="medicalCenters.length>0">
-      <li
-        v-for="(item,index) in medicalCenters"
-        :key="index"
-        class="p-2 font-medium flex items-center"
-        style="border-bottom: 1px solid rgba(0,0,0,.08)"
-        @click="onClickSuccess(item,index)"
-        v-clickDown="index"
-      >
-        <span
-          class="cursor-pointer"
-          :class="{'text-primary':medicalCenterSelected==index}"
-        >{{ item.MecName }}</span>
-      </li>
-    </ul>
-    <div v-else class="p-2 mt-4 mb-5">暂无数据</div>
+    <component :is="scrollbarTag" class="scroll-area" :settings="settings" :key="$vs.rtl">
+      <div class="px-6 flex flex-col">
+        <ul class="faq-topics mb-5" v-if="medicalCenters.length>0">
+          <li
+            v-for="(item,index) in medicalCenters"
+            :key="index"
+            class="p-2 font-medium flex items-center"
+            style="border-bottom: 1px solid rgba(0,0,0,.08)"
+            @click="onClickSuccess(item,index)"
+            v-clickDown="index"
+          >
+            <span
+              class="cursor-pointer"
+              :class="{'text-primary':medicalCenterSelected==index}"
+            >{{ item.MecName }}</span>
+          </li>
+        </ul>
+
+        <div v-else class="p-2 mt-4 mb-5">暂无数据</div>
+      </div>
+    </component>
   </div>
 </template>
 
 <script>
 import { getAllMedicalCenters } from "@/http/medical_center.js";
+import VuePerfectScrollbar from "vue-perfect-scrollbar";
 
 export default {
   name: "",
@@ -43,10 +48,21 @@ export default {
     return {
       medicalCenters: [],
       medicalCenterSelected: "",
-      searchInfo: "",
+      searchInfo: {},
+      settings: {
+        maxScrollbarLength: 60,
+        wheelSpeed: 0.3,
+      },
     };
   },
-  components: {},
+  components: {
+    VuePerfectScrollbar,
+  },
+  computed: {
+    scrollbarTag() {
+      return this.$store.getters.scrollbarTag;
+    },
+  },
   created() {
     this.loadData();
   },
@@ -75,4 +91,14 @@ export default {
 };
 </script>
 <style lang='scss' scoped>
+.scroll-area {
+  position: relative;
+  margin: auto;
+  width: 100%;
+  height: calc(100% - 100px);
+
+  &:not(.ps) {
+    overflow-y: auto;
+  }
+}
 </style>
